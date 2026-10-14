@@ -26,12 +26,38 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<!-- MODAL MANTENIMIENTO GLOBAL O BLOQUEO -->
+<!-- MODAL MANTENIMIENTO GLOBAL (CON CUENTA REGRESIVA DE 2 HORAS - BLOQUEO TOTAL) -->
 <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[500] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto animate-bounce"><i class="fas fa-tools"></i></div>
-    <h3 class="text-xl font-black text-white" id="mantenimiento-titulo">Sitio en Mantenimiento</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed" id="mantenimiento-desc">Estamos optimizando nuestros servidores y pasarela Escrow. Volvemos en breve.</p>
+    <h3 class="text-xl font-black text-white">Mantenimiento Semanal</h3>
+    <p class="text-xs text-zinc-300 leading-relaxed">Estamos realizando mejoras críticas en la plataforma y pasarela Escrow.</p>
+    <div id="mantenimiento-countdown" class="text-2xl font-black text-rose-400 font-mono tracking-wider pt-2">02:00:00</div>
+    <span class="text-[10px] text-zinc-500 block">El sitio volverá a estar disponible automáticamente al finalizar.</span>
+  </div>
+</div>
+
+<!-- MODAL BLOQUEO DE USUARIO (CON CORREO DE SOPORTE) -->
+<div id="modal-usuario-bloqueado" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[450] p-4 text-center">
+  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
+    <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><img src="" class="hidden"></div>
+    <h3 class="text-xl font-black text-rose-400">Tu cuenta ha sido bloqueada</h3>
+    <p class="text-xs text-zinc-300 leading-relaxed"><b>Motivo:</b> Faltas Graves en el uso de la plataforma.</p>
+    <div class="pt-2">
+      <a href="mailto:matiasgodoyoyanedel@gmail.com?subject=Apelación%20de%20Bloqueo%20-%20SiilckVentas" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-bold py-3.5 rounded-xl uppercase text-xs block transition shadow">
+        <i class="fas fa-envelope text-yellow-400 mr-2"></i> Contactar a Soporte
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AVISO DE MANTENIMIENTO CERRABLE -->
+<div id="modal-aviso-mantenimiento" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-[400] p-4 text-center">
+  <div class="web-panel max-w-md w-full p-6 rounded-3xl space-y-4 border border-yellow-500/40 animate-page">
+    <div class="w-14 h-14 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-2xl mx-auto"><i class="fas fa-bullhorn"></i></div>
+    <h3 class="text-base font-black text-white">Aviso Importante</h3>
+    <p class="text-xs text-zinc-300" id="texto-aviso-mantenimiento">Mantenimiento en breve.</p>
+    <button onclick="document.getElementById('modal-aviso-mantenimiento').classList.add('hidden')" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Entendido, estaré atento</button>
   </div>
 </div>
 
@@ -53,7 +79,7 @@
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
 
-<!-- HEADER CORPORATIVO CENTRADO Y RESPONSIVE -->
+<!-- HEADER CORPORATIVO -->
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center space-x-3 cursor-pointer shrink-0 mx-auto sm:mx-0" onclick="cambiarSeccion('inicio')">
@@ -61,7 +87,6 @@
       <div><span class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Marketplace Global & Escrow</span></div>
     </div>
     
-    <!-- BUSCADOR SUPERIOR MEJORADO Y CENTRADO -->
     <div class="flex-grow max-w-lg relative order-last sm:order-none w-full sm:w-auto">
       <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite, Valorant..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition">
       <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-yellow-400 text-xs"></i>
@@ -89,7 +114,6 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
             <i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados
           </button>
-          <!-- APARTADO MANTENIMIENTO EXCLUSIVO DUEÑO -->
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30">
             <i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel
           </button>
@@ -108,13 +132,11 @@
     <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP Vendedor</button>
   </div></div>
 
-  <!-- SECCIÓN INICIO CON LISTA DE JUEGOS ACTUALES INTERACTIVOS (FILTRO RÁPIDO) -->
+  <!-- SECCIÓN INICIO CON JUEGOS INTERACTIVOS -->
   <div id="seccion-inicio" class="w-full space-y-6 max-w-5xl mx-auto">
     <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
       <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Elige tu Juego Favorito</span>
       <h2 class="text-2xl md:text-3xl font-extrabold font-heading text-white">Explora Cuentas Verificadas al Instante</h2>
-      
-      <!-- LISTA DE JUEGOS POPULARES ACTUALES -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
         <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-fire text-yellow-400"></i> Free Fire</button>
         <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</button>
@@ -128,7 +150,6 @@
     </div>
   </div>
 
-  <!-- SECCIÓN MARKETPLACE (LO PRIMORDIAL: LAS CUENTas) -->
   <div id="seccion-mercado" class="w-full space-y-5 max-w-7xl mx-auto animate-page">
     <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
       <div>
@@ -140,7 +161,6 @@
     <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
   </div>
 
-  <!-- PANCARTA TRABAJA CON NOSOTROS (UBICADA ABAJO PARA NO MOLESTAR) -->
   <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-5xl mx-auto shadow-xl">
     <div class="space-y-2 text-center sm:text-left">
       <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor Oficial</span>
@@ -152,7 +172,7 @@
     </a>
   </div>
 
-  <!-- VISTA DE PERFIL DE VENDEROR (LÍMITE DE CAMBIO DE FOTO 3 VECES AL MES + CIERRE AUTOMÁTICO SUAVE) -->
+  <!-- PERFIL GAMER (FOTO VENDEDOR DESDE GALERÍA PC/MÓVIL + LÍMITE 3 VECES AL MES) -->
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
     <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
       <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Vendedor Gamer</span>
@@ -160,17 +180,21 @@
     </h3>
     <div class="space-y-3 text-xs">
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"></div>
+      
       <div>
-        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (URL o Emoji)</label>
-        <input type="text" id="user-logo" placeholder="Emoji o Link de imagen" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white">
-        <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios restantes este mes: 3/3</span>
+        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Galería Teléfono / PC)</label>
+        <div class="drag-drop-zone rounded-xl p-4 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('perfil-foto-file-input').click()">
+          <input type="file" id="perfil-foto-file-input" accept="image/*" class="hidden" onchange="manejarSeleccionFotoPerfil(this)">
+          <p class="text-xs text-zinc-300" id="perfil-foto-label">Toca para seleccionar imagen de tu galería o PC</p>
+        </div>
+        <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios de foto restantes este mes: 3/3</span>
       </div>
+
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
       <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
     </div>
   </div>
 
-  <!-- VISTA PERFIL TIENDA VENDEDOR -->
   <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
     <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">← Volver al Marketplace</button>
     <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6">
@@ -280,7 +304,7 @@
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",fotoPerfilBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
@@ -338,56 +362,79 @@ function filtrarPorJuegoRapido(juego){
 auth.onAuthStateChanged(async(u)=>{
   setTimeout(()=>{ document.getElementById('main-body-fade').classList.remove('opacity-0'); }, 50);
   
-  // Sincronizar configuraciones globales (Temáticas y Mantenimiento)
+  // SINCRONIZACIÓN CONFIGURACIÓN GLOBAL (MANTENIMIENTO, CUENTA REGRESIVA Y AVISOS)
   db.collection('configuracion').doc('global').onSnapshot(doc => {
     if(doc.exists){
       const cfg = doc.data();
+      
+      // Mantenimiento con contador de 2 horas
       if(cfg.mantenimientoActivo){
         document.getElementById('modal-mantenimiento-global').classList.remove('hidden');
         document.getElementById('modal-mantenimiento-global').classList.add('flex');
+        
+        if(cfg.mantenimientoFin){
+          const ahora = new Date().getTime();
+          const distancia = cfg.mantenimientoFin - ahora;
+          if(distancia > 0){
+            const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+            document.getElementById('mantenimiento-countdown').innerText = 
+              String(horas).padStart(2,'0') + ":" + String(minutos).padStart(2,'0') + ":" + String(segundos).padStart(2,'0');
+          }else{
+            document.getElementById('mantenimiento-countdown').innerText = "00:00:00";
+          }
+        }
       }else{
         document.getElementById('modal-mantenimiento-global').classList.add('hidden');
       }
+
+      // Aviso de mantenimiento cerrable
       if(cfg.avisoMantenimiento){
-        mostrarAlertaToast("⚠️ Aviso del Sistema", cfg.avisoMantenimiento);
+        document.getElementById('texto-aviso-mantenimiento').innerText = cfg.avisoMantenimiento;
+        document.getElementById('modal-aviso-mantenimiento').classList.remove('hidden');
+        document.getElementById('modal-aviso-mantenimiento').classList.add('flex');
       }
-      // Aplicar temática visual
+
       aplicarTematicaVisual(cfg.tematica || 'default');
     }
   });
 
   if(u){
-    const r=db.collection('perfiles').doc(u.uid);let d=await r.get();
-    if(!d.exists){
-      currentUserData={uid:u.uid,username:"Gamer",logo:"👑",cambiosFotoMes:0,bloqueado:false};
-      await r.set(currentUserData);
-    }else{currentUserData=d.data();}
+    const r = db.collection('perfiles').doc(u.uid);
+    r.onSnapshot(docSnap => {
+      if(docSnap.exists){
+        currentUserData = docSnap.data();
 
-    if(currentUserData.bloqueado){
-      alert("Tu cuenta ha sido bloqueada por la administración.");
-      auth.signOut();
-      return;
-    }
-    
-    document.getElementById('nav-btn-ir-login').classList.add('hidden');
-    document.getElementById('nav-user-logged-box').classList.remove('hidden');
-    document.getElementById('nav-user-logged-box').classList.add('flex');
-    document.getElementById('nav-user-email').innerText=currentUserData.username||"Gamer";
-    
-    document.getElementById('user-username').value = currentUserData.username || "";
-    document.getElementById('user-logo').value = currentUserData.logo || "";
-    document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
-    
-    const cambiosRestantes = 3 - (currentUserData.cambiosFotoMes || 0);
-    document.getElementById('user-foto-contador-msg').innerText = `Cambios de foto restantes este mes: ${cambiosRestantes}/3`;
+        // Control de bloqueo en tiempo real
+        if(currentUserData.bloqueado){
+          document.getElementById('modal-usuario-bloqueado').classList.remove('hidden');
+          document.getElementById('modal-usuario-bloqueado').classList.add('flex');
+          return;
+        }else{
+          document.getElementById('modal-usuario-bloqueado').classList.add('hidden');
+        }
 
-    if(u.uid===OWNER_UID){
+        document.getElementById('nav-btn-ir-login').classList.add('hidden');
+        document.getElementById('nav-user-logged-box').classList.remove('hidden');
+        document.getElementById('nav-user-logged-box').classList.add('flex');
+        document.getElementById('nav-user-email').innerText = currentUserData.username || "Gamer";
+        
+        document.getElementById('user-username').value = currentUserData.username || "";
+        document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
+        
+        const cambiosRestantes = 3 - (currentUserData.cambiosFotoMes || 0);
+        document.getElementById('user-foto-contador-msg').innerText = `Cambios de foto restantes este mes: ${cambiosRestantes}/3`;
+      }
+    });
+
+    if(u.uid === OWNER_UID){
       document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');
     }
 
     cargarPublicacionesEnVivo();
   }else{
-    currentUserData=null;
+    currentUserData = null;
     document.getElementById('nav-btn-ir-login').classList.remove('hidden');
     document.getElementById('nav-user-logged-box').classList.add('hidden');
     cargarPublicacionesEnVivo();
@@ -395,16 +442,21 @@ auth.onAuthStateChanged(async(u)=>{
 });
 
 function aplicarTematicaVisual(tema){
-  if(tema === 'halloween'){
-    document.body.style.backgroundColor = '#120700';
-  }else if(tema === 'navidad'){
-    document.body.style.backgroundColor = '#03120a';
-  }else if(tema === 'verano'){
-    document.body.style.backgroundColor = '#030c16';
-  }else if(tema === 'noche'){
-    document.body.style.backgroundColor = '#020203';
-  }else{
-    document.body.style.backgroundColor = '#09090b';
+  if(tema === 'halloween'){document.body.style.backgroundColor = '#120700';}
+  else if(tema === 'navidad'){document.body.style.backgroundColor = '#03120a';}
+  else if(tema === 'verano'){document.body.style.backgroundColor = '#030c16';}
+  else if(tema === 'noche'){document.body.style.backgroundColor = '#020203';}
+  else{document.body.style.backgroundColor = '#09090b';}
+}
+
+function manejarSeleccionFotoPerfil(input){
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      fotoPerfilBase64Seleccionada = e.target.result;
+      document.getElementById('perfil-foto-label').innerText = "Foto seleccionada con éxito ✅";
+    }
+    reader.readAsDataURL(input.files[0]);
   }
 }
 
@@ -446,16 +498,12 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const cardClass = esVipPub ? "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
     const badgeVip = esVipPub ? `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Elite</span>` : '';
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    
     const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs"></i>`;
 
     h+=`<div class="${cardClass}">
       <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
       <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> ${badgeVip}</div>
-      <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')">
-        <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span>
-        <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Región: ${p.region || 'N/A'}</span>
-      </div>
+      <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')"><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Región: ${p.region || 'N/A'}</span></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
         <div onclick="abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
           <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
@@ -479,20 +527,12 @@ async function abrirModalPub(id){
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor Verificado";
   
   const logoBox = document.getElementById('modal-vendedor-logo');
-  if(p.vendedorLogo){
-    logoBox.innerHTML = p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-sm">${p.vendedorLogo}</span>`;
-  }else{
-    logoBox.innerHTML = `<i class="fas fa-user text-xs"></i>`;
-  }
+  if(p.vendedorLogo){logoBox.innerHTML = p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-sm">${p.vendedorLogo}</span>`;}
+  else{logoBox.innerHTML = `<i class="fas fa-user text-xs"></i>`;}
   
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
-  if(p.foto){
-    imgEl.src = p.foto;
-    fotoBox.classList.remove('hidden');
-  }else{
-    fotoBox.classList.add('hidden');
-  }
+  if(p.foto){imgEl.src = p.foto;fotoBox.classList.remove('hidden');}else{fotoBox.classList.add('hidden');}
 
   document.getElementById('modal-pub-tags').innerHTML = `
     <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-yellow-400">🎮 ${p.juego}</span>
@@ -528,9 +568,8 @@ async function iniciarChatPrivadoVendedor(){
   const chatsRef = db.collection('chats_p2p');
   const q = await chatsRef.where('publicacionId', '==', publicacionActualIdCache).where('compradorUid', '==', auth.currentUser.uid).get();
 
-  if(!q.empty){
-    chatActivoId = q.docs[0].id;
-  }else{
+  if(!q.empty){chatActivoId = q.docs[0].id;}
+  else{
     const nuevoChat = await chatsRef.add({
       publicacionId: publicacionActualIdCache,
       compradorUid: auth.currentUser.uid,
@@ -634,32 +673,32 @@ async function crearPublicacionMarketplace(){
   cambiarSeccion('mercado');
 }
 
-// GUARDAR PERFIL CON LÍMITE DE CAMBIO DE FOTO (MÁXIMO 3 VECES AL MES) Y CIERRE AUTOMÁTICO CON TRANSICIÓN LENTA
+// GUARDAR PERFIL CON GALERÍA DE FOTO Y LÍMITE DE 3 CAMBIOS AL MES + CIERRE SUAVE
 async function guardarPerfilConLimiteFoto(){
   if(!auth.currentUser)return;
-  const nuevoLogo = document.getElementById('user-logo').value.trim();
   const mp = document.getElementById('user-metodo-pago').value.trim();
+  let logoFinal = currentUserData.logo || "👑";
   
   let cambios = currentUserData.cambiosFotoMes || 0;
-  if(nuevoLogo !== (currentUserData.logo || "")){
+  if(fotoPerfilBase64Seleccionada){
     if(cambios >= 3){
       mostrarAlertaToast("Límite Alcanzado", "Solo puedes cambiar tu foto de vendedor 3 veces al mes.");
       return;
     }
+    logoFinal = fotoPerfilBase64Seleccionada;
     cambios += 1;
   }
 
   await db.collection('perfiles').doc(auth.currentUser.uid).update({
-    logo: nuevoLogo,
+    logo: logoFinal,
     metodoPago: mp,
     cambiosFotoMes: cambios
   });
 
-  currentUserData.logo = nuevoLogo;
+  currentUserData.logo = logoFinal;
   currentUserData.cambiosFotoMes = cambios;
   mostrarToast("¡Perfil guardado con éxito!");
 
-  // TRANSICIÓN LENTA DE CIERRE AUTOMÁTICO
   const perfilSec = document.getElementById('seccion-perfil');
   perfilSec.classList.add('animate-fade-out');
   setTimeout(()=>{
