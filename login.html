@@ -11,13 +11,11 @@
   .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
   .neo-input{background:#09090b;border:1px solid #27272a;transition:all .2s ease}
   .neo-input:focus{border-color:#eab308;box-shadow:0 0 15px rgba(234,179,8,0.25);outline:none}
-  @keyframes fadeIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
-  .animate-box{animation:fadeIn .25s cubic-bezier(0.16, 1, 0.3, 1) forwards}
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-<div class="web-panel max-w-md w-full p-8 rounded-[2rem] space-y-6 animate-box relative overflow-hidden border border-yellow-500/20">
+<div class="web-panel max-w-md w-full p-8 rounded-[2rem] space-y-6 relative overflow-hidden border border-yellow-500/20">
   <div class="absolute -top-24 -right-24 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
   <div class="text-center space-y-2 relative z-10">
@@ -26,12 +24,11 @@
     <p class="text-xs text-zinc-400" id="form-main-subtitle">Portal seguro de acceso SiilckVentas</p>
   </div>
 
-  <!-- FORMULARIO DE LOGIN -->
   <div id="box-login" class="space-y-4 text-xs relative z-10">
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Correo Electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contraseña</label><input type="password" id="login-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
     
-    <button onclick="iniciarSesionEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg shadow-yellow-500/20 transition transform active:scale-[0.98]">Entrar al Sistema</button>
+    <button onclick="iniciarSesionEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg shadow-yellow-500/20 transition">Entrar al Sistema</button>
     <button onclick="loginConGoogle()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-3 rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2.5"><i class="fab fa-google text-yellow-400 text-sm"></i> Continuar con Google</button>
     
     <div class="text-center pt-3">
@@ -39,47 +36,31 @@
     </div>
   </div>
 
-  <!-- FORMULARIO DE REGISTRO -->
   <div id="box-registro" class="hidden space-y-3 text-xs relative z-10">
-    <div class="grid grid-cols-2 gap-2.5">
-      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Nombre *</label><input type="text" id="reg-nombre" placeholder="Nombre" class="w-full neo-input rounded-xl px-3 py-2.5 text-white"></div>
-      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Apellido *</label><input type="text" id="reg-apellido" placeholder="Apellido" class="w-full neo-input rounded-xl px-3 py-2.5 text-white"></div>
+    <div>
+      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Nombre de Usuario Único * (Sin números)</label>
+      <input type="text" id="reg-username" placeholder="Ej: JuanVentas" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white">
+      <span class="text-[9px] text-zinc-500 mt-0.5 block">Único en la plataforma. Sin espacios ni números.</span>
     </div>
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Correo Electrónico *</label><input type="email" id="reg-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
-    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Confirmar Correo *</label><input type="email" id="reg-email-conf" placeholder="Repite tu correo" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Contraseña *</label><input type="password" id="reg-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
     
     <div class="flex items-start gap-2.5 pt-1">
       <input type="checkbox" id="reg-terminos" class="mt-0.5 rounded accent-yellow-500 cursor-pointer">
-      <label for="reg-terminos" class="text-[10px] text-zinc-300 cursor-pointer leading-relaxed">Acepto los términos y condiciones y políticas Escrow.</label>
+      <label for="reg-terminos" class="text-[10px] text-zinc-300 cursor-pointer leading-relaxed">Acepto los términos y condiciones de comercio seguro.</label>
     </div>
 
     <button onclick="registrarUsuarioEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition mt-1">Crear Cuenta</button>
-    <button onclick="loginConGoogle()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-2.5 rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2"><i class="fab fa-google text-yellow-400 text-sm"></i> Registrarse con Google</button>
     
     <div class="text-center pt-2">
       <p class="text-zinc-400 text-[11px]">¿Ya tienes cuenta? <button onclick="alternarModoRegistro(false)" class="text-yellow-400 font-bold hover:underline">Inicia Sesión</button></p>
     </div>
   </div>
 
-  <!-- AVISO DE VERIFICACIÓN PENDIENTE -->
-  <div id="box-verificacion-aviso" class="hidden text-center space-y-4 py-3 relative z-10">
-    <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-2xl mx-auto"><i class="fas fa-envelope-open-text animate-pulse"></i></div>
-    <div class="space-y-1.5">
-      <h3 class="text-sm font-black text-yellow-400 uppercase tracking-wide">¡Verifica tu Email!</h3>
-      <p class="text-xs text-zinc-300 leading-relaxed">Hemos enviado un enlace de confirmación a tu correo. Haz clic en él para activar tu cuenta automáticamente.</p>
-    </div>
-    <div class="bg-zinc-950 p-3.5 rounded-xl border border-yellow-500/20 text-[11px] text-yellow-300 font-medium">
-      ⚡ Esta ventana detectará en tiempo real cuando verifiques tu cuenta.
-    </div>
-    <button onclick="reenviarCorreoVerificacion()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-yellow-400 border border-yellow-500/30 font-bold py-2.5 rounded-xl uppercase text-xs">Reenviar Correo</button>
-    <button onclick="cerrarSesionYRegresar()" class="w-full text-zinc-400 hover:text-white text-[11px] underline">← Cancelar e intentar de nuevo</button>
-  </div>
-
   <div id="login-error-msg" class="text-center text-rose-400 font-bold text-[11px] relative z-10"></div>
   
   <div class="text-center pt-4 border-t border-zinc-800 relative z-10">
-    <a href="index.html" class="text-zinc-400 hover:text-yellow-400 text-xs font-bold transition flex items-center justify-center gap-1.5"><i class="fas fa-arrow-left"></i> Volver a la página principal</a>
+    <a href="index.html" class="text-zinc-400 hover:text-yellow-400 text-xs font-bold transition flex items-center justify-center gap-1.5"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
   </div>
 </div>
 
@@ -87,7 +68,6 @@
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-let verificationInterval=null;
 
 function mostrarError(m){document.getElementById('login-error-msg').innerText=m;}
 
@@ -95,47 +75,46 @@ function alternarModoRegistro(esRegistro){
   mostrarError("");
   document.getElementById('box-login').classList.toggle('hidden', esRegistro);
   document.getElementById('box-registro').classList.toggle('hidden', !esRegistro);
-  document.getElementById('box-verificacion-aviso').classList.add('hidden');
   document.getElementById('form-main-title').innerText = esRegistro ? "Registro de Cuenta" : "Iniciar Sesión";
-  document.getElementById('form-main-subtitle').innerText = esRegistro ? "Crea tu cuenta en SiilckVentas" : "Portal seguro de acceso SiilckVentas";
 }
 
 async function iniciarSesionEmail(){
   const e=document.getElementById('login-email').value.trim(), p=document.getElementById('login-password').value;
-  if(!e||!p){mostrarError("Completa todos los campos obligatorios.");return;}
+  if(!e||!p){mostrarError("Completa todos los campos.");return;}
   try{
-    const cred=await auth.signInWithEmailAndPassword(e,p);
-    if(!cred.user.emailVerified && cred.user.providerData[0].providerId === 'password'){
-      mostrarPantallaVerificacionPendiente();
-      return;
-    }
-    // REDIRECCIÓN AUTOMÁTICA FORZADA
+    await auth.signInWithEmailAndPassword(e,p);
     window.location.replace("index.html");
   }catch(err){mostrarError(err.message);}
 }
 
 async function registrarUsuarioEmail(){
-  const nom=document.getElementById('reg-nombre').value.trim();
-  const ape=document.getElementById('reg-apellido').value.trim();
-  const e=document.getElementById('reg-email').value.trim();
-  const ec=document.getElementById('reg-email-conf').value.trim();
-  const p=document.getElementById('reg-password').value;
-  const term=document.getElementById('reg-terminos').checked;
+  const username = document.getElementById('reg-username').value.trim();
+  const e = document.getElementById('reg-email').value.trim();
+  const p = document.getElementById('reg-password').value;
+  const term = document.getElementById('reg-terminos').checked;
 
-  if(!nom||!ape||!e||!ec||!p){mostrarError("Todos los campos son obligatorios.");return;}
-  if(e!==ec){mostrarError("Los correos electrónicos no coinciden.");return;}
+  if(!username || !e || !p){mostrarError("Todos los campos son obligatorios.");return;}
+  if(/\d/.test(username)){mostrarError("El nombre de usuario no puede contener números.");return;}
   if(!term){mostrarError("Debes aceptar los términos y condiciones.");return;}
 
   try{
-    const cred=await auth.createUserWithEmailAndPassword(e,p);
-    await cred.user.sendEmailVerification();
-    
-    const gid="SK-"+Math.floor(10000+Math.random()*90000);
+    const userQuery = await db.collection('perfiles').where('username', '==', username).get();
+    if(!userQuery.empty){
+      mostrarError("Este nombre de usuario ya está en uso. Elige otro.");
+      return;
+    }
+
+    const cred = await auth.createUserWithEmailAndPassword(e,p);
     await db.collection('perfiles').doc(cred.user.uid).set({
-      uid:cred.user.uid, gamerId:gid, email:e, username:nom+" "+ape, monedasSiilck:200, creadoEn:firebase.firestore.FieldValue.serverTimestamp()
+      uid: cred.user.uid,
+      username: username,
+      logo: "👑",
+      esVendedorVip: false,
+      postuladoFormulario: false,
+      creadoEn: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    mostrarPantallaVerificacionPendiente();
+    window.location.replace("index.html");
   }catch(err){mostrarError(err.message);}
 }
 
@@ -148,51 +127,20 @@ async function loginConGoogle(){
     const r=db.collection('perfiles').doc(user.uid);
     const d=await r.get();
     if(!d.exists){
-      const gid="SK-"+Math.floor(10000+Math.random()*90000);
+      const baseName = (user.displayName || "Gamer").replace(/[^a-zA-Z]/g, "");
+      const username = baseName + Math.floor(100+Math.random()*900);
       await r.set({
-        uid:user.uid, gamerId:gid, email:user.email||'', username:user.displayName||'Gamer', monedasSiilck:200, creadoEn:firebase.firestore.FieldValue.serverTimestamp()
+        uid: user.uid,
+        username: username,
+        logo: "👑",
+        esVendedorVip: false,
+        postuladoFormulario: false,
+        creadoEn: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
-    // REDIRECCIÓN AUTOMÁTICA FORZADA
     window.location.replace("index.html");
   }catch(err){mostrarError(err.message);}
-}
-
-function mostrarPantallaVerificacionPendiente(){
-  document.getElementById('box-login').classList.add('hidden');
-  document.getElementById('box-registro').classList.add('hidden');
-  document.getElementById('box-verificacion-aviso').classList.remove('hidden');
-  document.getElementById('form-main-title').innerText = "Verifica tu Email";
-  document.getElementById('form-main-subtitle').innerText = "Activación requerida";
-
-  if(verificationInterval) clearInterval(verificationInterval);
-  verificationInterval = setInterval(async()=>{
-    if(auth.currentUser){
-      await auth.currentUser.reload();
-      if(auth.currentUser.emailVerified){
-        clearInterval(verificationInterval);
-        window.location.replace("index.html");
-      }
-    }
-  }, 3000);
-}
-
-async function reenviarCorreoVerificacion(){
-  try{
-    if(auth.currentUser){
-      await auth.currentUser.sendEmailVerification();
-      mostrarError("");
-      alert("✅ Correo de verificación reenviado con éxito.");
-    }
-  }catch(err){mostrarError(err.message);}
-}
-
-async function cerrarSesionYRegresar(){
-  if(verificationInterval) clearInterval(verificationInterval);
-  await auth.signOut();
-  alternarModoRegistro(false);
 }
 </script>
 </body>
 </html>
-
