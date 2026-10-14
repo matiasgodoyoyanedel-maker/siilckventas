@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;transition:background-color .4s ease}
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
@@ -15,8 +15,6 @@
   .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
-  @keyframes fadeOutSmooth{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(0.95)}}
-  .animate-fade-out{animation:fadeOutSmooth .4s ease forwards}
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
   .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
   .radio-warranty{accent-color:#eab308}
@@ -26,75 +24,69 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<!-- MODAL MANTENIMIENTO GLOBAL -->
+<!-- MANTENIMIENTO GLOBAL -->
 <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[500] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto animate-bounce"><i class="fas fa-tools"></i></div>
     <h3 class="text-xl font-black text-white">Mantenimiento Semanal</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed">Estamos realizando mejoras críticas en la plataforma.</p>
+    <p class="text-xs text-zinc-300">Plataforma en actualización crítica.</p>
     <div id="mantenimiento-countdown" class="text-2xl font-black text-rose-400 font-mono tracking-wider pt-2">02:00:00</div>
   </div>
 </div>
 
-<!-- MODAL BLOQUEO DE USUARIO -->
+<!-- BLOQUEO DE USUARIO -->
 <div id="modal-usuario-bloqueado" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[450] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
     <h3 class="text-xl font-black text-rose-400">Tu cuenta ha sido bloqueada</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed"><b>Motivo:</b> Faltas Graves en el uso de la plataforma.</p>
+    <p class="text-xs text-zinc-300"><b>Motivo:</b> Faltas Graves en el uso.</p>
     <div class="pt-2">
-      <a href="mailto:matiasgodoyoyanedel@gmail.com?subject=Apelación%20de%20Bloqueo%20-%20SiilckVentas" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-bold py-3.5 rounded-xl uppercase text-xs block transition shadow">
-        <i class="fas fa-envelope text-yellow-400 mr-2"></i> Contactar a Soporte
-      </a>
+      <a href="mailto:matiasgodoyoyanedel@gmail.com?subject=Apelación" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-bold py-3 rounded-xl uppercase text-xs block transition"><i class="fas fa-envelope text-yellow-400 mr-2"></i> Contactar Soporte</a>
     </div>
   </div>
 </div>
 
+<!-- AVISO DE MANTENIMIENTO (SÓLO UNA VEZ POR SESIÓN) -->
 <div id="modal-aviso-mantenimiento" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-[400] p-4 text-center">
   <div class="web-panel max-w-md w-full p-6 rounded-3xl space-y-4 border border-yellow-500/40 animate-page">
     <div class="w-14 h-14 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-2xl mx-auto"><i class="fas fa-bullhorn"></i></div>
     <h3 class="text-base font-black text-white">Aviso Importante</h3>
     <p class="text-xs text-zinc-300" id="texto-aviso-mantenimiento">Mantenimiento en breve.</p>
-    <button onclick="document.getElementById('modal-aviso-mantenimiento').classList.add('hidden')" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Entendido, estaré atento</button>
+    <button onclick="cerrarAvisoMantenimientoUnico()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Entendido, estaré atento</button>
   </div>
 </div>
 
 <div id="modal-sesion-requerida" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[300] p-4">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/30 relative animate-page">
     <button onclick="document.getElementById('modal-sesion-requerida').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
-    <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-lock"></i></div>
-    <div class="space-y-1.5">
-      <h3 class="text-lg font-bold font-heading text-white tracking-wide">Autenticación Requerida</h3>
-      <p class="text-xs text-zinc-400 leading-relaxed">Para publicar ofertas o realizar compras seguras, debes iniciar sesión en tu cuenta.</p>
-    </div>
-    <div class="pt-2">
-      <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar Sesión Ahora</a>
-    </div>
+    <h3 class="text-lg font-bold text-white">Autenticación Requerida</h3>
+    <p class="text-xs text-zinc-400">Debes iniciar sesión para realizar esta acción.</p>
+    <a href="login.html" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs block text-center">Iniciar Sesión</a>
   </div>
 </div>
 
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
-<div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
+<div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">OK</span></div>
 <canvas id="canvas-bg"></canvas>
 
 <!-- HEADER -->
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center space-x-3 cursor-pointer shrink-0 mx-auto sm:mx-0" onclick="cambiarSeccion('inicio')">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-lg shadow-yellow-500/20"><i class="fas fa-crown text-base"></i></div>
-      <div><span class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Marketplace Global & Escrow</span></div>
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-lg"><i class="fas fa-crown text-base"></i></div>
+      <div><span class="text-lg font-black tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Marketplace Global</span></div>
     </div>
     
     <div class="flex-grow max-w-lg relative order-last sm:order-none w-full sm:w-auto">
-      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition">
+      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none transition">
       <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-yellow-400 text-xs"></i>
     </div>
 
-    <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
-      <!-- BOTÓN CARRITO -->
+    <div class="flex items-center space-x-2 shrink-0 mx-auto sm:mx-0">
+      <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="bg-zinc-900 border border-zinc-800 hover:border-yellow-500/50 text-yellow-400 px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"><i class="fas fa-comments"></i> Mensajes</button>
       <a href="carrito.html" class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Carrito</a>
 
       <div id="auth-nav-area" class="flex items-center space-x-2">
-        <a href="login.html" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="login.html" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login</a>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
           <span id="nav-user-email" class="text-xs font-bold text-yellow-400 max-w-[100px] truncate bg-zinc-900 px-3 py-2 rounded-xl border border-zinc-800">--</span>
           <button onclick="cerrarSesion()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
@@ -104,19 +96,10 @@
       <div class="relative">
         <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition"><i class="fas fa-bars"></i></button>
         <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-60 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
-          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarPublicarCuenta()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider shadow">
-            <i class="fas fa-plus-square text-sm"></i> Vender Cuenta
-          </button>
+          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarPublicarCuenta()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase shadow"><i class="fas fa-plus-square text-sm"></i> Vender Cuenta</button>
           <div class="border-t border-zinc-800 my-1"></div>
-          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('perfil'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
-            <i class="fas fa-user-circle text-yellow-400 text-sm w-4"></i> Mi Perfil Gamer
-          </button>
-          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
-            <i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados
-          </button>
-          <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30">
-            <i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel
-          </button>
+          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('perfil'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-user-circle text-yellow-400 text-sm w-4"></i> Mi Perfil Gamer</button>
+          <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30"><i class="fas fa-tools text-sm w-4"></i> 🛠️ Panel Admin</button>
         </div>
       </div>
     </div>
@@ -127,99 +110,89 @@
 <section id="view-dashboard" class="w-full space-y-6 animate-page">
   
   <div class="web-panel rounded-2xl p-2.5 max-w-4xl mx-auto"><div class="flex items-center justify-center gap-3 overflow-x-auto hide-scrollbar">
-    <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 hover:text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
-    <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas</button>
-    <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP Vendedor</button>
+    <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
+    <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace</button>
+    <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP</button>
   </div></div>
 
   <div id="seccion-inicio" class="w-full space-y-6 max-w-5xl mx-auto">
     <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
       <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Elige tu Juego Favorito</span>
-      <h2 class="text-2xl md:text-3xl font-extrabold font-heading text-white">Explora Cuentas Verificadas al Instante</h2>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-white">Explora Cuentas Verificadas al Instante</h2>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
         <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-fire text-yellow-400"></i> Free Fire</button>
         <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</button>
         <button onclick="filtrarPorJuegoRapido('Valorant')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-shield-alt text-rose-400"></i> Valorant</button>
         <button onclick="filtrarPorJuegoRapido('Roblox')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-cube text-emerald-400"></i> Roblox</button>
-        <button onclick="filtrarPorJuegoRapido('Steam Key')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fab fa-steam text-indigo-400"></i> Steam Key</button>
-        <button onclick="filtrarPorJuegoRapido('League of Legends')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-bolt text-amber-400"></i> LoL / Riot</button>
-        <button onclick="filtrarPorJuegoRapido('GTA V')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-car text-orange-400"></i> GTA V</button>
-        <button onclick="filtrarPorJuegoRapido('Minecraft')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-hammer text-emerald-500"></i> Minecraft</button>
       </div>
     </div>
   </div>
 
   <div id="seccion-mercado" class="w-full space-y-5 max-w-7xl mx-auto animate-page">
     <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-      <div>
-        <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
-        <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
-      </div>
-      <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
+      <h3 class="text-sm font-extrabold text-yellow-400 uppercase"><i class="fas fa-store mr-1.5"></i> Marketplace Activo</h3>
+      <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase shadow transition"><i class="fas fa-plus"></i> Publicar Cuenta</button>
     </div>
-    <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
+    <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando...</p></div>
   </div>
 
   <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-5xl mx-auto shadow-xl">
     <div class="space-y-2 text-center sm:text-left">
-      <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor Oficial</span>
-      <h3 class="text-xl md:text-2xl font-black font-heading text-white">¿Quieres trabajar con nosotros? ¿Quieres publicar en nuestra página web?</h3>
-      <p class="text-xs text-zinc-300">Postula hoy mismo rellenando nuestro formulario de verificación rápida.</p>
+      <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor</span>
+      <h3 class="text-xl md:text-2xl font-black text-white">¿Quieres trabajar con nosotros y publicar tus cuentas?</h3>
     </div>
-    <a href="formulario.html" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase tracking-wider shadow-xl transition shrink-0 inline-flex items-center gap-2">
-      <i class="fas fa-arrow-right"></i> Click Aquí
-    </a>
+    <a href="formulario.html" class="bg-yellow-500 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase shadow transition shrink-0">Postular Aquí</a>
   </div>
 
+  <!-- PERFIL -->
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
     <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Vendedor Gamer</span>
-      <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button>
+      <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Gamer</span>
+      <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 underline">Cerrar</button>
     </h3>
     <div class="space-y-3 text-xs">
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"></div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2 text-zinc-400"></div>
       <div>
-        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Galería Teléfono / PC)</label>
+        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Galería / PC)</label>
         <div class="drag-drop-zone rounded-xl p-4 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('perfil-foto-file-input').click()">
           <input type="file" id="perfil-foto-file-input" accept="image/*" class="hidden" onchange="manejarSeleccionFotoPerfil(this)">
-          <p class="text-xs text-zinc-300" id="perfil-foto-label">Toca para seleccionar imagen de tu galería o PC</p>
+          <p class="text-xs text-zinc-300" id="perfil-foto-label">Toca para seleccionar imagen</p>
         </div>
-        <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios de foto restantes este mes: 3/3</span>
       </div>
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
-      <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método de Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2 text-white"></div>
+      <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow">Guardar</button>
     </div>
   </div>
 
+  <!-- PERFIL VENDEDOR -->
   <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
-    <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">← Volver al Marketplace</button>
-    <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6">
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-        <div id="vendedor-perfil-logo-box" class="w-20 h-20 rounded-2xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shadow-xl shrink-0"><i class="fas fa-user"></i></div>
-        <div class="space-y-1 flex-grow">
-          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-            <h3 id="vendedor-perfil-nombre" class="text-xl font-black text-white">--</h3>
-            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
-          </div>
-          <p class="text-xs text-zinc-400"><i class="fas fa-thumbs-up text-emerald-400 mr-1"></i> 99.1% Positivo • 100% Confiable</p>
-        </div>
+    <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">← Volver</button>
+    <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 space-y-6">
+      <div class="flex items-center gap-4">
+        <div id="vendedor-perfil-logo-box" class="w-20 h-20 rounded-2xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shadow"></div>
+        <div><h3 id="vendedor-perfil-nombre" class="text-xl font-black text-white">--</h3><span class="text-xs text-emerald-400">Verificado</span></div>
       </div>
-      <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-3"></div>
+      <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
     </div>
   </div>
 
+  <!-- MIS MENSAJES -->
   <div id="seccion-mis-chats" class="hidden space-y-5 max-w-3xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page">
     <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
-      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
+      <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-comments mr-1.5"></i> Mis Mensajes & Chats Activos</h3>
+      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">Volver</button>
     </div>
-    <div id="lista-chats-usuario" class="space-y-3"></div>
+    <div id="lista-chats-usuario" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando chats...</p></div>
   </div>
 
+  <!-- SALA DE CHAT ACTIVO -->
   <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page border border-yellow-500/30">
     <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <div><h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Chat Privado</h3><span class="text-[10px] text-emerald-400">🔒 Canal confidencial Escrow</span></div>
-      <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 hover:text-white underline">← Mis Chats</button>
+      <div>
+        <h3 class="text-xs font-bold text-white">Conversando con: <span id="chat-nombre-interlocutor" class="text-yellow-400 font-black">--</span></h3>
+        <span id="chat-titulo-oferta" class="text-[10px] text-zinc-400">Oferta --</span>
+      </div>
+      <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 underline">← Volver a Mensajes</button>
     </div>
     <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
     <div class="flex gap-2">
@@ -228,108 +201,67 @@
     </div>
   </div>
 
+  <!-- PLAN VIP -->
   <div id="seccion-vip" class="hidden space-y-4 max-w-3xl mx-auto animate-page">
     <div class="vip-banner-box rounded-3xl p-8 md:p-10 space-y-6 text-center relative overflow-hidden">
-      <div class="absolute -top-12 -right-12 w-48 h-48 bg-yellow-500/15 rounded-full blur-3xl pointer-events-none"></div>
       <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-300 text-zinc-950 flex items-center justify-center text-4xl font-black mx-auto shadow-xl"><i class="fas fa-crown"></i></div>
-      <div class="space-y-2">
-        <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Membresía Elite de Vendedor</span>
-        <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">PLAN VIP VENDEDOR - $2.990 CLP / MES</h3>
-        <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Borde estelar dorado, corona distintiva, prioridad en el buscador y 5% de descuento en tus compras del carrito.</p>
-      </div>
-      <button onclick="manejarBotonPlanVip()" class="bg-gradient-to-r from-yellow-500 to-amber-400 text-zinc-950 font-black px-10 py-4 rounded-2xl text-xs uppercase shadow-2xl transition">Activar Plan VIP Vendedor</button>
+      <h3 class="text-2xl font-black text-white">PLAN VIP VENDEDOR - $2.990 CLP / MES</h3>
+      <p class="text-xs text-zinc-300 max-w-lg mx-auto">Borde dorado, prioridad en buscador y 5% de descuento en el carrito.</p>
+      <button onclick="manejarBotonPlanVip()" class="bg-gradient-to-r from-yellow-500 to-amber-400 text-zinc-950 font-black px-10 py-4 rounded-2xl text-xs uppercase shadow">Activar Plan VIP</button>
     </div>
   </div>
 
+  <!-- PUBLICAR -->
   <div id="seccion-publicar" class="hidden space-y-5 max-w-2xl mx-auto web-panel rounded-3xl p-8 shadow-2xl animate-page border border-zinc-800">
     <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
-      <h3 class="text-sm font-extrabold font-heading text-white uppercase"><i class="fas fa-plus-circle text-yellow-400 mr-2"></i> Publicar Cuenta</h3>
-      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Cancelar</button>
+      <h3 class="text-sm font-extrabold text-white uppercase"><i class="fas fa-plus-circle text-yellow-400 mr-2"></i> Publicar Cuenta</h3>
+      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">Cancelar</button>
     </div>
     <div class="space-y-4 text-xs">
-      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option><option value="Steam Key">Steam Key</option><option value="League of Legends">League of Legends</option><option value="GTA V">GTA V</option><option value="Minecraft">Minecraft</option></select></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option></select></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio (CLP) *</label><input type="number" id="pub-precio" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       </div>
       <div class="grid grid-cols-3 gap-2">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock Disponible *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       </div>
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía *</label><textarea id="pub-descripcion" rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
       <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
         <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
-        <p class="text-xs text-zinc-300" id="pub-foto-label">Toca para subir foto de la cuenta</p>
+        <p class="text-xs text-zinc-300" id="pub-foto-label">Subir foto</p>
       </div>
-      <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase shadow">Publicar en Marketplace</button>
+      <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase shadow">Publicar</button>
     </div>
   </div>
 </section>
 </main>
 
-<!-- MODAL DETALLES Y COMPRA (CON FOTO REAL DE VENDEDOR, BOTÓN CERRAR 'X', Y BOTÓN "ME INTERESA, LO PENSARÉ") -->
+<!-- MODAL DETALLES -->
 <div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
   <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
-    <!-- BOTÓN X DE CIERRE -->
-    <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs shadow"><i class="fas fa-times"></i></button>
-    
+    <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
     <div id="modal-foto-preview-box" class="w-full h-52 bg-zinc-900 rounded-2xl overflow-hidden hidden flex items-center justify-center border border-zinc-800"><img id="modal-pub-img" src="" class="w-full h-full object-cover"></div>
-    
-    <div class="space-y-1 border-b border-zinc-800 pb-3">
-      <h3 id="modal-pub-titulo" class="text-base font-extrabold text-white">--</h3>
-      <div class="flex flex-wrap gap-2 pt-1 text-[11px]" id="modal-pub-tags"></div>
-    </div>
-
-    <!-- FOTO REAL DEL VENDEDOR VISIBLE -->
+    <h3 id="modal-pub-titulo" class="text-base font-extrabold text-white">--</h3>
     <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="abrirPerfilVendedorDesdeModal()">
         <div id="modal-vendedor-logo" class="w-12 h-12 rounded-xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shadow"></div>
-        <div>
-          <span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span>
-          <span class="text-[10px] text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Verificado (Ver Tienda)</span>
-        </div>
+        <div><span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span><span class="text-[10px] text-emerald-400">Verificado</span></div>
       </div>
-      <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/40 font-extrabold px-3.5 py-2 rounded-xl text-xs shadow flex items-center gap-1.5 transition">
-        <i class="fas fa-comment-dots"></i> Chatear
-      </button>
+      <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 font-extrabold px-3.5 py-2 rounded-xl text-xs"><i class="fas fa-comment-dots"></i> Chatear</button>
     </div>
-
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
-
-    <!-- SELECTOR DE CANTIDAD SEGÚN STOCK -->
     <div class="flex items-center justify-between bg-zinc-950 p-3 rounded-2xl border border-zinc-800 text-xs">
-      <span class="text-zinc-400 font-bold">Cantidad deseada (Stock: <span id="modal-stock-max" class="text-white">1</span>):</span>
+      <span class="text-zinc-400 font-bold">Cantidad (Stock: <span id="modal-stock-max" class="text-white">1</span>):</span>
       <div class="flex items-center gap-2">
-        <button onclick="cambiarCantidadModal(-1)" class="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-700 text-white font-bold">-</button>
+        <button onclick="cambiarCantidadModal(-1)" class="w-7 h-7 rounded-lg bg-zinc-900 text-white font-bold">-</button>
         <span id="modal-cantidad-val" class="font-bold text-yellow-400 px-2">1</span>
-        <button onclick="cambiarCantidadModal(1)" class="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-700 text-white font-bold">+</button>
+        <button onclick="cambiarCantidadModal(1)" class="w-7 h-7 rounded-lg bg-zinc-900 text-white font-bold">+</button>
       </div>
     </div>
-
-    <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
-      <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
-      <div class="space-y-2 text-xs">
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
-      </div>
-    </div>
-
-    <div class="space-y-2 pt-2 border-t border-zinc-800">
-      <div class="flex justify-between items-center">
-        <span class="text-xs text-zinc-400 uppercase font-bold">Total Estimado</span>
-        <span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span>
-      </div>
-      
-      <!-- BOTÓN ME INTERESA, LO PENSARÉ (AÑADIR AL CARRITO) -->
-      <button onclick="agregarAlCarritoDesdeModal()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-yellow-400 border border-yellow-500/40 font-black py-3 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center justify-center gap-2">
-        <i class="fas fa-shopping-cart"></i> Me interesa, lo pensaré (Añadir al Carrito)
-      </button>
-
-      <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3 rounded-xl text-xs uppercase tracking-wider text-center shadow transition block">
-        Comprar con Flow Ahora
-      </a>
-    </div>
+    <button onclick="agregarAlCarritoDesdeModal()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-yellow-400 border border-yellow-500/40 font-black py-3 rounded-xl text-xs uppercase shadow"><i class="fas fa-shopping-cart mr-2"></i> Me interesa, lo pensaré (Añadir al Carrito)</button>
   </div>
 </div>
 
@@ -342,7 +274,9 @@ function initCanvas(){
   for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});
 }
 function animateCanvas(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // Color base según canvas o tema
+  ctx.fillStyle='transparent';ctx.fillRect(0,0,canvas.width,canvas.height);
   estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234, 179, 8, ${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});
   requestAnimationFrame(animateCanvas);
 }
@@ -363,7 +297,7 @@ function verificarLoginAccion(callback){
 function verificarPublicarCuenta(){
   if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
   if(!currentUserData.postuladoFormulario){
-    mostrarAlertaToast("Aviso Requerido", "Debes rellenar el formulario de vendedor para ver si eres apto.");
+    mostrarAlertaToast("Aviso", "Debes postularte como vendedor y ser aprobado.");
     setTimeout(()=>{ window.location.href = "formulario.html"; }, 1500);
     return;
   }
@@ -399,23 +333,26 @@ auth.onAuthStateChanged(async(u)=>{
         document.getElementById('modal-mantenimiento-global').classList.remove('hidden');
         document.getElementById('modal-mantenimiento-global').classList.add('flex');
         if(cfg.mantenimientoFin){
-          const ahora = new Date().getTime();
-          const distancia = cfg.mantenimientoFin - ahora;
+          const distancia = cfg.mantenimientoFin - new Date().getTime();
           if(distancia > 0){
-            const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-            const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-            document.getElementById('mantenimiento-countdown').innerText = String(horas).padStart(2,'0') + ":" + String(minutos).padStart(2,'0') + ":" + String(segundos).padStart(2,'0');
+            const h = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distancia % (1000 * 60)) / 1000);
+            document.getElementById('mantenimiento-countdown').innerText = String(h).padStart(2,'0') + ":" + String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
           }
         }
       }else{
         document.getElementById('modal-mantenimiento-global').classList.add('hidden');
       }
-      if(cfg.avisoMantenimiento){
+
+      if(cfg.avisoMantenimiento && sessionStorage.getItem("aviso_visto") !== "true"){
         document.getElementById('texto-aviso-mantenimiento').innerText = cfg.avisoMantenimiento;
         document.getElementById('modal-aviso-mantenimiento').classList.remove('hidden');
         document.getElementById('modal-aviso-mantenimiento').classList.add('flex');
       }
+
+      // FONDOS TEMÁTICOS NOTORIOS E INMERSIVOS
+      aplicarTematicaNotoria(cfg.tematica || 'default');
     }
   });
 
@@ -434,7 +371,6 @@ auth.onAuthStateChanged(async(u)=>{
         document.getElementById('nav-user-email').innerText = currentUserData.username || "Gamer";
         document.getElementById('user-username').value = currentUserData.username || "";
         document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
-        document.getElementById('user-foto-contador-msg').innerText = `Cambios de foto restantes este mes: ${3 - (currentUserData.cambiosFotoMes || 0)}/3`;
       }
     });
 
@@ -448,12 +384,34 @@ auth.onAuthStateChanged(async(u)=>{
   }
 });
 
+// APLICAR TEMÁTICAS NOTORIAS
+function aplicarTematicaNotoria(tema){
+  if(tema === 'halloween'){
+    document.body.style.backgroundColor = '#1a0500'; // Naranja oscuro terrorífico muy notorio
+    document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #ff5500 0%, #1a0500 70%)';
+  }else if(tema === 'navidad'){
+    document.body.style.backgroundColor = '#02180a'; // Verde pino navideño muy notorio
+    document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #059669 0%, #02180a 70%)';
+  }else if(tema === 'verano'){
+    document.body.style.backgroundColor = '#021024'; // Azul neón veraniego muy notorio
+    document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #0284c7 0%, #021024 70%)';
+  }else{
+    document.body.style.backgroundColor = '#09090b'; // Espacio normal
+    document.body.style.backgroundImage = 'none';
+  }
+}
+
+function cerrarAvisoMantenimientoUnico(){
+  sessionStorage.setItem("aviso_visto", "true");
+  document.getElementById('modal-aviso-mantenimiento').classList.add('hidden');
+}
+
 function manejarSeleccionFotoPerfil(input){
   if(input.files && input.files[0]){
     const reader = new FileReader();
     reader.onload = function(e){
       fotoPerfilBase64Seleccionada = e.target.result;
-      document.getElementById('perfil-foto-label').innerText = "Foto seleccionada con éxito ✅";
+      document.getElementById('perfil-foto-label').innerText = "Foto seleccionada ✅";
     }
     reader.readAsDataURL(input.files[0]);
   }
@@ -464,23 +422,26 @@ function manejarSeleccionFoto(input){
     const reader = new FileReader();
     reader.onload = function(e){
       fotoBase64Seleccionada = e.target.result;
-      document.getElementById('pub-foto-label').innerText = "Imagen cargada con éxito ✅";
+      document.getElementById('pub-foto-label').innerText = "Imagen cargada ✅";
     }
     reader.readAsDataURL(input.files[0]);
   }
 }
 
 async function manejarBotonPlanVip(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');return;}
+  const unMesDespues = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
+  await db.collection('perfiles').doc(auth.currentUser.uid).update({
+    esVendedorVip: true,
+    vipExpira: firebase.firestore.Timestamp.fromDate(unMesDespues)
+  });
   window.open("https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c", "_blank");
 }
 
 function cargarPublicacionesEnVivo(){
   db.collection('publicaciones').orderBy('fecha', 'desc').onSnapshot(snapshot => {
     globalPublicacionesCache = [];
-    snapshot.forEach(doc => {
-      globalPublicacionesCache.push({id: doc.id, ...doc.data()});
-    });
+    snapshot.forEach(doc => {globalPublicacionesCache.push({id: doc.id, ...doc.data()});});
     renderizarGridPublicaciones(globalPublicacionesCache);
   });
 }
@@ -490,35 +451,32 @@ function renderizarGridPublicaciones(ps, filtro=""){
   ps.forEach(p=>{
     const titulo = (p.titulo || '').toLowerCase();
     const juego = (p.juego || '').toLowerCase();
-    const region = (p.region || '').toLowerCase();
-    if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
+    if(filtro && !titulo.includes(filtro) && !juego.includes(filtro)) return;
     
     const esVipPub = p.esVip || false;
-    const cardClass = esVipPub ? "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
-    const badgeVip = esVipPub ? `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Elite</span>` : '';
+    const cardClass = esVipPub ? "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3";
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs"></i>`;
+    const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') || p.vendedorLogo.startsWith('data:image') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs"></i>`;
 
     h+=`<div class="${cardClass}">
       <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
-      <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> ${badgeVip}</div>
-      <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')"><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Stock: ${p.stock || 1}</span></div>
-      <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
-        <div onclick="abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
+      <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4> ${esVipPub ? '<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2 py-0.5 rounded">VIP</span>' : ''}</div>
+      <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')"><span>Stock: ${p.stock || 1}</span><span>Nivel: ${p.nivel || 'N/A'}</span></div>
+      <div class="flex items-center justify-between pt-1 border-t border-zinc-800">
+        <div onclick="abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer">
           <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
-          <span class="text-[11px] font-bold text-zinc-300 hover:text-yellow-400">${p.vendedorNombre || 'Vendedor'}</span>
+          <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre || 'Vendedor'}</span>
         </div>
-        <span class="text-yellow-400 font-extrabold text-xs" onclick="abrirModalPub('${p.id}')">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span>
+        <span class="text-yellow-400 font-extrabold text-xs" onclick="abrirModalPub('${p.id}')">$${parseInt(p.precio||0).toLocaleString('es-CL')}</span>
       </div>
     </div>`;
   });
-  g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles en el marketplace.</p>`;
+  g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles.</p>`;
 }
 
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
   pubActualObjeto = {id: d.id, ...p};
-  precioBasePublicacionActual = parseInt(p.precio) || 0;
   vendedorActualUidCache = p.vendedorUid;
   publicacionActualIdCache = id;
   stockMaximoModal = parseInt(p.stock) || 1;
@@ -527,34 +485,18 @@ async function abrirModalPub(id){
   document.getElementById('modal-stock-max').innerText = stockMaximoModal;
   
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
-  document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción detallada.';
-  document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor Verificado";
+  document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
+  document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor";
   
-  // OBTENER Y MOSTRAR FOTO REAL DEL VENDEDOR EN EL MODAL
   const vendedorDoc = await db.collection('perfiles').doc(p.vendedorUid).get();
   let vendedorLogoReal = p.vendedorLogo || "👑";
-  if(vendedorDoc.exists && vendedorDoc.data().logo){
-    vendedorLogoReal = vendedorDoc.data().logo;
-  }
+  if(vendedorDoc.exists && vendedorDoc.data().logo){vendedorLogoReal = vendedorDoc.data().logo;}
   const logoBox = document.getElementById('modal-vendedor-logo');
-  if(vendedorLogoReal.startsWith('http') || vendedorLogoReal.startsWith('data:image')){
-    logoBox.innerHTML = `<img src="${vendedorLogoReal}" class="w-full h-full object-cover">`;
-  }else{
-    logoBox.innerHTML = `<span class="text-lg">${vendedorLogoReal}</span>`;
-  }
+  logoBox.innerHTML = vendedorLogoReal.startsWith('http') || vendedorLogoReal.startsWith('data:image') ? `<img src="${vendedorLogoReal}" class="w-full h-full object-cover">` : `<span class="text-lg">${vendedorLogoReal}</span>`;
   
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
   if(p.foto){imgEl.src = p.foto;fotoBox.classList.remove('hidden');}else{fotoBox.classList.add('hidden');}
-
-  document.getElementById('modal-pub-tags').innerHTML = `
-    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-yellow-400">🎮 ${p.juego}</span>
-    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">⭐ Nivel: ${p.nivel || 'N/A'}</span>
-    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">📦 Stock: ${stockMaximoModal}</span>
-  `;
-
-  document.querySelectorAll('input[name="garantia"]')[0].checked = true;
-  actualizarPrecioTotalModal();
 
   document.getElementById('modal-pub-detalles').classList.remove('hidden');
   document.getElementById('modal-pub-detalles').classList.add('flex');
@@ -565,40 +507,30 @@ function cambiarCantidadModal(delta){
   if(nueva >= 1 && nueva <= stockMaximoModal){
     cantidadSeleccionadaModal = nueva;
     document.getElementById('modal-cantidad-val').innerText = cantidadSeleccionadaModal;
-    actualizarPrecioTotalModal();
   }
 }
 
-function actualizarPrecioTotalModal(){
-  const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
-  const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
-  const total = (precioBasePublicacionActual * cantidadSeleccionadaModal) + costoGarantia;
-  document.getElementById('modal-pub-precio-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
-}
-
-// AÑADIR AL CARRITO (EVITA DUPLICADOS DEL MISMO PRODUCTO)
 async function agregarAlCarritoDesdeModal(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('hidden');return;}
   const uid = auth.currentUser.uid;
   const itemRef = db.collection('carritos').doc(uid).collection('items').doc(pubActualObjeto.id);
   
   const docSnap = await itemRef.get();
-  if(docSnap.exists){
-    mostrarAlertaToast("Carrito", "Este producto ya se encuentra en tu carrito.");
-    return;
-  }
+  if(docSnap.exists){mostrarAlertaToast("Carrito", "Este producto ya está en tu carrito.");return;}
 
+  mostrarToast("🔄 Redireccionando al carrito...");
   await itemRef.set({
     publicacionId: pubActualObjeto.id,
     titulo: pubActualObjeto.titulo,
     precio: pubActualObjeto.precio,
     foto: pubActualObjeto.foto || "",
     cantidadSeleccionada: cantidadSeleccionadaModal,
+    stockMax: stockMaximoModal,
+    costoGarantia: 0,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  document.getElementById('modal-pub-detalles').classList.add('hidden');
-  mostrarToast("🛒 ¡Producto añadido al carrito con éxito!");
+  setTimeout(()=>{window.location.href="carrito.html";}, 800);
 }
 
 function abrirPerfilVendedorDesdeModal(){
@@ -607,7 +539,7 @@ function abrirPerfilVendedorDesdeModal(){
 }
 
 async function iniciarChatPrivadoVendedor(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('hidden');return;}
   if(auth.currentUser.uid === vendedorActualUidCache){mostrarAlertaToast("Aviso", "No puedes chatear contigo mismo.");return;}
 
   document.getElementById('modal-pub-detalles').classList.add('hidden');
@@ -633,7 +565,14 @@ async function abrirSalaChatActivo(chatId){
   chatActivoId = chatId;
   cambiarSeccion('chat-activo');
   const chatDoc = await db.collection('chats_p2p').doc(chatId).get();
-  if(chatDoc.exists){document.getElementById('chat-titulo-oferta').innerText = "Chat Privado: " + chatDoc.data().tituloOferta;}
+  if(chatDoc.exists){
+    const data = chatDoc.data();
+    document.getElementById('chat-titulo-oferta').innerText = "Oferta: " + data.tituloOferta;
+    const otroUid = data.compradorUid === auth.currentUser.uid ? data.vendedorUid : data.compradorUid;
+    const otroDoc = await db.collection('perfiles').doc(otroUid).get();
+    const otroNombre = otroDoc.exists ? (otroDoc.data().username || "Usuario") : "Gamer";
+    document.getElementById('chat-nombre-interlocutor').innerText = "@" + otroNombre;
+  }
 
   db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(snapshot => {
     let h = "";
@@ -641,7 +580,8 @@ async function abrirSalaChatActivo(chatId){
       const m = doc.data();
       const esMio = m.remitenteUid === auth.currentUser.uid;
       const align = esMio ? "text-right bg-yellow-500/10 border-yellow-500/30 ml-auto" : "text-left bg-zinc-900 border-zinc-800 mr-auto";
-      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align} space-y-1"><span class="block text-[9px] text-zinc-400 font-bold">${m.remitenteNombre}</span><p class="text-xs text-white">${m.texto}</p></div>`;
+      const fotoLog = m.remitenteLogo ? `<img src="${m.remitenteLogo}" class="w-4 h-4 rounded-full inline-block mr-1">` : '';
+      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align} space-y-1"><span class="block text-[9px] text-zinc-400 font-bold">${fotoLog}${m.remitenteNombre}</span><p class="text-xs text-white">${m.texto}</p></div>`;
     });
     const box = document.getElementById('chat-mensajes-box');
     box.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
@@ -655,9 +595,11 @@ async function enviarMensajeChatP2P(){
   await db.collection('chats_p2p').doc(chatActivoId).collection('mensajes').add({
     remitenteUid: auth.currentUser.uid,
     remitenteNombre: currentUserData.username || "Usuario",
+    remitenteLogo: currentUserData.logo || "",
     texto: txt,
     fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
+  await db.collection('chats_p2p').doc(chatActivoId).update({actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('chat-input-msg').value = "";
 }
 
@@ -672,15 +614,15 @@ async function cargarListaChatsUsuario(){
   q2.forEach(d => chatsMap.set(d.id, d.data()));
   let h = "";
   chatsMap.forEach((data, id) => {
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')"><div><h4 class="font-bold text-white text-xs">${data.tituloOferta}</h4><p class="text-[10px] text-zinc-400">Comprador: @${data.compradorNombre}</p></div><span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</span></div>`;
+    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')"><div><h4 class="font-bold text-white text-xs">${data.tituloOferta}</h4><p class="text-[10px] text-zinc-400">Canal activo</p></div><span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</span></div>`;
   });
-  listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
+  listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes mensajes recientes.</p>`;
 }
 
 async function abrirPerfilVendedorPorUid(uid){
   cambiarSeccion('perfil-vendedor');
   const pDoc = await db.collection('perfiles').doc(uid).get();
-  let nombre = "Vendedor VIP", logo = "👑";
+  let nombre = "Vendedor", logo = "👑";
   if(pDoc.exists){const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || "👑";}
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
   document.getElementById('vendedor-perfil-logo-box').innerHTML = logo.startsWith('http') || logo.startsWith('data:image') ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">${logo}</span>`;
@@ -689,7 +631,7 @@ async function abrirPerfilVendedorPorUid(uid){
   let h = "";
   globalPublicacionesCache.forEach(p => {
     if(p.vendedorUid === uid){
-      h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex justify-between items-center"><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span><span class="text-[9px] text-zinc-400">${p.juego}</span></div></div>`;
+      h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')}</span></div>`;
     }
   });
   grid.innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">Sin publicaciones.</p>`;
@@ -705,7 +647,7 @@ async function crearPublicacionMarketplace(){
   const stock = parseInt(document.getElementById('pub-stock').value) || 1;
   const descripcion = document.getElementById('pub-descripcion').value.trim();
 
-  if(!titulo || !precio || !nivel || !region || !descripcion){mostrarAlertaToast("Campos Incompletos", "Llena todos los campos.");return;}
+  if(!titulo || !precio || !nivel || !region || !descripcion){mostrarAlertaToast("Aviso", "Llena todos los campos.");return;}
 
   await db.collection('publicaciones').add({
     vendedorUid: auth.currentUser.uid,
@@ -715,7 +657,7 @@ async function crearPublicacionMarketplace(){
     foto: fotoBase64Seleccionada || "", esVip: true, fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  mostrarToast("🚀 ¡Cuenta publicada en vivo!");
+  mostrarToast("🚀 ¡Publicado!");
   cambiarSeccion('mercado');
 }
 
@@ -723,22 +665,12 @@ async function guardarPerfilConLimiteFoto(){
   if(!auth.currentUser)return;
   const mp = document.getElementById('user-metodo-pago').value.trim();
   let logoFinal = currentUserData.logo || "👑";
-  let cambios = currentUserData.cambiosFotoMes || 0;
-  
-  if(fotoPerfilBase64Seleccionada){
-    if(cambios >= 3){mostrarAlertaToast("Límite Alcanzado", "Solo puedes cambiar tu foto de vendedor 3 veces al mes.");return;}
-    logoFinal = fotoPerfilBase64Seleccionada;
-    cambios += 1;
-  }
+  if(fotoPerfilBase64Seleccionada){logoFinal = fotoPerfilBase64Seleccionada;}
 
-  await db.collection('perfiles').doc(auth.currentUser.uid).update({logo: logoFinal, metodoPago: mp, cambiosFotoMes: cambios});
+  await db.collection('perfiles').doc(auth.currentUser.uid).update({logo: logoFinal, metodoPago: mp});
   currentUserData.logo = logoFinal;
-  currentUserData.cambiosFotoMes = cambios;
-  mostrarToast("¡Perfil guardado con éxito!");
-
-  const perfilSec = document.getElementById('seccion-perfil');
-  perfilSec.classList.add('animate-fade-out');
-  setTimeout(()=>{perfilSec.classList.remove('animate-fade-out');cambiarSeccion('mercado');}, 400);
+  mostrarToast("¡Perfil guardado!");
+  cambiarSeccion('mercado');
 }
 
 function cerrarSesion(){auth.signOut().then(()=>{window.location.reload();})}
