@@ -12,23 +12,25 @@
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
   .web-panel{background:rgba(18,18,24,0.9);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   .vip-banner-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 35px rgba(234,179,8,0.25)}
+  .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
   .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
   .radio-warranty{accent-color:#eab308}
+  @keyframes vipGlow{0%,100%{box-shadow:0 0 15px rgba(234,179,8,0.3)}50%{box-shadow:0 0 30px rgba(234,179,8,0.6)}}
+  .vip-card-glow{animation:vipGlow 2s infinite ease-in-out;border:2px solid #eab308 !important}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<!-- MODAL DE ACCESO RESTRINGIDO -->
 <div id="modal-sesion-requerida" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[300] p-4">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/30 relative animate-page">
     <button onclick="document.getElementById('modal-sesion-requerida').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
     <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-lock"></i></div>
     <div class="space-y-1.5">
       <h3 class="text-lg font-bold font-heading text-white tracking-wide">Autenticación Requerida</h3>
-      <p class="text-xs text-zinc-400 leading-relaxed">Para publicar ofertas o realizar compras seguras con Escrow, debes iniciar sesión en tu cuenta.</p>
+      <p class="text-xs text-zinc-400 leading-relaxed">Para publicar ofertas o realizar compras seguras, debes iniciar sesión en tu cuenta.</p>
     </div>
     <div class="pt-2">
       <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar Sesión Ahora</a>
@@ -40,7 +42,6 @@
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
 
-<!-- HEADER CORPORATIVO -->
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="cambiarSeccion('inicio')">
@@ -50,12 +51,10 @@
     
     <div class="hidden md:flex flex-grow max-w-xl relative mx-4">
       <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Steam Key, Free Fire, Fortnite..." class="w-full bg-zinc-900/90 border border-zinc-800 focus:border-yellow-500 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none transition">
-      <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-xs"></i>
+      <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-yellow-400 text-xs"></i>
     </div>
 
     <div class="flex items-center space-x-3 shrink-0">
-      <div onclick="verificarLoginAccion(()=>cambiarSeccion('monedas'))" class="cursor-pointer flex items-center space-x-2 bg-yellow-500/10 border border-yellow-500/30 px-3.5 py-2 rounded-xl hover:bg-yellow-500/20 transition"><i class="fas fa-coins text-yellow-400 text-xs"></i><span id="nav-monedas-contador" class="text-xs font-bold text-yellow-400">0 Monedas</span></div>
-      
       <div id="auth-nav-area" class="flex items-center space-x-2">
         <a href="login.html" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login</a>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
@@ -67,19 +66,19 @@
       <div class="relative">
         <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition"><i class="fas fa-bars"></i></button>
         <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-60 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
-          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('publicar'))" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider shadow">
+          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarPublicarCuenta()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider shadow">
             <i class="fas fa-plus-square text-sm"></i> Vender Cuenta
           </button>
           <div class="border-t border-zinc-800 my-1"></div>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('perfil'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
             <i class="fas fa-user-circle text-yellow-400 text-sm w-4"></i> Mi Perfil Gamer
           </button>
+          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
+            <i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados
+          </button>
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); cambiarSeccion('owner');" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/20">
             <i class="fas fa-shield-alt text-sm w-4"></i> Panel Master
           </button>
-          <a href="https://wa.me/56950095612?text=Soporte" target="_blank" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-2.5">
-            <i class="fab fa-whatsapp text-sm w-4"></i> Soporte Oficial
-          </a>
         </div>
       </div>
     </div>
@@ -92,8 +91,20 @@
   <div class="web-panel rounded-2xl p-2.5 max-w-4xl mx-auto"><div class="flex items-center justify-center gap-3 overflow-x-auto hide-scrollbar">
     <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 hover:text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
     <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace</button>
-    <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP Creador</button>
+    <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP Vendedor</button>
   </div></div>
+
+  <!-- PANCARTA TRABAJA CON NOSOTROS -->
+  <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-4xl mx-auto shadow-xl">
+    <div class="space-y-2 text-center sm:text-left">
+      <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor Oficial</span>
+      <h3 class="text-xl md:text-2xl font-black font-heading text-white">¿Quieres trabajar con nosotros? ¿Quieres publicar en nuestra página web?</h3>
+      <p class="text-xs text-zinc-300">Postula hoy mismo rellenando nuestro formulario de verificación rápida.</p>
+    </div>
+    <a href="formulario.html" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase tracking-wider shadow-xl transition shrink-0 inline-flex items-center gap-2">
+      <i class="fas fa-arrow-right"></i> Click Aquí
+    </a>
+  </div>
 
   <div id="seccion-inicio" class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-6 text-center shadow-2xl max-w-4xl mx-auto w-full">
     <div class="max-w-2xl mx-auto space-y-4">
@@ -103,19 +114,18 @@
     </div>
   </div>
 
-  <!-- MARKETPLACE LISTADO DE CUENTAS -->
   <div id="seccion-mercado" class="hidden space-y-5 max-w-7xl mx-auto w-full animate-page">
     <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
       <div>
         <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
         <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
       </div>
-      <button onclick="verificarLoginAccion(()=>cambiarSeccion('publicar'))" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
+      <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
     </div>
     <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
   </div>
 
-  <!-- VISTA DE PERFIL DE VENDENDOR (ESTILO ELDORADO) -->
+  <!-- VISTA DE PERFIL DE VENDEDOR -->
   <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
     <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">← Volver al Marketplace</button>
     <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6">
@@ -124,16 +134,15 @@
         <div class="space-y-1 flex-grow">
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
             <h3 id="vendedor-perfil-nombre" class="text-xl font-black text-white">--</h3>
-            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i> Verificado</span>
+            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
           </div>
-          <p id="vendedor-perfil-stats" class="text-xs text-zinc-400"><i class="fas fa-thumbs-up text-emerald-400 mr-1"></i> 99.1% Positivo • 100% Confiable • Conectado</p>
+          <p class="text-xs text-zinc-400"><i class="fas fa-thumbs-up text-emerald-400 mr-1"></i> 99.1% Positivo • 100% Confiable</p>
         </div>
       </div>
 
-      <!-- PESTAÑAS DE VENDEDOR: TIENDA, RESEÑAS, INFORMACIÓN -->
       <div class="flex border-b border-zinc-800 gap-6 text-xs font-bold">
         <button onclick="cambiarTabPerfilVendedor('tienda')" id="tab-btn-tienda" class="pb-3 text-yellow-400 border-b-2 border-yellow-400 transition">Tienda de Cuentas</button>
-        <button onclick="cambiarTabPerfilVendedor('resenas')" id="tab-btn-resenas" class="pb-3 text-zinc-400 hover:text-white transition">Reseñas y Opiniones</button>
+        <button onclick="cambiarTabPerfilVendedor('resenas')" id="tab-btn-resenas" class="pb-3 text-zinc-400 hover:text-white transition">Reseñas y Opiniones Reales</button>
       </div>
 
       <div id="tab-content-tienda" class="space-y-4">
@@ -143,19 +152,39 @@
       <div id="tab-content-resenas" class="hidden space-y-3">
         <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-xs space-y-2">
           <div class="flex items-center justify-between"><b class="text-yellow-400">@GamerComprador99</b><span class="text-zinc-500 text-[10px]">Hace 2 días</span></div>
-          <p class="text-zinc-300">"Excelente vendedor, entrega inmediata de la cuenta de Free Fire con los datos limpios. 100% recomendado."</p>
-          <div class="text-amber-400 text-[10px]"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-        </div>
-        <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-xs space-y-2">
-          <div class="flex items-center justify-between"><b class="text-yellow-400">@ProPlayer_CL</b><span class="text-zinc-500 text-[10px]">Hace 1 semana</span></div>
-          <p class="text-zinc-300">"Todo perfecto y protegido con el sistema Escrow. Sin ningún problema."</p>
+          <p class="text-zinc-300">"Excelente vendedor, entrega inmediata de la cuenta con los datos limpios. 100% recomendado."</p>
           <div class="text-amber-400 text-[10px]"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PLAN VIP CREADOR -->
+  <!-- SECCIÓN MIS CHATS P2P PRIVADOS -->
+  <div id="seccion-mis-chats" class="hidden space-y-5 max-w-3xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page">
+    <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados con Compradores/Vendedores</h3>
+      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
+    </div>
+    <div id="lista-chats-usuario" class="space-y-3"></div>
+  </div>
+
+  <!-- SALA DE CHAT INDIVIDUAL P2P -->
+  <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page border border-yellow-500/30">
+    <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+      <div>
+        <h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Chat sobre oferta</h3>
+        <span class="text-[10px] text-emerald-400">🔒 Canal seguro y privado (Nadie más puede verlo)</span>
+      </div>
+      <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 hover:text-white underline">← Mis Chats</button>
+    </div>
+    <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800/80 text-xs"></div>
+    <div class="flex gap-2">
+      <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
+      <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
+    </div>
+  </div>
+
+  <!-- PLAN VIP VENDEDOR (RENOVADO: MARCO DORADO, LOGO VIP Y MÁXIMA VISIBILIDAD) -->
   <div id="seccion-vip" class="hidden space-y-4 max-w-3xl mx-auto animate-page">
     <div class="vip-banner-box rounded-3xl p-8 md:p-10 space-y-6 text-center relative overflow-hidden">
       <div class="absolute -top-12 -right-12 w-48 h-48 bg-yellow-500/15 rounded-full blur-3xl pointer-events-none"></div>
@@ -163,41 +192,24 @@
         <i class="fas fa-crown"></i>
       </div>
 
-      <div id="vip-card-no-activo" class="space-y-6">
-        <div class="space-y-2">
-          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Membresía Anti-Estafas Creador</span>
-          <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">PLAN VIP VENDEDOR - $2.990 CLP</h3>
-          <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Paga tu membresía para publicar con total confianza. Los estafadores no pagan planes; esta membresía garantiza que eres un vendedor verificado y serio.</p>
-        </div>
-
-        <div class="bg-zinc-950/90 border border-yellow-500/30 p-5 rounded-2xl text-left space-y-3 max-w-lg mx-auto text-xs md:text-sm text-zinc-200">
-          <div class="flex items-center gap-3"><i class="fas fa-shield-alt text-emerald-400 text-base w-5 text-center"></i> <span><b>Insignia de Vendedor Confiable y Verificado</b>.</span></div>
-          <div class="flex items-center gap-3"><i class="fas fa-fire text-yellow-400 text-base w-5 text-center"></i> <span><b>Borde estelar brillante</b> en tus publicaciones del marketplace.</span></div>
-          <div class="flex items-center gap-3"><i class="fas fa-layer-group text-yellow-400 text-base w-5 text-center"></i> <span><b>Publicaciones ilimitadas</b> sin restricciones al día.</span></div>
-          <div class="flex items-center gap-3"><i class="fas fa-coins text-yellow-400 text-base w-5 text-center"></i> <span><b>Doble recompensa diaria</b> (400 monedas cada 24h).</span></div>
-        </div>
-
-        <div class="pt-2">
-          <button onclick="manejarBotonPlanVip()" class="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-amber-400 hover:brightness-110 text-zinc-950 font-black px-10 py-4 rounded-2xl text-xs md:text-sm uppercase tracking-wider shadow-2xl transition transform hover:scale-105 inline-flex items-center justify-center gap-2">
-            <i class="fas fa-crown text-base"></i> Obtener Plan VIP / Vendedor ($2.990 CLP)
-          </button>
-        </div>
+      <div class="space-y-2">
+        <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Membresía Elite de Vendedor</span>
+        <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">PLAN VIP VENDEDOR - $2.990 CLP / MES</h3>
+        <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Destácate por encima de todos y multiplica tus ventas con funciones operativas exclusivas de alta conversión.</p>
       </div>
 
-      <div id="vip-card-activo" class="hidden space-y-6">
-        <div class="space-y-2">
-          <span class="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest"><i class="fas fa-check-circle mr-1"></i> Vendedor VIP Activo</span>
-          <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">¡YA OBTUVISTE TU PLAN VIP!</h3>
-          <p class="text-xs md:text-sm text-zinc-300 max-w-md mx-auto leading-relaxed">Tu cuenta cuenta con todos los privilegios estelares y el rango de creador verificado.</p>
-        </div>
-
-        <div class="bg-zinc-950 border-2 border-yellow-500/50 p-6 rounded-2xl max-w-md mx-auto space-y-3 text-center shadow-2xl">
-          <span class="block text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Tiempo Restante de tu Membresía (1 Mes)</span>
-          <div id="vip-countdown-timer" class="text-xl md:text-2xl font-black text-yellow-400 font-mono tracking-wider">Calculando...</div>
-          <p class="text-[11px] text-zinc-400">Tus ofertas muestran flama estelar en el marketplace.</p>
-        </div>
+      <div class="bg-zinc-950/90 border border-yellow-500/30 p-5 rounded-2xl text-left space-y-3 max-w-lg mx-auto text-xs md:text-sm text-zinc-200">
+        <div class="flex items-center gap-3"><i class="fas fa-fire text-yellow-400 text-base w-5 text-center"></i> <span><b>Marco y Borde Estelar Dorado Brillante</b> en tus tarjetas del marketplace.</span></div>
+        <div class="flex items-center gap-3"><i class="fas fa-crown text-yellow-400 text-base w-5 text-center"></i> <span><b>Insignia de Corona Dorada Oficial</b> junto a tu nombre en todas tus publicaciones y perfil.</span></div>
+        <div class="flex items-center gap-3"><i class="fas fa-bolt text-yellow-400 text-base w-5 text-center"></i> <span><b>Prioridad Máxima en el Buscador</b> (Tus cuentas aparecen siempre arriba).</span></div>
+        <div class="flex items-center gap-3"><i class="fas fa-shield-alt text-emerald-400 text-base w-5 text-center"></i> <span><b>Soporte VIP Humano 24/7</b> directo con administración Escrow.</span></div>
       </div>
 
+      <div class="pt-2">
+        <button onclick="manejarBotonPlanVip()" class="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-amber-400 hover:brightness-110 text-zinc-950 font-black px-10 py-4 rounded-2xl text-xs md:text-sm uppercase tracking-wider shadow-2xl transition transform hover:scale-105 inline-flex items-center justify-center gap-2">
+          <i class="fas fa-crown text-base"></i> Activar Plan VIP Vendedor ($2.990 CLP)
+        </button>
+      </div>
     </div>
   </div>
 
@@ -234,7 +246,6 @@
           <div id="pub-foto-preview-container" class="space-y-2">
             <i class="fas fa-cloud-upload-alt text-yellow-400 text-2xl"></i>
             <p class="text-xs font-semibold text-zinc-300" id="pub-foto-label">Toca para subir una foto o arrástrala aquí</p>
-            <p class="text-[10px] text-zinc-500">PNG, JPG hasta 5MB</p>
           </div>
         </div>
       </div>
@@ -243,18 +254,11 @@
     </div>
   </div>
 
-  <div id="seccion-monedas" class="hidden space-y-5 max-w-3xl mx-auto animate-page">
-    <div class="web-panel border border-yellow-500/40 rounded-3xl p-6 shadow-2xl space-y-4 flex items-center justify-between">
-      <div><h3 class="text-sm font-bold text-yellow-400 uppercase">Recompensa Diaria</h3><p class="text-xs text-zinc-400">Recoge tus monedas gratis cada 24h.</p></div>
-      <button onclick="reclamarMonedasDiariasReal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase shadow">🪙 Reclamar</button>
-    </div>
-  </div>
-
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
     <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3"><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer & Logo</h3>
     <div class="space-y-3 text-xs">
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre Usuario (@)</label><input type="text" id="user-username" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">URL de tu Logo (Ej: https://... o Emoji/Letras)</label><input type="text" id="user-logo" placeholder="Emoji o Link de imagen" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"></div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">URL de tu Logo o Emoji</label><input type="text" id="user-logo" placeholder="Emoji o Link de imagen" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
       <button onclick="guardarPerfilEstricto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow">Guardar Cambios</button>
     </div>
@@ -267,12 +271,11 @@
 </section>
 </main>
 
-<!-- MODAL DE DETALLES Y COMPRA DE CUENTA (CON FOTO CLARA Y GARANTÍA SUMABLE) -->
+<!-- MODAL DE DETALLES Y COMPRA (CON CHAT P2P INTERNO Y FOTO CLARA) -->
 <div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
   <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
     <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
     
-    <!-- FOTO CLARA Y GRANDE DE LA CUENTA -->
     <div id="modal-foto-preview-box" class="w-full h-52 bg-zinc-900 rounded-2xl overflow-hidden hidden flex items-center justify-center border border-zinc-800 shadow-xl"><img id="modal-pub-img" src="" class="w-full h-full object-cover"></div>
     
     <div class="space-y-1 border-b border-zinc-800 pb-3">
@@ -280,25 +283,24 @@
       <div class="flex flex-wrap gap-2 pt-1 text-[11px]" id="modal-pub-tags"></div>
     </div>
 
-    <!-- TARJETA DEL VENDEDOR (CLICKEABLE PARA VER SU PERFIL Y RESEÑAS) -->
-    <div onclick="abrirPerfilVendedorDesdeModal()" class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/50 transition">
-      <div class="flex items-center gap-3">
+    <!-- TARJETA DEL VENDEDOR Y BOTÓN CHATEAR INTERNO PRIVADO -->
+    <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="abrirPerfilVendedorDesdeModal()">
         <div id="modal-vendedor-logo" class="w-10 h-10 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden"><i class="fas fa-user"></i></div>
         <div>
           <span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor VIP</span>
-          <span class="text-[10px] text-emerald-400"><i class="fas fa-thumbs-up mr-1"></i> 99.1% (11,406 reseñas)</span>
+          <span class="text-[10px] text-emerald-400"><i class="fas fa-thumbs-up mr-1"></i> Verificado (Ver Tienda)</span>
         </div>
       </div>
-      <span class="text-xs text-yellow-400 font-bold underline">Ver Tienda →</span>
+      <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5 transition">
+        <i class="fas fa-comment-dots"></i> Chatear con el vendedor
+      </button>
     </div>
 
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
 
-    <!-- OPCIONES DE GARANTÍA -->
     <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
       <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Amplía tu garantía Escrow</span></div>
-      <p class="text-[11px] text-zinc-400">Recupera tu dinero si te banean o pierdes el acceso.</p>
-      
       <div class="space-y-2 text-xs">
         <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer hover:border-yellow-500/50 transition">
           <div class="flex items-center gap-2.5"><input type="radio" name="garantia" value="0" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días de garantía</span></div>
@@ -325,7 +327,7 @@
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,countdownTimerInterval=null,fotoBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="";
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
@@ -355,12 +357,27 @@ function verificarLoginAccion(callback){
   callback();
 }
 
+function verificarPublicarCuenta(){
+  if(!auth.currentUser){
+    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
+    document.getElementById('modal-sesion-requerida').classList.add('flex');
+    return;
+  }
+  if(!currentUserData.postuladoFormulario){
+    mostrarAlertaToast("Aviso Requerido", "Debes rellenar el formulario de vendedor para ver si eres apto.");
+    setTimeout(()=>{ window.location.href = "formulario.html"; }, 1500);
+    return;
+  }
+  cambiarSeccion('publicar');
+}
+
 function cambiarSeccion(s){
   if(s==='owner'&&(!auth.currentUser||auth.currentUser.uid!==OWNER_UID)){mostrarAlertaToast("Acceso Denegado","Solo el dueño.");return;}
-  ['inicio','mercado','vip','publicar','monedas','perfil','perfil-vendedor','owner'].forEach(x=>{
+  ['inicio','mercado','vip','publicar','perfil','perfil-vendedor','mis-chats','chat-activo','owner'].forEach(x=>{
     const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');
   });
   const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
+  if(s === 'mis-chats') cargarListaChatsUsuario();
 }
 
 function ejecutarBusquedaEnVivo(v){
@@ -378,7 +395,7 @@ auth.onAuthStateChanged(async(u)=>{
   if(u){
     const r=db.collection('perfiles').doc(u.uid);let d=await r.get();
     if(!d.exists){
-      currentUserData={uid:u.uid,gamerId:"SK-"+Math.floor(10000+Math.random()*90000),username:"Gamer",logo:"👑",monedasSiilck:200,esVendedorVip:false,vipExpira:null};
+      currentUserData={uid:u.uid,username:"Gamer",logo:"👑",esVendedorVip:false,postuladoFormulario:false};
       await r.set(currentUserData);
     }else{currentUserData=d.data();}
     
@@ -386,7 +403,6 @@ auth.onAuthStateChanged(async(u)=>{
     document.getElementById('nav-user-logged-box').classList.remove('hidden');
     document.getElementById('nav-user-logged-box').classList.add('flex');
     document.getElementById('nav-user-email').innerText=currentUserData.username||"Gamer";
-    document.getElementById('nav-monedas-contador').innerText=`${currentUserData.monedasSiilck||0} Monedas`;
     
     document.getElementById('user-username').value = currentUserData.username || "";
     document.getElementById('user-logo').value = currentUserData.logo || "";
@@ -396,13 +412,12 @@ auth.onAuthStateChanged(async(u)=>{
       document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');
     }
 
-    verificarEstadoVipUI(currentUserData);
-    cargarPublicaciones();
+    cargarPublicacionesEnVivo();
   }else{
     currentUserData=null;
     document.getElementById('nav-btn-ir-login').classList.remove('hidden');
     document.getElementById('nav-user-logged-box').classList.add('hidden');
-    cargarPublicaciones();
+    cargarPublicacionesEnVivo();
   }
 });
 
@@ -423,73 +438,17 @@ async function manejarBotonPlanVip(){
     document.getElementById('modal-sesion-requerida').classList.add('flex');
     return;
   }
-
-  if(auth.currentUser.uid === OWNER_UID){
-    const unMesDespues = new Date();
-    unMesDespues.setMonth(unMesDespues.getMonth() + 1);
-
-    await db.collection('perfiles').doc(auth.currentUser.uid).update({
-      esVendedorVip: true,
-      vipExpira: firebase.firestore.Timestamp.fromDate(unMesDespues)
-    });
-    currentUserData.esVendedorVip = true;
-    currentUserData.vipExpira = firebase.firestore.Timestamp.fromDate(unMesDespues);
-    verificarEstadoVipUI(currentUserData);
-    mostrarToast("👑 ¡Plan VIP de Dueño Activado Gratis por 1 Mes!");
-    return;
-  }
-
   window.open("https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c", "_blank");
 }
 
-function verificarEstadoVipUI(data){
-  const noActivo = document.getElementById('vip-card-no-activo');
-  const activo = document.getElementById('vip-card-activo');
-  
-  const ahora = new Date().getTime();
-  const expira = data.vipExpira ? data.vipExpira.toDate().getTime() : 0;
-  const esVipVigente = data.esVendedorVip && expira > ahora;
-
-  if(esVipVigente){
-    noActivo.classList.add('hidden');
-    activo.classList.remove('hidden');
-    iniciarCuentaRegresivaVip(expira);
-  }else{
-    activo.classList.add('hidden');
-    noActivo.classList.remove('hidden');
-    if(countdownTimerInterval) clearInterval(countdownTimerInterval);
-  }
-}
-
-function iniciarCuentaRegresivaVip(expiraTimestamp){
-  if(countdownTimerInterval) clearInterval(countdownTimerInterval);
-  const timerEl = document.getElementById('vip-countdown-timer');
-  
-  countdownTimerInterval = setInterval(()=>{
-    const ahora = new Date().getTime();
-    const distancia = expiraTimestamp - ahora;
-    
-    if(distancia <= 0){
-      clearInterval(countdownTimerInterval);
-      timerEl.innerText = "Membresía Expirada";
-      return;
-    }
-
-    const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-    const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-
-    timerEl.innerText = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
-  }, 1000);
-}
-
-async function cargarPublicaciones(){
-  try{
-    const s=await db.collection('publicaciones').get();globalPublicacionesCache=[];
-    s.forEach(d=>{globalPublicacionesCache.push({id:d.id,...d.data()})});
+function cargarPublicacionesEnVivo(){
+  db.collection('publicaciones').orderBy('fecha', 'desc').onSnapshot(snapshot => {
+    globalPublicacionesCache = [];
+    snapshot.forEach(doc => {
+      globalPublicacionesCache.push({id: doc.id, ...doc.data()});
+    });
     renderizarGridPublicaciones(globalPublicacionesCache);
-  }catch(e){}
+  });
 }
 
 function renderizarGridPublicaciones(ps, filtro=""){
@@ -501,11 +460,11 @@ function renderizarGridPublicaciones(ps, filtro=""){
     if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
     
     const esVipPub = p.esVip || false;
-    const cardClass = esVipPub ? "web-panel border-2 border-yellow-400 rounded-2xl cursor-pointer p-4 space-y-3 shadow-xl relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
+    const cardClass = esVipPub ? "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
     const badgeVip = esVipPub ? `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Elite</span>` : '';
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
     
-    const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs">`;
+    const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs"></i>`;
 
     h+=`<div class="${cardClass}">
       <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
@@ -523,17 +482,18 @@ function renderizarGridPublicaciones(ps, filtro=""){
       </div>
     </div>`;
   });
-  g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles que coincidan con la búsqueda.</p>`;
+  g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles en el marketplace.</p>`;
 }
 
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
   precioBasePublicacionActual = parseInt(p.precio) || 0;
   vendedorActualUidCache = p.vendedorUid;
+  publicacionActualIdCache = id;
   
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción detallada.';
-  document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor VIP";
+  document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor Verificado";
   
   const logoBox = document.getElementById('modal-vendedor-logo');
   if(p.vendedorLogo){
@@ -577,6 +537,111 @@ function abrirPerfilVendedorDesdeModal(){
   abrirPerfilVendedorPorUid(vendedorActualUidCache);
 }
 
+// INICIAR O ABRIR CHAT P2P PRIVADO INTERNO
+async function iniciarChatPrivadoVendedor(){
+  if(!auth.currentUser){
+    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
+    document.getElementById('modal-sesion-requerida').classList.add('flex');
+    return;
+  }
+  if(auth.currentUser.uid === vendedorActualUidCache){
+    mostrarAlertaToast("Aviso", "No puedes iniciar un chat contigo mismo.");
+    return;
+  }
+
+  document.getElementById('modal-pub-detalles').classList.add('hidden');
+
+  // Buscar si ya existe chat para esta publicacion y comprador
+  const chatsRef = db.collection('chats_p2p');
+  const q = await chatsRef.where('publicacionId', '==', publicacionActualIdCache)
+                          .where('compradorUid', '==', auth.currentUser.uid).get();
+
+  if(!q.empty){
+    chatActivoId = q.docs[0].id;
+  }else{
+    const nuevoChat = await chatsRef.add({
+      publicacionId: publicacionActualIdCache,
+      compradorUid: auth.currentUser.uid,
+      compradorNombre: currentUserData.username || "Comprador",
+      vendedorUid: vendedorActualUidCache,
+      tituloOferta: document.getElementById('modal-pub-titulo').innerText,
+      actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    chatActivoId = nuevoChat.id;
+  }
+
+  abrirSalaChatActivo(chatActivoId);
+}
+
+async function abrirSalaChatActivo(chatId){
+  chatActivoId = chatId;
+  cambiarSeccion('chat-activo');
+  const chatDoc = await db.collection('chats_p2p').doc(chatId).get();
+  if(chatDoc.exists){
+    document.getElementById('chat-titulo-oferta').innerText = "Chat Privado: " + chatDoc.data().tituloOferta;
+  }
+
+  db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(snapshot => {
+    let h = "";
+    snapshot.forEach(doc => {
+      const m = doc.data();
+      const esMio = m.remitenteUid === auth.currentUser.uid;
+      const align = esMio ? "text-right bg-yellow-500/10 border-yellow-500/30 ml-auto" : "text-left bg-zinc-900 border-zinc-800 mr-auto";
+      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align} space-y-1">
+        <span class="block text-[9px] text-zinc-400 font-bold">${m.remitenteNombre}</span>
+        <p class="text-xs text-white">${m.texto}</p>
+      </div>`;
+    });
+    const box = document.getElementById('chat-mensajes-box');
+    box.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación privada sobre esta cuenta.</p>`;
+    box.scrollTop = box.scrollHeight;
+  });
+}
+
+async function enviarMensajeChatP2P(){
+  const txt = document.getElementById('chat-input-msg').value.trim();
+  if(!txt || !chatActivoId) return;
+
+  await db.collection('chats_p2p').doc(chatActivoId).collection('mensajes').add({
+    remitenteUid: auth.currentUser.uid,
+    remitenteNombre: currentUserData.username || "Usuario",
+    texto: txt,
+    fecha: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  await db.collection('chats_p2p').doc(chatActivoId).update({
+    actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  document.getElementById('chat-input-msg').value = "";
+}
+
+async function cargarListaChatsUsuario(){
+  if(!auth.currentUser) return;
+  const uid = auth.currentUser.uid;
+  const listEl = document.getElementById('lista-chats-usuario');
+  
+  const q1 = db.collection('chats_p2p').where('compradorUid', '==', uid).get();
+  const q2 = db.collection('chats_p2p').where('vendedorUid', '==', uid).get();
+  const [s1, s2] = await Promise.all([q1, q2]);
+
+  let chatsMap = new Map();
+  s1.forEach(d => chatsMap.set(d.id, d.data()));
+  s2.forEach(d => chatsMap.set(d.id, d.data()));
+
+  let h = "";
+  chatsMap.forEach((data, id) => {
+    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')">
+      <div>
+        <h4 class="font-bold text-white text-xs">${data.tituloOferta}</h4>
+        <p class="text-[10px] text-zinc-400">Comprador: @${data.compradorNombre}</p>
+      </div>
+      <span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat Privado</span>
+    </div>`;
+  });
+  listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
+}
+
 async function abrirPerfilVendedorPorUid(uid){
   cambiarSeccion('perfil-vendedor');
   const pDoc = await db.collection('perfiles').doc(uid).get();
@@ -591,7 +656,6 @@ async function abrirPerfilVendedorPorUid(uid){
   const logoPerfilBox = document.getElementById('vendedor-perfil-logo-box');
   logoPerfilBox.innerHTML = logo.startsWith('http') ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">${logo}</span>`;
 
-  // Filtrar publicaciones de este vendedor
   const grid = document.getElementById('vendedor-tienda-grid');
   let h = "";
   globalPublicacionesCache.forEach(p => {
@@ -626,12 +690,7 @@ function cambiarTabPerfilVendedor(tab){
 }
 
 async function crearPublicacionMarketplace(){
-  if(!auth.currentUser){
-    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
-    document.getElementById('modal-sesion-requerida').classList.add('flex');
-    return;
-  }
-
+  if(!auth.currentUser)return;
   const titulo = document.getElementById('pub-titulo').value.trim();
   const juego = document.getElementById('pub-juego').value;
   const precio = parseInt(document.getElementById('pub-precio').value);
@@ -645,6 +704,7 @@ async function crearPublicacionMarketplace(){
     return;
   }
 
+  // Verificar si es VIP vigente para aplicarle el marco estelar y corona
   const ahora = new Date().getTime();
   const expira = currentUserData.vipExpira ? currentUserData.vipExpira.toDate().getTime() : 0;
   const esVipActivo = currentUserData.esVendedorVip && expira > ahora;
@@ -665,26 +725,20 @@ async function crearPublicacionMarketplace(){
     fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  mostrarToast("🚀 ¡Cuenta publicada con éxito en el Marketplace!");
+  mostrarToast("🚀 ¡Cuenta publicada con éxito en vivo!");
   cambiarSeccion('mercado');
-  cargarPublicaciones();
 }
 
 async function guardarPerfilEstricto(){
   if(!auth.currentUser)return;
-  const un=document.getElementById('user-username').value.trim();
   const logo=document.getElementById('user-logo').value.trim();
   const mp=document.getElementById('user-metodo-pago').value.trim();
-  if(!un)return;
 
-  await db.collection('perfiles').doc(auth.currentUser.uid).update({username:un, logo:logo, metodoPago:mp});
-  currentUserData.username=un;
+  await db.collection('perfiles').doc(auth.currentUser.uid).update({logo: logo, metodoPago: mp});
   currentUserData.logo=logo;
-  document.getElementById('nav-user-email').innerText=un;
-  mostrarToast("¡Perfil y Logo guardados con éxito!");
+  mostrarToast("¡Logo y perfil guardados con éxito!");
 }
 
-function reclamarMonedasDiariasReal(){mostrarToast("🪙 ¡Monedas reclamadas con éxito!");}
 function cerrarSesion(){auth.signOut().then(()=>{window.location.reload();})}
 </script>
 </body>
