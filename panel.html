@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel Master - Mantenimiento & Control</title>
+<script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
+  body{background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  h1,h2,h3,h4{font-family:'Outfit',sans-serif}
+  .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+</style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+
+<div class="max-w-4xl w-full space-y-6">
+  <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black shadow-lg"><i class="fas fa-shield-alt"></i></div>
+      <div>
+        <h2 class="text-lg font-black text-white">Panel Master Exclusivo</h2>
+        <p class="text-xs text-zinc-400">Control absoluto y sincronización en tiempo real</p>
+      </div>
+    </div>
+    <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver a la Web</a>
+  </div>
+
+  <!-- CONTROL DE TEMÁTICAS VISUALES Y MANTENIMIENTO -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+      <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-palette mr-1.5"></i> Temáticas de Temporada & Fondo</h3>
+      <div class="grid grid-cols-2 gap-2.5 text-xs">
+        <button onclick="cambiarTematicaGlobal('default')" class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold transition">🌌 Normal / Espacio</button>
+        <button onclick="cambiarTematicaGlobal('halloween')" class="p-3 rounded-xl bg-zinc-900 border border-orange-500/40 hover:border-orange-500 text-orange-400 font-bold transition">🎃 Halloween</button>
+        <button onclick="cambiarTematicaGlobal('navidad')" class="p-3 rounded-xl bg-zinc-900 border border-rose-500/40 hover:border-rose-500 text-rose-400 font-bold transition">🎄 Navidad</button>
+        <button onclick="cambiarTematicaGlobal('verano')" class="p-3 rounded-xl bg-zinc-900 border border-cyan-500/40 hover:border-cyan-500 text-cyan-400 font-bold transition">☀️ Verano / Neón</button>
+        <button onclick="cambiarTematicaGlobal('noche')" class="col-span-2 p-3 rounded-xl bg-zinc-900 border border-indigo-500/40 hover:border-indigo-500 text-indigo-400 font-bold transition">🌙 Modo Noche Profundo</button>
+      </div>
+    </div>
+
+    <div class="web-panel rounded-3xl p-6 space-y-4 border border-rose-500/30">
+      <h3 class="text-xs font-bold text-rose-400 uppercase"><i class="fas fa-tools mr-1.5"></i> Modo Mantenimiento Global</h3>
+      <p class="text-xs text-zinc-400">Al activar el mantenimiento, ningún usuario podrá operar hasta que lo desactives.</p>
+      
+      <div class="flex gap-2">
+        <button onclick="toggleModoMantenimiento(true)" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase text-xs shadow transition">Activar Mantenimiento</button>
+        <button onclick="toggleModoMantenimiento(false)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-black py-3 rounded-xl uppercase text-xs shadow transition">Desactivar</button>
+      </div>
+      <button onclick="enviarAvisoMantenimientoBreve()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase shadow transition">📢 Enviar Aviso: "Mantenimiento en Breve"</button>
+    </div>
+  </div>
+
+  <!-- CONTROL DE USUARIOS (BLOQUEO POR ID INDEPENDIENTE) -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-users mr-1.5"></i> Gestión de Usuarios & IDs Independientes</h3>
+    <div id="admin-usuarios-list" class="space-y-2 text-xs"><p class="text-zinc-500">Cargando usuarios registrados...</p></div>
+  </div>
+
+  <!-- REPORTES DE USUARIOS -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-flag mr-1.5"></i> Reportes Recibidos de Usuarios</h3>
+    <div id="admin-reportes-list" class="space-y-2 text-xs"><p class="text-zinc-500">Sin reportes activos.</p></div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(),db=firebase.firestore();
+const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
+
+auth.onAuthStateChanged(async(u)=>{
+  if(!u || u.uid !== OWNER_UID){
+    alert("Acceso exclusivo para el dueño.");
+    window.location.href="index.html";
+    return;
+  }
+  cargarPanelControl();
+});
+
+async function cambiarTematicaGlobal(tema){
+  await db.collection('configuracion').doc('global').set({tematica: tema}, {merge: true});
+  alert("✅ Temática aplicada en tiempo real: " + tema.toUpperCase());
+}
+
+async function toggleModoMantenimiento(estado){
+  await db.collection('configuracion').doc('global').set({mantenimientoActivo: estado}, {merge: true});
+  alert(estado ? "🛠️ Mantenimiento activado y persistente." : "⚡ Mantenimiento desactivado.");
+}
+
+async function enviarAvisoMantenimientoBreve(){
+  await db.collection('configuracion').doc('global').set({avisoMantenimiento: "¡Atención! Entraremos en mantenimiento en breve."}, {merge: true});
+  alert("📢 Aviso de mantenimiento enviado a todos los usuarios en vivo.");
+}
+
+async function cargarPanelControl(){
+  // Cargar usuarios
+  db.collection('perfiles').onSnapshot(snapshot => {
+    let h = "";
+    snapshot.forEach(doc => {
+      const u = doc.data();
+      const bloqueado = u.bloqueado ? `<span class="text-rose-400 font-bold">Bloqueado 🚫</span>` : `<span class="text-emerald-400">Activo ✅</span>`;
+      const btnAccion = u.bloqueado ? `<button onclick="toggleBloqueoUser('${doc.id}', false)" class="bg-emerald-600 text-white px-3 py-1 rounded-lg">Desbloquear</button>` : `<button onclick="toggleBloqueoUser('${doc.id}', true)" class="bg-rose-600 text-white px-3 py-1 rounded-lg">Bloquear</button>`;
+      
+      h += `<div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div>
+          <b class="text-white">@${u.username || 'Gamer'}</b> 
+          <span class="text-[10px] text-zinc-400 block font-mono">ID Independiente: ${u.uid}</span>
+        </div>
+        <div class="flex items-center gap-3">
+          ${bloqueado}
+          ${u.uid !== OWNER_UID ? btnAccion : ''}
+        </div>
+      </div>`;
+    });
+    document.getElementById('admin-usuarios-list').innerHTML = h || '<p class="text-zinc-500">No hay usuarios.</p>';
+  });
+
+  // Cargar reportes
+  db.collection('reportes').onSnapshot(snapshot => {
+    let h = "";
+    snapshot.forEach(doc => {
+      const r = doc.data();
+      h += `<div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 text-xs">
+        <b class="text-yellow-400">Reporte de @${r.autor || 'Usuario'}:</b> ${r.motivo}
+      </div>`;
+    });
+    document.getElementById('admin-reportes-list').innerHTML = h || '<p class="text-zinc-500">No hay reportes.</p>';
+  });
+}
+
+async function toggleBloqueoUser(uid, estado){
+  await db.collection('perfiles').doc(uid).update({bloqueado: estado});
+  alert(estado ? "Usuario bloqueado con éxito." : "Usuario desbloqueado.");
+}
+</script>
+</body>
+</html>
