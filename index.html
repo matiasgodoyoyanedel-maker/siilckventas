@@ -59,9 +59,97 @@
         .draggable-widget:active {
             cursor: grabbing;
         }
+        /* ANIMACIONES MANTENIMIENTO SIILCK */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); border-color: rgba(245, 158, 11, 0.6); }
+            50% { box-shadow: 0 0 50px rgba(239, 68, 68, 0.6); border-color: rgba(239, 68, 68, 0.8); }
+        }
+        .maint-pulse-box { animation: pulseGlow 3s infinite ease-in-out; }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+        }
+        .maint-float-icon { animation: floatIcon 3.5s ease-in-out infinite; }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col selection:bg-amber-500 selection:text-gray-950">
+
+
+    <!-- MODAL MANTENIMIENTO GLOBAL OBLIGATORIO PARA USUARIOS -->
+    <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[300] p-4 animate-page backdrop-blur-md">
+        <div class="glass-panel max-w-lg w-full p-8 rounded-3xl space-y-6 text-center shadow-2xl animate-page maint-pulse-box relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
+            <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-amber-500 via-orange-500 to-red-500 text-gray-950 flex items-center justify-center text-5xl mx-auto shadow-2xl shadow-amber-500/30 maint-float-icon border border-yellow-300/40">
+                <i class="fas fa-tools"></i>
+            </div>
+            <div class="space-y-2">
+                <span class="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-black uppercase px-3.5 py-1 rounded-full tracking-widest">
+                    ⚠️ MANTENIMIENTO EN PROGRESO
+                </span>
+                <h3 class="text-2xl font-black text-white tracking-wider uppercase">MODO MANTENIMIENTO</h3>
+                <p id="mantenimiento-global-desc" class="text-xs text-gray-300 leading-relaxed bg-[#030712]/90 p-4 rounded-2xl border border-amber-500/30 font-medium">
+                    Estamos optimizando el sistema para brindarte una mejor experiencia con total seguridad Escrow. Volveremos muy pronto.
+                </p>
+            </div>
+            <div class="pt-2">
+                <div class="flex items-center justify-center space-x-2 text-xs font-bold text-amber-400 bg-amber-500/10 py-3 rounded-xl border border-amber-500/20">
+                    <i class="fas fa-shield-alt animate-spin text-amber-400"></i>
+                    <span>Sistemas SiilckVentas en actualización estelar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PANEL CONFIGURACIÓN MANTENIMIENTO (EXCLUSIVO DUEÑO) -->
+    <div id="modal-panel-mantenimiento-owner" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-[250] p-4 animate-page">
+        <div class="glass-panel max-w-md w-full p-7 rounded-3xl border border-amber-500/50 space-y-5 shadow-2xl gold-glow animate-page">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-bold border border-amber-500/30">
+                        <i class="fas fa-screwdriver-wrench"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-black text-amber-400 uppercase tracking-wider">Gestión de Mantenimiento</h3>
+                        <p class="text-[9px] text-gray-400 font-bold">Panel Exclusivo del Dueño</p>
+                    </div>
+                </div>
+                <button onclick="cerrarModalMantenimientoOwner()" class="text-gray-400 hover:text-white text-sm"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <!-- INTERRUPTOR ON / OFF -->
+                <div class="bg-[#0f172a] p-4 rounded-2xl border border-amber-500/30 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-white uppercase text-xs flex items-center gap-2">
+                            <i class="fas fa-power-off text-amber-400"></i> Modo Mantenimiento
+                        </span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="mantenimiento-toggle-checkbox" onchange="alternarEstadoMantenimientoOwner(this.checked)" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                        </label>
+                    </div>
+                    <p class="text-[10px] text-gray-400">Al activar, bloqueará la pantalla de todos los usuarios mostrando tu mensaje personalizado.</p>
+                </div>
+
+                <!-- DESCRIPCIÓN PERSONALIZADA -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] uppercase font-bold text-amber-400">Descripción / Mensaje para Usuarios</label>
+                    <textarea id="mantenimiento-desc-input" rows="3" placeholder="Escribe el motivo del mantenimiento..." class="w-full bg-[#030712] border border-gray-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"></textarea>
+                    <button onclick="guardarDescripcionMantenimientoOwner()" class="w-full bg-amber-500 hover:bg-amber-400 text-gray-950 font-black py-2.5 rounded-xl text-xs uppercase tracking-wider transition shadow">
+                        <i class="fas fa-save mr-1"></i> Guardar Descripción
+                    </button>
+                </div>
+
+                <div class="border-t border-gray-800 pt-3">
+                    <button onclick="enviarAvisoMantenimiento30Min()" class="w-full bg-gradient-to-r from-red-600 to-amber-600 hover:brightness-110 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fas fa-bullhorn text-sm"></i> Enviar Aviso de 30 Minutos
+                    </button>
+                    <p class="text-[9px] text-gray-400 text-center mt-1.5 italic">"En 30 minutos se realizará mantenimiento preventivo para evitar estafas y fraudes"</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- CANVAS FONDO ESTELAR AVANZADO -->
     <canvas id="canvas-bg"></canvas>
@@ -300,6 +388,10 @@
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
                     <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-56 glass-panel border border-amber-500/30 rounded-2xl shadow-2xl p-2 z-50 space-y-1 animate-page">
+                        <button id="menu-btn-mantenimiento-owner" onclick="toggleMenuTresPuntos(); abrirModalMantenimientoOwner();" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-red-400 hover:bg-red-500/10 flex items-center gap-2 transition border border-red-500/20">
+                            <i class="fas fa-screwdriver-wrench text-red-400"></i> 🛠️ Mantenimiento
+                        </button>
+                    </div>
                         <button id="menu-btn-postulaciones-owner" onclick="toggleMenuTresPuntos(); abrirModalPostulacionesExclusivoOwner();" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-amber-400 hover:bg-amber-500/10 flex items-center gap-2 transition border border-amber-500/20">
                             <i class="fas fa-id-card-alt text-amber-400"></i> 📋 Ver Postulaciones
                         </button>
@@ -3247,6 +3339,94 @@
             document.getElementById('masiva-mensaje-input').value = '';
             mostrarToast("¡Notificación masiva enviada!");
         }
+        // --- SISTEMA DE MANTENIMIENTO GLOBAL EN VIVO ---
+        function escucharEstadoMantenimientoGlobal() {
+            db.collection('configuracion').doc('mantenimiento').onSnapshot(doc => {
+                const modalMaint = document.getElementById('modal-mantenimiento-global');
+                const checkbox = document.getElementById('mantenimiento-toggle-checkbox');
+                const descInput = document.getElementById('mantenimiento-desc-input');
+                const descGlobal = document.getElementById('mantenimiento-global-desc');
+
+                let activo = false;
+                let mensaje = "Estamos optimizando el sistema para brindarte una mejor experiencia con total seguridad Escrow. Volveremos muy pronto.";
+
+                if(doc.exists) {
+                    const data = doc.data();
+                    activo = data.activo || false;
+                    if(data.mensaje) mensaje = data.mensaje;
+                    if(checkbox) checkbox.checked = activo;
+                    if(descInput && document.activeElement !== descInput) descInput.value = mensaje;
+                }
+
+                if(descGlobal) descGlobal.innerText = mensaje;
+
+                const esDueño = auth.currentUser && auth.currentUser.uid === OWNER_UID;
+
+                if (activo && !esDueño) {
+                    modalMaint.classList.remove('hidden');
+                    modalMaint.classList.add('flex');
+                } else {
+                    modalMaint.classList.add('hidden');
+                    modalMaint.classList.remove('flex');
+                }
+            });
+        }
+
+        function abrirModalMantenimientoOwner() {
+            if(!auth.currentUser || auth.currentUser.uid !== OWNER_UID) return;
+            document.getElementById('modal-panel-mantenimiento-owner').classList.remove('hidden');
+            document.getElementById('modal-panel-mantenimiento-owner').classList.add('flex');
+        }
+
+        function cerrarModalMantenimientoOwner() {
+            document.getElementById('modal-panel-mantenimiento-owner').classList.add('hidden');
+            document.getElementById('modal-panel-mantenimiento-owner').classList.remove('flex');
+        }
+
+        async function alternarEstadoMantenimientoOwner(activo) {
+            if(!auth.currentUser || auth.currentUser.uid !== OWNER_UID) return;
+            try {
+                await db.collection('configuracion').doc('mantenimiento').set({
+                    activo: activo
+                }, { merge: true });
+                mostrarToast(activo ? "🛠️ Modo Mantenimiento ACTIVADO globalmente." : "✅ Modo Mantenimiento DESACTIVADO.");
+            } catch(e) {
+                mostrarAlertaToast("Error", e.message);
+            }
+        }
+
+        async function guardarDescripcionMantenimientoOwner() {
+            if(!auth.currentUser || auth.currentUser.uid !== OWNER_UID) return;
+            const desc = document.getElementById('mantenimiento-desc-input').value.trim();
+            if(!desc) { mostrarAlertaToast("Aviso", "Escribe una descripción."); return; }
+            try {
+                await db.collection('configuracion').doc('mantenimiento').set({
+                    mensaje: desc
+                }, { merge: true });
+                mostrarToast("💾 Descripción de mantenimiento guardada.");
+            } catch(e) {
+                mostrarAlertaToast("Error", e.message);
+            }
+        }
+
+        async function enviarAvisoMantenimiento30Min() {
+            if(!auth.currentUser || auth.currentUser.uid !== OWNER_UID) return;
+            const mensajeAviso = "En 30 minutos se realizará mantenimiento preventivo para evitar estafas y fraudes. Guarda tus operaciones.";
+            try {
+                await db.collection('notificaciones').add({
+                    paraUid: 'TODOS',
+                    titulo: '⚠️ Aviso Preventivo de Mantenimiento',
+                    mensaje: mensajeAviso,
+                    leido: false,
+                    fecha: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                mostrarToast("📢 Aviso de 30 minutos enviado a todos los usuarios.");
+            } catch(e) {
+                mostrarAlertaToast("Error", e.message);
+            }
+        }
+
+        escucharEstadoMantenimientoGlobal();
     </script>
 </body>
 </html>
