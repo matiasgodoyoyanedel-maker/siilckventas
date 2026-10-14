@@ -213,7 +213,20 @@
   <div class="max-w-7xl mx-auto px-4 pt-4 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-500 gap-2"><span>© 2026 SiilckVentas. Todos los derechos reservados.</span><span class="font-bold text-gray-400">Desarrollado por SiilckVentas & Pedalea app</span></div>
 </footer>
 <div id="modal-postulaciones-owner" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card max-w-2xl w-full p-6 rounded-3xl border border-amber-500/40 space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center border-b border-gray-800 pb-3"><h3 class="text-xs font-black text-amber-400 uppercase">Gestión de Postulaciones</h3><button onclick="cerrarModalPostulacionesExclusivoOwner()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div id="modal-owner-postulaciones-list" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs pr-1"><p class="text-gray-500 text-center py-4">Cargando...</p></div></div></div>
-<div id="modal-mi-estado-postulacion" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card max-w-md w-full p-6 rounded-3xl border border-amber-500/40 space-y-4 max-h-[85vh] overflow-y-auto"><div class="flex justify-between items-center border-b border-gray-800 pb-3"><h3 class="text-xs font-black text-amber-400 uppercase">Estado de mi Postulación</h3><button onclick="cerrarModalMiEstadoPostulacion()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div id="mi-estado-postulacion-contenido" class="space-y-2 text-xs text-gray-200"></div></div></div>
+<div id="modal-mi-estado-postulacion" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 animate-page">
+  <div class="web-card max-w-md w-full p-6 rounded-3xl border border-amber-500/40 space-y-5 max-h-[85vh] overflow-y-auto shadow-2xl animate-page">
+    <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold"><i class="fas fa-id-badge"></i></div>
+        <h3 class="text-xs font-black text-amber-400 uppercase tracking-wider">Estado de mi Postulación</h3>
+      </div>
+      <button onclick="cerrarModalMiEstadoPostulacion()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="mi-estado-postulacion-contenido" class="space-y-4 text-xs text-gray-200">
+      <p class="text-gray-500 text-center py-4">Cargando estado...</p>
+    </div>
+  </div>
+</div>
 <div id="modal-chat-vendedores-dueño" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card max-w-lg w-full p-6 rounded-3xl border border-emerald-500/40 space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center border-b border-gray-800 pb-3"><h3 class="text-xs font-black text-emerald-400 uppercase">Chat Directo Vendedores y Dueño</h3><button onclick="cerrarModalChatVendedoresDueño()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div id="chat-vendedores-mensajes" class="space-y-2 max-h-[45vh] overflow-y-auto text-xs pr-1 hide-scrollbar"></div><div class="flex gap-2 pt-2 border-t border-gray-800"><input type="text" id="chat-vendedores-input" placeholder="Escribe al dueño..." class="flex-grow bg-[#030712] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white"><button onclick="enviarMensajeChatVendedoresDueño()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Enviar</button></div></div></div>
 <div id="modal-detalle-chat-p2p" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card max-w-lg w-full p-6 rounded-3xl border border-emerald-500/40 space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center border-b border-gray-800 pb-3"><div class="space-y-0.5"><h3 id="p2p-chat-titulo-modal" class="text-xs font-black text-emerald-400 uppercase">Chat P2P</h3><p id="p2p-chat-participantes-modal" class="text-[9px] text-gray-300 font-bold">--</p></div><button onclick="cerrarModalDetalleChatP2P()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div id="p2p-mensajes-container" class="space-y-2 max-h-[45vh] overflow-y-auto text-xs pr-1 hide-scrollbar"></div><div class="flex gap-2 pt-2 border-t border-gray-800"><input type="text" id="p2p-input-mensaje" placeholder="Escribe tu mensaje..." class="flex-grow bg-[#030712] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white"><button onclick="enviarMensajeChatP2P()" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Enviar</button></div></div></div>
 <div id="modal-iniciar-chat-p2p" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card max-w-sm w-full p-6 rounded-3xl border border-emerald-500/40 space-y-4 shadow-2xl"><div class="flex justify-between items-center border-b border-gray-800 pb-3"><h3 class="text-xs font-black text-emerald-400 uppercase">Iniciar Conversación</h3><button onclick="cerrarModalIniciarChatP2P()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div class="space-y-3 text-xs"><div><label class="block text-[9px] uppercase font-bold text-gray-400 mb-1">ID Gamer Destinatario *</label><input type="text" id="p2p-nuevo-destinatario-id" placeholder="Ej: SK-48921" class="w-full bg-[#030712] border border-gray-800 rounded-xl px-3 py-2 text-white"></div><div><label class="block text-[9px] uppercase font-bold text-gray-400 mb-1">Asunto *</label><input type="text" id="p2p-nuevo-asunto" placeholder="Ej: Compra de Cuenta" class="w-full bg-[#030712] border border-gray-800 rounded-xl px-3 py-2 text-white"></div><button onclick="crearNuevoChatP2PReal()" class="w-full bg-emerald-600 text-white font-black py-2.5 rounded-xl">Abrir Chat</button></div></div></div>
@@ -221,7 +234,7 @@
 <div id="modal-perfil-publico" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card max-w-lg w-full p-6 rounded-3xl border border-amber-500/40 space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center border-b border-gray-800 pb-3"><h3 class="text-xs font-black text-amber-400 uppercase">Perfil Gamer & Reputación</h3><button onclick="cerrarPerfilPublico()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div class="flex flex-col sm:flex-row items-center gap-4 bg-[#0f172a] p-4 rounded-2xl border border-gray-800"><img id="pub-perfil-foto" src="https://via.placeholder.com/100" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500 shadow-xl"><div class="space-y-0.5 text-center sm:text-left flex-grow"><div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5"><h4 id="pub-perfil-username" class="text-sm font-black text-white">--</h4><div id="pub-perfil-badges" class="flex gap-1"></div></div><p id="pub-perfil-gamerid" class="text-xs text-amber-400 font-mono font-bold">--</p><p id="pub-perfil-estrellas-label" class="text-[11px] font-black text-yellow-400">⭐ 5.0</p><p id="pub-perfil-metodopago" class="text-[11px] text-emerald-400 font-bold">Método pago: --</p><div class="pt-2 flex items-center justify-center sm:justify-start gap-2"><button id="btn-follow-toggle" onclick="toggleSeguirUsuarioVisitado()" class="bg-amber-500 text-gray-950 font-extrabold px-4 py-1.5 rounded-xl text-xs"><i class="fas fa-user-plus"></i> <span id="btn-follow-label">Seguir</span></button><div class="text-[10px] text-gray-300"><span id="pub-seguidores-count" class="font-bold text-amber-400">0</span> Seg. | <span id="pub-seguidos-count" class="font-bold text-amber-400">0</span> Seg.</div></div><p id="pub-perfil-bio" class="text-xs text-gray-300 italic pt-1">Sin biografía.</p></div></div><div id="box-calificar-vendedor" class="bg-[#0f172a] border border-amber-500/30 p-3 rounded-2xl space-y-2"><h4 class="text-xs font-bold text-amber-400 uppercase">Calificar Vendedor</h4><div class="flex items-center gap-2"><select id="calificacion-estrellas-input" class="bg-[#030712] border border-gray-800 rounded-xl px-2 py-1.5 text-xs text-yellow-400 font-bold"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><input type="text" id="calificacion-comentario-input" placeholder="Reseña..." class="flex-grow bg-[#030712] border border-gray-800 rounded-xl px-3 py-1.5 text-xs text-white"><button onclick="enviarCalificacionVendedor()" class="bg-amber-500 text-gray-950 font-bold px-4 py-1.5 rounded-xl text-xs">Enviar</button></div><div id="resenas-lista-container" class="space-y-1 max-h-28 overflow-y-auto text-[10px] pt-1"></div></div><div class="space-y-2"><h4 class="text-xs font-bold uppercase text-amber-400">Cuentas Publicadas</h4><div id="pub-perfil-grid-ofertas" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1"></div></div></div></div>
 <div id="modal-pub-detalles" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card max-w-lg w-full p-6 rounded-3xl border border-amber-500/30 space-y-4 max-h-[90vh] overflow-y-auto">
   <div class="flex justify-between items-center border-b border-gray-800 pb-3"><div class="flex items-center gap-2"><span id="modal-pub-juego" class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold uppercase">--</span><span id="modal-pub-region" class="text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-0.5 rounded-full font-bold uppercase">--</span></div><button onclick="cerrarModalPub()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div>
-  <div id="modal-pub-vendedor-info" class="flex items-center space-x-2 bg-[#0f172a] p-2.5 rounded-xl border border-gray-800 cursor-pointer"><img id="modal-vendedor-avatar" src="https://via.placeholder.com/30" class="w-8 h-8 rounded-full object-cover border border-amber-500"><div><span class="text-[9px] text-gray-400 block uppercase">Administrador Oficial:</span><span id="modal-vendedor-name" class="text-xs font-bold text-amber-400">--</span></div></div>
+  <div id="modal-pub-vendedor-info" class="flex items-center space-x-2 bg-[#0f172a] p-2.5 rounded-xl border border-gray-800 cursor-pointer"><img id="modal-vendedor-avatar" src="https://via.placeholder.com/30" class="w-8 h-8 rounded-full object-cover border border-amber-500"><div><span class="text-[9px] text-gray-400 block uppercase">Vendedor Oficial:</span><span id="modal-vendedor-name" class="text-xs font-bold text-amber-400">--</span></div></div>
   <div class="relative bg-[#0f172a] rounded-2xl border border-gray-800 overflow-hidden flex items-center justify-center min-h-[180px]"><button onclick="cambiarFotoModalPub(-1)" id="btn-prev-foto-pub" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs z-10 hidden"><i class="fas fa-chevron-left"></i></button><img id="modal-pub-foto-principal" src="https://via.placeholder.com/300" class="max-h-60 object-contain w-full rounded-xl"><button onclick="cambiarFotoModalPub(1)" id="btn-next-foto-pub" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs z-10 hidden"><i class="fas fa-chevron-right"></i></button><span id="modal-pub-foto-counter" class="absolute bottom-2 right-2 bg-black/80 text-amber-400 border border-amber-500/30 text-[9px] font-bold px-2.5 py-0.5 rounded-full hidden">1/1</span></div>
   <div><h3 id="modal-pub-titulo" class="text-sm font-bold text-white mb-1">--</h3><div class="flex gap-2 mb-2"><span id="modal-pub-nivel-tag" class="text-[9px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2.5 py-0.5 rounded-full font-bold">--</span></div><p id="modal-pub-desc" class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">--</p></div>
   <div id="modal-credenciales-compradas-box" class="hidden bg-emerald-500/10 border border-emerald-500/40 p-4 rounded-2xl space-y-2 animate-page">
@@ -233,16 +246,18 @@
       <p><b>Tipo / Vínculo:</b> <span id="ver-tipo-privado" class="text-amber-400 select-all">--</span></p>
     </div>
   </div>
-  <div class="bg-[#0f172a] p-4 rounded-2xl border border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-3">
-    <div>
+  <div class="bg-[#0f172a] p-4 rounded-2xl border border-gray-800 space-y-3">
+    <div class="flex justify-between items-center">
       <span class="text-lg font-black text-amber-400" id="modal-pub-precio">$0 CLP</span>
-      <p class="text-[10px] text-gray-400 mt-1 leading-tight"><i class="fas fa-shield-alt text-emerald-400 mr-1"></i><b>Protocolo Escrow:</b> Recuerda tu ID de publicación e ingrésalo en la descripción/concepto al pagar en Flow para enviarte tu cuenta de inmediato.</p>
+      <div class="flex flex-wrap gap-2">
+        <button id="modal-pub-editar-btn" onclick="prepararEdicionPublicacionModal()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1"><i class="fas fa-edit"></i> Editar</button>
+        <button id="modal-pub-eliminar-btn" onclick="eliminarPublicacionActual()" class="hidden bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1"><i class="fas fa-trash-alt"></i> Eliminar</button>
+        <button id="modal-pub-chat-p2p-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1"><i class="fas fa-comments"></i> Chat</button>
+        <a href="https://www.flow.cl/btn.php?token=pb44df8f3fba5d7cb939837f9104123ca21f984d" target="_blank" id="modal-pub-comprar-btn" class="bg-gradient-to-r from-amber-500 to-amber-400 hover:brightness-110 text-gray-950 font-black px-6 py-2.5 rounded-xl text-xs shadow text-center flex items-center justify-center gap-1.5 uppercase tracking-wide"><i class="fas fa-shopping-cart"></i> Comprar con Flow</a>
+      </div>
     </div>
-    <div class="flex flex-wrap gap-2 w-full sm:w-auto shrink-0">
-      <button id="modal-pub-editar-btn" onclick="prepararEdicionPublicacionModal()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1"><i class="fas fa-edit"></i> Editar</button>
-      <button id="modal-pub-eliminar-btn" onclick="eliminarPublicacionActual()" class="hidden bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1"><i class="fas fa-trash-alt"></i> Eliminar</button>
-      <button id="modal-pub-chat-p2p-btn" class="flex-grow sm:flex-grow-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1"><i class="fas fa-comments"></i> Chat</button>
-      <a href="https://www.flow.cl/btn.php?token=pb44df8f3fba5d7cb939837f9104123ca21f984d" target="_blank" id="modal-pub-comprar-btn" class="flex-grow sm:flex-grow-0 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-4 py-2.5 rounded-xl text-xs shadow text-center flex items-center justify-center">Pagar en Flow</a>
+    <div class="bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-xl text-[11px] text-amber-300 font-bold text-center leading-snug">
+      Si compras la cuenta, deja tu ID en la descripción de tu pago Flow y tu correo electrónico. Y así yo puedo entregar la cuenta
     </div>
   </div>
   <div class="border-t border-gray-800 pt-3 space-y-2"><h4 class="text-xs font-bold text-white">Comentarios</h4><div id="modal-comentarios-list" class="space-y-1.5 max-h-28 overflow-y-auto text-xs"></div><div class="flex gap-2 pt-1"><input type="text" id="modal-comentario-input" placeholder="Comentar..." class="flex-grow bg-[#0f172a] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white"><button onclick="enviarComentarioPublicacion()" class="bg-gray-800 text-white px-4 py-2 rounded-xl text-xs font-bold">Enviar</button></div></div>
@@ -286,7 +301,7 @@ function iniciarHeartbeat(u){if(heartbeatInterval)clearInterval(heartbeatInterva
 function cerrarAvisoVendedorDesactivado(){document.getElementById('vendedor-desactivado-screen').classList.add('hidden')}function cerrarAvisoInsigniaOtorgada(){document.getElementById('badge-welcome-toast').classList.add('hidden')}
 function verificarRecompensaDiariaPubg(p){const u=p.ultimoReclamoMonedas||0,a=Date.now(),d=24*60*60*1000,t=a-u;const esVip=p.esVip||false;document.getElementById('recompensa-diaria-texto-bono').innerHTML=esVip?`Recibe <b class="text-yellow-400 font-black">400 Monedas VIP</b> gratis.`:`Recibe <b class="text-yellow-400">200 Monedas Siilck</b> gratis.`;document.getElementById('dash-monedas-subtexto').innerHTML=esVip?`Recoge tus <b class="text-yellow-400">400 monedas VIP</b>.`:`Recoge tus 200 monedas gratis.`;if(t<d)iniciarCuentaRegresivaMonedas(d-t);else habilitarBotonMonedasDiarias(true)}
 function iniciarCuentaRegresivaMonedas(t){if(cuentaRegresivaMonedasInterval)clearInterval(cuentaRegresivaMonedasInterval);const a=()=>{t-=1000;if(t<=0){clearInterval(cuentaRegresivaMonedasInterval);habilitarBotonMonedasDiarias(true);return}let h=Math.floor((t%(1000*60*60*24))/(1000*60*60)),m=Math.floor((t%(1000*60*60))/(1000*60)),s=Math.floor((t%(1000*60))/1000),txt=`⏳ ${h}h ${m}m ${s}s`,b1=document.getElementById('btn-reclamar-modal-diario'),b2=document.getElementById('btn-reclamar-diario-dash');if(b1){b1.innerText=txt;b1.disabled=true;b1.className="w-full bg-gray-800 text-gray-500 font-bold py-3 rounded-xl text-xs opacity-40 cursor-not-allowed"}if(b2){b2.innerText=txt;b2.disabled=true;b2.className="bg-gray-800 text-gray-500 font-bold px-5 py-2 rounded-xl text-xs opacity-40 cursor-not-allowed whitespace-nowrap"}};a();cuentaRegresivaMonedasInterval=setInterval(a,1000)}
-function habilitarBotonMonedasDiarias(d){const b1=document.getElementById('btn-reclamar-modal-diario'),b2=document.getElementById('btn-reclamar-diario-dash'),cant=currentUserData?.esVip?400:200;if(d){if(b1){b1.innerText=`🪙 Reclamar ${cant} Monedas`;b1.disabled=false;b1.className="w-full bg-gradient-to-r from-yellow-500 to-amber-400 text-gray-950 font-black py-3 rounded-xl text-xs shadow"}if(b2){b2.innerText=`🪙 Reclamar ${cant} Monedas`;b2.disabled=false;b2.className="bg-gradient-to-r from-yellow-500 to-amber-400 text-gray-950 font-black px-5 py-2 rounded-xl text-xs shadow whitespace-nowrap"}}}
+function habilitarBotonMonedasDiarias(d){const b1=document.getElementById('btn-reclamar-modal-diario'),b2=document.getElementById('btn-reclamar-diario-dash'),cant=currentUserData?.esVip?400:200;if(d){if(b1){b1.innerText=`🪙 Reclamar ${cant} Monedas`;b1.disabled=false;b1.className="w-full bg-gradient-to-r from-yellow-500 to-amber-400 text-gray-950 font-black py-3 rounded-xl text-xs shadow"}if(b2){b2.innerText=`🪙 Reclamar ${cant} Monedas`;b2.disabled=false;b2.className="bg-gradient-to-r from-yellow-500 to-amber-400 text-gray-950 font-black px-5 py-2.5 rounded-xl text-xs shadow whitespace-nowrap"}}}
 function abrirModalRecompensaDiariaSiEsNecesario(){if(!currentUserData)return;if(Date.now()-(currentUserData.ultimoReclamoMonedas||0)>=(24*60*60*1000)){document.getElementById('modal-recompensa-diaria').classList.remove('hidden');document.getElementById('modal-recompensa-diaria').classList.add('flex')}}function cerrarModalRecompensaDiaria(){document.getElementById('modal-recompensa-diaria').classList.add('hidden');document.getElementById('modal-recompensa-diaria').classList.remove('flex')}
 async function reclamarMonedasDiariasReal(){if(!auth.currentUser)return;const r=db.collection('perfiles').doc(auth.currentUser.uid),d=await r.get();if(!d.exists)return;const dt=d.data(),a=Date.now(),un=24*60*60*1000;if(a-(dt.ultimoReclamoMonedas||0)<un){cerrarModalRecompensaDiaria();mostrarAlertaToast("⏳ Ya reclamado","Espera 24 horas.");return}const bono=dt.esVip?400:200,nm=(dt.monedasSiilck||0)+bono;await r.update({monedasSiilck:nm,ultimoReclamoMonedas:a});currentUserData.monedasSiilck=nm;currentUserData.ultimoReclamoMonedas=a;actualizarBarraMonedasUI(nm);cerrarModalRecompensaDiaria();iniciarCuentaRegresivaMonedas(un);mostrarToast(`🪙 ¡Reclamadas ${bono} Monedas!`)}
 function actualizarBarraMonedasUI(m){document.getElementById('nav-monedas-contador').innerText=`${m} Monedas`;const d=document.getElementById('dashboard-monedas-num');if(d)d.innerText=`${m} Monedas`}
@@ -338,12 +353,99 @@ async function ejecutarLogin(){const e=document.getElementById('login-email').va
 async function ejecutarRegistro(){const e=document.getElementById('reg-email').value.trim(),p=document.getElementById('reg-password').value;if(!e||!p)return;mostrarLoader("Registrando","...");try{const c=await auth.createUserWithEmailAndPassword(e,p);await c.user.sendEmailVerification();ocultarLoader();document.getElementById('view-auth').classList.add('hidden');document.getElementById('verify-email-screen').classList.remove('hidden');document.getElementById('verify-email-screen').classList.add('flex');iniciarVerificacionAutomaticaCorreo()}catch(x){ocultarLoader();mostrarAlertaToast("Error",x.message)}}
 async function handleGoogleLogin(){try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){mostrarAlertaToast("Error",e.message)}}function cerrarSesion(){mostrarLoader("Saliendo","...");if(emailCheckInterval)clearInterval(emailCheckInterval);auth.signOut()}
 function abrirFormularioPostulacionVendedor(){if(currentUserData&&currentUserData.vendedorAutorizado){mostrarAlertaToast("🛡️","Ya eres Vendedor Autorizado.");return}document.getElementById('modal-postulacion').classList.remove('hidden');document.getElementById('modal-postulacion').classList.add('flex')}function cerrarFormularioPostulacion(){document.getElementById('modal-postulacion').classList.add('hidden');document.getElementById('modal-postulacion').classList.remove('flex')}
-function abrirModalMiEstadoPostulacion(){document.getElementById('modal-mi-estado-postulacion').classList.remove('hidden');document.getElementById('modal-mi-estado-postulacion').classList.add('flex');cargarMiEstadoPostulacion()}function cerrarModalMiEstadoPostulacion(){document.getElementById('modal-mi-estado-postulacion').classList.add('hidden');document.getElementById('modal-mi-estado-postulacion').classList.remove('flex')}
-async function cargarMiEstadoPostulacion(){if(!auth.currentUser)return;const c=document.getElementById('mi-estado-postulacion-contenido');try{const s=await db.collection('postulaciones_vendedores').where('uid','==',auth.currentUser.uid).get();if(s.empty){c.innerHTML=`<p class="text-gray-400 text-center py-2">No tienes postulaciones activas.</p>`;return}let h='';s.forEach(d=>{const p=d.data();h+=`<div class="bg-[#030712] p-3 rounded-xl border border-amber-500/30 font-bold text-amber-400">Estado: <span class="uppercase text-white">${p.estado}</span><p class="text-xs text-gray-300 font-normal mt-1">${p.comentarioDueño||'Sin comentarios'}</p></div>`});c.innerHTML=h}catch(e){}}
+
+function abrirModalMiEstadoPostulacion(){
+  document.getElementById('modal-mi-estado-postulacion').classList.remove('hidden');
+  document.getElementById('modal-mi-estado-postulacion').classList.add('flex');
+  cargarMiEstadoPostulacion();
+}
+function cerrarModalMiEstadoPostulacion(){
+  document.getElementById('modal-mi-estado-postulacion').classList.add('hidden');
+  document.getElementById('modal-mi-estado-postulacion').classList.remove('flex');
+}
+
+async function cargarMiEstadoPostulacion(){
+  if(!auth.currentUser) return;
+  const c = document.getElementById('mi-estado-postulacion-contenido');
+  c.innerHTML = `<p class="text-gray-400 text-center py-4"><i class="fas fa-spinner fa-spin text-amber-400"></i> Cargando estado...</p>`;
+  try{
+    const s = await db.collection('postulaciones_vendedores').where('uid','==',auth.currentUser.uid).get();
+    if(s.empty){
+      c.innerHTML = `
+        <div class="text-center py-6 space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mx-auto border border-amber-500/30"><i class="fas fa-file-alt"></i></div>
+          <p class="text-xs text-gray-300 font-medium">No has enviado ninguna postulación todavía.</p>
+          <button onclick="cerrarModalMiEstadoPostulacion(); abrirFormularioPostulacionVendedor();" class="bg-amber-500 hover:bg-amber-400 text-gray-950 font-black px-4 py-2 rounded-xl text-xs uppercase shadow">Postularme Ahora</button>
+        </div>`;
+      return;
+    }
+    let h = '';
+    s.forEach(d => {
+      const p = d.data();
+      const estado = (p.estado || 'pendiente').toLowerCase();
+      
+      let badgeColor = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40';
+      let iconClass = 'fa-clock text-yellow-400';
+      let textoEstado = 'Pendiente';
+      let step1 = 'bg-amber-500 text-gray-950', step2 = 'bg-gray-800 text-gray-500', step3 = 'bg-gray-800 text-gray-500', step4 = 'bg-gray-800 text-gray-500';
+
+      if(estado === 'en_proceso' || estado === 'revision'){
+        badgeColor = 'bg-blue-500/20 text-blue-400 border-blue-500/40';
+        iconClass = 'fa-spinner fa-spin text-blue-400';
+        textoEstado = 'En Proceso';
+        step1 = 'bg-amber-500 text-gray-950'; step2 = 'bg-blue-500 text-gray-950';
+      } else if(estado === 'en_aprobacion'){
+        badgeColor = 'bg-orange-500/20 text-orange-400 border-orange-500/40';
+        iconClass = 'fa-hourglass-half text-orange-400';
+        textoEstado = 'En Aprobación';
+        step1 = 'bg-amber-500 text-gray-950'; step2 = 'bg-blue-500 text-gray-950'; step3 = 'bg-orange-500 text-gray-950';
+      } else if(estado === 'aprobado'){
+        badgeColor = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40';
+        iconClass = 'fa-check-circle text-emerald-400';
+        textoEstado = 'Aprobado';
+        step1 = 'bg-amber-500 text-gray-950'; step2 = 'bg-blue-500 text-gray-950'; step3 = 'bg-orange-500 text-gray-950'; step4 = 'bg-emerald-500 text-gray-950';
+      } else if(estado === 'rechazado'){
+        badgeColor = 'bg-red-500/20 text-red-400 border-red-500/40';
+        iconClass = 'fa-times-circle text-red-400';
+        textoEstado = 'Rechazado';
+      }
+
+      h += `
+        <div class="web-card border border-amber-500/30 p-4 rounded-2xl space-y-4 shadow-xl">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <span class="text-[10px] font-black uppercase tracking-wider text-amber-400">Postulación #${d.id.substring(0,6)}</span>
+            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase border ${badgeColor} flex items-center gap-1.5 shadow-sm">
+              <i class="fas ${iconClass}"></i> ${textoEstado}
+            </span>
+          </div>
+
+          <div class="space-y-2 bg-[#030712] p-3 rounded-xl border border-gray-800">
+            <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wide">Fases de Postulación en Vivo</div>
+            <div class="grid grid-cols-4 gap-1.5 pt-1 text-center">
+              <div class="p-2 rounded-lg ${step1} font-black text-[9px] uppercase flex flex-col items-center justify-center gap-1 shadow"><i class="fas fa-file-alt text-xs"></i> Pendiente</div>
+              <div class="p-2 rounded-lg ${step2} font-black text-[9px] uppercase flex flex-col items-center justify-center gap-1 shadow"><i class="fas fa-spinner text-xs"></i> Proceso</div>
+              <div class="p-2 rounded-lg ${step3} font-black text-[9px] uppercase flex flex-col items-center justify-center gap-1 shadow"><i class="fas fa-tasks text-xs"></i> Aprobación</div>
+              <div class="p-2 rounded-lg ${step4} font-black text-[9px] uppercase flex flex-col items-center justify-center gap-1 shadow"><i class="fas fa-award text-xs"></i> Aprobado</div>
+            </div>
+          </div>
+
+          <div class="space-y-1 bg-[#0f172a] p-3 rounded-xl border border-gray-800">
+            <span class="text-[10px] font-bold text-gray-400 uppercase">Comentario del Administrador:</span>
+            <p class="text-xs text-gray-200 font-medium italic">${p.comentarioDueño || 'Sin observaciones por el momento.'}</p>
+          </div>
+        </div>
+      `;
+    });
+    c.innerHTML = h;
+  }catch(e){
+    c.innerHTML = `<p class="text-red-400 text-center py-2">Error al cargar el estado.</p>`;
+  }
+}
+
 function abrirModalChatVendedoresDueño(){document.getElementById('modal-chat-vendedores-dueño').classList.remove('hidden');document.getElementById('modal-chat-vendedores-dueño').classList.add('flex');cargarMensajesChatVendedoresDueño()}function cerrarModalChatVendedoresDueño(){document.getElementById('modal-chat-vendedores-dueño').classList.add('hidden');document.getElementById('modal-chat-vendedores-dueño').classList.remove('flex')}
 async function cargarMensajesChatVendedoresDueño(){db.collection('chat_vendedores_dueño').orderBy('fecha','asc').onSnapshot(s=>{let h='';s.forEach(d=>{const m=d.data();h+=`<p class="py-0.5"><b class="text-emerald-400">@${m.remitenteUsername}:</b> ${m.mensaje}</p>`});const c=document.getElementById('chat-vendedores-mensajes');c.innerHTML=h||`<p class="text-gray-500 text-center py-2">Canal vacío.</p>`;c.scrollTop=c.scrollHeight})}
 async function enviarMensajeChatVendedoresDueño(){const t=document.getElementById('chat-vendedores-input').value.trim();if(!t)return;await db.collection('chat_vendedores_dueño').add({remitenteUid:auth.currentUser.uid,remitenteUsername:currentUserData.username||'Vendedor',mensaje:t,fecha:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('chat-vendedores-input').value=''}
-async function enviarPostulacionVendedorReal(){const m=document.getElementById('post-motivacion').value,t=document.getElementById('post-tipocuentas').value,n=document.getElementById('post-nombre').value,a=document.getElementById('post-apellidos').value,r=document.getElementById('post-rut').value,fc=document.getElementById('post-file-cara').files[0],fd=document.getElementById('post-file-doc').files[0];if(!m||!t||!n||!a||!r||!fc||!fd){mostrarAlertaToast("Aviso","Completa los campos obligatorios.");return}mostrarLoader("Postulando","Enviando...");try{const cb=await convertirFileBase64(fc),dbb=await convertirFileBase64(fd);await db.collection('postulaciones_vendedores').add({uid:auth.currentUser.uid,email:currentUserData.email,username:currentUserData.username,gamerId:currentUserData.gamerId||'SK-00000',motivacion:m,tipoCuentas:t,nombre:n,apellidos:a,rut:r,caraB64:cb,docB64:dbb,estado:'pendiente',comentarioDueño:'En revisión.',fecha:firebase.firestore.FieldValue.serverTimestamp()});ocultarLoader();cerrarFormularioPostulacion();mostrarToast("Postulación enviada.")}catch(e){ocultarLoader();mostrarAlertaToast("Error",e.message)}}
+async function enviarPostulacionVendedorReal(){const m=document.getElementById('post-motivacion').value,t=document.getElementById('post-tipocuentas').value,n=document.getElementById('post-nombre').value,a=document.getElementById('post-apellidos').value,r=document.getElementById('post-rut').value,fc=document.getElementById('post-file-cara').files[0],fd=document.getElementById('post-file-doc').files[0];if(!m||!t||!n||!a||!r||!fc||!fd){mostrarAlertaToast("Aviso","Completa los campos obligatorios.");return}mostrarLoader("Postulando","Enviando...");try{const cb=await convertirFileBase64(fc),dbb=await convertirFileBase64(fd);await db.collection('postulaciones_vendedores').add({uid:auth.currentUser.uid,email:currentUserData.email,username:currentUserData.username,gamerId:currentUserData.gamerId||'SK-00000',motivacion:m,tipoCuentas:t,nombre:n,apellidos:a,rut:r,caraB64:cb,docB64:dbb,estado:'pendiente',comentarioDueño:'Postulación recibida y en estado pendiente.',fecha:firebase.firestore.FieldValue.serverTimestamp()});ocultarLoader();cerrarFormularioPostulacion();mostrarToast("Postulación enviada.")}catch(e){ocultarLoader();mostrarAlertaToast("Error",e.message)}}
 function seleccionarJuego(j){juegoSeleccionado=j;document.querySelectorAll('#sidebar-juegos button').forEach(b=>{b.className="px-3.5 py-2 rounded-xl font-medium text-gray-300 hover:bg-gray-800 transition whitespace-nowrap"});const b=document.getElementById(`btn-game-${j}`);if(b)b.className="px-3.5 py-2 rounded-xl font-bold bg-amber-500 text-gray-950 whitespace-nowrap shadow";renderizarGridPublicaciones(globalPublicacionesCache)}
 function renderInterfacePermissions(u){
   const esAdminOGuía=(currentUserData.vendedorAutorizado||currentUserData.admin||u.uid===OWNER_UID);
@@ -381,14 +483,14 @@ async function abrirModalPub(id){
 
   const credencialesBox=document.getElementById('modal-credenciales-compradas-box');
   const esDueñoAbsoluto=(auth.currentUser&&auth.currentUser.uid===OWNER_UID);
-  const esAdminOGuía=(auth.currentUser&&(auth.currentUser.uid===OWNER_UID||currentUserData?.admin||p.vendedorUid===auth.currentUser.uid));
+  const esDueñoPublicacion=(auth.currentUser&&p.vendedorUid===auth.currentUser.uid);
   let compradoPorMi=false;
   try{
     const compQ=await db.collection('transacciones').where('pubId','==',id).where('compradorUid','==',auth.currentUser?.uid).where('estado','==','completado_pago').get();
     if(!compQ.empty) compradoPorMi=true;
   }catch(e){}
 
-  if(esAdminOGuía||compradoPorMi){
+  if(esDueñoAbsoluto||esDueñoPublicacion||compradoPorMi){
     credencialesBox.classList.remove('hidden');
     document.getElementById('ver-correo-privado').innerText=p.correoPrivado||'No registrado';
     document.getElementById('ver-clave-privada').innerText=p.clavePrivada||'No registrada';
@@ -400,7 +502,7 @@ async function abrirModalPub(id){
 
   const btnEditar=document.getElementById('modal-pub-editar-btn');
   const btnEliminar=document.getElementById('modal-pub-eliminar-btn');
-  if(auth.currentUser&&(esDueñoAbsoluto||p.vendedorUid===auth.currentUser.uid)){
+  if(auth.currentUser&&(esDueñoAbsoluto||esDueñoPublicacion)){
     btnEditar.classList.remove('hidden');
     btnEliminar.classList.remove('hidden');
   }else{
@@ -408,8 +510,9 @@ async function abrirModalPub(id){
     btnEliminar.classList.add('hidden');
   }
 
-  const linkPagoFinal=p.linkFlow||`https://www.flow.cl/btn.php?token=pb44df8f3fba5d7cb939837f9104123ca21f984d`;
-  document.getElementById('modal-pub-comprar-btn').setAttribute('onclick',`registrarIntentoCompraYpagar('${id}','${linkPagoFinal}',${p.precio},'${p.titulo.replace(/'/g,"")}')`);
+  const linkFlowFinal="https://www.flow.cl/btn.php?token=pb44df8f3fba5d7cb939837f9104123ca21f984d";
+  document.getElementById('modal-pub-comprar-btn').setAttribute('href', linkFlowFinal);
+  document.getElementById('modal-pub-comprar-btn').setAttribute('onclick',`registrarIntentoCompraYpagar('${id}','${linkFlowFinal}',${p.precio},'${p.titulo.replace(/'/g,"")}')`);
   document.getElementById('modal-pub-chat-p2p-btn').setAttribute('onclick',`iniciarChatP2PConVendedor('${p.vendedorUid}','Admin','${p.titulo.replace(/'/g,"")}')`);
   
   try{
@@ -428,7 +531,7 @@ async function abrirModalPub(id){
 }
 
 async function registrarIntentoCompraYpagar(pubId, linkFlow, precio, titulo){
-  if(!auth.currentUser) { mostrarAlertaToast("Aviso","Inicia sesión para pagar."); return; }
+  if(!auth.currentUser) { return; }
   try{
     await db.collection('transacciones').add({
       pubId: pubId,
@@ -440,13 +543,7 @@ async function registrarIntentoCompraYpagar(pubId, linkFlow, precio, titulo){
       estado: 'completado_pago',
       fecha: firebase.firestore.FieldValue.serverTimestamp()
     });
-    mostrarToast("🎉 ¡Pago Escrow procesado con éxito!");
-    window.open(linkFlow, '_blank');
-    cerrarModalPub();
-    abrirModalPub(pubId);
-  }catch(e){
-    window.open(linkFlow, '_blank');
-  }
+  }catch(e){}
 }
 
 function actualizarFotoModalPub(){const img=document.getElementById('modal-pub-foto-principal'),btnP=document.getElementById('btn-prev-foto-pub'),btnN=document.getElementById('btn-next-foto-pub'),cnt=document.getElementById('modal-pub-foto-counter');img.src=fotosPubActuales[fotoPubActualIndex];if(fotosPubActuales.length>1){btnP.classList.remove('hidden');btnN.classList.remove('hidden');cnt.classList.remove('hidden');cnt.innerText=`${fotoPubActualIndex+1}/${fotosPubActuales.length}`}else{btnP.classList.add('hidden');btnN.classList.add('hidden');cnt.classList.add('hidden')}}
@@ -599,8 +696,76 @@ function convertirFileBase64(f){return new Promise((r)=>{const rd=new FileReader
 function cargarUsuariosConectadosEnVivo(){db.collection('presencia').onSnapshot(s=>{let h='',c=0;s.forEach(d=>{const p=d.data();c++;h+=`<div class="flex justify-between items-center bg-[#030712] p-2.5 rounded-xl border border-gray-800"><span class="font-bold text-amber-400">@${p.username} <span class="text-gray-400 font-mono">(${p.gamerId||'SK-00000'})</span></span><span class="text-emerald-400 text-[9px] font-bold">🟢 Online</span></div>`});document.getElementById('owner-live-count').innerText=`${c} Online`;document.getElementById('owner-live-users-list').innerHTML=h||`<p class="text-gray-500 text-center py-2">Sin conexiones.</p>`})}
 function abrirModalPostulacionesExclusivoOwner(){document.getElementById('modal-postulaciones-owner').classList.remove('hidden');document.getElementById('modal-postulaciones-owner').classList.add('flex')}
 function cerrarModalPostulacionesExclusivoOwner(){document.getElementById('modal-postulaciones-owner').classList.add('hidden');document.getElementById('modal-postulaciones-owner').classList.remove('flex')}
-async function cargarPostulacionesPanelMaster(){db.collection('postulaciones_vendedores').orderBy('fecha','desc').onSnapshot(s=>{let h='';s.forEach(d=>{const p=d.data(),i=d.id;h+=`<div class="bg-[#030712] border border-amber-500/30 p-3 rounded-2xl space-y-1.5"><div class="flex justify-between"><b class="text-amber-400">@${p.username} (${p.gamerId||'SK-00000'})</b><span class="uppercase text-amber-300 font-bold">${p.estado}</span></div><p class="text-xs text-gray-200"><b>Motivo:</b> ${p.motivacion}</p><div class="flex gap-2 pt-1"><button onclick="aprobarVendedorAutorizadoReal('${i}','${p.uid}')" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded-xl text-white font-bold text-xs">Aprobar</button><button onclick="rechazarPostulacionVendedorReal('${i}','${p.uid}')" class="bg-red-600 hover:bg-red-500 px-3 py-1 rounded-xl text-white font-bold text-xs">Rechazar</button></div></div>`});document.getElementById('modal-owner-postulaciones-list').innerHTML=h||`<p class="text-gray-500 text-center py-4">Sin postulaciones.</p>`})}
-async function cargarPanelMasterControl(){if(!auth.currentUser||auth.currentUser.uid!==OWNER_UID)return;db.collection('reportes').onSnapshot(s=>{let h='';s.forEach(d=>{const r=d.data();h+=`<div class="bg-[#030712] border border-red-500/30 p-2.5 rounded-xl"><p class="text-red-400 font-bold text-xs"><b>Reporte de @${r.reportadorUsername||'Gamer'}:</b> ${r.motivo}</p></div>`});document.getElementById('owner-reportes-list').innerHTML=h||`<p class="text-gray-500 text-center py-2">Sin reportes.</p>`});db.collection('transacciones').onSnapshot(s=>{let h='';s.forEach(d=>{const t=d.data(),i=d.id;h+=`<div class="bg-[#030712] border border-amber-500/30 p-2.5 rounded-xl"><p class="text-xs"><b class="text-amber-400">${t.titulo}</b> - $${t.precio} CLP</p><button onclick="autorizarPagoVendedorReal('${i}','${t.vendedorUid}',${t.precio})" class="bg-amber-500 text-gray-950 font-bold px-2.5 py-1 rounded-xl text-[9px] mt-1">Liberar Pago</button></div>`});document.getElementById('owner-transacciones-list').innerHTML=h||`<p class="text-gray-500 text-center py-2">Sin órdenes.</p>`});db.collection('retiros').onSnapshot(s=>{let h='';s.forEach(d=>{const rt=d.data(),i=d.id;h+=`<div class="bg-[#030712] border border-emerald-500/30 p-2.5 rounded-xl"><p class="text-xs"><b class="text-emerald-400">$${rt.monto} CLP</b> - @${rt.username}</p><button onclick="aprobarRetiroReal('${i}')" class="bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-xl text-[9px] mt-1">Aprobar Retiro</button></div>`});document.getElementById('owner-retiros-list').innerHTML=h||`<p class="text-gray-500 text-center py-2">Sin retiros.</p>`});cargarListaCompletaPerfiles()}
+
+async function cargarPostulacionesPanelMaster(){
+  db.collection('postulaciones_vendedores').orderBy('fecha','desc').onSnapshot(s=>{
+    let h='';
+    s.forEach(d=>{
+      const p=d.data(), i=d.id;
+      const st = p.estado || 'pendiente';
+      h+=`
+        <div class="bg-[#030712] border border-amber-500/30 p-3.5 rounded-2xl space-y-2">
+          <div class="flex justify-between items-center">
+            <b class="text-amber-400">@${p.username} (${p.gamerId||'SK-00000'})</b>
+            <select onchange="cambiarEstadoPostulacionDirecto('${i}', '${p.uid}', this.value)" class="bg-[#0f172a] border border-amber-500/40 text-amber-300 font-bold px-2.5 py-1 rounded-xl text-xs">
+              <option value="pendiente" ${st==='pendiente'?'selected':''}>🟡 Pendiente</option>
+              <option value="en_proceso" ${st==='en_proceso'?'selected':''}>🔵 En Proceso</option>
+              <option value="en_aprobacion" ${st==='en_aprobacion'?'selected':''}>🟠 En Aprobación</option>
+              <option value="aprobado" ${st==='aprobado'?'selected':''}>🟢 Aprobado</option>
+              <option value="rechazado" ${st==='rechazado'?'selected':''}>🔴 Rechazado</option>
+            </select>
+          </div>
+          <p class="text-xs text-gray-200"><b>Motivo:</b> ${p.motivacion}</p>
+          <div class="flex gap-2 pt-1">
+            <button onclick="aprobarVendedorAutorizadoReal('${i}','${p.uid}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded-xl text-white font-bold text-xs shadow"><i class="fas fa-check mr-1"></i> Aprobar & Volver Vendedor</button>
+            <button onclick="revocarVendedorAutorizadoReal('${i}','${p.uid}')" class="bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30 px-3 py-1.5 rounded-xl font-bold text-xs"><i class="fas fa-user-slash mr-1"></i> Quitar Vendedor</button>
+          </div>
+        </div>`;
+    });
+    document.getElementById('modal-owner-postulaciones-list').innerHTML=h||`<p class="text-gray-500 text-center py-4">Sin postulaciones.</p>`;
+  });
+}
+
+async function cambiarEstadoPostulacionDirecto(i, u, nuevoEstado){
+  try{
+    await db.collection('postulaciones_vendedores').doc(i).update({estado: nuevoEstado});
+    if(nuevoEstado === 'aprobado'){
+      await aprobarVendedorAutorizadoReal(i, u);
+    } else {
+      mostrarToast("Estado actualizado.");
+    }
+  }catch(e){
+    mostrarAlertaToast("Error", e.message);
+  }
+}
+
+async function aprobarVendedorAutorizadoReal(i,u){
+  await db.collection('postulaciones_vendedores').doc(i).update({estado:'aprobado',comentarioDueño:'Postulación Aprobada. ¡Ya eres Vendedor Oficial!'});
+  await db.collection('perfiles').doc(u).update({
+    vendedorAutorizado: true,
+    badgeVerificado: true,
+    vendedorDesactivadoAviso: false,
+    insigniaAviso:"🛡️ ¡Tu postulación a Vendedor Oficial ha sido APROBADA con éxito!"
+  });
+  await enviarNotificacionAUsuario(u,"🎉 ¡Postulación Aprobada!",'Ya puedes publicar ofertas en la plataforma.');
+  mostrarToast("Vendedor aprobado y activado.");
+  cargarPostulacionesPanelMaster();
+}
+
+async function revocarVendedorAutorizadoReal(i,u){
+  if(!confirm("¿Estás seguro de quitar el rol de vendedor a este usuario?")) return;
+  await db.collection('postulaciones_vendedores').doc(i).update({estado:'rechazado',comentarioDueño:'Se han revocado tus permisos de vendedor temporalmente.'});
+  await db.collection('perfiles').doc(u).update({
+    vendedorAutorizado: false,
+    vendedorDesactivadoAviso: true,
+    insigniaAviso:"⚠️ Tus permisos de vendedor han sido suspendidos temporalmente."
+  });
+  await enviarNotificacionAUsuario(u,"⚠️ Permisos Suspendidos",'Tus permisos de vendedor han sido pausados.');
+  mostrarToast("Permisos de vendedor retirados.");
+  cargarPostulacionesPanelMaster();
+}
+
+async function cargarPanelMasterControl(){if(!auth.currentUser||auth.currentUser.uid!==OWNER_UID)return;db.collection('reportes').onSnapshot(s=>{let h='';s.forEach(d=>{const r=d.data();h+=`<div class="bg-[#030712] border border-red-500/30 p-2.5 rounded-xl"><p class="text-red-400 font-bold text-xs"><b>Reporte de @${r.reportadorUsername||'Gamer'}:</b> ${r.motivo}</p></div>`});document.getElementById('owner-reportes-list').innerHTML=h||`<p class="text-gray-500 text-center py-2">Sin reportes.</p>`});db.collection('transacciones').onSnapshot(s=>{let h='';s.forEach(d=>{const t=d.data(),i=d.id;h+=`<div class="bg-[#030712] border border-amber-500/30 p-2.5 rounded-xl"><p class="text-xs"><b class="text-amber-400">${t.titulo}</b> - $${t.precio} CLP</p><button onclick="autorizarPagoVendedorReal('${i}','${t.vendedorUid}',${t.precio})" class="bg-amber-500 text-gray-950 font-bold px-2.5 py-1 rounded-xl text-[9px] mt-1">Liberar Pago</button></div>`});document.getElementById('owner-transacciones-list').innerHTML=h||`<p class="text-gray-500 text-center py-2">Sin órdenes.</p>`});db.collection('retiros').onSnapshot(s=>{let h='';s.forEach(d=>{const rt=d.data(),i=d.id;h+=`<div class="bg-[#030712] border border-emerald-500/30 p-2.5 rounded-xl"><p class="text-xs"><b class="text-emerald-400">$${rt.monto} CLP</b> - @${rt.username}</p><button onclick="aprobarRetiroReal('${i}')" class="bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-xl text-[9px] mt-1">Aprobar Retiro</button></div>`});document.getElementById('owner-retiros-list').innerHTML=h||`<p class="text-gray-500 text-center py-2">Sin retiros.</p>`});cargarListaCompletaPerfiles();cargarPostulacionesPanelMaster()}
 async function cargarListaCompletaPerfiles(){const c=document.getElementById('lista-perfiles-master-container');try{let s=await db.collection('perfiles').get();globalPerfilesCache=[];s.forEach(d=>{globalPerfilesCache.push({id:d.id,...d.data()})});renderizarListaPerfilesPanel()}catch(e){c.innerHTML=`<p class="text-red-400 text-center py-2">Error.</p>`}}
 function filtrarListaPerfilesPanel(){renderizarListaPerfilesPanel()}
 function renderizarListaPerfilesPanel(){const c=document.getElementById('lista-perfiles-master-container'),f=document.getElementById('filtro-perfil-panel').value.toLowerCase().trim();let h='';for(let p of globalPerfilesCache){if(f&&!(p.username||'').toLowerCase().includes(f)&&!(p.gamerId||'').toLowerCase().includes(f))continue;h+=`<div class="bg-[#030712] border border-gray-800 p-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2"><div class="space-y-0.5"><div class="flex items-center gap-1.5"><span class="font-black text-amber-400">@${p.username||'Gamer'}</span><span class="text-[9px] text-amber-300 font-mono">(${p.gamerId||'SK-00000'})</span></div><div class="flex flex-wrap gap-1"><span class="text-[8px] px-1.5 py-0.5 rounded font-bold ${p.esVip?'bg-yellow-500/20 text-yellow-300':'bg-gray-800 text-gray-500'}">${p.esVip?'VIP':'ESTÁNDAR'}</span><span class="text-[8px] px-1.5 py-0.5 rounded font-bold ${p.admin?'bg-purple-500/20 text-purple-300':'bg-gray-800 text-gray-500'}">${p.admin?'ADMIN':'USUARIO'}</span><span class="text-[8px] px-1.5 py-0.5 rounded font-bold ${p.vendedorAutorizado?'bg-amber-500/20 text-amber-400':'bg-gray-800 text-gray-500'}">${p.vendedorAutorizado?'VENDEDOR':'NORMAL'}</span></div></div><div class="flex flex-wrap gap-1"><button onclick="toggleVipMaster('${p.id}',${!p.esVip})" class="bg-yellow-500 text-gray-950 px-2.5 py-1 rounded-xl text-[9px] font-bold">${p.esVip?'Quitar VIP':'Dar VIP'}</button><button onclick="toggleAdminMaster('${p.id}',${!p.admin})" class="bg-purple-600 text-white px-2.5 py-1 rounded-xl text-[9px] font-bold">${p.admin?'Quitar Admin':'Dar Admin'}</button><button onclick="toggleVendedorMaster('${p.id}',${!p.vendedorAutorizado})" class="bg-amber-500 text-gray-950 px-2.5 py-1 rounded-xl text-[9px] font-bold">${p.vendedorAutorizado?'Quitar Vend':'Dar Vend'}</button><button onclick="toggleVerificadoMaster('${p.id}',${!p.badgeVerificado})" class="bg-emerald-600 text-white px-2.5 py-1 rounded-xl text-[9px] font-bold">${p.badgeVerificado?'Quitar Ticket':'Dar Ticket'}</button><button onclick="toggleBloquearMaster('${p.id}',${!p.bloqueado})" class="${p.bloqueado?'bg-emerald-600':'bg-red-600'} text-white px-2.5 py-1 rounded-xl text-[9px] font-bold">${p.bloqueado?'Desbloquear':'Bloquear'}</button></div></div>`}c.innerHTML=h||`<p class="text-gray-500 text-center py-2">No encontrado.</p>`}
@@ -610,8 +775,6 @@ async function toggleVendedorMaster(u,v){await db.collection('perfiles').doc(u).
 async function toggleVerificadoMaster(u,v){await db.collection('perfiles').doc(u).update({badgeVerificado:v});await enviarNotificacionAUsuario(u,"🟢 Ticket Verde",v?"Insignia verde otorgada.":"Insignia retirada.");mostrarToast(v?"Ticket verde otorgado":"Ticket verde retirado");cargarListaCompletaPerfiles()}
 async function toggleBloquearMaster(u,v){await db.collection('perfiles').doc(u).update({bloqueado:v});await enviarNotificacionAUsuario(u,"⚠️ Estado",v?"Cuenta suspendida.":"Cuenta reactivada.");mostrarToast(v?"Usuario bloqueado":"Usuario desbloqueado");cargarListaCompletaPerfiles()}
 async function gestionarAdminPorId(v){const id=document.getElementById('admin-target-id-input').value.trim();if(!id)return;const s=await db.collection('perfiles').where('gamerId','==',id).get();if(s.empty){mostrarAlertaToast("Error","ID Gamer no encontrado.");return}const u=s.docs[0].id;await db.collection('perfiles').doc(u).update({admin:v});await enviarNotificacionAUsuario(u,"🛡️ Rol Admin",v?"Rol Admin concedido.":"Rol Admin retirado.");mostrarToast(v?"Admin concedido":"Admin retirado");document.getElementById('admin-target-id-input').value='';cargarListaCompletaPerfiles()}
-async function aprobarVendedorAutorizadoReal(i,u){await db.collection('postulaciones_vendedores').doc(i).update({estado:'aprobado',comentarioDueño:'Postulación Aprobada.'});await db.collection('perfiles').doc(u).update({vendedorAutorizado:true,badgeVerificado:true,insigniaAviso:"🛡️ ¡Tu postulación a Vendedor Oficial ha sido APROBADA!"});await enviarNotificacionAUsuario(u,"🎉 ¡Postulación Aprobada!",'Ya puedes publicar ofertas.');mostrarToast("Vendedor aprobado.");cargarPostulacionesPanelMaster()}
-async function rechazarPostulacionVendedorReal(i,u){await db.collection('postulaciones_vendedores').doc(i).update({estado:'rechazado',comentarioDueño:'Rechazada.'});await enviarNotificacionAUsuario(u,"❌ Postulación Rechazada",'Tu solicitud ha sido rechazada.');mostrarToast("Postulación rechazada.");cargarPostulacionesPanelMaster()}
 async function autorizarPagoVendedorReal(i,u,p){await db.collection('transacciones').doc(i).update({estado:'completado_pago'});const w=db.collection('wallets').doc(u),d=await w.get();let sal=(d.exists?d.data().saldoDisponible:0)+p;await w.set({saldoDisponible:sal},{merge:true});await enviarNotificacionAUsuario(u,"💰 ¡Pago Liberado!",`Se acreditaron $${p} CLP a tu billetera.`);mostrarToast("Pago liberado.")}
 async function aprobarRetiroReal(i){await db.collection('retiros').doc(i).update({estado:'completado'});mostrarToast("Retiro aprobado.")}
 async function enviarNotificacionMasivaTodos(){const t=document.getElementById('masiva-titulo-input').value.trim(),m=document.getElementById('masiva-mensaje-input').value.trim();if(!t||!m)return;await db.collection('notificaciones').add({paraUid:'TODOS',titulo:t,mensaje:m,leido:false,fecha:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('masiva-titulo-input').value='';document.getElementById('masiva-mensaje-input').value='';mostrarToast("Notificación masiva enviada.")}
