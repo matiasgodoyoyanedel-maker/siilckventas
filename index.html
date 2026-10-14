@@ -10,11 +10,11 @@ body{touch-action:manipulation;background-color:#070a12;color:#f3f4f6;font-famil
 </head>
 <body class="antialiased min-h-screen flex flex-col selection:bg-amber-500 selection:text-gray-950">
 
-<!-- MODAL MANTENIMIENTO GLOBAL -->
-<div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[300] p-4 animate-page backdrop-blur-md"><div class="web-card max-w-md w-full p-6 rounded-2xl space-y-4 text-center shadow-2xl animate-page maint-pulse-box border border-amber-500/30"><div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-gray-950 flex items-center justify-center text-3xl mx-auto shadow-xl"><i class="fas fa-tools"></i></div><div class="space-y-1.5"><span class="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[9px] font-black uppercase px-3 py-0.5 rounded-full tracking-widest">⚠️ MANTENIMIENTO EN PROGRESO</span><h3 class="text-xl font-black text-white tracking-wider">MODO MANTENIMIENTO</h3><p id="mantenimiento-global-desc" class="text-xs text-gray-300 leading-relaxed bg-[#030712]/90 p-3 rounded-xl border border-amber-500/20 font-medium">Estamos optimizando el sistema. Volveremos muy pronto.</p></div></div></div>
+<!-- MODAL MANTENIMIENTO GLOBAL CON HORA DE CHILE -->
+<div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[300] p-4 animate-page backdrop-blur-md"><div class="web-card max-w-md w-full p-6 rounded-2xl space-y-4 text-center shadow-2xl animate-page maint-pulse-box border border-amber-500/30"><div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-gray-950 flex items-center justify-center text-3xl mx-auto shadow-xl"><i class="fas fa-tools"></i></div><div class="space-y-1.5"><span class="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[9px] font-black uppercase px-3 py-0.5 rounded-full tracking-widest">⚠️ MANTENIMIENTO EN PROGRESO</span><h3 class="text-xl font-black text-white tracking-wider">MODO MANTENIMIENTO</h3><p id="mantenimiento-global-desc" class="text-xs text-gray-300 leading-relaxed bg-[#030712]/90 p-3 rounded-xl border border-amber-500/20 font-medium">Mantenimiento todos los fines de semana a las 8:00 PM (Hora de Chile - CLST/CLT). Volveremos muy pronto.</p></div></div></div>
 
 <!-- PANEL MANTENIMIENTO DUEÑO -->
-<div id="modal-panel-mantenimiento-owner" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-[250] p-4 animate-page"><div class="web-card max-w-sm w-full p-5 rounded-2xl border border-amber-500/40 space-y-4 shadow-2xl animate-page"><div class="flex justify-between items-center border-b border-gray-800 pb-2.5"><div class="flex items-center space-x-2"><div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold"><i class="fas fa-screwdriver-wrench"></i></div><div><h3 class="text-xs font-black text-amber-400 uppercase">Gestión Mantenimiento</h3><p class="text-[9px] text-gray-400 font-bold">Solo Dueño</p></div></div><button onclick="cerrarModalMantenimientoOwner()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div class="space-y-3 text-xs"><div class="bg-[#0b0f19] p-3 rounded-xl border border-amber-500/20 space-y-2"><div class="flex justify-between items-center"><span class="font-bold text-white text-xs flex items-center gap-1.5"><i class="fas fa-power-off text-amber-400"></i> Mantenimiento</span><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="mantenimiento-toggle-checkbox" onchange="alternarEstadoMantenimientoOwner(this.checked)" class="sr-only peer"><div class="w-9 h-5 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div></label></div><p class="text-[9px] text-gray-400">Guarda estado persistente.</p></div><div class="space-y-1"><label class="block text-[9px] uppercase font-bold text-amber-400">Mensaje de Mantenimiento</label><textarea id="mantenimiento-desc-input" rows="2" placeholder="Escribe el motivo..." class="w-full bg-[#030712] border border-gray-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"></textarea><button onclick="guardarDescripcionMantenimientoOwner()" class="w-full bg-amber-500 hover:bg-amber-400 text-gray-950 font-black py-2 rounded-xl text-xs uppercase tracking-wider shadow"><i class="fas fa-save mr-1"></i> Guardar Mensaje</button></div></div></div></div>
+<div id="modal-panel-mantenimiento-owner" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-[250] p-4 animate-page"><div class="web-card max-w-sm w-full p-5 rounded-2xl border border-amber-500/40 space-y-4 shadow-2xl animate-page"><div class="flex justify-between items-center border-b border-gray-800 pb-2.5"><div class="flex items-center space-x-2"><div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold"><i class="fas fa-screwdriver-wrench"></i></div><div><h3 class="text-xs font-black text-amber-400 uppercase">Gestión Mantenimiento</h3><p class="text-[9px] text-gray-400 font-bold">Solo Dueño</p></div></div><button onclick="cerrarModalMantenimientoOwner()" class="text-gray-400 hover:text-white text-xs"><i class="fas fa-times"></i></button></div><div class="space-y-3 text-xs"><div class="bg-[#0b0f19] p-3 rounded-xl border border-amber-500/20 space-y-2"><div class="flex justify-between items-center"><span class="font-bold text-white text-xs flex items-center gap-1.5"><i class="fas fa-power-off text-amber-400"></i> Mantenimiento</span><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="mantenimiento-toggle-checkbox" onchange="alternarEstadoMantenimientoOwner(this.checked)" class="sr-only peer"><div class="w-9 h-5 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div></label></div><p class="text-[9px] text-gray-400">Guarda estado persistente.</p></div><div class="space-y-1"><label class="block text-[9px] uppercase font-bold text-amber-400">Motivo y Aviso de Mantenimiento</label><textarea id="mantenimiento-desc-input" rows="2" placeholder="Ej: Aviso: en 30 minutos se realizará un mantenimiento..." class="w-full bg-[#030712] border border-gray-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"></textarea><div class="flex gap-2 pt-1"><button onclick="guardarDescripcionMantenimientoOwner()" class="flex-1 bg-amber-500 hover:bg-amber-400 text-gray-950 font-black py-2 rounded-xl text-xs uppercase tracking-wider shadow"><i class="fas fa-save mr-1"></i> Guardar Motivo</button><button onclick="mandarAvisoPrevioMantenimiento()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2 rounded-xl text-xs uppercase tracking-wider shadow"><i class="fas fa-bell mr-1"></i> Mandar Aviso</button></div></div></div></div></div>
 
 <canvas id="canvas-bg"></canvas><div id="recaptcha-container"></div>
 <div id="modal-recompensa-diaria" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-[240] p-4 animate-page"><div class="web-card max-w-sm w-full p-6 rounded-2xl border border-yellow-500/50 space-y-4 text-center shadow-2xl animate-page gold-glow"><div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-300 text-gray-950 flex items-center justify-center text-3xl mx-auto shadow-lg"><i class="fas fa-coins"></i></div><h3 class="text-lg font-black text-yellow-400 uppercase">Recompensa Diaria Siilck</h3><p class="text-xs text-gray-200">¡Inicia sesión diariamente! <span id="recompensa-diaria-texto-bono">Recibe <b class="text-yellow-400">200 Monedas Siilck</b> gratis.</span></p><div class="space-y-2"><button id="btn-reclamar-modal-diario" onclick="reclamarMonedasDiariasReal()" class="w-full bg-gradient-to-r from-yellow-500 to-amber-400 hover:brightness-110 text-gray-950 font-black py-3 rounded-xl text-xs uppercase shadow-lg">🪙 Reclamar Monedas</button><button onclick="cerrarModalRecompensaDiaria()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2 rounded-xl text-xs">Cerrar</button></div></div></div>
@@ -131,7 +131,7 @@ body{touch-action:manipulation;background-color:#070a12;color:#f3f4f6;font-famil
     <div class="web-card border border-yellow-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 gold-glow relative overflow-hidden">
       <div class="flex items-center justify-between border-b border-gray-800 pb-4"><div class="flex items-center space-x-3"><div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-300 text-gray-950 flex items-center justify-center text-3xl font-black shadow-lg animate-elite-badge"><i class="fas fa-crown"></i></div><div><span class="text-[9px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 px-2.5 py-0.5 rounded-full font-black uppercase">Membresía Web Elite</span><h3 class="text-lg font-black text-white">PASE GAMER VIP</h3></div></div><span id="user-vip-status-badge" class="text-xs bg-gray-800 text-gray-400 px-3 py-1 rounded-full font-bold uppercase border border-gray-700">Estado: Estándar</span></div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs"><div class="bg-[#030712]/90 p-4 rounded-2xl border border-yellow-500/20 space-y-1"><div class="flex items-center gap-2 text-yellow-400 font-bold text-sm"><i class="fas fa-bolt"></i> <span>Doble Monedas Diarias</span></div><p class="text-gray-300 text-xs">Recibe <b class="text-yellow-400">400 Monedas Siilck</b> cada 24 horas.</p></div><div class="bg-[#030712]/90 p-4 rounded-2xl border border-yellow-500/20 space-y-1"><div class="flex items-center gap-2 text-amber-400 font-bold text-sm"><i class="fas fa-star"></i> <span>Destacados Gratis</span></div><p class="text-gray-300 text-xs">Incluye <b class="text-amber-400">3 Destacados Neón gratis/mes</b>.</p></div></div>
-      <div class="bg-[#0f172a] p-5 rounded-2xl border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-4"><div><span class="text-2xl font-black text-yellow-400">$2.990 CLP</span><span class="text-gray-400 text-xs"> / mes</span></div><button id="btn-activar-pase-vip" onclick="adquirirPaseVipReal()" class="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-amber-400 text-gray-950 font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg">👑 Adquirir VIP Ahora</button></div>
+      <div class="bg-[#0f172a] p-5 rounded-2xl border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-4"><div><span class="text-2xl font-black text-yellow-400">$2.990 CLP</span><span class="text-gray-400 text-xs"> / mes</span><p class="text-[11px] text-amber-300 font-medium mt-1">✨ Pronto tendrás más opciones VIP en un futuro mantenimiento.</p></div><button id="btn-activar-pase-vip" onclick="adquirirPaseVipReal()" class="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-amber-400 text-gray-950 font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg">👑 Adquirir VIP Ahora</button></div>
     </div>
   </div>
 
@@ -256,7 +256,7 @@ body{touch-action:manipulation;background-color:#070a12;color:#f3f4f6;font-famil
   <div class="relative bg-[#0f172a] rounded-2xl border border-gray-800 overflow-hidden flex items-center justify-center min-h-[180px]"><button onclick="cambiarFotoModalPub(-1)" id="btn-prev-foto-pub" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs z-10 hidden"><i class="fas fa-chevron-left"></i></button><img id="modal-pub-foto-principal" src="https://via.placeholder.com/300" class="max-h-60 object-contain w-full rounded-xl"><button onclick="cambiarFotoModalPub(1)" id="btn-next-foto-pub" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs z-10 hidden"><i class="fas fa-chevron-right"></i></button><span id="modal-pub-foto-counter" class="absolute bottom-2 right-2 bg-black/80 text-amber-400 border border-amber-500/30 text-[9px] font-bold px-2.5 py-0.5 rounded-full hidden">1/1</span></div>
   <div><h3 id="modal-pub-titulo" class="text-sm font-bold text-white mb-1">--</h3><div class="flex gap-2 mb-2"><span id="modal-pub-nivel-tag" class="text-[9px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2.5 py-0.5 rounded-full font-bold">--</span></div><p id="modal-pub-desc" class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">--</p></div>
 
-  <!-- CREDENCIALES PRIVADAS: BLOQUEADAS HASTA CONFIRMAR PAGO O SER DUEÑO -->
+  <!-- CREDENCIALES PRIVADAS -->
   <div id="modal-credenciales-compradas-box" class="hidden bg-emerald-500/10 border border-emerald-500/40 p-4 rounded-2xl space-y-2 animate-page">
     <h4 class="text-xs font-black text-emerald-400 uppercase flex items-center gap-1.5"><i class="fas fa-check-circle"></i> 🎉 ¡Pago Verificado o Acceso de Dueño! Credenciales Exclusivas:</h4>
     <div class="bg-[#030712] p-3 rounded-xl border border-emerald-500/30 space-y-1 text-xs text-gray-200 font-mono">
@@ -284,7 +284,7 @@ body{touch-action:manipulation;background-color:#070a12;color:#f3f4f6;font-famil
 <div id="modal-retiro" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 animate-page"><div class="web-card border border-gray-800 rounded-3xl max-w-sm w-full p-6 space-y-4 animate-page"><h3 class="text-xs font-bold text-white">Solicitar Retiro Bancario</h3><input type="number" id="retiro-monto" class="w-full bg-[#0f172a] border border-gray-800 rounded-xl p-3 text-xs text-white" placeholder="Monto ($20.000 mín)"><textarea id="retiro-banco" rows="2" class="w-full bg-[#0f172a] border border-gray-800 rounded-xl p-3 text-xs text-white" placeholder="Datos bancarios completos"></textarea><div class="flex space-x-2"><button onclick="closeRetirarModal()" class="w-1/2 bg-gray-800 text-white py-2.5 rounded-xl text-xs font-bold">Cancelar</button><button onclick="enviarSolicitudRetiro()" class="w-1/2 bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold">Enviar</button></div></div></div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],globalPerfilesCache=[],loginMethod='email',registerMethod='email',windowConfirmationResult=null,colorFondoActual='azul',difusionInterval=null,multiplicadorVelocidad=1,cuentaRegresivaMonedasInterval=null,activeChatP2PId=null,fotosPubActuales=[],fotoPubActualIndex=0,emailCheckInterval=null,pubActualSeleccionadaObj=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],globalPerfilesCache=[],loginMethod='email',registerMethod='email',windowConfirmationResult=null,colorFondoActual='azul',difusionInterval=null,multiplicadorVelocidad=1,cuentaRegresivaMonedasInterval=null,activeChatP2PId=null,fotosPubActuales=[],fotoPubActualIndex=0,emailCheckInterval=null,pubActualSeleccionadaObj=null,realtimeAvisoIdLast=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 const FLOW_API_KEY="21F9D7B5-7BD5-4DE0-8BAC-52367LE54085";
 
@@ -311,7 +311,8 @@ function mostrarLoader(t,m){document.getElementById('loading-title').innerText=t
 function switchAuthTab(t){['login','register'].forEach(x=>{document.getElementById(`tab-${x}`).className=t===x?"w-1/2 pb-2 text-xs font-bold text-amber-400 border-b-2 border-amber-400 transition":"w-1/2 pb-2 text-xs font-bold text-gray-400 border-b-2 border-transparent transition";document.getElementById(`form-${x}`).classList.toggle('hidden',t!==x)})}
 function setLoginMethod(m){loginMethod=m;['email','phone'].forEach(x=>{document.getElementById(`log-meth-${x}`).className=m===x?"flex-1 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30":"flex-1 py-1.5 rounded-xl text-xs font-bold bg-[#0f172a] text-gray-400 border border-gray-800";document.getElementById(`login-${x}-container`).classList.toggle('hidden',m!==x)})}
 function setRegisterMethod(m){registerMethod=m;['email','phone'].forEach(x=>{document.getElementById(`reg-meth-${x}`).className=m===x?"flex-1 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30":"flex-1 py-1.5 rounded-xl text-xs font-bold bg-[#0f172a] text-gray-400 border border-gray-800";document.getElementById(`register-${x}-container`).classList.toggle('hidden',m!==x)})}
-function toggleMenuTresPuntos(){document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')}function toggleAiChat(){document.getElementById('ai-chat-box').classList.toggle('hidden')}function abrirModalGuiaVendedor(){document.getElementById('modal-guia-vendedor').classList.remove('hidden');document.getElementById('modal-guia-vendedor').classList.add('flex')}function cerrarModalGuiaVendedor(){document.getElementById('modal-guia-vendedor').classList.add('hidden');document.getElementById('modal-guia-vendedor').classList.remove('flex')}function abrirModalNotificaciones(){document.getElementById('modal-notificaciones').classList.remove('hidden');document.getElementById('modal-notificaciones').classList.add('flex');cargarNotificacionesUsuario()}function cerrarModalNotificaciones(){document.getElementById('modal-notificaciones').classList.add('hidden');document.getElementById('modal-notificaciones').classList.remove('flex')}
+function toggleMenuTresPuntos(){document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')}function toggleAiChat(){document.getElementById('ai-chat-box').classList.toggle('hidden')}function abrirModalGuiaVendedor(){document.getElementById('modal-guia-vendedor').classList.remove('hidden');document.getElementById('modal-guia-vendedor').classList.add('flex')}function cerrarModalGuiaVendedor(){document.getElementById('modal-guia-vendedor').classList.add('hidden');document.getElementById('modal-guia-vendedor').classList.remove('flex')}
+function abrirModalNotificaciones(){document.getElementById('modal-notificaciones').classList.remove('hidden');document.getElementById('modal-notificaciones').classList.add('flex');cargarNotificacionesUsuario()}function cerrarModalNotificaciones(){document.getElementById('modal-notificaciones').classList.add('hidden');document.getElementById('modal-notificaciones').classList.remove('flex')}
 
 async function enviarNotificacionAUsuario(u,t,m){try{await db.collection('notificaciones').add({paraUid:u,titulo:t,mensaje:m,leido:false,fecha:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){}}
 function cargarNotificacionesUsuario(){if(!auth.currentUser)return;const c=document.getElementById('notificaciones-lista-container');db.collection('notificaciones').where('paraUid','in',[auth.currentUser.uid,'TODOS']).orderBy('fecha','desc').onSnapshot(s=>{let h='',hn=false;s.forEach(d=>{const n=d.data();if(!n.leido)hn=true;h+=`<div class="bg-[#030712] border ${n.leido?'border-gray-800':'border-amber-500/50 gold-glow'} p-3 rounded-2xl space-y-1"><div class="flex justify-between items-center"><span class="font-black text-amber-400 text-xs">${n.titulo}</span><span class="text-[9px] text-gray-500">SiilckVentas</span></div><p class="text-xs text-gray-200 leading-snug">${n.mensaje}</p></div>`});document.getElementById('nav-notif-badge').classList.toggle('hidden',!hn);c.innerHTML=h||`<p class="text-gray-500 text-center py-4">Sin notificaciones.</p>`})}
@@ -368,6 +369,7 @@ if(e){
   document.getElementById('menu-btn-chat-owner').classList.add('hidden');
   document.getElementById('btn-sec-owner').classList.add('hidden');
 }
+escucharAvisosGlobalesMantenimiento();
 mostrarHeroBuscadorLimpio();ocultarLoader()}else{if(heartbeatInterval)clearInterval(heartbeatInterval);if(emailCheckInterval)clearInterval(emailCheckInterval);document.getElementById('view-auth').classList.remove('hidden');document.getElementById('view-dashboard').classList.add('hidden');document.getElementById('auth-nav-area').classList.add('hidden');document.getElementById('verify-email-screen').classList.add('hidden');document.getElementById('banned-screen').classList.add('hidden');ocultarLoader()}});
 
 function mostrarHeroBuscadorLimpio(){['vip','foro','monedas','tickets','chatp2p','billetera','perfil','publicar','owner'].forEach(x=>{const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden')});document.getElementById('hero-buscador-limpio').classList.remove('hidden');document.getElementById('seccion-mercado').classList.add('hidden');actualizarBotonesSubNav('inicio')}
@@ -439,7 +441,8 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-precio').innerText=`$${p.precio} CLP`;
 
   const credencialesBox=document.getElementById('modal-credenciales-compradas-box');
-  const esAdminDueño=(auth.currentUser&&(auth.currentUser.uid===OWNER_UID||currentUserData?.admin||p.vendedorUid===auth.currentUser.uid));
+  const esDueñoAbsoluto=(auth.currentUser&&auth.currentUser.uid===OWNER_UID);
+  const esAdminOGuía=(auth.currentUser&&(auth.currentUser.uid===OWNER_UID||currentUserData?.admin||p.vendedorUid===auth.currentUser.uid));
   
   let compradoPorMi=false;
   try{
@@ -447,8 +450,7 @@ async function abrirModalPub(id){
     if(!compQ.empty) compradoPorMi=true;
   }catch(e){}
 
-  // SEGURIDAD ESTRICTA: Las credenciales SOLO se muestran si ya pagó o es el dueño/admin
-  if(esAdminDueño||compradoPorMi){
+  if(esAdminOGuía||compradoPorMi){
     credencialesBox.classList.remove('hidden');
     document.getElementById('ver-correo-privado').innerText=p.correoPrivado||'No registrado';
     document.getElementById('ver-clave-privada').innerText=p.clavePrivada||'No registrada';
@@ -460,7 +462,7 @@ async function abrirModalPub(id){
 
   const btnEditar=document.getElementById('modal-pub-editar-btn');
   const btnEliminar=document.getElementById('modal-pub-eliminar-btn');
-  if(esAdminDueño){
+  if(auth.currentUser&&(esDueñoAbsoluto||p.vendedorUid===auth.currentUser.uid)){
     btnEditar.classList.remove('hidden');
     btnEliminar.classList.remove('hidden');
   }else{
@@ -535,10 +537,15 @@ async function enviarSolicitudRetiro(){if(!auth.currentUser)return;const m=parse
 
 function prepararEdicionPublicacionModal(){
   if(!pubActualSeleccionadaObj) return;
+  const esDueñoAbsoluto=(auth.currentUser&&auth.currentUser.uid===OWNER_UID);
+  if(!esDueñoAbsoluto && pubActualSeleccionadaObj.vendedorUid!==auth.currentUser?.uid){
+    mostrarAlertaToast("Acceso denegado","Solo el dueño o el creador pueden editar.");
+    return;
+  }
   cerrarModalPub();
   cambiarSeccion('publicar');
   document.getElementById('pub-edit-id').value = pubActualSeleccionadaObj.id;
-  document.getElementById('pub-form-title').innerText = "Editar Publicación (Admin)";
+  document.getElementById('pub-form-title').innerText = "Editar Publicación";
   document.getElementById('btn-pub-accion-form').innerText = "Guardar Cambios";
   document.getElementById('pub-titulo').value = pubActualSeleccionadaObj.titulo || '';
   document.getElementById('pub-juego').value = pubActualSeleccionadaObj.juego || 'Steam Key';
@@ -555,9 +562,9 @@ function prepararEdicionPublicacionModal(){
 
 async function eliminarPublicacionActual(){
   if(!pubActualSeleccionadaObj || !auth.currentUser) return;
-  const esAdminDueño = (auth.currentUser.uid === OWNER_UID || currentUserData?.admin || pubActualSeleccionadaObj.vendedorUid === auth.currentUser.uid);
-  if(!esAdminDueño){
-    mostrarAlertaToast("Acceso denegado","No puedes eliminar publicaciones de otros usuarios.");
+  const esDueñoAbsoluto=(auth.currentUser.uid===OWNER_UID);
+  if(!esDueñoAbsoluto && pubActualSeleccionadaObj.vendedorUid!==auth.currentUser.uid){
+    mostrarAlertaToast("Acceso denegado","No puedes eliminar esta publicación.");
     return;
   }
   if(!confirm("¿Estás seguro de eliminar esta publicación de forma permanente?")) return;
@@ -602,7 +609,6 @@ async function crearOActualizarPublicacion(){
       }
     }
     
-    // CREAR ENLACE FLOW DINÁMICO CON EL PRECIO REAL INGRESADO (ej. $9.600 CLP)
     let linkFlowGenerado="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c";
     try{
       const orderId="PUB-"+auth.currentUser.uid+"-"+Date.now();
@@ -616,9 +622,9 @@ async function crearOActualizarPublicacion(){
     }catch(e){}
 
     const payloadData = {
-      vendedorUid:auth.currentUser.uid,
-      vendedorUsername:currentUserData.username||'Admin',
-      vendedorGamerId:currentUserData.gamerId||'SK-00000',
+      vendedorUid: editId && pubActualSeleccionadaObj ? pubActualSeleccionadaObj.vendedorUid : auth.currentUser.uid,
+      vendedorUsername: editId && pubActualSeleccionadaObj ? pubActualSeleccionadaObj.vendedorUsername : (currentUserData.username||'Admin'),
+      vendedorGamerId: editId && pubActualSeleccionadaObj ? pubActualSeleccionadaObj.vendedorGamerId : (currentUserData.gamerId||'SK-00000'),
       titulo:t,
       juego:j,
       precio:p,
@@ -689,13 +695,62 @@ async function autorizarPagoVendedorReal(i,u,p){await db.collection('transaccion
 async function aprobarRetiroReal(i){await db.collection('retiros').doc(i).update({estado:'completado'});mostrarToast("Retiro aprobado.")}
 async function enviarNotificacionMasivaTodos(){const t=document.getElementById('masiva-titulo-input').value.trim(),m=document.getElementById('masiva-mensaje-input').value.trim();if(!t||!m)return;await db.collection('notificaciones').add({paraUid:'TODOS',titulo:t,mensaje:m,leido:false,fecha:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('masiva-titulo-input').value='';document.getElementById('masiva-mensaje-input').value='';mostrarToast("Notificación masiva enviada.")}
 
-function escucharEstadoMantenimientoGlobal(){db.collection('configuracion').doc('mantenimiento').onSnapshot(d=>{const dt=d.exists?d.data():{};const a=dt.activo||false;const mm=document.getElementById('modal-mantenimiento-global');const desc=dt.descripcion||'Estamos optimizando el sistema.';document.getElementById('mantenimiento-global-desc').innerText=desc;const chk=document.getElementById('mantenimiento-toggle-checkbox');if(chk) chk.checked=a;if(a&&(!auth.currentUser||auth.currentUser.uid!==OWNER_UID)){mm.classList.remove('hidden');mm.classList.add('flex')}else{mm.classList.add('hidden');mm.classList.remove('flex')}})}
+function escucharAvisosGlobalesMantenimiento(){
+  db.collection('configuracion').doc('mantenimiento').onSnapshot(d=>{
+    const dt=d.exists?d.data():{};
+    const a=dt.activo||false;
+    const mm=document.getElementById('modal-mantenimiento-global');
+    const desc=dt.descripcion||'Mantenimiento todos los fines de semana a las 8:00 PM (Hora de Chile - CLST/CLT). Volveremos muy pronto.';
+    document.getElementById('mantenimiento-global-desc').innerText=desc;
+    const chk=document.getElementById('mantenimiento-toggle-checkbox');
+    if(chk) chk.checked=a;
+    const descInput=document.getElementById('mantenimiento-desc-input');
+    if(descInput && document.activeElement!==descInput && !descInput.value) descInput.value=desc;
+    
+    if(dt.ultimoAvisoId && dt.ultimoAvisoId!==realtimeAvisoIdLast){
+      realtimeAvisoIdLast=dt.ultimoAvisoId;
+      if(!auth.currentUser||auth.currentUser.uid!==OWNER_UID){
+        mostrarAlertaToast("⚠️ Aviso", dt.avisoTexto || "Aviso: en 30 minutos se realizará un mantenimiento.");
+      }
+    }
+    
+    if(a&&(!auth.currentUser||auth.currentUser.uid!==OWNER_UID)){
+      mm.classList.remove('hidden');
+      mm.classList.add('flex');
+    }else{
+      mm.classList.add('hidden');
+      mm.classList.remove('flex');
+    }
+  });
+}
+
 function abrirModalMantenimientoOwner(){document.getElementById('modal-panel-mantenimiento-owner').classList.remove('hidden');document.getElementById('modal-panel-mantenimiento-owner').classList.add('flex')}
 function cerrarModalMantenimientoOwner(){document.getElementById('modal-panel-mantenimiento-owner').classList.add('hidden');document.getElementById('modal-panel-mantenimiento-owner').classList.remove('flex')}
-async function alternarEstadoMantenimientoOwner(a){await db.collection('configuracion').doc('mantenimiento').set({activo:a},{merge:true});if(a){const m=document.getElementById('mantenimiento-desc-input').value||'Mantenimiento preventivo en curso.';await db.collection('configuracion').doc('mantenimiento').set({descripcion:m},{merge:true});await db.collection('notificaciones').add({paraUid:'TODOS',titulo:'🛠️ Modo Mantenimiento Activado',mensaje:m,leido:false,fecha:firebase.firestore.FieldValue.serverTimestamp()});mostrarToast('Mantenimiento activado y guardado.')}else{mostrarToast('Mantenimiento desactivado.')}}
-async function guardarDescripcionMantenimientoOwner(){const m=document.getElementById('mantenimiento-desc-input').value.trim();if(!m)return;await db.collection('configuracion').doc('mantenimiento').set({descripcion:m},{merge:true});mostrarToast('Mensaje guardado.')}
+async function alternarEstadoMantenimientoOwner(a){
+  const m=document.getElementById('mantenimiento-desc-input').value.trim()||'Mantenimiento todos los fines de semana a las 8:00 PM (Hora de Chile).';
+  await db.collection('configuracion').doc('mantenimiento').set({activo:a,descripcion:m},{merge:true});
+  if(a){
+    await db.collection('notificaciones').add({paraUid:'TODOS',titulo:'🛠️ Modo Mantenimiento Activado',mensaje:m,leido:false,fecha:firebase.firestore.FieldValue.serverTimestamp()});
+    mostrarToast('Mantenimiento activado y guardado.');
+  }else{
+    mostrarToast('Mantenimiento desactivado.');
+  }
+}
+async function guardarDescripcionMantenimientoOwner(){
+  const m=document.getElementById('mantenimiento-desc-input').value.trim();
+  if(!m)return;
+  await db.collection('configuracion').doc('mantenimiento').set({descripcion:m},{merge:true});
+  mostrarToast('Motivo guardado.');
+}
+async function mandarAvisoPrevioMantenimiento(){
+  const m=document.getElementById('mantenimiento-desc-input').value.trim()||'Aviso: en 30 minutos se realizará un mantenimiento.';
+  const avisoId="aviso-"+Date.now();
+  await db.collection('configuracion').doc('mantenimiento').set({ultimoAvisoId:avisoId,avisoTexto:m},{merge:true});
+  await db.collection('notificaciones').add({paraUid:'TODOS',titulo:'⚠️ Aviso de Mantenimiento',mensaje:m,leido:false,fecha:firebase.firestore.FieldValue.serverTimestamp()});
+  mostrarToast('🔔 Aviso enviado a todos los usuarios.');
+}
 
-esc escucharEstadoMantenimientoGlobal();
+escucharAvisosGlobalesMantenimiento();
 </script>
 </body>
 </html>
