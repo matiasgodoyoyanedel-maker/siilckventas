@@ -10,13 +10,13 @@
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
-  .web-panel{background:rgba(18,18,24,0.85);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+  .web-panel{background:rgba(18,18,24,0.9);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   .vip-banner-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 35px rgba(234,179,8,0.25)}
-  .gold-text{background:linear-gradient(135deg, #facc15 0%, #ca8a04 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
   .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
+  .radio-warranty{accent-color:#eab308}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
@@ -28,7 +28,7 @@
     <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-lock"></i></div>
     <div class="space-y-1.5">
       <h3 class="text-lg font-bold font-heading text-white tracking-wide">Autenticación Requerida</h3>
-      <p class="text-xs text-zinc-400 leading-relaxed">Para publicar ofertas o realizar compras directas en el Marketplace, debes iniciar sesión en tu cuenta.</p>
+      <p class="text-xs text-zinc-400 leading-relaxed">Para publicar ofertas o realizar compras seguras con Escrow, debes iniciar sesión en tu cuenta.</p>
     </div>
     <div class="pt-2">
       <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar Sesión Ahora</a>
@@ -40,7 +40,7 @@
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
 
-<!-- HEADER CORPORATIVO WEB -->
+<!-- HEADER CORPORATIVO -->
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="cambiarSeccion('inicio')">
@@ -48,7 +48,6 @@
       <div><span class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Marketplace Global & Escrow</span></div>
     </div>
     
-    <!-- BUSCADOR SUPERIOR -->
     <div class="hidden md:flex flex-grow max-w-xl relative mx-4">
       <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Steam Key, Free Fire, Fortnite..." class="w-full bg-zinc-900/90 border border-zinc-800 focus:border-yellow-500 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none transition">
       <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-xs"></i>
@@ -65,7 +64,6 @@
         </div>
       </div>
 
-      <!-- MENÚ DESPLEGABLE -->
       <div class="relative">
         <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition"><i class="fas fa-bars"></i></button>
         <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-60 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
@@ -91,23 +89,21 @@
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col items-center">
 <section id="view-dashboard" class="w-full space-y-6 animate-page">
   
-  <!-- BARRA DE NAVEGACIÓN DE SECCIONES -->
   <div class="web-panel rounded-2xl p-2.5 max-w-4xl mx-auto"><div class="flex items-center justify-center gap-3 overflow-x-auto hide-scrollbar">
     <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 hover:text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
     <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace</button>
     <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP Creador</button>
   </div></div>
 
-  <!-- SECCIÓN INICIO / BUSCADOR -->
   <div id="seccion-inicio" class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-6 text-center shadow-2xl max-w-4xl mx-auto w-full">
     <div class="max-w-2xl mx-auto space-y-4">
-      <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Marketplace Gamer Profesional</span>
-      <h2 class="text-3xl md:text-4xl font-extrabold font-heading text-white">Encuentra y Compra Cuentas Verificadas</h2>
+      <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Marketplace Gamer con Escrow Protegido</span>
+      <h2 class="text-3xl md:text-4xl font-extrabold font-heading text-white">Compra y Vende con Seguridad Absoluta</h2>
       <div class="relative pt-2"><i class="fas fa-search absolute left-4.5 top-1/2 -translate-y-1/2 text-yellow-400 text-sm"></i><input type="text" id="hero-search-input" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="Buscar por juego, título o región (Ej: Free Fire, LATAM...)" class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl pl-12 pr-4 py-4 text-xs md:text-sm text-white focus:outline-none focus:border-yellow-500 shadow-inner"></div>
     </div>
   </div>
 
-  <!-- SECCIÓN MARKETPLACE (LISTADO DE OFERTAS) -->
+  <!-- MARKETPLACE LISTADO DE CUENTAS -->
   <div id="seccion-mercado" class="hidden space-y-5 max-w-7xl mx-auto w-full animate-page">
     <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
       <div>
@@ -119,7 +115,47 @@
     <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
   </div>
 
-  <!-- SECCIÓN APARTADO PLAN VIP (PANCARTA LLAMATIVA AMARILLA Y NEGRA, TIPOGRAFÍA CURVA/ELEGANTE) -->
+  <!-- VISTA DE PERFIL DE VENDENDOR (ESTILO ELDORADO) -->
+  <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
+    <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">← Volver al Marketplace</button>
+    <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+        <div id="vendedor-perfil-logo-box" class="w-20 h-20 rounded-2xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shadow-xl shrink-0"><i class="fas fa-user"></i></div>
+        <div class="space-y-1 flex-grow">
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <h3 id="vendedor-perfil-nombre" class="text-xl font-black text-white">--</h3>
+            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i> Verificado</span>
+          </div>
+          <p id="vendedor-perfil-stats" class="text-xs text-zinc-400"><i class="fas fa-thumbs-up text-emerald-400 mr-1"></i> 99.1% Positivo • 100% Confiable • Conectado</p>
+        </div>
+      </div>
+
+      <!-- PESTAÑAS DE VENDEDOR: TIENDA, RESEÑAS, INFORMACIÓN -->
+      <div class="flex border-b border-zinc-800 gap-6 text-xs font-bold">
+        <button onclick="cambiarTabPerfilVendedor('tienda')" id="tab-btn-tienda" class="pb-3 text-yellow-400 border-b-2 border-yellow-400 transition">Tienda de Cuentas</button>
+        <button onclick="cambiarTabPerfilVendedor('resenas')" id="tab-btn-resenas" class="pb-3 text-zinc-400 hover:text-white transition">Reseñas y Opiniones</button>
+      </div>
+
+      <div id="tab-content-tienda" class="space-y-4">
+        <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+      </div>
+
+      <div id="tab-content-resenas" class="hidden space-y-3">
+        <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-xs space-y-2">
+          <div class="flex items-center justify-between"><b class="text-yellow-400">@GamerComprador99</b><span class="text-zinc-500 text-[10px]">Hace 2 días</span></div>
+          <p class="text-zinc-300">"Excelente vendedor, entrega inmediata de la cuenta de Free Fire con los datos limpios. 100% recomendado."</p>
+          <div class="text-amber-400 text-[10px]"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        </div>
+        <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-xs space-y-2">
+          <div class="flex items-center justify-between"><b class="text-yellow-400">@ProPlayer_CL</b><span class="text-zinc-500 text-[10px]">Hace 1 semana</span></div>
+          <p class="text-zinc-300">"Todo perfecto y protegido con el sistema Escrow. Sin ningún problema."</p>
+          <div class="text-amber-400 text-[10px]"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAN VIP CREADOR -->
   <div id="seccion-vip" class="hidden space-y-4 max-w-3xl mx-auto animate-page">
     <div class="vip-banner-box rounded-3xl p-8 md:p-10 space-y-6 text-center relative overflow-hidden">
       <div class="absolute -top-12 -right-12 w-48 h-48 bg-yellow-500/15 rounded-full blur-3xl pointer-events-none"></div>
@@ -127,29 +163,27 @@
         <i class="fas fa-crown"></i>
       </div>
 
-      <!-- ESTADO 1: NO TIENE VIP -->
       <div id="vip-card-no-activo" class="space-y-6">
         <div class="space-y-2">
-          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Membresía Creador Elite</span>
-          <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">OBTÉN TU PLAN VIP A TAN SOLO $2.990 CLP</h3>
-          <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Eleva tus ventas al máximo nivel con beneficios exclusivos de vendedor verificado.</p>
+          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Membresía Anti-Estafas Creador</span>
+          <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">PLAN VIP VENDEDOR - $2.990 CLP</h3>
+          <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Paga tu membresía para publicar con total confianza. Los estafadores no pagan planes; esta membresía garantiza que eres un vendedor verificado y serio.</p>
         </div>
 
         <div class="bg-zinc-950/90 border border-yellow-500/30 p-5 rounded-2xl text-left space-y-3 max-w-lg mx-auto text-xs md:text-sm text-zinc-200">
-          <div class="flex items-center gap-3"><i class="fas fa-fire text-yellow-400 text-base w-5 text-center"></i> <span><b>Borde estelar exclusivo</b> para destacar tus publicaciones.</span></div>
-          <div class="flex items-center gap-3"><i class="fas fa-shield-alt text-emerald-400 text-base w-5 text-center"></i> <span><b>Insignia de Vendedor Verificado Premium</b> en tu perfil.</span></div>
-          <div class="flex items-center gap-3"><i class="fas fa-layer-group text-yellow-400 text-base w-5 text-center"></i> <span><b>Más de 10 publicaciones diarias</b> sin restricciones.</span></div>
-          <div class="flex items-center gap-3"><i class="fas fa-coins text-yellow-400 text-base w-5 text-center"></i> <span><b>Doble recompensa en monedas</b> (400 monedas cada 24h).</span></div>
+          <div class="flex items-center gap-3"><i class="fas fa-shield-alt text-emerald-400 text-base w-5 text-center"></i> <span><b>Insignia de Vendedor Confiable y Verificado</b>.</span></div>
+          <div class="flex items-center gap-3"><i class="fas fa-fire text-yellow-400 text-base w-5 text-center"></i> <span><b>Borde estelar brillante</b> en tus publicaciones del marketplace.</span></div>
+          <div class="flex items-center gap-3"><i class="fas fa-layer-group text-yellow-400 text-base w-5 text-center"></i> <span><b>Publicaciones ilimitadas</b> sin restricciones al día.</span></div>
+          <div class="flex items-center gap-3"><i class="fas fa-coins text-yellow-400 text-base w-5 text-center"></i> <span><b>Doble recompensa diaria</b> (400 monedas cada 24h).</span></div>
         </div>
 
         <div class="pt-2">
           <button onclick="manejarBotonPlanVip()" class="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-amber-400 hover:brightness-110 text-zinc-950 font-black px-10 py-4 rounded-2xl text-xs md:text-sm uppercase tracking-wider shadow-2xl transition transform hover:scale-105 inline-flex items-center justify-center gap-2">
-            <i class="fas fa-crown text-base"></i> Comprar Plan VIP Creador ($2.990 CLP)
+            <i class="fas fa-crown text-base"></i> Obtener Plan VIP / Vendedor ($2.990 CLP)
           </button>
         </div>
       </div>
 
-      <!-- ESTADO 2: VIP ACTIVO (CUENTA REGRESIVA 1 MES) -->
       <div id="vip-card-activo" class="hidden space-y-6">
         <div class="space-y-2">
           <span class="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest"><i class="fas fa-check-circle mr-1"></i> Vendedor VIP Activo</span>
@@ -158,7 +192,7 @@
         </div>
 
         <div class="bg-zinc-950 border-2 border-yellow-500/50 p-6 rounded-2xl max-w-md mx-auto space-y-3 text-center shadow-2xl">
-          <span class="block text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Tiempo Restantes de tu Membresía (1 Mes)</span>
+          <span class="block text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Tiempo Restante de tu Membresía (1 Mes)</span>
           <div id="vip-countdown-timer" class="text-xl md:text-2xl font-black text-yellow-400 font-mono tracking-wider">Calculando...</div>
           <p class="text-[11px] text-zinc-400">Tus ofertas muestran flama estelar en el marketplace.</p>
         </div>
@@ -167,7 +201,7 @@
     </div>
   </div>
 
-  <!-- APARTADO MARKETPLACE: PUBLICAR CUENTA AVANZADO -->
+  <!-- PUBLICAR EN MARKETPLACE -->
   <div id="seccion-publicar" class="hidden space-y-5 max-w-2xl mx-auto web-panel rounded-3xl p-8 shadow-2xl animate-page border border-zinc-800">
     <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
       <div>
@@ -182,7 +216,7 @@
       
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1.5">Juego / Categoría *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-3 text-white focus:outline-none focus:border-yellow-500"><option value="Free Fire">Free Fire</option><option value="Steam Key">Steam Key 🔑</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option></select></div>
-        <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1.5">Precio ($ CLP) *</label><input type="number" id="pub-precio" placeholder="Ej: 14900" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"></div>
+        <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1.5">Precio Real ($ CLP) *</label><input type="number" id="pub-precio" placeholder="Ej: 32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"></div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -193,7 +227,6 @@
 
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1.5">Biografía y Detalles de la Cuenta *</label><textarea id="pub-descripcion" rows="3" placeholder="Describe los personajes, armas, rangos o aspectos incluidos..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none focus:outline-none focus:border-yellow-500"></textarea></div>
 
-      <!-- CARGA DE FOTO: ARRASTRAR O SELECCIONAR DESDE EL TELÉFONO -->
       <div>
         <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1.5">Fotografía de la Cuenta / Captura</label>
         <div class="drag-drop-zone rounded-2xl p-6 text-center cursor-pointer relative bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
@@ -218,9 +251,10 @@
   </div>
 
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
-    <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3"><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer</h3>
+    <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3"><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer & Logo</h3>
     <div class="space-y-3 text-xs">
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre Usuario (@)</label><input type="text" id="user-username" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">URL de tu Logo (Ej: https://... o Emoji/Letras)</label><input type="text" id="user-logo" placeholder="Emoji o Link de imagen" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
       <button onclick="guardarPerfilEstricto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow">Guardar Cambios</button>
     </div>
@@ -233,25 +267,65 @@
 </section>
 </main>
 
-<!-- MODAL DE DETALLES Y COMPRA DE CUENTA -->
-<div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4">
-  <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page">
+<!-- MODAL DE DETALLES Y COMPRA DE CUENTA (CON FOTO CLARA Y GARANTÍA SUMABLE) -->
+<div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
+  <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
     <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
-    <div id="modal-foto-preview-box" class="w-full h-40 bg-zinc-900 rounded-2xl overflow-hidden hidden flex items-center justify-center border border-zinc-800"><img id="modal-pub-img" src="" class="w-full h-full object-cover"></div>
+    
+    <!-- FOTO CLARA Y GRANDE DE LA CUENTA -->
+    <div id="modal-foto-preview-box" class="w-full h-52 bg-zinc-900 rounded-2xl overflow-hidden hidden flex items-center justify-center border border-zinc-800 shadow-xl"><img id="modal-pub-img" src="" class="w-full h-full object-cover"></div>
+    
     <div class="space-y-1 border-b border-zinc-800 pb-3">
       <h3 id="modal-pub-titulo" class="text-base font-extrabold font-heading text-white">--</h3>
       <div class="flex flex-wrap gap-2 pt-1 text-[11px]" id="modal-pub-tags"></div>
     </div>
+
+    <!-- TARJETA DEL VENDEDOR (CLICKEABLE PARA VER SU PERFIL Y RESEÑAS) -->
+    <div onclick="abrirPerfilVendedorDesdeModal()" class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/50 transition">
+      <div class="flex items-center gap-3">
+        <div id="modal-vendedor-logo" class="w-10 h-10 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden"><i class="fas fa-user"></i></div>
+        <div>
+          <span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor VIP</span>
+          <span class="text-[10px] text-emerald-400"><i class="fas fa-thumbs-up mr-1"></i> 99.1% (11,406 reseñas)</span>
+        </div>
+      </div>
+      <span class="text-xs text-yellow-400 font-bold underline">Ver Tienda →</span>
+    </div>
+
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
+
+    <!-- OPCIONES DE GARANTÍA -->
+    <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
+      <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Amplía tu garantía Escrow</span></div>
+      <p class="text-[11px] text-zinc-400">Recupera tu dinero si te banean o pierdes el acceso.</p>
+      
+      <div class="space-y-2 text-xs">
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer hover:border-yellow-500/50 transition">
+          <div class="flex items-center gap-2.5"><input type="radio" name="garantia" value="0" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días de garantía</span></div>
+          <span class="text-emerald-400 font-bold">Gratis</span>
+        </label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer hover:border-yellow-500/50 transition">
+          <div class="flex items-center gap-2.5"><input type="radio" name="garantia" value="2841" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses de protección</span></div>
+          <span class="text-yellow-400 font-bold">+2.841 CLP</span>
+        </label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer hover:border-yellow-500/50 transition">
+          <div class="flex items-center gap-2.5"><input type="radio" name="garantia" value="3977" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>6 meses de protección</span></div>
+          <span class="text-yellow-400 font-bold">+3.977 CLP</span>
+        </label>
+      </div>
+    </div>
+
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
-      <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Precio Escrow</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio">$0 CLP</span></div>
-      <button onclick="manejarCompraMarketplace()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow transition">Comprar con Escrow</button>
+      <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Total con Garantía</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span></div>
+      <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow transition inline-flex items-center gap-2">
+        <i class="fas fa-shopping-cart"></i> Comprar con Flow
+      </a>
     </div>
   </div>
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,countdownTimerInterval=null,fotoBase64Seleccionada="";
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,countdownTimerInterval=null,fotoBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="";
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
@@ -272,7 +346,6 @@ const auth=firebase.auth(),db=firebase.firestore();
 function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
 
-// REGLA: SI NO ESTÁ LOGEADO, MUESTRA EL MODAL PARA INICIAR SESIÓN (NO PERMITE PUBLICAR NI COMPRAR)
 function verificarLoginAccion(callback){
   if(!auth.currentUser){
     document.getElementById('modal-sesion-requerida').classList.remove('hidden');
@@ -284,7 +357,7 @@ function verificarLoginAccion(callback){
 
 function cambiarSeccion(s){
   if(s==='owner'&&(!auth.currentUser||auth.currentUser.uid!==OWNER_UID)){mostrarAlertaToast("Acceso Denegado","Solo el dueño.");return;}
-  ['inicio','mercado','vip','publicar','monedas','perfil','owner'].forEach(x=>{
+  ['inicio','mercado','vip','publicar','monedas','perfil','perfil-vendedor','owner'].forEach(x=>{
     const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');
   });
   const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
@@ -305,7 +378,7 @@ auth.onAuthStateChanged(async(u)=>{
   if(u){
     const r=db.collection('perfiles').doc(u.uid);let d=await r.get();
     if(!d.exists){
-      currentUserData={uid:u.uid,gamerId:"SK-"+Math.floor(10000+Math.random()*90000),username:"Gamer",monedasSiilck:200,esVendedorVip:false,vipExpira:null};
+      currentUserData={uid:u.uid,gamerId:"SK-"+Math.floor(10000+Math.random()*90000),username:"Gamer",logo:"👑",monedasSiilck:200,esVendedorVip:false,vipExpira:null};
       await r.set(currentUserData);
     }else{currentUserData=d.data();}
     
@@ -315,6 +388,10 @@ auth.onAuthStateChanged(async(u)=>{
     document.getElementById('nav-user-email').innerText=currentUserData.username||"Gamer";
     document.getElementById('nav-monedas-contador').innerText=`${currentUserData.monedasSiilck||0} Monedas`;
     
+    document.getElementById('user-username').value = currentUserData.username || "";
+    document.getElementById('user-logo').value = currentUserData.logo || "";
+    document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
+
     if(u.uid===OWNER_UID){
       document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');
     }
@@ -426,17 +503,24 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const esVipPub = p.esVip || false;
     const cardClass = esVipPub ? "web-panel border-2 border-yellow-400 rounded-2xl cursor-pointer p-4 space-y-3 shadow-xl relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
     const badgeVip = esVipPub ? `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Elite</span>` : '';
-    const imgHtml = p.foto ? `<div class="w-full h-32 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : '';
+    const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
+    
+    const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs">`;
 
-    h+=`<div class="${cardClass}" onclick="abrirModalPub('${p.id}')">
-      ${imgHtml}
-      <div class="flex justify-between items-start"><h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> ${badgeVip}</div>
-      <div class="flex items-center gap-1.5 text-[10px] text-zinc-400">
+    h+=`<div class="${cardClass}">
+      <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
+      <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> ${badgeVip}</div>
+      <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')">
         <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span>
         <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Región: ${p.region || 'N/A'}</span>
-        <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">${p.vinculo || 'Google'}</span>
       </div>
-      <div class="flex justify-between items-center pt-1"><span class="text-yellow-400 font-extrabold text-xs">$${p.precio} CLP</span><span class="text-[9px] text-zinc-400 uppercase font-bold">${p.juego}</span></div>
+      <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
+        <div onclick="abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
+          <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
+          <span class="text-[11px] font-bold text-zinc-300 hover:text-yellow-400">${p.vendedorNombre || 'Vendedor'}</span>
+        </div>
+        <span class="text-yellow-400 font-extrabold text-xs" onclick="abrirModalPub('${p.id}')">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span>
+      </div>
     </div>`;
   });
   g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles que coincidan con la búsqueda.</p>`;
@@ -444,9 +528,19 @@ function renderizarGridPublicaciones(ps, filtro=""){
 
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
+  precioBasePublicacionActual = parseInt(p.precio) || 0;
+  vendedorActualUidCache = p.vendedorUid;
+  
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción detallada.';
-  document.getElementById('modal-pub-precio').innerText=`$${p.precio} CLP`;
+  document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor VIP";
+  
+  const logoBox = document.getElementById('modal-vendedor-logo');
+  if(p.vendedorLogo){
+    logoBox.innerHTML = p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-sm">${p.vendedorLogo}</span>`;
+  }else{
+    logoBox.innerHTML = `<i class="fas fa-user text-xs"></i>`;
+  }
   
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
@@ -464,8 +558,71 @@ async function abrirModalPub(id){
     <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">🔗 Vínculo: ${p.vinculo || 'Google'}</span>
   `;
 
+  document.querySelectorAll('input[name="garantia"]')[0].checked = true;
+  actualizarPrecioTotalModal();
+
   document.getElementById('modal-pub-detalles').classList.remove('hidden');
   document.getElementById('modal-pub-detalles').classList.add('flex');
+}
+
+function actualizarPrecioTotalModal(){
+  const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
+  const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const total = precioBasePublicacionActual + costoGarantia;
+  document.getElementById('modal-pub-precio-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+}
+
+function abrirPerfilVendedorDesdeModal(){
+  document.getElementById('modal-pub-detalles').classList.add('hidden');
+  abrirPerfilVendedorPorUid(vendedorActualUidCache);
+}
+
+async function abrirPerfilVendedorPorUid(uid){
+  cambiarSeccion('perfil-vendedor');
+  const pDoc = await db.collection('perfiles').doc(uid).get();
+  let nombre = "Vendedor VIP", logo = "👑";
+  if(pDoc.exists){
+    const d = pDoc.data();
+    nombre = d.username || "Vendedor";
+    logo = d.logo || "👑";
+  }
+
+  document.getElementById('vendedor-perfil-nombre').innerText = nombre;
+  const logoPerfilBox = document.getElementById('vendedor-perfil-logo-box');
+  logoPerfilBox.innerHTML = logo.startsWith('http') ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">${logo}</span>`;
+
+  // Filtrar publicaciones de este vendedor
+  const grid = document.getElementById('vendedor-tienda-grid');
+  let h = "";
+  globalPublicacionesCache.forEach(p => {
+    if(p.vendedorUid === uid){
+      h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2" onclick="abrirModalPub('${p.id}')">
+        <div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div>
+        <h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4>
+        <div class="flex justify-between items-center"><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span><span class="text-[9px] text-zinc-400">${p.juego}</span></div>
+      </div>`;
+    }
+  });
+  grid.innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">Este vendedor no tiene publicaciones activas.</p>`;
+}
+
+function cambiarTabPerfilVendedor(tab){
+  const btnTienda = document.getElementById('tab-btn-tienda');
+  const btnResenas = document.getElementById('tab-btn-resenas');
+  const contTienda = document.getElementById('tab-content-tienda');
+  const contResenas = document.getElementById('tab-content-resenas');
+
+  if(tab === 'tienda'){
+    btnTienda.className = "pb-3 text-yellow-400 border-b-2 border-yellow-400 transition";
+    btnResenas.className = "pb-3 text-zinc-400 hover:text-white transition";
+    contTienda.classList.remove('hidden');
+    contResenas.classList.add('hidden');
+  }else{
+    btnResenas.className = "pb-3 text-yellow-400 border-b-2 border-yellow-400 transition";
+    btnTienda.className = "pb-3 text-zinc-400 hover:text-white transition";
+    contResenas.classList.remove('hidden');
+    contTienda.classList.add('hidden');
+  }
 }
 
 async function crearPublicacionMarketplace(){
@@ -494,6 +651,8 @@ async function crearPublicacionMarketplace(){
 
   await db.collection('publicaciones').add({
     vendedorUid: auth.currentUser.uid,
+    vendedorNombre: currentUserData.username || "Vendedor",
+    vendedorLogo: currentUserData.logo || "👑",
     titulo: titulo,
     juego: juego,
     precio: precio,
@@ -511,19 +670,18 @@ async function crearPublicacionMarketplace(){
   cargarPublicaciones();
 }
 
-function manejarCompraMarketplace(){
-  if(!auth.currentUser){
-    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
-    document.getElementById('modal-sesion-requerida').classList.add('flex');
-    return;
-  }
-  window.open("https://www.flow.cl/btn.php?token=pb44df8f3fba5d7cb939837f9104123ca21f984d", "_blank");
-}
-
 async function guardarPerfilEstricto(){
-  if(!auth.currentUser)return;const un=document.getElementById('user-username').value.trim(),mp=document.getElementById('user-metodo-pago').value.trim();if(!un)return;
-  await db.collection('perfiles').doc(auth.currentUser.uid).update({username:un,metodoPago:mp});
-  currentUserData.username=un;document.getElementById('nav-user-email').innerText=un;mostrarToast("Perfil guardado.");
+  if(!auth.currentUser)return;
+  const un=document.getElementById('user-username').value.trim();
+  const logo=document.getElementById('user-logo').value.trim();
+  const mp=document.getElementById('user-metodo-pago').value.trim();
+  if(!un)return;
+
+  await db.collection('perfiles').doc(auth.currentUser.uid).update({username:un, logo:logo, metodoPago:mp});
+  currentUserData.username=un;
+  currentUserData.logo=logo;
+  document.getElementById('nav-user-email').innerText=un;
+  mostrarToast("¡Perfil y Logo guardados con éxito!");
 }
 
 function reclamarMonedasDiariasReal(){mostrarToast("🪙 ¡Monedas reclamadas con éxito!");}
