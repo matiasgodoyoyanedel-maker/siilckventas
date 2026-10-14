@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel Master - Aprobaciones & Control</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel Master - Dueño Absoluto</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -16,46 +16,52 @@
 <div class="max-w-4xl w-full space-y-6">
   <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black shadow-lg"><i class="fas fa-shield-alt"></i></div>
+      <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black shadow-lg"><i class="fas fa-crown"></i></div>
       <div>
-        <h2 class="text-lg font-black text-white">Panel Master Exclusivo</h2>
-        <p class="text-xs text-zinc-400">Control absoluto y sincronización en tiempo real</p>
+        <h2 class="text-lg font-black text-white">Panel Master del Dueño</h2>
+        <p class="text-xs text-zinc-400">Control total y sincronización</p>
       </div>
     </div>
-    <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver a la Web</a>
+    <div class="flex items-center gap-2">
+      <button onclick="toggleMiVipDueño()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-4 py-2.5 rounded-xl text-xs uppercase shadow transition">👑 Activar/Desactivar Mi VIP</button>
+      <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver</a>
+    </div>
   </div>
 
-  <!-- CONTROL DE MANTENIMIENTO Y TEMÁTICAS -->
+  <!-- CONTROL DE TEMÁTICAS Y AVISOS -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-      <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-palette mr-1.5"></i> Temáticas de Temporada & Fondo</h3>
+      <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-palette mr-1.5"></i> Temáticas Notorias</h3>
       <div class="grid grid-cols-2 gap-2.5 text-xs">
-        <button onclick="cambiarTematicaGlobal('default')" class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold transition">🌌 Normal / Espacio</button>
-        <button onclick="cambiarTematicaGlobal('halloween')" class="p-3 rounded-xl bg-zinc-900 border border-orange-500/40 hover:border-orange-500 text-orange-400 font-bold transition">🎃 Halloween</button>
-        <button onclick="cambiarTematicaGlobal('navidad')" class="p-3 rounded-xl bg-zinc-900 border border-rose-500/40 hover:border-rose-500 text-rose-400 font-bold transition">🎄 Navidad</button>
-        <button onclick="cambiarTematicaGlobal('verano')" class="p-3 rounded-xl bg-zinc-900 border border-cyan-500/40 hover:border-cyan-500 text-cyan-400 font-bold transition">☀️ Verano / Neón</button>
+        <button onclick="cambiarTematicaGlobal('default')" class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold transition">🌌 Normal</button>
+        <button onclick="cambiarTematicaGlobal('halloween')" class="p-3 rounded-xl bg-zinc-900 border border-orange-500/40 text-orange-400 font-bold transition">🎃 Halloween</button>
+        <button onclick="cambiarTematicaGlobal('navidad')" class="p-3 rounded-xl bg-zinc-900 border border-rose-500/40 text-rose-400 font-bold transition">🎄 Navidad</button>
+        <button onclick="cambiarTematicaGlobal('verano')" class="p-3 rounded-xl bg-zinc-900 border border-cyan-500/40 text-cyan-400 font-bold transition">☀️ Verano</button>
       </div>
     </div>
 
     <div class="web-panel rounded-3xl p-6 space-y-4 border border-rose-500/30">
-      <h3 class="text-xs font-bold text-rose-400 uppercase"><i class="fas fa-tools mr-1.5"></i> Modo Mantenimiento (2 Horas)</h3>
+      <h3 class="text-xs font-bold text-rose-400 uppercase"><i class="fas fa-tools mr-1.5"></i> Mantenimiento & Aviso Emergente</h3>
       <div class="flex gap-2">
-        <button onclick="toggleModoMantenimiento(true)" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase text-xs shadow transition">Activar (2h)</button>
-        <button onclick="toggleModoMantenimiento(false)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-black py-3 rounded-xl uppercase text-xs shadow transition">Desactivar</button>
+        <button onclick="toggleModoMantenimiento(true)" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-black py-2.5 rounded-xl uppercase text-xs shadow">Activar Mantención (2h)</button>
+        <button onclick="toggleModoMantenimiento(false)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-black py-2.5 rounded-xl uppercase text-xs shadow">Apagar</button>
       </div>
+      <!-- INTERRUPTOR PARA ACTIVAR Y DESACTIVAR EL AVISO -->
+      <button onclick="toggleAvisoMantenimiento(true)" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase shadow">📢 Activar Aviso de Mantención</button>
+      <button onclick="toggleAvisoMantenimiento(false)" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-2 rounded-xl text-xs uppercase">🔕 Desactivar Aviso de Mantención</button>
     </div>
   </div>
 
-  <!-- SOLICITUDES DE POSTULACIÓN DE VENDEDORES (APROBACIÓN MANUAL DEL DUEÑO) -->
+  <!-- SOLICITUDES DE POSTULACIÓN -->
   <div class="web-panel rounded-3xl p-6 space-y-4 border border-yellow-500/30">
-    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-user-clock mr-1.5"></i> Solicitudes Pendientes de Vendedores</h3>
-    <div id="admin-postulaciones-list" class="space-y-2 text-xs"><p class="text-zinc-500">Cargando solicitudes...</p></div>
+    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-id-card mr-1.5"></i> Solicitudes de Postulación Pendientes</h3>
+    <div id="admin-postulaciones-list" class="space-y-3 text-xs"><p class="text-zinc-500">Cargando postulaciones...</p></div>
   </div>
 
-  <!-- GESTIÓN DE USUARIOS Y BLOQUEOS -->
+  <!-- GESTIÓN DE USUARIOS -->
   <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-users mr-1.5"></i> Gestión de Usuarios & IDs Independientes</h3>
-    <div id="admin-usuarios-list" class="space-y-2 text-xs"><p class="text-zinc-500">Cargando usuarios registrados...</p></div>
+    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-users mr-1.5"></i> Gestión de Usuarios</h3>
+    <div id="admin-usuarios-list" class="space-y-2 text-xs"><p class="text-zinc-500">Cargando usuarios...</p></div>
   </div>
 </div>
 
@@ -76,7 +82,7 @@ auth.onAuthStateChanged(async(u)=>{
 
 async function cambiarTematicaGlobal(tema){
   await db.collection('configuracion').doc('global').set({tematica: tema}, {merge: true});
-  alert("✅ Temática aplicada en tiempo real: " + tema.toUpperCase());
+  alert("✅ Temática aplicada: " + tema.toUpperCase());
 }
 
 async function toggleModoMantenimiento(estado){
@@ -85,42 +91,61 @@ async function toggleModoMantenimiento(estado){
   alert(estado ? "🛠️ Mantenimiento activado." : "⚡ Mantenimiento desactivado.");
 }
 
+async function toggleAvisoMantenimiento(estado){
+  const texto = estado ? "Atención: La plataforma entrará en mantenimiento programado pronto." : "";
+  await db.collection('configuracion').doc('global').set({avisoMantenimiento: texto}, {merge: true});
+  alert(estado ? "📢 Aviso de mantención activado." : "🔕 Aviso de mantención desactivado.");
+}
+
+async function toggleMiVipDueño(){
+  const ref = db.collection('perfiles').doc(OWNER_UID);
+  const doc = await ref.get();
+  const actual = doc.exists ? doc.data().esVendedorVip : false;
+  const nuevoEstado = !actual;
+  const unAnoDespues = new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000);
+  
+  await ref.set({
+    esVendedorVip: nuevoEstado,
+    vipExpira: nuevoEstado ? firebase.firestore.Timestamp.fromDate(unAnoDespues) : null
+  }, {merge: true});
+  alert(nuevoEstado ? "👑 ¡Tu Plan VIP de Dueño ha sido Activado!" : "Tu Plan VIP ha sido Desactivado.");
+}
+
 async function cargarPanelControl(){
-  // Cargar solicitudes pendientes de postulación
   db.collection('postulaciones_vendedores').onSnapshot(snapshot => {
     let h = "";
     snapshot.forEach(doc => {
       const p = doc.data();
       const estado = p.estado || 'pendiente';
       if(estado === 'pendiente'){
-        h += `<div class="bg-zinc-900 p-3.5 rounded-xl border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+        const fotoHtml = p.fotoReferencia ? `<div class="w-20 h-20 rounded-xl overflow-hidden bg-zinc-950 border border-zinc-800 mt-2"><img src="${p.fotoReferencia}" class="w-full h-full object-cover"></div>` : '';
+        h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-yellow-500/30 space-y-3">
           <div>
-            <b class="text-white">Usuario UID: ${p.uid}</b>
-            <p class="text-[11px] text-zinc-300 mt-1">Experiencia: ${p.experiencia || 'N/A'}</p>
-            <span class="text-[10px] text-yellow-400 block font-mono">Contacto: ${p.contacto || 'N/A'}</span>
+            <b class="text-white text-sm">Postulante UID: ${p.uid}</b>
+            <p class="text-xs text-zinc-300 mt-1"><b>Motivos / Experiencia:</b> ${p.experiencia || 'N/A'}</p>
+            <span class="text-xs text-yellow-400 block font-mono mt-1">Contacto: ${p.contacto || 'N/A'}</span>
+            ${fotoHtml}
           </div>
-          <div class="flex gap-2">
-            <button onclick="aprobarVendedor('${p.uid}', '${doc.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg">Aprobar Vendedor</button>
-            <button onclick="rechazarVendedor('${doc.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-lg">Rechazar</button>
+          <div class="flex gap-2 pt-2 border-t border-zinc-800">
+            <button onclick="aprobarVendedor('${p.uid}', '${doc.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl">Aprobar Vendedor</button>
+            <button onclick="rechazarVendedor('${doc.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl">Rechazar</button>
           </div>
         </div>`;
       }
     });
-    document.getElementById('admin-postulaciones-list').innerHTML = h || '<p class="text-zinc-500">No hay solicitudes pendientes en este momento.</p>';
+    document.getElementById('admin-postulaciones-list').innerHTML = h || '<p class="text-zinc-500">No hay postulaciones pendientes.</p>';
   });
 
-  // Cargar lista de usuarios
   db.collection('perfiles').onSnapshot(snapshot => {
     let h = "";
     snapshot.forEach(doc => {
       const u = doc.data();
       const bloqueado = u.bloqueado ? `<span class="text-rose-400 font-bold">Bloqueado 🚫</span>` : `<span class="text-emerald-400">Activo ✅</span>`;
-      const esVendedorOficial = u.postuladoFormulario ? `<span class="text-yellow-400 font-bold">Vendedor Aprobado ⭐</span>` : `<span class="text-zinc-500">Usuario Regular</span>`;
       const btnAccion = u.bloqueado ? `<button onclick="toggleBloqueoUser('${doc.id}', false)" class="bg-emerald-600 text-white px-3 py-1 rounded-lg">Desbloquear</button>` : `<button onclick="toggleBloqueoUser('${doc.id}', true)" class="bg-rose-600 text-white px-3 py-1 rounded-lg">Bloquear</button>`;
       
       h += `<div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-2">
         <div>
-          <b class="text-white">@${u.username || 'Gamer'}</b> ${esVendedorOficial}
+          <b class="text-white">@${u.username || 'Gamer'}</b> ${u.postuladoFormulario ? '⭐ Vendedor' : ''}
           <span class="text-[10px] text-zinc-400 block font-mono">ID: ${u.uid}</span>
         </div>
         <div class="flex items-center gap-3">
@@ -136,7 +161,7 @@ async function cargarPanelControl(){
 async function aprobarVendedor(uidUser, formId){
   await db.collection('perfiles').doc(uidUser).update({postuladoFormulario: true});
   await db.collection('postulaciones_vendedores').doc(formId).update({estado: 'aprobado'});
-  alert("✅ ¡Vendedor aprobado con éxito!");
+  alert("✅ ¡Vendedor aprobado!");
 }
 
 async function rechazarVendedor(formId){
@@ -146,7 +171,7 @@ async function rechazarVendedor(formId){
 
 async function toggleBloqueoUser(uid, estado){
   await db.collection('perfiles').doc(uid).update({bloqueado: estado});
-  alert(estado ? "Usuario bloqueado." : "Usuario desbloqueado.");
+  alert(estado ? "Usuario bloqueado." : "Desbloqueado.");
 }
 </script>
 </body>
