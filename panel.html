@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel Master - Mantenimiento & Control</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel Master - Aprobaciones & Control</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -25,7 +25,7 @@
     <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver a la Web</a>
   </div>
 
-  <!-- CONTROL DE TEMÁTICAS Y MANTENIMIENTO CON CONTADOR -->
+  <!-- CONTROL DE MANTENIMIENTO Y TEMÁTICAS -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
       <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-palette mr-1.5"></i> Temáticas de Temporada & Fondo</h3>
@@ -34,23 +34,25 @@
         <button onclick="cambiarTematicaGlobal('halloween')" class="p-3 rounded-xl bg-zinc-900 border border-orange-500/40 hover:border-orange-500 text-orange-400 font-bold transition">🎃 Halloween</button>
         <button onclick="cambiarTematicaGlobal('navidad')" class="p-3 rounded-xl bg-zinc-900 border border-rose-500/40 hover:border-rose-500 text-rose-400 font-bold transition">🎄 Navidad</button>
         <button onclick="cambiarTematicaGlobal('verano')" class="p-3 rounded-xl bg-zinc-900 border border-cyan-500/40 hover:border-cyan-500 text-cyan-400 font-bold transition">☀️ Verano / Neón</button>
-        <button onclick="cambiarTematicaGlobal('noche')" class="col-span-2 p-3 rounded-xl bg-zinc-900 border border-indigo-500/40 hover:border-indigo-500 text-indigo-400 font-bold transition">🌙 Modo Noche Profundo</button>
       </div>
     </div>
 
     <div class="web-panel rounded-3xl p-6 space-y-4 border border-rose-500/30">
       <h3 class="text-xs font-bold text-rose-400 uppercase"><i class="fas fa-tools mr-1.5"></i> Modo Mantenimiento (2 Horas)</h3>
-      <p class="text-xs text-zinc-400">Activa el mantenimiento semanal con cuenta regresiva de 2 horas en vivo para todos los usuarios.</p>
-      
       <div class="flex gap-2">
         <button onclick="toggleModoMantenimiento(true)" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase text-xs shadow transition">Activar (2h)</button>
         <button onclick="toggleModoMantenimiento(false)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-black py-3 rounded-xl uppercase text-xs shadow transition">Desactivar</button>
       </div>
-      <button onclick="enviarAvisoActualizacionBreve()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase shadow transition">📢 Enviar Aviso: "Mantenimiento en Breve"</button>
     </div>
   </div>
 
-  <!-- CONTROL DE USUARIOS (BLOQUEO POR ID INDEPENDIENTE) -->
+  <!-- SOLICITUDES DE POSTULACIÓN DE VENDEDORES (APROBACIÓN MANUAL DEL DUEÑO) -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-yellow-500/30">
+    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-user-clock mr-1.5"></i> Solicitudes Pendientes de Vendedores</h3>
+    <div id="admin-postulaciones-list" class="space-y-2 text-xs"><p class="text-zinc-500">Cargando solicitudes...</p></div>
+  </div>
+
+  <!-- GESTIÓN DE USUARIOS Y BLOQUEOS -->
   <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
     <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-users mr-1.5"></i> Gestión de Usuarios & IDs Independientes</h3>
     <div id="admin-usuarios-list" class="space-y-2 text-xs"><p class="text-zinc-500">Cargando usuarios registrados...</p></div>
@@ -79,32 +81,47 @@ async function cambiarTematicaGlobal(tema){
 
 async function toggleModoMantenimiento(estado){
   const tiempoFin = estado ? new Date().getTime() + (2 * 60 * 60 * 1000) : null;
-  await db.collection('configuracion').doc('global').set({
-    mantenimientoActivo: estado,
-    mantenimientoFin: tiempoFin
-  }, {merge: true});
-  alert(estado ? "🛠️ Mantenimiento semanal de 2 horas activado." : "⚡ Mantenimiento desactivado.");
-}
-
-async function enviarAvisoActualizacionBreve(){
-  await db.collection('configuracion').doc('global').set({
-    avisoMantenimiento: "Mantenimiento semanal en breve. Estén atentos."
-  }, {merge: true});
-  alert("📢 Aviso enviado con éxito.");
+  await db.collection('configuracion').doc('global').set({mantenimientoActivo: estado, mantenimientoFin: tiempoFin}, {merge: true});
+  alert(estado ? "🛠️ Mantenimiento activado." : "⚡ Mantenimiento desactivado.");
 }
 
 async function cargarPanelControl(){
+  // Cargar solicitudes pendientes de postulación
+  db.collection('postulaciones_vendedores').onSnapshot(snapshot => {
+    let h = "";
+    snapshot.forEach(doc => {
+      const p = doc.data();
+      const estado = p.estado || 'pendiente';
+      if(estado === 'pendiente'){
+        h += `<div class="bg-zinc-900 p-3.5 rounded-xl border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <b class="text-white">Usuario UID: ${p.uid}</b>
+            <p class="text-[11px] text-zinc-300 mt-1">Experiencia: ${p.experiencia || 'N/A'}</p>
+            <span class="text-[10px] text-yellow-400 block font-mono">Contacto: ${p.contacto || 'N/A'}</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="aprobarVendedor('${p.uid}', '${doc.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg">Aprobar Vendedor</button>
+            <button onclick="rechazarVendedor('${doc.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-lg">Rechazar</button>
+          </div>
+        </div>`;
+      }
+    });
+    document.getElementById('admin-postulaciones-list').innerHTML = h || '<p class="text-zinc-500">No hay solicitudes pendientes en este momento.</p>';
+  });
+
+  // Cargar lista de usuarios
   db.collection('perfiles').onSnapshot(snapshot => {
     let h = "";
     snapshot.forEach(doc => {
       const u = doc.data();
       const bloqueado = u.bloqueado ? `<span class="text-rose-400 font-bold">Bloqueado 🚫</span>` : `<span class="text-emerald-400">Activo ✅</span>`;
+      const esVendedorOficial = u.postuladoFormulario ? `<span class="text-yellow-400 font-bold">Vendedor Aprobado ⭐</span>` : `<span class="text-zinc-500">Usuario Regular</span>`;
       const btnAccion = u.bloqueado ? `<button onclick="toggleBloqueoUser('${doc.id}', false)" class="bg-emerald-600 text-white px-3 py-1 rounded-lg">Desbloquear</button>` : `<button onclick="toggleBloqueoUser('${doc.id}', true)" class="bg-rose-600 text-white px-3 py-1 rounded-lg">Bloquear</button>`;
       
       h += `<div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-2">
         <div>
-          <b class="text-white">@${u.username || 'Gamer'}</b> 
-          <span class="text-[10px] text-zinc-400 block font-mono">ID Independiente: ${u.uid}</span>
+          <b class="text-white">@${u.username || 'Gamer'}</b> ${esVendedorOficial}
+          <span class="text-[10px] text-zinc-400 block font-mono">ID: ${u.uid}</span>
         </div>
         <div class="flex items-center gap-3">
           ${bloqueado}
@@ -114,6 +131,17 @@ async function cargarPanelControl(){
     });
     document.getElementById('admin-usuarios-list').innerHTML = h || '<p class="text-zinc-500">No hay usuarios.</p>';
   });
+}
+
+async function aprobarVendedor(uidUser, formId){
+  await db.collection('perfiles').doc(uidUser).update({postuladoFormulario: true});
+  await db.collection('postulaciones_vendedores').doc(formId).update({estado: 'aprobado'});
+  alert("✅ ¡Vendedor aprobado con éxito!");
+}
+
+async function rechazarVendedor(formId){
+  await db.collection('postulaciones_vendedores').doc(formId).update({estado: 'rechazado'});
+  alert("Solicitud rechazada.");
 }
 
 async function toggleBloqueoUser(uid, estado){
