@@ -239,12 +239,13 @@
 </section>
 </main>
 
-<!-- MODAL DETALLES -->
+<!-- MODAL DETALLES Y GARANTÍA ESCROW -->
 <div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
   <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
     <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
     <div id="modal-foto-preview-box" class="w-full h-52 bg-zinc-900 rounded-2xl overflow-hidden hidden flex items-center justify-center border border-zinc-800"><img id="modal-pub-img" src="" class="w-full h-full object-cover"></div>
     <h3 id="modal-pub-titulo" class="text-base font-extrabold text-white">--</h3>
+    
     <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="abrirPerfilVendedorDesdeModal()">
         <div id="modal-vendedor-logo" class="w-12 h-12 rounded-xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shadow"></div>
@@ -252,7 +253,10 @@
       </div>
       <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 font-extrabold px-3.5 py-2 rounded-xl text-xs"><i class="fas fa-comment-dots"></i> Chatear</button>
     </div>
+    
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
+
+    <!-- CANTIDAD -->
     <div class="flex items-center justify-between bg-zinc-950 p-3 rounded-2xl border border-zinc-800 text-xs">
       <span class="text-zinc-400 font-bold">Cantidad (Stock: <span id="modal-stock-max" class="text-white">1</span>):</span>
       <div class="flex items-center gap-2">
@@ -261,7 +265,24 @@
         <button onclick="cambiarCantidadModal(1)" class="w-7 h-7 rounded-lg bg-zinc-900 text-white font-bold">+</button>
       </div>
     </div>
-    <button onclick="agregarAlCarritoDesdeModal()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-yellow-400 border border-yellow-500/40 font-black py-3 rounded-xl text-xs uppercase shadow"><i class="fas fa-shopping-cart mr-2"></i> Me interesa, lo pensaré (Añadir al Carrito)</button>
+
+    <!-- GARANTÍA ESCROW -->
+    <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
+      <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
+      <div class="space-y-2 text-xs">
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
+      </div>
+    </div>
+
+    <div class="space-y-2 pt-2 border-t border-zinc-800">
+      <div class="flex justify-between items-center text-xs font-bold text-zinc-400">
+        <span>Total Estimado:</span>
+        <span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span>
+      </div>
+      <button onclick="agregarAlCarritoDesdeModal()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-yellow-400 border border-yellow-500/40 font-black py-3 rounded-xl text-xs uppercase shadow"><i class="fas fa-shopping-cart mr-2"></i> Me interesa, lo pensaré (Añadir al Carrito)</button>
+      <button onclick="comprarConFlowVerificado()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3 rounded-xl text-xs uppercase shadow">Comprar con Flow Ahora</button>
+    </div>
   </div>
 </div>
 
@@ -275,7 +296,6 @@ function initCanvas(){
 }
 function animateCanvas(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  // Color base según canvas o tema
   ctx.fillStyle='transparent';ctx.fillRect(0,0,canvas.width,canvas.height);
   estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234, 179, 8, ${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});
   requestAnimationFrame(animateCanvas);
@@ -345,13 +365,15 @@ auth.onAuthStateChanged(async(u)=>{
         document.getElementById('modal-mantenimiento-global').classList.add('hidden');
       }
 
-      if(cfg.avisoMantenimiento && sessionStorage.getItem("aviso_visto") !== "true"){
+      // AVISO DE MANTENIMIENTO ÚNICO (SI ESTÁ ACTIVADO Y NO VISTO)
+      if(cfg.avisoMantenimiento && cfg.avisoMantenimiento.trim() !== "" && sessionStorage.getItem("aviso_visto") !== "true"){
         document.getElementById('texto-aviso-mantenimiento').innerText = cfg.avisoMantenimiento;
         document.getElementById('modal-aviso-mantenimiento').classList.remove('hidden');
         document.getElementById('modal-aviso-mantenimiento').classList.add('flex');
+      }else{
+        document.getElementById('modal-aviso-mantenimiento').classList.add('hidden');
       }
 
-      // FONDOS TEMÁTICOS NOTORIOS E INMERSIVOS
       aplicarTematicaNotoria(cfg.tematica || 'default');
     }
   });
@@ -384,19 +406,18 @@ auth.onAuthStateChanged(async(u)=>{
   }
 });
 
-// APLICAR TEMÁTICAS NOTORIAS
 function aplicarTematicaNotoria(tema){
   if(tema === 'halloween'){
-    document.body.style.backgroundColor = '#1a0500'; // Naranja oscuro terrorífico muy notorio
+    document.body.style.backgroundColor = '#1a0500';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #ff5500 0%, #1a0500 70%)';
   }else if(tema === 'navidad'){
-    document.body.style.backgroundColor = '#02180a'; // Verde pino navideño muy notorio
+    document.body.style.backgroundColor = '#02180a';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #059669 0%, #02180a 70%)';
   }else if(tema === 'verano'){
-    document.body.style.backgroundColor = '#021024'; // Azul neón veraniego muy notorio
+    document.body.style.backgroundColor = '#021024';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #0284c7 0%, #021024 70%)';
   }else{
-    document.body.style.backgroundColor = '#09090b'; // Espacio normal
+    document.body.style.backgroundColor = '#09090b';
     document.body.style.backgroundImage = 'none';
   }
 }
@@ -429,7 +450,7 @@ function manejarSeleccionFoto(input){
 }
 
 async function manejarBotonPlanVip(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
   const unMesDespues = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
   await db.collection('perfiles').doc(auth.currentUser.uid).update({
     esVendedorVip: true,
@@ -477,6 +498,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
   pubActualObjeto = {id: d.id, ...p};
+  precioBasePublicacionActual = parseInt(p.precio) || 0;
   vendedorActualUidCache = p.vendedorUid;
   publicacionActualIdCache = id;
   stockMaximoModal = parseInt(p.stock) || 1;
@@ -498,6 +520,9 @@ async function abrirModalPub(id){
   const imgEl = document.getElementById('modal-pub-img');
   if(p.foto){imgEl.src = p.foto;fotoBox.classList.remove('hidden');}else{fotoBox.classList.add('hidden');}
 
+  document.querySelectorAll('input[name="garantia"]')[0].checked = true;
+  actualizarPrecioTotalModal();
+
   document.getElementById('modal-pub-detalles').classList.remove('hidden');
   document.getElementById('modal-pub-detalles').classList.add('flex');
 }
@@ -507,11 +532,23 @@ function cambiarCantidadModal(delta){
   if(nueva >= 1 && nueva <= stockMaximoModal){
     cantidadSeleccionadaModal = nueva;
     document.getElementById('modal-cantidad-val').innerText = cantidadSeleccionadaModal;
+    actualizarPrecioTotalModal();
   }
 }
 
+function actualizarPrecioTotalModal(){
+  const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
+  const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const total = (precioBasePublicacionActual * cantidadSeleccionadaModal) + costoGarantia;
+  document.getElementById('modal-pub-precio-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+}
+
 async function agregarAlCarritoDesdeModal(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('hidden');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  
+  const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
+  const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+
   const uid = auth.currentUser.uid;
   const itemRef = db.collection('carritos').doc(uid).collection('items').doc(pubActualObjeto.id);
   
@@ -526,11 +563,16 @@ async function agregarAlCarritoDesdeModal(){
     foto: pubActualObjeto.foto || "",
     cantidadSeleccionada: cantidadSeleccionadaModal,
     stockMax: stockMaximoModal,
-    costoGarantia: 0,
+    costoGarantia: costoGarantia,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
   });
 
   setTimeout(()=>{window.location.href="carrito.html";}, 800);
+}
+
+function comprarConFlowVerificado(){
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  window.open("https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c", "_blank");
 }
 
 function abrirPerfilVendedorDesdeModal(){
@@ -539,7 +581,7 @@ function abrirPerfilVendedorDesdeModal(){
 }
 
 async function iniciarChatPrivadoVendedor(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('hidden');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
   if(auth.currentUser.uid === vendedorActualUidCache){mostrarAlertaToast("Aviso", "No puedes chatear contigo mismo.");return;}
 
   document.getElementById('modal-pub-detalles').classList.add('hidden');
