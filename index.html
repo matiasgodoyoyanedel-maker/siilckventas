@@ -26,21 +26,19 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<!-- MODAL MANTENIMIENTO GLOBAL (CON CUENTA REGRESIVA DE 2 HORAS - BLOQUEO TOTAL) -->
+<!-- MODAL MANTENIMIENTO GLOBAL -->
 <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[500] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto animate-bounce"><i class="fas fa-tools"></i></div>
     <h3 class="text-xl font-black text-white">Mantenimiento Semanal</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed">Estamos realizando mejoras críticas en la plataforma y pasarela Escrow.</p>
+    <p class="text-xs text-zinc-300 leading-relaxed">Estamos realizando mejoras críticas en la plataforma.</p>
     <div id="mantenimiento-countdown" class="text-2xl font-black text-rose-400 font-mono tracking-wider pt-2">02:00:00</div>
-    <span class="text-[10px] text-zinc-500 block">El sitio volverá a estar disponible automáticamente al finalizar.</span>
   </div>
 </div>
 
-<!-- MODAL BLOQUEO DE USUARIO (CON CORREO DE SOPORTE) -->
+<!-- MODAL BLOQUEO DE USUARIO -->
 <div id="modal-usuario-bloqueado" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[450] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
-    <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><img src="" class="hidden"></div>
     <h3 class="text-xl font-black text-rose-400">Tu cuenta ha sido bloqueada</h3>
     <p class="text-xs text-zinc-300 leading-relaxed"><b>Motivo:</b> Faltas Graves en el uso de la plataforma.</p>
     <div class="pt-2">
@@ -51,7 +49,6 @@
   </div>
 </div>
 
-<!-- MODAL AVISO DE MANTENIMIENTO CERRABLE -->
 <div id="modal-aviso-mantenimiento" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-[400] p-4 text-center">
   <div class="web-panel max-w-md w-full p-6 rounded-3xl space-y-4 border border-yellow-500/40 animate-page">
     <div class="w-14 h-14 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-2xl mx-auto"><i class="fas fa-bullhorn"></i></div>
@@ -79,7 +76,7 @@
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
 
-<!-- HEADER CORPORATIVO -->
+<!-- HEADER -->
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center space-x-3 cursor-pointer shrink-0 mx-auto sm:mx-0" onclick="cambiarSeccion('inicio')">
@@ -88,11 +85,14 @@
     </div>
     
     <div class="flex-grow max-w-lg relative order-last sm:order-none w-full sm:w-auto">
-      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite, Valorant..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition">
+      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition">
       <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-yellow-400 text-xs"></i>
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
+      <!-- BOTÓN CARRITO -->
+      <a href="carrito.html" class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Carrito</a>
+
       <div id="auth-nav-area" class="flex items-center space-x-2">
         <a href="login.html" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login</a>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
@@ -132,7 +132,6 @@
     <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP Vendedor</button>
   </div></div>
 
-  <!-- SECCIÓN INICIO CON JUEGOS INTERACTIVOS -->
   <div id="seccion-inicio" class="w-full space-y-6 max-w-5xl mx-auto">
     <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
       <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Elige tu Juego Favorito</span>
@@ -172,7 +171,6 @@
     </a>
   </div>
 
-  <!-- PERFIL GAMER (FOTO VENDEDOR DESDE GALERÍA PC/MÓVIL + LÍMITE 3 VECES AL MES) -->
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
     <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
       <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Vendedor Gamer</span>
@@ -180,7 +178,6 @@
     </h3>
     <div class="space-y-3 text-xs">
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"></div>
-      
       <div>
         <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Galería Teléfono / PC)</label>
         <div class="drag-drop-zone rounded-xl p-4 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('perfil-foto-file-input').click()">
@@ -189,7 +186,6 @@
         </div>
         <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios de foto restantes este mes: 3/3</span>
       </div>
-
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
       <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
     </div>
@@ -239,7 +235,7 @@
       <div class="space-y-2">
         <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Membresía Elite de Vendedor</span>
         <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">PLAN VIP VENDEDOR - $2.990 CLP / MES</h3>
-        <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Borde estelar dorado, corona distintiva y prioridad máxima en el buscador.</p>
+        <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Borde estelar dorado, corona distintiva, prioridad en el buscador y 5% de descuento en tus compras del carrito.</p>
       </div>
       <button onclick="manejarBotonPlanVip()" class="bg-gradient-to-r from-yellow-500 to-amber-400 text-zinc-950 font-black px-10 py-4 rounded-2xl text-xs uppercase shadow-2xl transition">Activar Plan VIP Vendedor</button>
     </div>
@@ -259,7 +255,7 @@
       <div class="grid grid-cols-3 gap-2">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Vínculo *</label><select id="pub-vinculo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"><option value="Google">Google</option><option value="Facebook">Facebook</option></select></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock Disponible *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       </div>
       <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
       <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
@@ -272,23 +268,45 @@
 </section>
 </main>
 
-<!-- MODAL DETALLES Y COMPRA -->
+<!-- MODAL DETALLES Y COMPRA (CON FOTO REAL DE VENDEDOR, BOTÓN CERRAR 'X', Y BOTÓN "ME INTERESA, LO PENSARÉ") -->
 <div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
   <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
-    <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
+    <!-- BOTÓN X DE CIERRE -->
+    <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs shadow"><i class="fas fa-times"></i></button>
+    
     <div id="modal-foto-preview-box" class="w-full h-52 bg-zinc-900 rounded-2xl overflow-hidden hidden flex items-center justify-center border border-zinc-800"><img id="modal-pub-img" src="" class="w-full h-full object-cover"></div>
+    
     <div class="space-y-1 border-b border-zinc-800 pb-3">
       <h3 id="modal-pub-titulo" class="text-base font-extrabold text-white">--</h3>
       <div class="flex flex-wrap gap-2 pt-1 text-[11px]" id="modal-pub-tags"></div>
     </div>
+
+    <!-- FOTO REAL DEL VENDEDOR VISIBLE -->
     <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="abrirPerfilVendedorDesdeModal()">
-        <div id="modal-vendedor-logo" class="w-10 h-10 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden"><i class="fas fa-user"></i></div>
-        <div><span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span><span class="text-[10px] text-emerald-400">Verificado</span></div>
+        <div id="modal-vendedor-logo" class="w-12 h-12 rounded-xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shadow"></div>
+        <div>
+          <span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span>
+          <span class="text-[10px] text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Verificado (Ver Tienda)</span>
+        </div>
       </div>
-      <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
+      <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/40 font-extrabold px-3.5 py-2 rounded-xl text-xs shadow flex items-center gap-1.5 transition">
+        <i class="fas fa-comment-dots"></i> Chatear
+      </button>
     </div>
+
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
+
+    <!-- SELECTOR DE CANTIDAD SEGÚN STOCK -->
+    <div class="flex items-center justify-between bg-zinc-950 p-3 rounded-2xl border border-zinc-800 text-xs">
+      <span class="text-zinc-400 font-bold">Cantidad deseada (Stock: <span id="modal-stock-max" class="text-white">1</span>):</span>
+      <div class="flex items-center gap-2">
+        <button onclick="cambiarCantidadModal(-1)" class="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-700 text-white font-bold">-</button>
+        <span id="modal-cantidad-val" class="font-bold text-yellow-400 px-2">1</span>
+        <button onclick="cambiarCantidadModal(1)" class="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-700 text-white font-bold">+</button>
+      </div>
+    </div>
+
     <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
       <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
       <div class="space-y-2 text-xs">
@@ -296,15 +314,27 @@
         <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
       </div>
     </div>
-    <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
-      <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Total</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span></div>
-      <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow">Comprar con Flow</a>
+
+    <div class="space-y-2 pt-2 border-t border-zinc-800">
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-zinc-400 uppercase font-bold">Total Estimado</span>
+        <span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span>
+      </div>
+      
+      <!-- BOTÓN ME INTERESA, LO PENSARÉ (AÑADIR AL CARRITO) -->
+      <button onclick="agregarAlCarritoDesdeModal()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-yellow-400 border border-yellow-500/40 font-black py-3 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center justify-center gap-2">
+        <i class="fas fa-shopping-cart"></i> Me interesa, lo pensaré (Añadir al Carrito)
+      </button>
+
+      <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3 rounded-xl text-xs uppercase tracking-wider text-center shadow transition block">
+        Comprar con Flow Ahora
+      </a>
     </div>
   </div>
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",fotoPerfilBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",fotoPerfilBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null,cantidadSeleccionadaModal=1,stockMaximoModal=1,pubActualObjeto=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
@@ -362,16 +392,12 @@ function filtrarPorJuegoRapido(juego){
 auth.onAuthStateChanged(async(u)=>{
   setTimeout(()=>{ document.getElementById('main-body-fade').classList.remove('opacity-0'); }, 50);
   
-  // SINCRONIZACIÓN CONFIGURACIÓN GLOBAL (MANTENIMIENTO, CUENTA REGRESIVA Y AVISOS)
   db.collection('configuracion').doc('global').onSnapshot(doc => {
     if(doc.exists){
       const cfg = doc.data();
-      
-      // Mantenimiento con contador de 2 horas
       if(cfg.mantenimientoActivo){
         document.getElementById('modal-mantenimiento-global').classList.remove('hidden');
         document.getElementById('modal-mantenimiento-global').classList.add('flex');
-        
         if(cfg.mantenimientoFin){
           const ahora = new Date().getTime();
           const distancia = cfg.mantenimientoFin - ahora;
@@ -379,59 +405,40 @@ auth.onAuthStateChanged(async(u)=>{
             const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
             const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-            document.getElementById('mantenimiento-countdown').innerText = 
-              String(horas).padStart(2,'0') + ":" + String(minutos).padStart(2,'0') + ":" + String(segundos).padStart(2,'0');
-          }else{
-            document.getElementById('mantenimiento-countdown').innerText = "00:00:00";
+            document.getElementById('mantenimiento-countdown').innerText = String(horas).padStart(2,'0') + ":" + String(minutos).padStart(2,'0') + ":" + String(segundos).padStart(2,'0');
           }
         }
       }else{
         document.getElementById('modal-mantenimiento-global').classList.add('hidden');
       }
-
-      // Aviso de mantenimiento cerrable
       if(cfg.avisoMantenimiento){
         document.getElementById('texto-aviso-mantenimiento').innerText = cfg.avisoMantenimiento;
         document.getElementById('modal-aviso-mantenimiento').classList.remove('hidden');
         document.getElementById('modal-aviso-mantenimiento').classList.add('flex');
       }
-
-      aplicarTematicaVisual(cfg.tematica || 'default');
     }
   });
 
   if(u){
-    const r = db.collection('perfiles').doc(u.uid);
-    r.onSnapshot(docSnap => {
+    db.collection('perfiles').doc(u.uid).onSnapshot(docSnap => {
       if(docSnap.exists){
         currentUserData = docSnap.data();
-
-        // Control de bloqueo en tiempo real
         if(currentUserData.bloqueado){
           document.getElementById('modal-usuario-bloqueado').classList.remove('hidden');
           document.getElementById('modal-usuario-bloqueado').classList.add('flex');
           return;
-        }else{
-          document.getElementById('modal-usuario-bloqueado').classList.add('hidden');
         }
-
         document.getElementById('nav-btn-ir-login').classList.add('hidden');
         document.getElementById('nav-user-logged-box').classList.remove('hidden');
         document.getElementById('nav-user-logged-box').classList.add('flex');
         document.getElementById('nav-user-email').innerText = currentUserData.username || "Gamer";
-        
         document.getElementById('user-username').value = currentUserData.username || "";
         document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
-        
-        const cambiosRestantes = 3 - (currentUserData.cambiosFotoMes || 0);
-        document.getElementById('user-foto-contador-msg').innerText = `Cambios de foto restantes este mes: ${cambiosRestantes}/3`;
+        document.getElementById('user-foto-contador-msg').innerText = `Cambios de foto restantes este mes: ${3 - (currentUserData.cambiosFotoMes || 0)}/3`;
       }
     });
 
-    if(u.uid === OWNER_UID){
-      document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');
-    }
-
+    if(u.uid === OWNER_UID){document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');}
     cargarPublicacionesEnVivo();
   }else{
     currentUserData = null;
@@ -440,14 +447,6 @@ auth.onAuthStateChanged(async(u)=>{
     cargarPublicacionesEnVivo();
   }
 });
-
-function aplicarTematicaVisual(tema){
-  if(tema === 'halloween'){document.body.style.backgroundColor = '#120700';}
-  else if(tema === 'navidad'){document.body.style.backgroundColor = '#03120a';}
-  else if(tema === 'verano'){document.body.style.backgroundColor = '#030c16';}
-  else if(tema === 'noche'){document.body.style.backgroundColor = '#020203';}
-  else{document.body.style.backgroundColor = '#09090b';}
-}
 
 function manejarSeleccionFotoPerfil(input){
   if(input.files && input.files[0]){
@@ -503,7 +502,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
     h+=`<div class="${cardClass}">
       <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
       <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> ${badgeVip}</div>
-      <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')"><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Región: ${p.region || 'N/A'}</span></div>
+      <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')"><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Stock: ${p.stock || 1}</span></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
         <div onclick="abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
           <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
@@ -518,17 +517,31 @@ function renderizarGridPublicaciones(ps, filtro=""){
 
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
+  pubActualObjeto = {id: d.id, ...p};
   precioBasePublicacionActual = parseInt(p.precio) || 0;
   vendedorActualUidCache = p.vendedorUid;
   publicacionActualIdCache = id;
+  stockMaximoModal = parseInt(p.stock) || 1;
+  cantidadSeleccionadaModal = 1;
+  document.getElementById('modal-cantidad-val').innerText = cantidadSeleccionadaModal;
+  document.getElementById('modal-stock-max').innerText = stockMaximoModal;
   
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción detallada.';
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor Verificado";
   
+  // OBTENER Y MOSTRAR FOTO REAL DEL VENDEDOR EN EL MODAL
+  const vendedorDoc = await db.collection('perfiles').doc(p.vendedorUid).get();
+  let vendedorLogoReal = p.vendedorLogo || "👑";
+  if(vendedorDoc.exists && vendedorDoc.data().logo){
+    vendedorLogoReal = vendedorDoc.data().logo;
+  }
   const logoBox = document.getElementById('modal-vendedor-logo');
-  if(p.vendedorLogo){logoBox.innerHTML = p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-sm">${p.vendedorLogo}</span>`;}
-  else{logoBox.innerHTML = `<i class="fas fa-user text-xs"></i>`;}
+  if(vendedorLogoReal.startsWith('http') || vendedorLogoReal.startsWith('data:image')){
+    logoBox.innerHTML = `<img src="${vendedorLogoReal}" class="w-full h-full object-cover">`;
+  }else{
+    logoBox.innerHTML = `<span class="text-lg">${vendedorLogoReal}</span>`;
+  }
   
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
@@ -537,8 +550,7 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-tags').innerHTML = `
     <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-yellow-400">🎮 ${p.juego}</span>
     <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">⭐ Nivel: ${p.nivel || 'N/A'}</span>
-    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">🌍 Región: ${p.region || 'N/A'}</span>
-    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">🔗 Vínculo: ${p.vinculo || 'Google'}</span>
+    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">📦 Stock: ${stockMaximoModal}</span>
   `;
 
   document.querySelectorAll('input[name="garantia"]')[0].checked = true;
@@ -548,11 +560,45 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-detalles').classList.add('flex');
 }
 
+function cambiarCantidadModal(delta){
+  let nueva = cantidadSeleccionadaModal + delta;
+  if(nueva >= 1 && nueva <= stockMaximoModal){
+    cantidadSeleccionadaModal = nueva;
+    document.getElementById('modal-cantidad-val').innerText = cantidadSeleccionadaModal;
+    actualizarPrecioTotalModal();
+  }
+}
+
 function actualizarPrecioTotalModal(){
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
-  const total = precioBasePublicacionActual + costoGarantia;
+  const total = (precioBasePublicacionActual * cantidadSeleccionadaModal) + costoGarantia;
   document.getElementById('modal-pub-precio-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+}
+
+// AÑADIR AL CARRITO (EVITA DUPLICADOS DEL MISMO PRODUCTO)
+async function agregarAlCarritoDesdeModal(){
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  const uid = auth.currentUser.uid;
+  const itemRef = db.collection('carritos').doc(uid).collection('items').doc(pubActualObjeto.id);
+  
+  const docSnap = await itemRef.get();
+  if(docSnap.exists){
+    mostrarAlertaToast("Carrito", "Este producto ya se encuentra en tu carrito.");
+    return;
+  }
+
+  await itemRef.set({
+    publicacionId: pubActualObjeto.id,
+    titulo: pubActualObjeto.titulo,
+    precio: pubActualObjeto.precio,
+    foto: pubActualObjeto.foto || "",
+    cantidadSeleccionada: cantidadSeleccionadaModal,
+    agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  document.getElementById('modal-pub-detalles').classList.add('hidden');
+  mostrarToast("🛒 ¡Producto añadido al carrito con éxito!");
 }
 
 function abrirPerfilVendedorDesdeModal(){
@@ -637,7 +683,7 @@ async function abrirPerfilVendedorPorUid(uid){
   let nombre = "Vendedor VIP", logo = "👑";
   if(pDoc.exists){const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || "👑";}
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
-  document.getElementById('vendedor-perfil-logo-box').innerHTML = logo.startsWith('http') ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">${logo}</span>`;
+  document.getElementById('vendedor-perfil-logo-box').innerHTML = logo.startsWith('http') || logo.startsWith('data:image') ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">${logo}</span>`;
 
   const grid = document.getElementById('vendedor-tienda-grid');
   let h = "";
@@ -656,7 +702,7 @@ async function crearPublicacionMarketplace(){
   const precio = parseInt(document.getElementById('pub-precio').value);
   const nivel = document.getElementById('pub-nivel').value.trim();
   const region = document.getElementById('pub-region').value.trim();
-  const vinculo = document.getElementById('pub-vinculo').value;
+  const stock = parseInt(document.getElementById('pub-stock').value) || 1;
   const descripcion = document.getElementById('pub-descripcion').value.trim();
 
   if(!titulo || !precio || !nivel || !region || !descripcion){mostrarAlertaToast("Campos Incompletos", "Llena todos los campos.");return;}
@@ -665,7 +711,7 @@ async function crearPublicacionMarketplace(){
     vendedorUid: auth.currentUser.uid,
     vendedorNombre: currentUserData.username || "Vendedor",
     vendedorLogo: currentUserData.logo || "👑",
-    titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, vinculo: vinculo, descripcion: descripcion,
+    titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, stock: stock, descripcion: descripcion,
     foto: fotoBase64Seleccionada || "", esVip: true, fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
@@ -673,38 +719,26 @@ async function crearPublicacionMarketplace(){
   cambiarSeccion('mercado');
 }
 
-// GUARDAR PERFIL CON GALERÍA DE FOTO Y LÍMITE DE 3 CAMBIOS AL MES + CIERRE SUAVE
 async function guardarPerfilConLimiteFoto(){
   if(!auth.currentUser)return;
   const mp = document.getElementById('user-metodo-pago').value.trim();
   let logoFinal = currentUserData.logo || "👑";
-  
   let cambios = currentUserData.cambiosFotoMes || 0;
+  
   if(fotoPerfilBase64Seleccionada){
-    if(cambios >= 3){
-      mostrarAlertaToast("Límite Alcanzado", "Solo puedes cambiar tu foto de vendedor 3 veces al mes.");
-      return;
-    }
+    if(cambios >= 3){mostrarAlertaToast("Límite Alcanzado", "Solo puedes cambiar tu foto de vendedor 3 veces al mes.");return;}
     logoFinal = fotoPerfilBase64Seleccionada;
     cambios += 1;
   }
 
-  await db.collection('perfiles').doc(auth.currentUser.uid).update({
-    logo: logoFinal,
-    metodoPago: mp,
-    cambiosFotoMes: cambios
-  });
-
+  await db.collection('perfiles').doc(auth.currentUser.uid).update({logo: logoFinal, metodoPago: mp, cambiosFotoMes: cambios});
   currentUserData.logo = logoFinal;
   currentUserData.cambiosFotoMes = cambios;
   mostrarToast("¡Perfil guardado con éxito!");
 
   const perfilSec = document.getElementById('seccion-perfil');
   perfilSec.classList.add('animate-fade-out');
-  setTimeout(()=>{
-    perfilSec.classList.remove('animate-fade-out');
-    cambiarSeccion('mercado');
-  }, 400);
+  setTimeout(()=>{perfilSec.classList.remove('animate-fade-out');cambiarSeccion('mercado');}, 400);
 }
 
 function cerrarSesion(){auth.signOut().then(()=>{window.location.reload();})}
