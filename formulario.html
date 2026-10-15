@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Postulación Oficial - SiilckVentas</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Postulación de Vendedor - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -9,61 +9,87 @@
   body{background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2,h3,h4{font-family:'Outfit',sans-serif}
   .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+  .neo-input{background:#09090b;border:1px solid #27272a;transition:all .2s ease}
+  .neo-input:focus{border-color:#eab308;box-shadow:0 0 15px rgba(234,179,8,0.25);outline:none}
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
   .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
 </style>
 </head>
-<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-<div class="max-w-xl w-full web-panel rounded-3xl p-8 space-y-6 border border-yellow-500/30">
+<div class="web-panel max-w-xl w-full p-8 rounded-[2rem] space-y-6 border border-yellow-500/20 relative">
   <div class="text-center space-y-2">
-    <div class="w-14 h-14 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black mx-auto shadow-lg"><i class="fas fa-file-signature"></i></div>
-    <h2 class="text-xl font-black text-white">Formulario de Postulación de Vendedor</h2>
-    <p class="text-xs text-zinc-400">Únete a nuestra red de creadores y vendedores oficiales en Silk Ventas.</p>
+    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-400 text-zinc-950 flex items-center justify-center text-2xl font-black mx-auto shadow-lg"><i class="fas fa-clipboard-check"></i></div>
+    <h2 class="text-2xl font-black tracking-tight text-white">Formulario de Postulación de Vendedor</h2>
+    <p class="text-xs text-zinc-400">Registra tus datos y referencias para verificar tu aptitud en nuestra plataforma.</p>
   </div>
 
-  <div id="form-container-box" class="space-y-4 text-xs">
+  <div id="form-container" class="space-y-4 text-xs">
+    <div>
+      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Nombre Completo o Razón Social *</label>
+      <input type="text" id="f-nombre" placeholder="Tu nombre o marca" class="w-full neo-input rounded-xl px-4 py-3 text-white">
+    </div>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nombre *</label><input type="text" id="form-nombre" placeholder="Tu nombre" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"></div>
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Apellido *</label><input type="text" id="form-apellido" placeholder="Tu apellido" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"></div>
-    </div>
-
-    <div>
-      <label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">¿Qué te motiva a vender con nosotros? *</label>
-      <textarea id="form-motivacion" rows="3" placeholder="Explícanos tu visión y por qué quieres formar parte..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none focus:outline-none focus:border-yellow-500"></textarea>
-    </div>
-
-    <div>
-      <label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Experiencia previa en ventas gamer *</label>
-      <textarea id="form-experiencia" rows="2" placeholder="Juegos que dominas, plataformas previas..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none focus:outline-none focus:border-yellow-500"></textarea>
-    </div>
-
-    <div>
-      <label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Redes Sociales / Contacto Directo *</label>
-      <input type="text" id="form-contacto" placeholder="Discord, WhatsApp o Instagram" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500">
-    </div>
-    
-    <div>
-      <label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Subir Fotos / Capturas de Referencia (Opcional) *</label>
-      <div class="drag-drop-zone rounded-xl p-4 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('form-foto-input').click()">
-        <input type="file" id="form-foto-input" accept="image/*" class="hidden" onchange="manejarFotoPostulacion(this)">
-        <p class="text-xs text-zinc-300" id="form-foto-label">Toca aquí para seleccionar una imagen de tu dispositivo</p>
+      <div>
+        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contacto Principal (WhatsApp / Telegram) *</label>
+        <input type="text" id="f-contacto" placeholder="+569..." class="w-full neo-input rounded-xl px-4 py-3 text-white">
+      </div>
+      <div>
+        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">País de Residencia *</label>
+        <input type="text" id="f-pais" placeholder="Ej: Chile, México, Argentina..." class="w-full neo-input rounded-xl px-4 py-3 text-white">
       </div>
     </div>
 
-    <div class="flex items-center justify-between gap-3 pt-2">
-      <button onclick="enviarPostulacionVendedor()" class="flex-grow bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow transition">Enviar Solicitud al Administrador</button>
-      <a href="index.html" class="text-xs text-zinc-400 hover:text-white underline whitespace-nowrap px-2">Ya no quiero ser vendedor</a>
+    <div>
+      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Por qué te motiva trabajar con nosotros? *</label>
+      <textarea id="f-motivo" rows="2" placeholder="Explícanos tu motivación..." class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea>
     </div>
+
+    <div>
+      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Tienes experiencia en ventas de cuentas en otras plataformas? *</label>
+      <textarea id="f-experiencia" rows="2" placeholder="Menciona plataformas (Eldorado, G2G, grupos) y tiempo de experiencia..." class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Cómo nos conociste? *</label>
+        <input type="text" id="f-conocio" placeholder="Ej: Redes sociales, recomendación..." class="w-full neo-input rounded-xl px-4 py-3 text-white">
+      </div>
+      <div>
+        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Promedio de ventas mensuales estimadas *</label>
+        <input type="text" id="f-volumen" placeholder="Ej: 10 a 30 cuentas" class="w-full neo-input rounded-xl px-4 py-3 text-white">
+      </div>
+    </div>
+
+    <!-- SUBIDA MÚLTIPLE DE FOTOS DE REFERENCIAS (PC Y MÓVIL) -->
+    <div>
+      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Fotos de Referencia de Ventas Anteriores (Múltiples imágenes) *</label>
+      <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer relative bg-zinc-900/50" onclick="document.getElementById('f-fotos-input').click()">
+        <input type="file" id="f-fotos-input" accept="image/*" multiple class="hidden" onchange="manejarReferenciasMultiples(this)">
+        <div class="space-y-1.5">
+          <i class="fas fa-images text-yellow-400 text-2xl"></i>
+          <p class="text-xs font-semibold text-zinc-300" id="f-fotos-label">Toca aquí para seleccionar o arrastrar varias capturas (PC / Móvil)</p>
+          <p class="text-[10px] text-zinc-500">Puedes adjuntar capturas de calificaciones o entregas exitosas</p>
+        </div>
+      </div>
+      <div id="f-fotos-preview-grid" class="grid grid-cols-4 gap-2 pt-2"></div>
+    </div>
+
+    <button onclick="enviarFormularioPostulacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition">Enviar Postulación Oficial</button>
   </div>
 
-  <!-- MENSAJE DE ÉXITO EXACTO -->
-  <div id="mensaje-exito-box" class="hidden text-center space-y-4 py-6">
-    <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check-circle"></i></div>
-    <h3 class="text-sm font-black text-white leading-relaxed">Tu solicitud ha sido enviada. Gracias por postular con nosotros, en breve un admin revisará tu postulación a ver si eres apto para trabajar con nosotros. Muchas gracias</h3>
-    <div class="pt-2">
-      <a href="index.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-xs block transition shadow">Volver a la página principal</a>
+  <div id="success-container" class="hidden text-center space-y-4 py-6">
+    <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check-circle"></i></div>
+    <div class="space-y-2">
+      <h3 class="text-base font-black text-white">¡Formulario completado con éxito!</h3>
+      <p class="text-xs text-zinc-300 leading-relaxed">Nos pondremos en contacto a la brevedad. Tu cuenta ha quedado habilitada para publicar en el marketplace.</p>
     </div>
+    <a href="index.html" class="w-full bg-yellow-500 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs block text-center shadow-lg transition">Continúa navegando</a>
+  </div>
+
+  <div class="text-center pt-2 border-t border-zinc-800">
+    <a href="index.html" class="text-zinc-400 hover:text-yellow-400 text-xs font-bold transition flex items-center justify-center gap-1.5"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
   </div>
 </div>
 
@@ -71,48 +97,68 @@
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-let fotoPostulacionBase64 = "";
+let referenciasBase64List = [];
 
-function manejarFotoPostulacion(input){
-  if(input.files && input.files[0]){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      fotoPostulacionBase64 = e.target.result;
-      document.getElementById('form-foto-label').innerText = "Imagen cargada con éxito ✅";
-    }
-    reader.readAsDataURL(input.files[0]);
+function manejarReferenciasMultiples(input){
+  if(input.files){
+    const grid = document.getElementById('f-fotos-preview-grid');
+    grid.innerHTML = "";
+    referenciasBase64List = [];
+    
+    Array.from(input.files).forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onload = function(e){
+        referenciasBase64List.push(e.target.result);
+        grid.innerHTML += `<div class="w-full h-16 rounded-lg overflow-hidden border border-zinc-700 bg-zinc-900"><img src="${e.target.result}" class="w-full h-full object-cover"></div>`;
+        document.getElementById('f-fotos-label').innerText = `${referenciasBase64List.length} imágenes cargadas correctamente ✅`;
+      }
+      reader.readAsDataURL(file);
+    });
   }
 }
 
-async function enviarPostulacionVendedor(){
-  const user = auth.currentUser;
-  if(!user){alert("Debes iniciar sesión para postular.");window.location.href="login.html";return;}
-  
-  const nombre = document.getElementById('form-nombre').value.trim();
-  const apellido = document.getElementById('form-apellido').value.trim();
-  const motivacion = document.getElementById('form-motivacion').value.trim();
-  const experiencia = document.getElementById('form-experiencia').value.trim();
-  const contacto = document.getElementById('form-contacto').value.trim();
+async function enviarFormularioPostulacion(){
+  if(!auth.currentUser){
+    alert("Debes iniciar sesión primero para enviar tu postulación.");
+    window.location.href="login.html";
+    return;
+  }
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const contacto = document.getElementById('f-contacto').value.trim();
+  const pais = document.getElementById('f-pais').value.trim();
+  const motivo = document.getElementById('f-motivo').value.trim();
+  const experiencia = document.getElementById('f-experiencia').value.trim();
+  const conocio = document.getElementById('f-conocio').value.trim();
+  const volumen = document.getElementById('f-volumen').value.trim();
 
-  if(!nombre || !apellido || !motivacion || !experiencia || !contacto){
-    alert("Por favor completa todos los campos requeridos.");
+  if(!nombre || !contacto || !pais || !motivo || !experiencia || !conocio || !volumen){
+    alert("Por favor completa todos los campos obligatorios.");
     return;
   }
 
-  await db.collection('postulaciones_vendedores').add({
-    uid: user.uid,
-    nombre: nombre,
-    apellido: apellido,
-    motivacion: motivacion,
-    experiencia: experiencia,
-    contacto: contacto,
-    fotoReferencia: fotoPostulacionBase64,
-    estado: 'pendiente',
-    fecha: firebase.firestore.FieldValue.serverTimestamp()
-  });
+  try{
+    await db.collection('postulaciones_vendedores').add({
+      uid: auth.currentUser.uid,
+      nombre: nombre,
+      contacto: contacto,
+      pais: pais,
+      motivo: motivo,
+      experiencia: experiencia,
+      conocio: conocio,
+      volumen: volumen,
+      referenciasFotos: referenciasBase64List,
+      fecha: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-  document.getElementById('form-container-box').classList.add('hidden');
-  document.getElementById('mensaje-exito-box').classList.remove('hidden');
+    await db.collection('perfiles').doc(auth.currentUser.uid).update({
+      postuladoFormulario: true
+    });
+
+    document.getElementById('form-container').classList.add('hidden');
+    document.getElementById('success-container').classList.remove('hidden');
+  }catch(err){
+    alert("Error al enviar: " + err.message);
+  }
 }
 </script>
 </body>
