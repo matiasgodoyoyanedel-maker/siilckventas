@@ -30,9 +30,6 @@
 
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
-  .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
-  .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
-  .radio-warranty{accent-color:#eab308}
   
   #app-loading-screen{position:fixed;inset:0;background:#09090b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
   .loading-spinner{width:50px;height:50px;border:4px solid rgba(234,179,8,0.2);border-top-color:#eab308;border-radius:50%;animation:spin 0.8s linear infinite}
@@ -107,23 +104,6 @@
       </div>
       <div><label class="block font-bold text-zinc-300 mb-1">Datos Bancarios / Método de Pago *</label><textarea id="act-vendedor-banco" rows="2" placeholder="Banco, Tipo de cuenta, RUT, CBU..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea></div>
       <button onclick="guardarActivacionCuentaVendedor()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase tracking-wider shadow">Activar mi Cuenta Ahora</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL LOGIN / REDIRECCIÓN A LOGIN.HTML -->
-<div id="modal-sesion-requerida" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[300] p-4">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/40 relative animate-page shadow-2xl">
-    <button onclick="document.getElementById('modal-sesion-requerida').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
-    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-2xl shadow-yellow-500/50 mx-auto animate-bounce"><i class="fas fa-crown text-3xl"></i></div>
-    <div class="space-y-1">
-      <h3 class="text-xl font-black font-heading text-white">Acceso a la Plataforma</h3>
-      <p class="text-xs text-zinc-400">Inicia sesión o regístrate en nuestro sistema oficial para continuar.</p>
-    </div>
-    <div class="space-y-3 pt-2">
-      <button onclick="window.location.href='login.html'" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition flex items-center justify-center gap-2">
-        <i class="fas fa-sign-in-alt"></i> Ir a Login / Registrarse
-      </button>
     </div>
   </div>
 </div>
@@ -325,7 +305,7 @@
         </div>
       </div>
 
-      <!-- PLANES VIP (PROTEGIDOS CON REQUISITO DE LOGIN) -->
+      <!-- PLANES VIP -->
       <div id="seccion-vip" class="hidden space-y-6 w-full animate-page">
         <div class="text-center space-y-2">
           <h2 class="text-2xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2>
@@ -441,31 +421,6 @@
       </div>
     </div>
   </div>
-
-  <div id="seccion-publicar" class="hidden space-y-5 max-w-2xl mx-auto web-panel rounded-3xl p-8 shadow-2xl animate-page border border-zinc-800">
-    <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
-      <h3 class="text-sm font-extrabold font-heading text-white uppercase"><i class="fas fa-plus-circle text-yellow-400 mr-2"></i> Publicar Cuenta</h3>
-      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Cancelar</button>
-    </div>
-    <div class="space-y-4 text-xs">
-      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
-      <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option><option value="Steam Key">Steam Key</option><option value="League of Legends">League of Legends</option><option value="GTA V">GTA V</option><option value="Minecraft">Minecraft</option><option value="Genshin Impact">Genshin Impact</option><option value="Call of Duty">Call of Duty</option><option value="Clash Royale">Clash Royale</option><option value="FIFA / FC">FIFA / EA FC</option></select></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
-      </div>
-      <div class="grid grid-cols-3 gap-2">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock / Unidades *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-      </div>
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
-      <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
-        <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
-        <p class="text-xs text-zinc-300" id="pub-foto-label">Toca para subir foto de la cuenta</p>
-      </div>
-      <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase shadow">Publicar en Marketplace</button>
-    </div>
-  </div>
 </section>
 </main>
 
@@ -500,7 +455,7 @@
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",fotoPerfilBase64="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoPerfilBase64="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
@@ -579,24 +534,26 @@ async function verificarEstadoVerificacionManual(){
   }
 }
 
-async function verificarPublicarCuenta(){
+function verificarPublicarCuenta(){
   if(!auth.currentUser){ window.location.href = 'login.html'; return; }
   
-  const perfilDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
-  const perfilData = perfilDoc.exists ? perfilDoc.data() : {};
-  
-  if(!perfilData.postuladoFormulario){
-    mostrarAlertaToast("Aviso Requerido", "Debes ser aprobado por el administrador en las postulaciones para poder publicar cuentas.");
-    setTimeout(()=>{ window.location.href = "formulario.html"; }, 1500);
-    return;
-  }
+  db.collection('perfiles').doc(auth.currentUser.uid).get().then(perfilDoc => {
+    const perfilData = perfilDoc.exists ? perfilDoc.data() : {};
+    
+    if(!perfilData.postuladoFormulario){
+      mostrarAlertaToast("Aviso Requerido", "Debes ser aprobado por el administrador en las postulaciones para poder publicar cuentas.");
+      setTimeout(()=>{ window.location.href = "formulario.html"; }, 1500);
+      return;
+    }
 
-  if(!perfilData.cuentaVendedorActiva){
-    abrirModalActivarVendedor();
-    return;
-  }
+    if(!perfilData.cuentaVendedorActiva){
+      abrirModalActivarVendedor();
+      return;
+    }
 
-  cambiarSeccion('publicar');
+    // REDIRECCIÓN EXACTA AL NUEVO ARCHIVO DE PUBLICACIÓN
+    window.location.href = 'publicacion.html';
+  });
 }
 
 function abrirModalActivarVendedor(){
@@ -641,7 +598,7 @@ async function guardarActivacionCuentaVendedor(){
 }
 
 function cambiarSeccion(s){
-  ['inicio','mercado','vip','publicar','perfil','perfil-vendedor','mis-chats','chat-activo','mis-tickets'].forEach(x=>{
+  ['inicio','mercado','vip','perfil','perfil-vendedor','mis-chats','chat-activo','mis-tickets'].forEach(x=>{
     const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');
   });
   const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
@@ -710,7 +667,6 @@ auth.onAuthStateChanged(async(u)=>{
   });
 
   if(u){
-    // REVISIÓN DE VERIFICACIÓN DE CORREO OBLIGATORIA
     if(!u.emailVerified){
       document.getElementById('modal-verificacion-correo').classList.remove('hidden');
       document.getElementById('modal-verificacion-correo').classList.add('flex');
@@ -841,17 +797,6 @@ function manejarSubidaFotoPerfil(input){
     reader.onload = function(e){
       fotoPerfilBase64 = e.target.result;
       document.getElementById('perfil-foto-preview-box').innerHTML = `<img src="${fotoPerfilBase64}" class="w-full h-full object-cover">`;
-    }
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-function manejarSeleccionFoto(input){
-  if(input.files && input.files[0]){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      fotoBase64Seleccionada = e.target.result;
-      document.getElementById('pub-foto-label').innerText = "Imagen cargada con éxito ✅";
     }
     reader.readAsDataURL(input.files[0]);
   }
@@ -1255,41 +1200,6 @@ async function abrirPerfilVendedorPorUid(uid){
     }
   });
   grid.innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">Sin publicaciones.</p>`;
-}
-
-async function crearPublicacionMarketplace(){
-  if(!auth.currentUser)return;
-  const titulo = document.getElementById('pub-titulo').value.trim();
-  const juego = document.getElementById('pub-juego').value;
-  const precio = parseInt(document.getElementById('pub-precio').value);
-  const nivel = document.getElementById('pub-nivel').value.trim();
-  const region = document.getElementById('pub-region').value.trim();
-  const stock = parseInt(document.getElementById('pub-stock').value) || 1;
-  const descripcion = document.getElementById('pub-descripcion').value.trim();
-
-  if(!titulo || !precio || !nivel || !region || !descripcion){mostrarAlertaToast("Campos Incompletos", "Llena todos los campos.");return;}
-
-  const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
-  const uData = userDoc.exists ? userDoc.data() : {};
-  
-  if(!uData.cuentaVendedorActiva){
-    mostrarAlertaToast("Aviso", "No puedes publicar tu cuenta. Primero debes activar tu cuenta de vendedor.");
-    abrirModalActivarVendedor();
-    return;
-  }
-
-  const tipoVip = uData.tipoVip || 'basico';
-
-  await db.collection('publicaciones').add({
-    vendedorUid: auth.currentUser.uid,
-    vendedorNombre: currentUserData.username || "Vendedor",
-    vendedorLogo: currentUserData.logo || "",
-    titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, stock: stock, descripcion: descripcion,
-    foto: fotoBase64Seleccionada || "", esVip: true, tipoVip: tipoVip, fecha: firebase.firestore.FieldValue.serverTimestamp()
-  });
-
-  mostrarToast("🚀 ¡Cuenta publicada en vivo!");
-  cambiarSeccion('mercado');
 }
 
 async function guardarPerfilGamerReal(){
