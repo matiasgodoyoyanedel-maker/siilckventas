@@ -732,7 +732,7 @@ async function agregarAlCarritoDesdeModal(){
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
   const precioTotalItem = precioBasePublicacionActual + costoGarantia;
   const titulo = document.getElementById('modal-pub-titulo').innerText;
-  const foto = document.getElementById('modal-pub-img'].src || "";
+  const foto = document.getElementById('modal-pub-img').src || "";
 
   await carritoRef.add({
     publicacionId: publicacionActualIdCache,
@@ -913,7 +913,6 @@ async function enviarReporteTicketEmail(){
   const desc = document.getElementById('ticket-desc').value.trim();
   if(!desc){ mostrarAlertaToast("Aviso", "Escribe una descripción detallada para el ticket."); return; }
 
-  // Guardar en Firestore para control de "Mis Tickets"
   await db.collection('tickets').add({
     uid: auth.currentUser.uid,
     username: currentUserData.username || "Gamer",
@@ -923,7 +922,6 @@ async function enviarReporteTicketEmail(){
     fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  // Abrir cliente de correo automático hacia matiasgodoy@gmail.com
   const asunto = encodeURIComponent(`[Soporte SiilckVentas] Ticket: ${motivo} - Usuario: @${currentUserData.username || 'Gamer'}`);
   const cuerpo = encodeURIComponent(`Hola Matias,\n\nSe ha generado un nuevo ticket de soporte en la plataforma:\n\nMotivo: ${motivo}\nUsuario: @${currentUserData.username}\nUID: ${auth.currentUser.uid}\n\nDescripción:\n${desc}\n\nPor favor revisar y responder a la brevedad.`);
   window.location.href = `mailto:matiasgodoy@gmail.com?subject=${asunto}&body=${cuerpo}`;
