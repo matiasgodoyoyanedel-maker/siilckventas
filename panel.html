@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>VelosterCarrito - Tu Carrito Gamer</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Panel de Administración - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -13,33 +13,63 @@
 </head>
 <body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
-<div class="max-w-3xl w-full space-y-6">
-  <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 text-center space-y-2">
-    <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-xl font-black mx-auto shadow-lg"><i class="fas fa-shopping-cart"></i></div>
-    <h2 class="text-xl font-black text-white">Bienvenido a VelosterCarrito</h2>
-    <p class="text-xs text-yellow-400 font-bold">No lo llenes mucho o se puede caer tu mercancía 🛒📦</p>
+<div class="max-w-4xl w-full space-y-6">
+  <div class="web-panel rounded-3xl p-6 border border-rose-500/30 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-xl font-black"><i class="fas fa-tools"></i></div>
+      <div>
+        <h2 class="text-xl font-black text-white">Panel de Mantención & Control</h2>
+        <p class="text-xs text-rose-400 font-bold">Acceso exclusivo del Propietario</p>
+      </div>
+    </div>
+    <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al Sitio</a>
   </div>
 
+  <!-- CONTROL DE MANTENIMIENTO GLOBAL Y TEMAS -->
   <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-3">Productos en tu Carrito (En Vivo)</h3>
+    <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-cogs mr-1.5"></i> Configuración Global del Sistema</h3>
     
-    <div id="carrito-items-list" class="space-y-3">
-      <p class="text-xs text-zinc-500 text-center py-8">Cargando tu carrito independiente...</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+      <div class="space-y-2">
+        <label class="block font-bold text-zinc-300">Modo Mantenimiento Global</label>
+        <div class="flex gap-2">
+          <button onclick="toggleMantenimiento(true)" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Activar</button>
+          <button onclick="toggleMantenimiento(false)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Desactivar</button>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label class="block font-bold text-zinc-300">Tematica Visual del Sitio</label>
+        <select id="select-tematica-global" onchange="cambiarTematicaGlobal(this.value)" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white">
+          <option value="default">Por Defecto (Gamer)</option>
+          <option value="halloween">Halloween 🎃</option>
+          <option value="navidad">Navidad ❄️</option>
+          <option value="verano">Verano ☀️</option>
+          <option value="noche">Noche Oscura 🌑</option>
+        </select>
+      </div>
     </div>
 
-    <!-- DESGLOSE DE PRECIOS -->
-    <div id="carrito-desglose-box" class="hidden border-t border-zinc-800 pt-4 space-y-2 text-xs">
-      <div class="flex justify-between text-zinc-400"><span>Subtotal:</span><span id="txt-subtotal">$0 CLP</span></div>
-      <div class="flex justify-between text-zinc-400"><span>IVA (19%):</span><span id="txt-iva">$0 CLP</span></div>
-      <div class="flex justify-between text-emerald-400 font-bold" id="row-descuento-vip"><span>Descuento VIP (5%):</span><span id="txt-descuento">-$0 CLP</span></div>
-      <div class="flex justify-between text-sm font-black text-white pt-2 border-t border-zinc-800"><span>Total Final:</span><span id="txt-total-final" class="text-yellow-400">$0 CLP</span></div>
+    <div class="space-y-2 pt-2">
+      <label class="block font-bold text-zinc-300 text-xs">Enviar Aviso / Notificación de Mantenimiento a Todos</label>
+      <input type="text" id="input-aviso-mant" placeholder="Ej: Mantenimiento programado en 10 minutos..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white text-xs">
+      <button onclick="enviarAvisoMantenimiento()" class="bg-yellow-500 text-zinc-950 font-extrabold px-5 py-2.5 rounded-xl uppercase text-xs shadow">Enviar Aviso General</button>
     </div>
   </div>
 
-  <!-- BOTONES DE NAVEGACIÓN Y PAGO -->
-  <div class="flex flex-col sm:flex-row gap-3">
-    <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
-    <button onclick="pagarCarritoMercadoPago()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition"><i class="fas fa-shopping-bag mr-1.5"></i> Pagar Carrito con Mercado Pago</button>
+  <!-- POSTULACIONES DE VENDEDORES PENDIENTES -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-file-alt mr-1.5"></i> Postulaciones de Nuevos Vendedores</h3>
+    <div id="lista-postulaciones-admin" class="space-y-3">
+      <p class="text-xs text-zinc-500 text-center py-6">Cargando postulaciones...</p>
+    </div>
+  </div>
+
+  <!-- CONTROL DE USUARIOS (BLOQUEOS) -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-users mr-1.5"></i> Listado de Usuarios & Bloqueos</h3>
+    <div id="lista-usuarios-admin" class="space-y-3">
+      <p class="text-xs text-zinc-500 text-center py-6">Cargando usuarios...</p>
+    </div>
   </div>
 </div>
 
@@ -47,144 +77,102 @@
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
+const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 auth.onAuthStateChanged(async(u)=>{
-  if(!u){
-    alert("Debes iniciar sesión para ver tu carrito.");
-    window.location.href="login.html";
+  if(!u || u.uid !== OWNER_UID){
+    alert("Acceso denegado. Solo el propietario puede acceder a este panel.");
+    window.location.href="index.html";
     return;
   }
-  cargarCarritoEnVivo(u.uid);
+  cargarPostulacionesAdmin();
+  cargarUsuariosAdmin();
 });
 
-function cargarCarritoEnVivo(uid){
-  db.collection('carritos').doc(uid).collection('items').onSnapshot(snapshot => {
-    let items = [];
+async function toggleMantenimiento(estado){
+  await db.collection('configuracion').doc('global').set({
+    mantenimientoActivo: estado
+  }, {merge: true});
+  alert(estado ? "¡Modo mantenimiento activado!" : "¡Modo mantenimiento desactivado!");
+}
+
+async function cambiarTematicaGlobal(tema){
+  await db.collection('configuracion').doc('global').set({
+    tematica: tema
+  }, {merge: true});
+}
+
+async function enviarAvisoMantenimiento(){
+  const msg = document.getElementById('input-aviso-mant').value.trim();
+  if(!msg) return;
+  await db.collection('configuracion').doc('global').set({
+    avisoMantenimiento: msg
+  }, {merge: true});
+  alert("¡Aviso enviado a todos los usuarios!");
+  document.getElementById('input-aviso-mant').value = "";
+}
+
+function cargarPostulacionesAdmin(){
+  db.collection('postulaciones_vendedores').onSnapshot(snapshot => {
+    let h = "";
     snapshot.forEach(doc => {
-      items.push({id: doc.id, ...doc.data()});
-    });
-    renderizarCarrito(items, uid);
-  });
-}
-
-async function renderizarCarrito(items, uid){
-  const listEl = document.getElementById('carrito-items-list');
-  const desgloseBox = document.getElementById('carrito-desglose-box');
-  
-  if(items.length === 0){
-    listEl.innerHTML = `<p class="text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
-    desgloseBox.classList.add('hidden');
-    return;
-  }
-
-  const userDoc = await db.collection('perfiles').doc(uid).get();
-  const userData = userDoc.exists ? userDoc.data() : {};
-  const ahora = new Date().getTime();
-  const expira = userData.vipExpira ? userData.vipExpira.toDate().getTime() : 0;
-  const esVipActivo = userData.esVendedorVip && expira > ahora;
-
-  let h = "";
-  let subtotal = 0;
-
-  items.forEach(item => {
-    const totalItem = (item.precio || 0) * (item.cantidadSeleccionada || 1);
-    subtotal += totalItem;
-
-    h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden border border-zinc-800 shrink-0"><img src="${item.foto || ''}" class="w-full h-full object-cover"></div>
+      const p = doc.data();
+      const id = doc.id;
+      h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
         <div>
-          <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
-          <span class="text-[10px] text-yellow-400 font-bold">$${parseInt(item.precio||0).toLocaleString('es-CL')} CLP c/u</span>
-          <span class="text-[10px] text-zinc-400 block">Cantidad: ${item.cantidadSeleccionada || 1}</span>
+          <h4 class="font-bold text-white">${p.nombreCompleto || 'Postulante'} (@${p.username})</h4>
+          <p class="text-zinc-400">Discord: ${p.discord || 'N/A'} • Experiencia: ${p.experiencia || 'N/A'}</p>
+          <span class="text-[10px] text-yellow-400 font-bold block mt-1">Estado: ${p.estado || 'Pendiente'}</span>
         </div>
-      </div>
-      <button onclick="eliminarItemCarrito('${item.id}', '${uid}')" class="text-rose-400 hover:text-rose-300 p-2 text-xs" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-    </div>`;
+        <div class="flex gap-2">
+          <button onclick="aprobarPostulacion('${id}', '${p.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl">Aprobar</button>
+          <button onclick="rechazarPostulacion('${id}', '${p.uid}')" class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold px-4 py-2 rounded-xl">Rechazar</button>
+        </div>
+      </div>`;
+    });
+    document.getElementById('lista-postulaciones-admin').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes.</p>`;
   });
+}
 
-  listEl.innerHTML = h;
-
-  const iva = Math.round(subtotal * 0.19);
-  let descuento = 0;
-  if(esVipActivo){
-    descuento = Math.round(subtotal * 0.05);
-    document.getElementById('row-descuento-vip').classList.remove('hidden');
-    document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP`;
-  }else{
-    document.getElementById('row-descuento-vip').classList.add('hidden');
+async function aprobarPostulacion(postId, userUid){
+  await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'Aprobado'});
+  if(userUid){
+    await db.collection('perfiles').doc(userUid).update({postuladoFormulario: true});
   }
-
-  const totalFinal = (subtotal + iva) - descuento;
-
-  document.getElementById('txt-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')} CLP`;
-  document.getElementById('txt-iva').innerText = `$${iva.toLocaleString('es-CL')} CLP`;
-  document.getElementById('txt-total-final').innerText = `$${totalFinal.toLocaleString('es-CL')} CLP`;
-  desgloseBox.classList.remove('hidden');
+  alert("¡Postulación aprobada con éxito!");
 }
 
-async function eliminarItemCarrito(itemId, uid){
-  await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
+async function rechazarPostulacion(postId, userUid){
+  await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'Rechazado'});
+  alert("Postulación rechazada.");
 }
 
-// -------------------------------------------------------------
-// FUNCION AUTOMATIZADA MERCADO PAGO PARA EL CARRITO
-// -------------------------------------------------------------
-async function pagarCarritoMercadoPago() {
-    const totalEl = document.getElementById('txt-total-final');
-    if (!totalEl) {
-        alert("No se pudo calcular el total del carrito.");
-        return;
-    }
+function cargarUsuariosAdmin(){
+  db.collection('perfiles').onSnapshot(snapshot => {
+    let h = "";
+    snapshot.forEach(doc => {
+      const u = doc.data();
+      const uid = doc.id;
+      const estadoBloqueo = u.bloqueado ? `<span class="text-rose-400 font-bold">Bloqueado</span>` : `<span class="text-emerald-400 font-bold">Activo</span>`;
+      const btnBloq = u.bloqueado ? 
+        `<button onclick="bloquearUsuario('${uid}', false)" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-bold">Desbloquear</button>` : 
+        `<button onclick="bloquearUsuario('${uid}', true)" class="bg-rose-600 text-white px-3 py-1.5 rounded-xl font-bold">Bloquear</button>`;
 
-    const textoTotal = totalEl.innerText.replace(/[^0-9]/g, '');
-    const montoTotal = Number(textoTotal);
+      h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex items-center justify-between text-xs">
+        <div>
+          <h4 class="font-bold text-white">@${u.username || 'Usuario'}</h4>
+          <p class="text-zinc-400 text-[10px]">UID: ${uid} • ${estadoBloqueo}</p>
+        </div>
+        <div>${btnBloq}</div>
+      </div>`;
+    });
+    document.getElementById('lista-usuarios-admin').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay usuarios registrados.</p>`;
+  });
+}
 
-    if (!montoTotal || montoTotal <= 0) {
-        alert("El monto total del carrito no es válido para procesar el pago.");
-        return;
-    }
-
-    const accessToken = "APP_USR-4fc68658-4aee-476c-9911-94c1477c8d4b"; 
-
-    const preference = {
-        items: [
-            {
-                title: "Compra Total Carrito - SiilckVentas / Veloster",
-                unit_price: montoTotal,
-                quantity: 1,
-                currency_id: "CLP"
-            }
-        ],
-        back_urls: {
-            success: window.location.href,
-            failure: window.location.href,
-            pending: window.location.href
-        },
-        auto_return: "approved"
-    };
-
-    try {
-        let response = await fetch('https://api.mercadopago.com/checkout/preferences', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify(preference)
-        });
-
-        let data = await response.json();
-        
-        if (data.init_point) {
-            window.location.href = data.init_point;
-        } else {
-            alert("No se pudo generar el enlace de pago de Mercado Pago.");
-        }
-    } catch (error) {
-        console.error("Error al conectar con Mercado Pago:", error);
-        alert("Ocurrió un error al procesar el pago.");
-    }
+async function bloquearUsuario(uid, bloquear){
+  await db.collection('perfiles').doc(uid).update({bloqueado: bloquear});
+  alert(bloquear ? "Usuario bloqueado permanentemente." : "Usuario desbloqueado.");
 }
 </script>
 </body>
