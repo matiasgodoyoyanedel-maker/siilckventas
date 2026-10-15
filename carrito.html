@@ -243,23 +243,17 @@ async function pagarConFlow(){
 
   try {
     const payload = await payloadPagoFlow();
-    let res, data;
+    const res = await fetch('/api/crear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
+      body: JSON.stringify(payload)
+    });
+    const text = await res.text();
+    let data;
     try {
-      res = await fetch('/api/crear', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
-        body: JSON.stringify(payload)
-      });
-      data = await res.json();
-    } catch(e) {}
-
-    if(!data || !data.flowUrl){
-      res = await fetch('/siilckventas/api/crear', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
-        body: JSON.stringify(payload)
-      });
-      data = await res.json();
+      data = JSON.parse(text);
+    } catch(e) {
+      throw new Error((text || '').slice(0, 80) || 'Flow no devolvió JSON');
     }
 
     if(data.flowUrl){

@@ -291,24 +291,19 @@ function escucharPreciosPaseVip(){
   });
 }
 async function postCrearPago(payload){
-  let res, data;
+  const headers = { 'Content-Type': 'application/json' };
+  if(payload && payload.idToken) headers.Authorization = 'Bearer ' + payload.idToken;
+  const res = await fetch('/api/crear', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload)
+  });
+  const text = await res.text();
   try {
-    res = await fetch('/api/crear', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
-      body: JSON.stringify(payload)
-    });
-    data = await res.json();
-  } catch(e) {}
-  if(!data || !data.flowUrl){
-    res = await fetch('/siilckventas/api/crear', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
-      body: JSON.stringify(payload)
-    });
-    data = await res.json();
+    return JSON.parse(text);
+  } catch(e) {
+    throw new Error((text || '').slice(0, 80) || 'Flow no devolvió JSON');
   }
-  return data;
 }
 async function comprarPaseVipConFlow(tipo){
   if(!auth.currentUser){
@@ -326,10 +321,12 @@ async function comprarPaseVipConFlow(tipo){
   if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con Flow...'; }
   try {
     const idToken = await auth.currentUser.getIdToken();
+    const montos = totalVipConIva(precio);
     const data = await postCrearPago({
       uid: auth.currentUser.uid,
       email: auth.currentUser.email,
       idToken,
+      amount: montos.total,
       tipoVipPase: tipo
     });
     if(data && data.flowUrl){

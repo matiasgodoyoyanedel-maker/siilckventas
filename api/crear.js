@@ -12,7 +12,10 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Usa POST' });
 
   try {
-    const body = req.body || {};
+    let body = req.body || {};
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body || '{}'); } catch { body = {}; }
+    }
     const authHeader = req.headers?.authorization || '';
     const idToken = body.idToken || (authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '');
     const resultado = await crearPagoDesdeCarrito({
