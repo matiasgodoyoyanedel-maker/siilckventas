@@ -82,7 +82,7 @@
         vx: (Math.random() - 0.5) * 0.25,
         vy: (Math.random() - 0.5) * 0.18,
         gold: i % 2 === 0,
-        a: 0.08 + Math.random() * 0.06
+        a: 0.2 + Math.random() * 0.12
       });
     }
     for (let i = 0; i < 3; i++) {
@@ -103,9 +103,6 @@
     t += 1;
     ctxRef.clearRect(0, 0, w, h);
     const styles = getComputedStyle(document.documentElement);
-    const bg = (styles.getPropertyValue("--sv-bg") || "#050014").trim();
-    ctxRef.fillStyle = bg;
-    ctxRef.fillRect(0, 0, w, h);
 
     const glowA = (styles.getPropertyValue("--sv-glow-a") || "168, 85, 247").trim();
     const glowB = (styles.getPropertyValue("--sv-glow-b") || "251, 191, 36").trim();
@@ -172,9 +169,10 @@
     if (!canvas) {
       canvas = document.createElement("canvas");
       canvas.id = "canvas-bg";
-      canvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none";
+      canvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent";
       document.body.prepend(canvas);
     }
+    canvas.style.background = "transparent";
     canvasRef = canvas;
     ctxRef = canvas.getContext("2d");
     seedParticles();
