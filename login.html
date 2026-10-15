@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Acceso - SiilckVentas</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Autenticación - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -9,58 +9,29 @@
   body{background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2,h3,h4{font-family:'Outfit',sans-serif}
   .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
-  .neo-input{background:#09090b;border:1px solid #27272a;transition:all .2s ease}
-  .neo-input:focus{border-color:#eab308;box-shadow:0 0 15px rgba(234,179,8,0.25);outline:none}
 </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen p-4 flex flex-col items-center justify-center">
 
-<div class="web-panel max-w-md w-full p-8 rounded-[2rem] space-y-6 relative overflow-hidden border border-yellow-500/20">
-  <div class="absolute -top-24 -right-24 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-  <div class="text-center space-y-2 relative z-10">
-    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-400 text-zinc-950 flex items-center justify-center text-2xl font-black mx-auto shadow-lg shadow-yellow-500/20"><i class="fas fa-crown"></i></div>
-    <h2 class="text-2xl font-black tracking-tight text-white" id="form-main-title">Iniciar Sesión</h2>
-    <p class="text-xs text-zinc-400" id="form-main-subtitle">Portal seguro de acceso SiilckVentas</p>
+<div class="max-w-md w-full web-panel rounded-3xl p-8 space-y-6 border border-yellow-500/30">
+  <div class="text-center space-y-2">
+    <div class="w-14 h-14 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black mx-auto shadow-lg"><i class="fas fa-user-lock"></i></div>
+    <h2 class="text-xl font-black text-white" id="auth-title">Acceso o Registro Gamer</h2>
+    <p class="text-xs text-zinc-400">Verificación de correo electrónico requerida</p>
   </div>
 
-  <div id="box-login" class="space-y-4 text-xs relative z-10">
-    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Correo Electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
-    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contraseña</label><input type="password" id="login-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
+  <div class="space-y-4 text-xs">
+    <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Correo Electrónico *</label><input type="email" id="auth-email" placeholder="tucorreo@gmail.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"></div>
+    <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Contraseña *</label><input type="password" id="auth-pass" placeholder="••••••••" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"></div>
     
-    <button onclick="iniciarSesionEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg shadow-yellow-500/20 transition">Entrar al Sistema</button>
-    <button onclick="loginConGoogle()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-3 rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2.5"><i class="fab fa-google text-yellow-400 text-sm"></i> Continuar con Google</button>
-    
-    <div class="text-center pt-3">
-      <p class="text-zinc-400 text-[11px]">¿No tienes cuenta? <button onclick="alternarModoRegistro(true)" class="text-yellow-400 font-bold hover:underline">Regístrate aquí</button></p>
+    <div class="flex gap-2 pt-2">
+      <button onclick="iniciarSesionEmail()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase shadow">Iniciar Sesión</button>
+      <button onclick="registrarUsuarioEmail()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-black py-3.5 rounded-xl uppercase shadow">Registrarse</button>
     </div>
-  </div>
-
-  <div id="box-registro" class="hidden space-y-3 text-xs relative z-10">
-    <div>
-      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Nombre de Usuario Único * (Sin números)</label>
-      <input type="text" id="reg-username" placeholder="Ej: JuanVentas" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white">
-      <span class="text-[9px] text-zinc-500 mt-0.5 block">Único en la plataforma. Sin espacios ni números.</span>
-    </div>
-    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Correo Electrónico *</label><input type="email" id="reg-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
-    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Contraseña *</label><input type="password" id="reg-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
-    
-    <div class="flex items-start gap-2.5 pt-1">
-      <input type="checkbox" id="reg-terminos" class="mt-0.5 rounded accent-yellow-500 cursor-pointer">
-      <label for="reg-terminos" class="text-[10px] text-zinc-300 cursor-pointer leading-relaxed">Acepto los términos y condiciones de comercio seguro.</label>
-    </div>
-
-    <button onclick="registrarUsuarioEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition mt-1">Crear Cuenta</button>
     
     <div class="text-center pt-2">
-      <p class="text-zinc-400 text-[11px]">¿Ya tienes cuenta? <button onclick="alternarModoRegistro(false)" class="text-yellow-400 font-bold hover:underline">Inicia Sesión</button></p>
+      <a href="index.html" class="text-xs text-zinc-400 underline">← Volver al Marketplace</a>
     </div>
-  </div>
-
-  <div id="login-error-msg" class="text-center text-rose-400 font-bold text-[11px] relative z-10"></div>
-  
-  <div class="text-center pt-4 border-t border-zinc-800 relative z-10">
-    <a href="index.html" class="text-zinc-400 hover:text-yellow-400 text-xs font-bold transition flex items-center justify-center gap-1.5"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
   </div>
 </div>
 
@@ -69,77 +40,46 @@ const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 
-function mostrarError(m){document.getElementById('login-error-msg').innerText=m;}
+async function registrarUsuarioEmail(){
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value.trim();
+  if(!email || !pass){alert("Ingresa correo y contraseña.");return;}
+  
+  try{
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    // Enviar correo de verificación real a Gmail del usuario
+    await cred.user.sendEmailVerification();
+    
+    // Crear perfil inicial
+    await db.collection('perfiles').doc(cred.user.uid).set({
+      uid: cred.user.uid,
+      username: email.split('@')[0],
+      email: email,
+      postuladoFormulario: false,
+      esVendedorVip: false,
+      bloqueado: false,
+      logo: "👑",
+      fecha: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-function alternarModoRegistro(esRegistro){
-  mostrarError("");
-  document.getElementById('box-login').classList.toggle('hidden', esRegistro);
-  document.getElementById('box-registro').classList.toggle('hidden', !esRegistro);
-  document.getElementById('form-main-title').innerText = esRegistro ? "Registro de Cuenta" : "Iniciar Sesión";
+    alert("✅ Registro exitoso. ¡Te hemos enviado un correo de verificación real a tu bandeja de Gmail!");
+    window.location.href = "index.html";
+  }catch(e){
+    alert("Error al registrarse: " + e.message);
+  }
 }
 
 async function iniciarSesionEmail(){
-  const e=document.getElementById('login-email').value.trim(), p=document.getElementById('login-password').value;
-  if(!e||!p){mostrarError("Completa todos los campos.");return;}
-  try{
-    await auth.signInWithEmailAndPassword(e,p);
-    window.location.replace("index.html");
-  }catch(err){mostrarError(err.message);}
-}
-
-async function registrarUsuarioEmail(){
-  const username = document.getElementById('reg-username').value.trim();
-  const e = document.getElementById('reg-email').value.trim();
-  const p = document.getElementById('reg-password').value;
-  const term = document.getElementById('reg-terminos').checked;
-
-  if(!username || !e || !p){mostrarError("Todos los campos son obligatorios.");return;}
-  if(/\d/.test(username)){mostrarError("El nombre de usuario no puede contener números.");return;}
-  if(!term){mostrarError("Debes aceptar los términos y condiciones.");return;}
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value.trim();
+  if(!email || !pass){alert("Ingresa correo y contraseña.");return;}
 
   try{
-    const userQuery = await db.collection('perfiles').where('username', '==', username).get();
-    if(!userQuery.empty){
-      mostrarError("Este nombre de usuario ya está en uso. Elige otro.");
-      return;
-    }
-
-    const cred = await auth.createUserWithEmailAndPassword(e,p);
-    await db.collection('perfiles').doc(cred.user.uid).set({
-      uid: cred.user.uid,
-      username: username,
-      logo: "👑",
-      esVendedorVip: false,
-      postuladoFormulario: false,
-      creadoEn: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    window.location.replace("index.html");
-  }catch(err){mostrarError(err.message);}
-}
-
-async function loginConGoogle(){
-  try{
-    const provider=new firebase.auth.GoogleAuthProvider();
-    const result=await auth.signInWithPopup(provider);
-    const user=result.user;
-    
-    const r=db.collection('perfiles').doc(user.uid);
-    const d=await r.get();
-    if(!d.exists){
-      const baseName = (user.displayName || "Gamer").replace(/[^a-zA-Z]/g, "");
-      const username = baseName + Math.floor(100+Math.random()*900);
-      await r.set({
-        uid: user.uid,
-        username: username,
-        logo: "👑",
-        esVendedorVip: false,
-        postuladoFormulario: false,
-        creadoEn: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    }
-    window.location.replace("index.html");
-  }catch(err){mostrarError(err.message);}
+    await auth.signInWithEmailAndPassword(email, pass);
+    window.location.href = "index.html";
+  }catch(e){
+    alert("Error al iniciar sesión: " + e.message);
+  }
 }
 </script>
 </body>
