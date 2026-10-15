@@ -85,10 +85,14 @@
 
   function edadMs(data) {
     const raw = data && data.createdAt;
-    if (!raw) return Infinity;
-    if (typeof raw.toDate === "function") return Date.now() - raw.toDate().getTime();
-    if (raw.seconds) return Date.now() - raw.seconds * 1000;
-    return Infinity;
+    if (!raw) return 0;
+    let t = 0;
+    if (typeof raw.toDate === "function") t = raw.toDate().getTime();
+    else if (typeof raw.seconds === "number") t = raw.seconds * 1000;
+    else if (typeof raw._seconds === "number") t = raw._seconds * 1000;
+    if (!t) return 0;
+    const n = Date.now() - t;
+    return n < 0 ? 0 : n;
   }
 
   function textoActividad(d) {
@@ -129,11 +133,35 @@
     }, 5000);
   }
 
+  function claveAct(u) {
+    if (!u) return "";
+    const t = u.createdAt || {};
+    return [u.type, u.nombreAnonimizado, u.producto, t.seconds || t._seconds || ""].join("|");
+  }
+
+  function aplicarActividad(u, conToast) {
+    if (!u || !u.type) return;
+    const key = claveAct(u);
+    if (!key) return;
+    if (!primedActivity) {
+      primedActivity = true;
+      lastBarId = key;
+      mostrarBarra(key, u);
+      return;
+    }
+    if (key !== lastBarId) {
+      lastBarId = key;
+      mostrarBarra(key, u);
+      if (conToast) mostrarToast(u);
+    }
+  }
+
   function listenConfig(db) {
     function applyDoc(data) {
       const cfg = data || {};
       pintarWhatsapp(cfg.whatsappNumber || WA_DEFAULT);
       pintarBanner(cfg);
+      aplicarActividad(cfg.ultimaActividad, primedActivity);
     }
     db.collection("config").doc("general").onSnapshot(function (doc) {
       if (doc.exists && doc.data().whatsappNumber) pintarWhatsapp(doc.data().whatsappNumber);
@@ -145,37 +173,11 @@
     });
   }
 
-  function claveAct(u) {
-    if (!u) return "";
-    const t = u.createdAt || {};
-    return [u.type, u.nombreAnonimizado, u.producto, t.seconds || t._seconds || ""].join("|");
-  }
-
-  function listenActivity(db) {
-    db.collection("configuracion").doc("global").onSnapshot(function (doc) {
-      const u = doc.exists ? (doc.data().ultimaActividad || null) : null;
-      if (!u) return;
-      const key = claveAct(u);
-      if (!primedActivity) {
-        primedActivity = true;
-        lastBarId = key;
-        mostrarBarra(key, u);
-        return;
-      }
-      if (key && key !== lastBarId) {
-        lastBarId = key;
-        mostrarBarra(key, u);
-        mostrarToast(u);
-      }
-    }, function () {});
-  }
-
   function boot() {
     ensureUi();
     pintarWhatsapp(WA_DEFAULT);
     waitFirebase(function (db) {
       listenConfig(db);
-      listenActivity(db);
     });
   }
 

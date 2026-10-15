@@ -212,7 +212,7 @@
     listenConfig();
     if (!document.querySelector("script[data-sv-social]")) {
       const s = document.createElement("script");
-      s.src = "social.js";
+      s.src = "social.js?v=3";
       s.setAttribute("data-sv-social", "1");
       document.body.appendChild(s);
     }

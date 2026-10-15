@@ -160,7 +160,7 @@ body {
   padding: 0 12px;
   text-align: center;
 }
-#sv-top-live-bar.sv-livebar-on { transform: translateY(0); }
+#sv-top-live-bar.sv-livebar-on { transform: translateY(0) !important; }
 body.sv-livebar-pad { padding-top: 2.5rem; }
 
 #sv-whatsapp-float {
