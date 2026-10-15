@@ -37,11 +37,8 @@
   #app-loading-screen{position:fixed;inset:0;background:#09090b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
   .loading-spinner{width:50px;height:50px;border:4px solid rgba(234,179,8,0.2);border-top-color:#eab308;border-radius:50%;animation:spin 0.8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  @keyframes pulseGlow{0%,100%{box-shadow:0 0 15px rgba(239,68,68,0.3)}50%{box-shadow:0 0 35px rgba(239,68,68,0.6)}}
-  .animate-glow{animation:pulseGlow 2s infinite}
-
-  .theme-halloween{background:radial-gradient(circle at center, #2a0b00 0%, #0c0301 100%) !important}
-  .theme-navidad{background:radial-gradient(circle at center, #02200f 0%, #020b06 100%) !important}
+  @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(234,179,8,0.4)}50%{box-shadow:0 0 40px rgba(234,179,8,0.8)}}
+  .animate-glow-gold{animation:pulseGlow 2s infinite}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
@@ -53,6 +50,21 @@
   <div class="loading-spinner mt-6"></div>
 </div>
 
+<!-- MODAL OBLIGATORIO: VERIFICACIÓN DE CORREO PENDIENTE -->
+<div id="modal-verificacion-correo" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[800] p-4 text-center">
+  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500 animate-glow-gold">
+    <div class="w-20 h-20 rounded-3xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 flex items-center justify-center text-4xl mx-auto animate-bounce"><i class="fas fa-envelope-open-text"></i></div>
+    <h3 class="text-xl font-black text-white font-heading">Verifica tu Correo Electrónico</h3>
+    <p class="text-xs text-zinc-300 leading-relaxed">Hemos enviado un enlace de verificación a tu bandeja de entrada. Por favor, confirma tu correo para continuar navegando en la plataforma.</p>
+    <div class="space-y-2 pt-2">
+      <button onclick="reenviarCorreoVerificacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition">Reenviar Correo de Verificación</button>
+      <button onclick="verificarEstadoVerificacionManual()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold py-3 rounded-xl uppercase tracking-wider text-xs transition">Ya verifiqué / Actualizar Estado</button>
+      <button onclick="cerrarSesion()" class="w-full text-zinc-500 hover:text-zinc-300 text-[11px] pt-2 underline">Cerrar Sesión / Cambiar Cuenta</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BLOQUEO PERMANENTE -->
 <div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[700] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-rose-500 animate-glow">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-ban"></i></div>
@@ -62,6 +74,7 @@
   </div>
 </div>
 
+<!-- MODAL MANTENIMIENTO ESTRICTO -->
 <div id="modal-mantenimiento-estricto" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[650] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500/50">
     <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-tools"></i></div>
@@ -78,6 +91,7 @@
   <p id="aviso-global-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
 </div>
 
+<!-- MODAL ACTIVACIÓN CUENTA VENDEDOR -->
 <div id="modal-activar-vendedor" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden items-center justify-center z-[550] p-4 overflow-y-auto">
   <div class="web-panel max-w-md w-full p-6 rounded-3xl border border-emerald-500/50 space-y-4 my-8">
     <div class="text-center space-y-1">
@@ -97,13 +111,21 @@
   </div>
 </div>
 
+<!-- MODAL LOGO ANIMADO PARA INICIO DE SESIÓN REQUERIDO -->
 <div id="modal-sesion-requerida" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[300] p-4">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/30 relative">
+  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/40 relative animate-page shadow-2xl">
     <button onclick="document.getElementById('modal-sesion-requerida').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
-    <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-lock"></i></div>
-    <h3 class="text-lg font-bold font-heading text-white">Autenticación Requerida</h3>
-    <p class="text-xs text-zinc-400">Debes iniciar sesión para realizar esta acción.</p>
-    <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar Sesión Ahora</a>
+    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-2xl shadow-yellow-500/50 mx-auto animate-bounce"><i class="fas fa-crown text-3xl"></i></div>
+    <div class="space-y-1">
+      <h3 class="text-xl font-black font-heading text-white">Inicia Sesión para Continuar</h3>
+      <p class="text-xs text-zinc-400">Para comprar cuentas, publicar, chatear o adquirir planes VIP debes iniciar sesión.</p>
+    </div>
+    <div class="space-y-3 pt-2">
+      <button onclick="iniciarSesionConGoogle()" class="w-full bg-white hover:bg-zinc-200 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition flex items-center justify-center gap-2">
+        <i class="fab fa-google text-red-500 text-base"></i> Ingresar con Google
+      </button>
+      <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar con Correo / Contraseña</a>
+    </div>
   </div>
 </div>
 
@@ -125,11 +147,11 @@
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
-      <a href="carrito.html" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer">
+      <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer">
         <i class="fas fa-shopping-cart text-sm"></i>
       </a>
 
-      <button onclick="cambiarSeccion('mis-chats')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P">
+      <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P">
         <i class="fas fa-comments text-sm"></i>
         <span id="badge-notif-chats" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b] animate-ping"></span>
         <span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span>
@@ -178,7 +200,7 @@
     <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 hover:text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
     <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace</button>
     <a href="foro.html" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-indigo-400 border border-indigo-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-comments mr-1.5"></i> Foro Gamer</a>
-    <button onclick="cambiarSeccion('mis-tickets')" id="btn-sec-tickets" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-rose-400 border border-rose-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-ticket-alt mr-1.5"></i> Crear / Ver Tickets</button>
+    <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" id="btn-sec-tickets" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-rose-400 border border-rose-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-ticket-alt mr-1.5"></i> Crear / Ver Tickets</button>
     <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Planes VIP</button>
   </div></div>
 
@@ -224,7 +246,7 @@
             <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
-            <a href="carrito.html" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
+            <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
             <div id="btn-activar-cuenta-vendedor-container" class="hidden">
               <button onclick="abrirModalActivarVendedor()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5 animate-bounce"><i class="fas fa-check-circle"></i> Activa tu Cuenta</button>
             </div>
@@ -234,7 +256,7 @@
         <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
       </div>
 
-      <!-- SECCIÓN MIS CHATS (CON OPCIÓN DE BORRAR CHAT) -->
+      <!-- SECCIÓN MIS CHATS -->
       <div id="seccion-mis-chats" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
         <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
           <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
@@ -304,7 +326,7 @@
         </div>
       </div>
 
-      <!-- PLANES VIP -->
+      <!-- PLANES VIP (PROTEGIDOS CON REQUISITO DE LOGIN) -->
       <div id="seccion-vip" class="hidden space-y-6 w-full animate-page">
         <div class="text-center space-y-2">
           <h2 class="text-2xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2>
@@ -325,7 +347,7 @@
             </div>
             <div class="space-y-3">
               <div id="vip-basico-countdown" class="hidden text-center text-xs font-bold text-yellow-400 bg-yellow-500/10 p-2.5 rounded-xl border border-yellow-500/30">--</div>
-              <a id="btn-comprar-basico" href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" onclick="activarSimulacionVip('basico')" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Básico ($2.990)</a>
+              <a id="btn-comprar-basico" href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" onclick="verificarAccionProtegida(event, this.href); activarSimulacionVip('basico');" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Básico ($2.990)</a>
             </div>
           </div>
 
@@ -342,7 +364,7 @@
             </div>
             <div class="space-y-3">
               <div id="vip-pro-countdown" class="hidden text-center text-xs font-bold text-rose-400 bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/30">--</div>
-              <a id="btn-comprar-pro" href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" onclick="activarSimulacionVip('pro')" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Pro ($5.090)</a>
+              <a id="btn-comprar-pro" href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" onclick="verificarAccionProtegida(event, this.href); activarSimulacionVip('pro');" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Pro ($5.090)</a>
             </div>
           </div>
         </div>
@@ -363,7 +385,6 @@
 
   </div>
 
-  <!-- SECCIÓN PERFIL DOBLE CENTRADA Y ORDENADA -->
   <div id="seccion-perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page flex flex-col items-center">
     <div class="web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4 w-full">
       <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
@@ -391,7 +412,6 @@
       </div>
     </div>
 
-    <!-- SECCIÓN PERFIL VENDEDOR -->
     <div id="perfil-vendedor-extra-box" class="hidden web-panel border border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4 w-full">
       <h3 class="text-xs font-bold text-emerald-400 border-b border-zinc-800 pb-3 flex items-center gap-2">
         <i class="fas fa-store text-emerald-400"></i> Perfil Vendedor Oficial
@@ -515,8 +535,62 @@ function reproducirSonidoNotificacion(){
 }
 
 function verificarLoginAccion(callback){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){
+    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
+    document.getElementById('modal-sesion-requerida').classList.add('flex');
+    return;
+  }
   callback();
+}
+
+function verificarAccionProtegida(event, urlOrCallback){
+  if(!auth.currentUser){
+    if(event) event.preventDefault();
+    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
+    document.getElementById('modal-sesion-requerida').classList.add('flex');
+    return false;
+  }
+  if(typeof urlOrCallback === 'string'){
+    window.location.href = urlOrCallback;
+  }else if(typeof urlOrCallback === 'function'){
+    urlOrCallback();
+  }
+  return true;
+}
+
+async function iniciarSesionConGoogle(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    await auth.signInWithPopup(provider);
+    mostrarToast("¡Ingreso exitoso con Google!");
+    location.reload();
+  } catch(error) {
+    mostrarAlertaToast("Error Google", error.message);
+  }
+}
+
+async function reenviarCorreoVerificacion(){
+  if(auth.currentUser){
+    try {
+      await auth.currentUser.sendEmailVerification();
+      mostrarToast("✉️ Correo de verificación reenviado con éxito.");
+    } catch(e) {
+      mostrarAlertaToast("Aviso", "Espera un momento antes de volver a solicitar el correo.");
+    }
+  }
+}
+
+async function verificarEstadoVerificacionManual(){
+  if(auth.currentUser){
+    await auth.currentUser.reload();
+    if(auth.currentUser.emailVerified){
+      document.getElementById('modal-verificacion-correo').classList.add('hidden');
+      mostrarToast("🎉 ¡Correo verificado correctamente!");
+      location.reload();
+    } else {
+      mostrarAlertaToast("Pendiente", "Aún tu correo no aparece verificado. Revisa tu bandeja.");
+    }
+  }
 }
 
 async function verificarPublicarCuenta(){
@@ -650,6 +724,15 @@ auth.onAuthStateChanged(async(u)=>{
   });
 
   if(u){
+    // REVISIÓN DE VERIFICACIÓN DE CORREO OBLIGATORIA
+    if(!u.emailVerified){
+      document.getElementById('modal-verificacion-correo').classList.remove('hidden');
+      document.getElementById('modal-verificacion-correo').classList.add('flex');
+      return;
+    } else {
+      document.getElementById('modal-verificacion-correo').classList.add('hidden');
+    }
+
     db.collection('perfiles').doc(u.uid).onSnapshot(docSnap => {
       if(docSnap.exists){
         const pData = docSnap.data();
@@ -906,7 +989,12 @@ function actualizarPrecioTotalModal(){
 }
 
 async function agregarAlCarritoDesdeModal(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){
+    document.getElementById('modal-pub-detalles').classList.add('hidden');
+    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
+    document.getElementById('modal-sesion-requerida').classList.add('flex');
+    return;
+  }
   
   const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
   const snapshotExistente = await carritoRef.where('publicacionId', '==', publicacionActualIdCache).get();
@@ -946,7 +1034,12 @@ function abrirPerfilVendedorDesdeModal(){
 }
 
 async function iniciarChatPrivadoVendedor(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){
+    document.getElementById('modal-pub-detalles').classList.add('hidden');
+    document.getElementById('modal-sesion-requerida').classList.remove('hidden');
+    document.getElementById('modal-sesion-requerida').classList.add('flex');
+    return;
+  }
   if(auth.currentUser.uid === vendedorActualUidCache){mostrarAlertaToast("Aviso", "No puedes chatear contigo mismo.");return;}
 
   document.getElementById('modal-pub-detalles').classList.add('hidden');
