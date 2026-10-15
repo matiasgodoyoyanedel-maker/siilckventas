@@ -39,7 +39,7 @@
   <!-- BOTONES DE NAVEGACIÓN Y PAGO FLOW -->
   <div class="flex flex-col sm:flex-row gap-3">
     <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
-    <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</a>
+    <button id="btn-pagar-flow" onclick="pagarConFlow()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</button>
   </div>
 </div>
 
@@ -48,12 +48,16 @@ const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 
+let totalFinalGlobal = 0;
+let emailGlobal = 'cliente@siiilckventas.com';
+
 auth.onAuthStateChanged(async(u)=>{
   if(!u){
     alert("Debes iniciar sesión para ver tu carrito.");
     window.location.href="login.html";
     return;
   }
+  emailGlobal = u.email || 'cliente@siiilckventas.com';
   cargarCarritoEnVivo(u.uid);
 });
 
@@ -74,6 +78,7 @@ async function renderizarCarrito(items, uid){
   if(items.length === 0){
     listEl.innerHTML = `<p class="text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
     desgloseBox.classList.add('hidden');
+    totalFinalGlobal = 0;
     return;
   }
 
@@ -118,11 +123,11 @@ async function renderizarCarrito(items, uid){
   let descuento = 0;
   if(esVipActivo){
     if(tipoVip === 'pro'){
-      descuento = Math.round(subtotal * 0.10); // 10% descuento VIP Pro
+      descuento = Math.round(subtotal * 0.10);
       document.getElementById('row-descuento-vip').classList.remove('hidden');
       document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Pro 10%)`;
     }else{
-      descuento = Math.round(subtotal * 0.05); // 5% descuento VIP Básico
+      descuento = Math.round(subtotal * 0.05);
       document.getElementById('row-descuento-vip').classList.remove('hidden');
       document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Básico 5%)`;
     }
@@ -131,6 +136,7 @@ async function renderizarCarrito(items, uid){
   }
 
   const totalFinal = (subtotal + iva) - descuento;
+  totalFinalGlobal = totalFinal;
 
   document.getElementById('txt-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')} CLP`;
   document.getElementById('txt-iva').innerText = `$${iva.toLocaleString('es-CL')} CLP`;
@@ -151,6 +157,52 @@ async function cambiarCantidadItem(itemId, uid, nuevaCantidad, stockMaximo){
 
 async function eliminarItemCarrito(itemId, uid){
   await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
+}
+
+// NUEVO: PAGO CON FLOW REAL
+async function pagarConFlow(){
+  const btn = document.getElementById('btn-pagar-flow');
+  if(totalFinalGlobal <= 0){
+    alert('Tu carrito está vacío');
+    return;
+  }
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con Flow...';
+  btn.disabled = true;
+
+  try {
+    // Tu crear.js está en /siilckventas/api/crear.js según tu GitHub, probamos las dos rutas
+    let res, data;
+    try {
+      res = await fetch('/api/crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: totalFinalGlobal, email: emailGlobal })
+      });
+      data = await res.json();
+    } catch(e) {}
+
+    if(!data || !data.flowUrl){
+      res = await fetch('/siilckventas/api/crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: totalFinalGlobal, email: emailGlobal })
+      });
+      data = await res.json();
+    }
+
+    if(data.flowUrl){
+      window.location.href = data.flowUrl;
+    } else {
+      console.log(data);
+      alert('Error Flow: ' + (data.error || JSON.stringify(data)));
+      btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
+      btn.disabled = false;
+    }
+  } catch(err){
+    alert('Error: ' + err.message);
+    btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
+    btn.disabled = false;
+  }
 }
 </script>
 </body>
