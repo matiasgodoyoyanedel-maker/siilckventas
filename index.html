@@ -590,14 +590,17 @@ async function iniciarSesionConGoogle(){
 async function registrarConCorreoPassword(){
   const email = document.getElementById('input-auth-email').value.trim();
   const pass = document.getElementById('input-auth-pass').value.trim();
+  
   if(!email || !pass){
     mostrarAlertaToast("Campos Vacíos", "Ingresa correo y contraseña.");
     return;
   }
+
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
     await cred.user.sendEmailVerification();
     mostrarToast("✅ Cuenta creada. Se ha enviado un correo de verificación.");
+    
     document.getElementById('modal-sesion-requerida').classList.add('hidden');
     document.getElementById('modal-verificacion-correo').classList.remove('hidden');
     document.getElementById('modal-verificacion-correo').classList.add('flex');
@@ -1081,7 +1084,7 @@ async function agregarAlCarritoDesdeModal(){
   mostrarToast("🛒 ¡Producto agregado al carrito con éxito!");
 }
 
-function abrirPerfilVendedorDesdeModal(){
+function abrirPerfilVendedorDesdemodal(){
   document.getElementById('modal-pub-detalles').classList.add('hidden');
   abrirPerfilVendedorPorUid(vendedorActualUidCache);
 }
