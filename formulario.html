@@ -8,240 +8,83 @@
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
   body{background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2,h3,h4{font-family:'Outfit',sans-serif}
- .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
- .neo-input{background:#09090b;border:1px solid #27272a;transition:all.2s ease}
- .neo-input:focus{border-color:#eab308;box-shadow:0 0 15px rgba(234,179,8,0.25);outline:none}
- .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all.2s ease}
- .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
+.web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+.neo-input{background:#09090b;border:1px solid #27272a;transition:all.2s ease}
+.neo-input:focus{border-color:#eab308;box-shadow:0 0 15px rgba(234,179,8,0.25);outline:none}
+.drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all.2s ease}
+.drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
-
 <div class="web-panel max-w-xl w-full p-8 rounded-[2rem] space-y-6 border border-yellow-500/20 relative">
   <div class="text-center space-y-2">
     <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-400 text-zinc-950 flex items-center justify-center text-2xl font-black mx-auto shadow-lg"><i class="fas fa-clipboard-check"></i></div>
     <h2 class="text-2xl font-black tracking-tight text-white">Formulario de Postulación de Vendedor</h2>
-    <p class="text-xs text-zinc-400">Registra tus datos y referencias para verificar tu aptitud en nuestra plataforma.</p>
+    <p class="text-xs text-zinc-400">Registra tus datos y referencias para verificar tu aptitud.</p>
   </div>
-
   <div class="bg-yellow-500/10 border border-yellow-500/20 border-l-4 border-l-yellow-400 p-4 rounded-xl space-y-2">
     <h3 class="text-[11px] font-black uppercase tracking-wider text-yellow-400 flex items-center gap-2"><i class="fas fa-shield-halved"></i> Proceso de inspección rigurosa - Hasta 7 días hábiles</h3>
-    <p class="text-[11px] leading-relaxed text-zinc-300">
-      En Siilckventas todas las solicitudes para ser vendedor pasan por una inspección rigurosa anti-estafas. Revisamos manualmente que tus datos coincidan, que las fotos del carnet sean reales y legibles, y que no existan cuentas robadas. Al enviar este formulario aceptas este proceso.
-    </p>
+    <p class="text-[11px] leading-relaxed text-zinc-300">Revisamos manualmente que tus datos coincidan y que no existan cuentas robadas.</p>
   </div>
-
   <div id="form-container" class="space-y-4 text-xs">
-    <div>
-      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Nombre Completo o Razón Social *</label>
-      <input type="text" id="f-nombre" placeholder="Tu nombre o marca" class="w-full neo-input rounded-xl px-4 py-3 text-white">
-    </div>
-
+    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Nombre Completo o Razón Social *</label><input type="text" id="f-nombre" placeholder="Tu nombre o marca" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contacto Principal (WhatsApp / Telegram) *</label>
-        <input type="text" id="f-contacto" placeholder="+569..." class="w-full neo-input rounded-xl px-4 py-3 text-white">
-      </div>
-      <div>
-        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">País de Residencia *</label>
-        <input type="text" id="f-pais" placeholder="Ej: Chile, México, Argentina..." class="w-full neo-input rounded-xl px-4 py-3 text-white">
-      </div>
+      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contacto Principal *</label><input type="text" id="f-contacto" placeholder="+569..." class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
+      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">País *</label><input type="text" id="f-pais" placeholder="Chile..." class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
     </div>
-
-    <div>
-      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">RUT / Documento de Identidad *</label>
-      <input type="text" id="f-rut" placeholder="12.345.678-9" class="w-full neo-input rounded-xl px-4 py-3 text-white">
-    </div>
-
-    <div>
-      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Por qué te motiva trabajar con nosotros? *</label>
-      <textarea id="f-motivo" rows="2" placeholder="Explícanos tu motivación..." class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea>
-    </div>
-
-    <div>
-      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Tienes experiencia en ventas de cuentas en otras plataformas? *</label>
-      <textarea id="f-experiencia" rows="2" placeholder="Menciona plataformas y tiempo de experiencia..." class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea>
-    </div>
-
+    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">RUT / Documento *</label><input type="text" id="f-rut" placeholder="12.345.678-9" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
+    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Por qué te motiva trabajar con nosotros? *</label><textarea id="f-motivo" rows="2" class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
+    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Tienes experiencia? *</label><textarea id="f-experiencia" rows="2" class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Cómo nos conociste? *</label>
-        <input type="text" id="f-conocio" placeholder="Ej: Redes sociales, recomendación..." class="w-full neo-input rounded-xl px-4 py-3 text-white">
-      </div>
-      <div>
-        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Promedio de ventas mensuales estimadas *</label>
-        <input type="text" id="f-volumen" placeholder="Ej: 10 a 30 cuentas" class="w-full neo-input rounded-xl px-4 py-3 text-white">
-      </div>
+      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Cómo nos conociste? *</label><input type="text" id="f-conocio" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
+      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Ventas mensuales estimadas *</label><input type="text" id="f-volumen" placeholder="10 a 30" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
     </div>
-
     <div class="space-y-3 p-4 rounded-2xl bg-zinc-900/60 border border-yellow-500/10">
       <h4 class="text-[11px] font-black uppercase tracking-wider text-yellow-400"><i class="fas fa-id-card mr-1"></i> Verificación de Identidad *</h4>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-1.5">Carnet por delante *</label>
-          <div class="drag-drop-zone rounded-xl p-3 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('f-carnet-frente-input').click()">
-            <input type="file" id="f-carnet-frente-input" accept="image/*" class="hidden" onchange="manejarCarnetUnico(this, 'frente')">
-            <p class="text-[10px] font-semibold text-zinc-300" id="f-carnet-frente-label"><i class="fas fa-upload mr-1"></i> Subir frente</p>
-          </div>
-          <div id="f-carnet-frente-preview" class="mt-2 hidden w-full h-20 rounded-lg overflow-hidden border border-zinc-700"></div>
-        </div>
-        <div>
-          <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-1.5">Carnet por detrás *</label>
-          <div class="drag-drop-zone rounded-xl p-3 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('f-carnet-atras-input').click()">
-            <input type="file" id="f-carnet-atras-input" accept="image/*" class="hidden" onchange="manejarCarnetUnico(this, 'atras')">
-            <p class="text-[10px] font-semibold text-zinc-300" id="f-carnet-atras-label"><i class="fas fa-upload mr-1"></i> Subir reverso</p>
-          </div>
-          <div id="f-carnet-atras-preview" class="mt-2 hidden w-full h-20 rounded-lg overflow-hidden border border-zinc-700"></div>
-        </div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1.5">Carnet por delante *</label><div class="drag-drop-zone rounded-xl p-3 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('f-carnet-frente-input').click()"><input type="file" id="f-carnet-frente-input" accept="image/*" class="hidden" onchange="manejarCarnetUnico(this, 'frente')"><p class="text-[10px] font-semibold text-zinc-300" id="f-carnet-frente-label"><i class="fas fa-upload mr-1"></i> Subir frente</p></div><div id="f-carnet-frente-preview" class="mt-2 hidden w-full h-20 rounded-lg overflow-hidden border border-zinc-700"></div></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1.5">Carnet por detrás *</label><div class="drag-drop-zone rounded-xl p-3 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('f-carnet-atras-input').click()"><input type="file" id="f-carnet-atras-input" accept="image/*" class="hidden" onchange="manejarCarnetUnico(this, 'atras')"><p class="text-[10px] font-semibold text-zinc-300" id="f-carnet-atras-label"><i class="fas fa-upload mr-1"></i> Subir reverso</p></div><div id="f-carnet-atras-preview" class="mt-2 hidden w-full h-20 rounded-lg overflow-hidden border border-zinc-700"></div></div>
       </div>
-
-      <div>
-        <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-1.5">Selfie sosteniendo el carnet *</label>
-        <div class="drag-drop-zone rounded-xl p-3 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('f-selfie-input').click()">
-          <input type="file" id="f-selfie-input" accept="image/*" capture="user" class="hidden" onchange="manejarCarnetUnico(this, 'selfie')">
-          <p class="text-[10px] font-semibold text-zinc-300" id="f-selfie-label"><i class="fas fa-camera mr-1"></i> Toca para tomar selfie con carnet</p>
-        </div>
-        <div id="f-selfie-preview" class="mt-2 hidden w-full h-24 rounded-lg overflow-hidden border border-zinc-700"></div>
-      </div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1.5">Selfie sosteniendo el carnet *</label><div class="drag-drop-zone rounded-xl p-3 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('f-selfie-input').click()"><input type="file" id="f-selfie-input" accept="image/*" capture="user" class="hidden" onchange="manejarCarnetUnico(this, 'selfie')"><p class="text-[10px] font-semibold text-zinc-300" id="f-selfie-label"><i class="fas fa-camera mr-1"></i> Toca para selfie con carnet</p></div><div id="f-selfie-preview" class="mt-2 hidden w-full h-24 rounded-lg overflow-hidden border border-zinc-700"></div></div>
     </div>
-
-    <div>
-      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Fotos de Referencia de Ventas Anteriores *</label>
-      <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer relative bg-zinc-900/50" onclick="document.getElementById('f-fotos-input').click()">
-        <input type="file" id="f-fotos-input" accept="image/*" multiple class="hidden" onchange="manejarReferenciasMultiples(this)">
-        <div class="space-y-1.5">
-          <i class="fas fa-images text-yellow-400 text-2xl"></i>
-          <p class="text-xs font-semibold text-zinc-300" id="f-fotos-label">Toca aquí para seleccionar varias capturas</p>
-        </div>
-      </div>
-      <div id="f-fotos-preview-grid" class="grid grid-cols-4 gap-2 pt-2"></div>
-    </div>
-
-    <div class="flex gap-2 items-start p-3 rounded-xl bg-zinc-900 border border-zinc-800">
-      <input type="checkbox" id="f-terminos" class="mt-0.5 w-4 h-4 accent-yellow-500" required />
-      <label for="f-terminos" class="text-[11px] leading-relaxed text-zinc-400">
-        Acepto los Términos y Condiciones y la Política de Privacidad de SiilckVentas. Autorizo el almacenamiento seguro de mis datos para verificación de identidad y prevención de fraude. *
-      </label>
-    </div>
-
+    <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Fotos de Referencia *</label><div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer relative bg-zinc-900/50" onclick="document.getElementById('f-fotos-input').click()"><input type="file" id="f-fotos-input" accept="image/*" multiple class="hidden" onchange="manejarReferenciasMultiples(this)"><div class="space-y-1.5"><i class="fas fa-images text-yellow-400 text-2xl"></i><p class="text-xs font-semibold text-zinc-300" id="f-fotos-label">Toca aquí para seleccionar varias capturas</p></div></div><div id="f-fotos-preview-grid" class="grid grid-cols-4 gap-2 pt-2"></div></div>
+    <div class="flex gap-2 items-start p-3 rounded-xl bg-zinc-900 border border-zinc-800"><input type="checkbox" id="f-terminos" class="mt-0.5 w-4 h-4 accent-yellow-500" required /><label for="f-terminos" class="text-[11px] leading-relaxed text-zinc-400">Acepto los Términos y Condiciones y autorizo verificación de identidad. *</label></div>
     <button id="btn-enviar-postulacion" onclick="enviarFormularioPostulacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition">Enviar Postulación Oficial</button>
   </div>
-
   <div id="success-container" class="hidden text-center space-y-4 py-6">
     <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check-circle"></i></div>
     <div class="space-y-2">
-      <h3 class="text-base font-black text-white" id="success-title-msg">¡Tu formulario ha sido enviado con éxito!</h3>
-      <p class="text-xs text-zinc-300 leading-relaxed" id="success-desc-msg">Pronto nos contactaremos contigo. Tu solicitud entró en proceso de inspección rigurosa de hasta 7 días hábiles.</p>
+      <h3 class="text-base font-black text-white" id="success-title-msg">Solicitud enviada con éxito</h3>
+      <p class="text-xs text-zinc-300 leading-relaxed" id="success-desc-msg">Pronto veremos si estás apto para ser vendedor.</p>
     </div>
-    <a href="index.html" class="w-full bg-yellow-500 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs block text-center shadow-lg transition">Volver al inicio</a>
+    <a href="index.html" class="w-full bg-yellow-500 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs block text-center shadow-lg">Volver al inicio</a>
   </div>
-
-  <div class="text-center pt-2 border-t border-zinc-800">
-    <a href="index.html" class="text-zinc-400 hover:text-yellow-400 text-xs font-bold transition flex items-center justify-center gap-1.5"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
-  </div>
+  <div class="text-center pt-2 border-t border-zinc-800"><a href="index.html" class="text-zinc-400 hover:text-yellow-400 text-xs font-bold flex items-center justify-center gap-1.5"><i class="fas fa-arrow-left"></i> Volver al inicio</a></div>
 </div>
-
 <script>
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-let referenciasBase64List = [];
-let carnetFrenteB64 = null, carnetAtrasB64 = null, selfieB64 = null;
-
-function manejarReferenciasMultiples(input){
-  if(input.files){
-    const grid = document.getElementById('f-fotos-preview-grid');
-    grid.innerHTML = "";
-    referenciasBase64List = [];
-    Array.from(input.files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = function(e){
-        referenciasBase64List.push(e.target.result);
-        grid.innerHTML += `<div class="w-full h-16 rounded-lg overflow-hidden border border-zinc-700 bg-zinc-900"><img src="${e.target.result}" class="w-full h-full object-cover"></div>`;
-        document.getElementById('f-fotos-label').innerText = `${referenciasBase64List.length} imágenes cargadas ✅`;
-      }
-      reader.readAsDataURL(file);
-    });
-  }
-}
-
-function manejarCarnetUnico(input, tipo){
-  if(!input.files[0]) return;
-  const file = input.files[0];
-  const reader = new FileReader();
-  reader.onload = function(e){
-    if(tipo === 'frente'){ carnetFrenteB64 = e.target.result; document.getElementById('f-carnet-frente-label').innerText = "Frente cargado ✅"; document.getElementById('f-carnet-frente-preview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`; document.getElementById('f-carnet-frente-preview').classList.remove('hidden'); }
-    if(tipo === 'atras'){ carnetAtrasB64 = e.target.result; document.getElementById('f-carnet-atras-label').innerText = "Reverso cargado ✅"; document.getElementById('f-carnet-atras-preview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`; document.getElementById('f-carnet-atras-preview').classList.remove('hidden'); }
-    if(tipo === 'selfie'){ selfieB64 = e.target.result; document.getElementById('f-selfie-label').innerText = "Selfie cargada ✅"; document.getElementById('f-selfie-preview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`; document.getElementById('f-selfie-preview').classList.remove('hidden'); }
-  }
-  reader.readAsDataURL(file);
-}
-
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+let referenciasBase64List=[];let carnetFrenteB64=null,carnetAtrasB64=null,selfieB64=null;
+function manejarReferenciasMultiples(input){ if(input.files){ const grid=document.getElementById('f-fotos-preview-grid'); grid.innerHTML=""; referenciasBase64List=[]; Array.from(input.files).forEach((file)=>{ const reader=new FileReader(); reader.onload=function(e){ referenciasBase64List.push(e.target.result); grid.innerHTML+=`<div class="w-full h-16 rounded-lg overflow-hidden border border-zinc-700 bg-zinc-900"><img src="${e.target.result}" class="w-full h-full object-cover"></div>`; document.getElementById('f-fotos-label').innerText=`${referenciasBase64List.length} imágenes cargadas ✅`; }; reader.readAsDataURL(file); }); } }
+function manejarCarnetUnico(input,tipo){ if(!input.files[0]) return; const file=input.files[0]; const reader=new FileReader(); reader.onload=function(e){ if(tipo==='frente'){carnetFrenteB64=e.target.result;document.getElementById('f-carnet-frente-label').innerText="Frente cargado ✅";document.getElementById('f-carnet-frente-preview').innerHTML=`<img src="${e.target.result}" class="w-full h-full object-cover">`;document.getElementById('f-carnet-frente-preview').classList.remove('hidden');} if(tipo==='atras'){carnetAtrasB64=e.target.result;document.getElementById('f-carnet-atras-label').innerText="Reverso cargado ✅";document.getElementById('f-carnet-atras-preview').innerHTML=`<img src="${e.target.result}" class="w-full h-full object-cover">`;document.getElementById('f-carnet-atras-preview').classList.remove('hidden');} if(tipo==='selfie'){selfieB64=e.target.result;document.getElementById('f-selfie-label').innerText="Selfie cargada ✅";document.getElementById('f-selfie-preview').innerHTML=`<img src="${e.target.result}" class="w-full h-full object-cover">`;document.getElementById('f-selfie-preview').classList.remove('hidden');} }; reader.readAsDataURL(file); }
 async function enviarFormularioPostulacion(){
-  if(!auth.currentUser){
-    alert("Debes iniciar sesión primero para enviar tu postulación.");
-    window.location.href="login.html";
-    return;
-  }
-  const nombre = document.getElementById('f-nombre').value.trim();
-  const contacto = document.getElementById('f-contacto').value.trim();
-  const pais = document.getElementById('f-pais').value.trim();
-  const rut = document.getElementById('f-rut').value.trim();
-  const motivo = document.getElementById('f-motivo').value.trim();
-  const experiencia = document.getElementById('f-experiencia').value.trim();
-  const conocio = document.getElementById('f-conocio').value.trim();
-  const volumen = document.getElementById('f-volumen').value.trim();
-  const terminos = document.getElementById('f-terminos').checked;
-
-  if(!nombre || !contacto || !pais || !rut || !motivo || !experiencia || !conocio || !volumen){
-    alert("Por favor completa todos los campos obligatorios.");
-    return;
-  }
-  if(!carnetFrenteB64 || !carnetAtrasB64 || !selfieB64){
-    alert("Debes subir foto del carnet por delante, por detrás y selfie sosteniéndolo.");
-    return;
-  }
-  if(!terminos){
-    alert("Debes aceptar los Términos y Condiciones.");
-    return;
-  }
-
-  const btnEnviar = document.getElementById('btn-enviar-postulacion');
-  btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Enviando postulación...';
-  btnEnviar.disabled = true;
-
+  if(!auth.currentUser){ alert("Debes iniciar sesión primero"); window.location.href="login.html"; return; }
+  const nombre=document.getElementById('f-nombre').value.trim();const contacto=document.getElementById('f-contacto').value.trim();const pais=document.getElementById('f-pais').value.trim();const rut=document.getElementById('f-rut').value.trim();const motivo=document.getElementById('f-motivo').value.trim();const experiencia=document.getElementById('f-experiencia').value.trim();const conocio=document.getElementById('f-conocio').value.trim();const volumen=document.getElementById('f-volumen').value.trim();const terminos=document.getElementById('f-terminos').checked;
+  if(!nombre||!contacto||!pais||!rut||!motivo||!experiencia||!conocio||!volumen){alert("Por favor completa todos los campos obligatorios.");return;}
+  if(!carnetFrenteB64||!carnetAtrasB64||!selfieB64){alert("Debes subir foto del carnet por delante, por detrás y selfie sosteniéndolo.");return;}
+  if(!terminos){alert("Debes aceptar los Términos.");return;}
+  const btnEnviar=document.getElementById('btn-enviar-postulacion');btnEnviar.innerHTML='<i class="fas fa-spinner fa-spin mr-2"></i> Enviando...';btnEnviar.disabled=true;
   try{
-    await db.collection('postulaciones_vendedores').add({
-      uid: auth.currentUser.uid,
-      nombre: nombre,
-      contacto: contacto,
-      pais: pais,
-      rut: rut,
-      motivo: motivo,
-      experiencia: experiencia,
-      conocio: conocio,
-      volumen: volumen,
-      carnetFrente: carnetFrenteB64,
-      carnetAtras: carnetAtrasB64,
-      selfieCarnet: selfieB64,
-      referenciasFotos: referenciasBase64List,
-      aceptoTerminos: true,
-      estado: 'pendiente_revision',
-      fecha: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    await db.collection('perfiles').doc(auth.currentUser.uid).update({
-      postuladoFormulario: true
-    });
-
+    await db.collection('postulaciones_vendedores').add({uid:auth.currentUser.uid,nombre,contacto,pais,rut,motivo,experiencia,conocio,volumen,carnetFrente:carnetFrenteB64,carnetAtras:carnetAtrasB64,selfieCarnet:selfieB64,referenciasFotos:referenciasBase64List,aceptoTerminos:true,estado:'pendiente_revision',emailUsuario:auth.currentUser.email,fecha:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection('perfiles').doc(auth.currentUser.uid).update({postuladoFormulario:true});
+    await fetch('/api/enviar-postulacion',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,contacto,pais,rut,motivo,experiencia,conocio,volumen,uid:auth.currentUser.uid,emailUsuario:auth.currentUser.email})});
     document.getElementById('form-container').classList.add('hidden');
     document.getElementById('success-container').classList.remove('hidden');
-  }catch(err){
-    alert("Error al enviar: " + err.message);
-    btnEnviar.innerHTML = 'Enviar Postulación Oficial';
-    btnEnviar.disabled = false;
-  }
+    document.getElementById('success-title-msg').innerText='Solicitud enviada con éxito';
+    document.getElementById('success-desc-msg').innerText='Pronto veremos si estás apto para ser vendedor.';
+  }catch(err){alert("Error al enviar: "+err.message);btnEnviar.innerHTML='Enviar Postulación Oficial';btnEnviar.disabled=false;}
 }
 </script>
 </body>
