@@ -19,7 +19,7 @@ service cloud.firestore {
     }
 
     function perfilPrivilegedKeys() {
-      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'vipExpira'];
+      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'vipExpira', 'isVip', 'plan'];
     }
 
     // --- Perfiles ---
@@ -31,6 +31,7 @@ service cloud.firestore {
       allow create: if isOwner() || (
         isSelf(userId) &&
         (!('esVendedorVip' in request.resource.data) || request.resource.data.esVendedorVip == false) &&
+        (!('isVip' in request.resource.data) || request.resource.data.isVip == false) &&
         (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false)
       );
 
@@ -145,6 +146,25 @@ service cloud.firestore {
     match /configuracion/{docId} {
       allow read: if true;
       allow write: if isOwner();
+    }
+
+    // --- Órdenes, ventas y entregas automáticas (escribe el servidor / Admin SDK) ---
+    match /ordenes/{ordenId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /ventas/{ventaId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /entregas/{entregaId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
     }
 
     // --- Foro ---

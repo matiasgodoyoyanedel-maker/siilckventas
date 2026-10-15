@@ -132,7 +132,7 @@
           <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase B · Aprendiz Estelar</span>
           <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
           <p class="text-[11px] text-zinc-300 leading-relaxed">Enciende tu vitrina. El Pase B te pone en primera fila del marketplace para que tus cuentas se vean, se confíen y se vendan más rápido.</p>
-          <div class="text-3xl font-black text-yellow-400">$2.990 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
+          <div id="precio-vip-basico" class="text-3xl font-black text-yellow-400">Cargando precio…</div>
           <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
             <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil, foro y fichas.</li>
             <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li>
@@ -143,15 +143,15 @@
             <li><i class="fas fa-sort-amount-up text-yellow-400 mr-2"></i> Prioridad media en el ranking frente a cuentas sin pase.</li>
           </ul>
         </div>
-        <button type="button" onclick="verificarLoginAccion(()=>agregarPaseVipAlCarrito('basico'))" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Agregar Pase Básico al Carrito ($2.990)</button>
-        <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full text-center text-[10px] text-zinc-400 hover:text-yellow-400 underline">Pagar directo con Flow (opción anterior)</a>
+        <button type="button" id="btn-pagar-vip-basico" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('basico'))" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <p id="hint-vip-basico" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
       </div>
       <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
         <div class="space-y-4 text-center">
           <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase Pro · Máximo alcance</span>
           <h3 class="text-2xl font-black text-white">VIP PRO</h3>
           <p class="text-[11px] text-zinc-300 leading-relaxed">Para vendedores que quieren dominar el ranking: más descuento, impulso más frecuente y el sello rojo que nadie ignora.</p>
-          <div class="text-3xl font-black text-rose-500">$5.090 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
+          <div id="precio-vip-pro" class="text-3xl font-black text-rose-500">Cargando precio…</div>
           <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
             <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li>
             <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li>
@@ -160,8 +160,8 @@
             <li><i class="fas fa-crown text-rose-500 mr-2"></i> Marco rojo Pro + estela animada premium.</li>
           </ul>
         </div>
-        <button type="button" onclick="verificarLoginAccion(()=>agregarPaseVipAlCarrito('pro'))" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Agregar Pase Pro al Carrito ($5.090)</button>
-        <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full text-center text-[10px] text-zinc-400 hover:text-rose-400 underline">Pagar directo con Flow (opción anterior)</a>
+        <button type="button" id="btn-pagar-vip-pro" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('pro'))" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <p id="hint-vip-pro" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
       </div>
     </div>
   </div>
@@ -247,31 +247,137 @@ function verificarAccionProtegida(event, url){
   if(!auth.currentUser){ if(event) event.preventDefault(); localStorage.setItem('redirect_after_login', url); window.location.href = 'login.html'; return false; }
   window.location.href = url;
 }
-async function agregarPaseVipAlCarrito(tipo){
-  if(!auth.currentUser){ localStorage.setItem('redirect_after_login', window.location.pathname); window.location.href = 'login.html'; return; }
+let preciosPaseVip = { basico: 0, pro: 0 };
+
+function formatearClp(n){
+  return '$' + Number(n || 0).toLocaleString('es-CL');
+}
+function totalVipConIva(neto){
+  const subtotal = Math.round(Number(neto) || 0);
+  const iva = Math.round(subtotal * 0.19);
+  return { subtotal, iva, total: subtotal + iva };
+}
+function pintarBotonVip(tipo, neto){
+  const montos = totalVipConIva(neto);
   const esPro = tipo === 'pro';
-  const precio = esPro ? 5090 : 2990;
-  const titulo = esPro ? 'Pase VIP Pro (30 días)' : 'Pase VIP Básico (30 días)';
-  const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
-  const snapCart = await carritoRef.get();
-  let yaEsta = false;
-  snapCart.forEach(d => { const x = d.data(); if(x.tipoItem==='pase_vip' && x.tipoVipPase===tipo) yaEsta = true; });
-  if(yaEsta){
-    mostrarToast("🛒 Ese pase ya está en tu carrito");
+  const precioEl = document.getElementById(esPro ? 'precio-vip-pro' : 'precio-vip-basico');
+  const btn = document.getElementById(esPro ? 'btn-pagar-vip-pro' : 'btn-pagar-vip-basico');
+  const hint = document.getElementById(esPro ? 'hint-vip-pro' : 'hint-vip-basico');
+  if(precioEl){
+    precioEl.innerHTML = `${formatearClp(neto)} <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span>`;
+  }
+  if(btn){
+    btn.disabled = !(neto > 0);
+    btn.innerHTML = neto > 0
+      ? `<i class="fas fa-credit-card mr-1.5"></i> Pagar ${formatearClp(montos.total)} con Flow`
+      : 'Precio no configurado';
+  }
+  if(hint && neto > 0){
+    hint.innerText = `Neto ${formatearClp(neto)} + IVA 19% (${formatearClp(montos.iva)}) = ${formatearClp(montos.total)} cobrado por Flow`;
+  }
+}
+function escucharPreciosPaseVip(){
+  db.collection('configuracion').doc('global').onSnapshot(doc => {
+    const d = doc.exists ? doc.data() : {};
+    const basico = Math.round(Number(d.precioPaseVipBasico || d.precioVipBasico || 0)) || 2990;
+    const pro = Math.round(Number(d.precioPaseVipPro || d.precioVipPro || 0)) || 5090;
+    preciosPaseVip.basico = basico;
+    preciosPaseVip.pro = pro;
+    pintarBotonVip('basico', basico);
+    pintarBotonVip('pro', pro);
+  }, () => {
+    pintarBotonVip('basico', 0);
+    pintarBotonVip('pro', 0);
+  });
+}
+async function postCrearPago(payload){
+  let res, data;
+  try {
+    res = await fetch('/api/crear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
+      body: JSON.stringify(payload)
+    });
+    data = await res.json();
+  } catch(e) {}
+  if(!data || !data.flowUrl){
+    res = await fetch('/siilckventas/api/crear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
+      body: JSON.stringify(payload)
+    });
+    data = await res.json();
+  }
+  return data;
+}
+async function comprarPaseVipConFlow(tipo){
+  if(!auth.currentUser){
+    localStorage.setItem('redirect_after_login', window.location.pathname);
+    window.location.href = 'login.html';
     return;
   }
-  await carritoRef.add({
-    tipoItem: 'pase_vip',
-    tipoVipPase: tipo,
-    titulo: titulo,
-    precio: precio,
-    stock: 1,
-    cantidadSeleccionada: 1,
-    foto: '',
-    garantiaLabel: '',
-    agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  mostrarToast("🛒 ¡Pase agregado al carrito!");
+  const precio = tipo === 'pro' ? preciosPaseVip.pro : preciosPaseVip.basico;
+  const btn = document.getElementById(tipo === 'pro' ? 'btn-pagar-vip-pro' : 'btn-pagar-vip-basico');
+  if(!(precio > 0)){
+    mostrarAlertaToast('Precio VIP', 'El administrador aún no configuró el precio del pase en Firestore.');
+    return;
+  }
+  const etiqueta = btn ? btn.innerHTML : '';
+  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con Flow...'; }
+  try {
+    const idToken = await auth.currentUser.getIdToken();
+    const data = await postCrearPago({
+      uid: auth.currentUser.uid,
+      email: auth.currentUser.email,
+      idToken,
+      tipoVipPase: tipo
+    });
+    if(data && data.flowUrl){
+      window.location.href = data.flowUrl;
+      return;
+    }
+    mostrarAlertaToast('Error Flow', data && (data.error || JSON.stringify(data)) || 'No se pudo crear el pago.');
+  } catch(err){
+    mostrarAlertaToast('Error', err.message);
+  }
+  if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
+}
+async function manejarRetornoPagoVip(u){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('ok') !== '1' && params.get('vip') !== '1') return;
+  cambiarSeccion('vip');
+  const token = params.get('token');
+  if(token){
+    const body = 'token=' + encodeURIComponent(token);
+    try {
+      await fetch('/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+    } catch(e) {
+      try { await fetch('/siilckventas/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }); } catch(err) {}
+    }
+  }
+  const tipo = params.get('tipo') === 'pro' ? 'pro' : 'basico';
+  const perfilRef = db.collection('perfiles').doc(u.uid);
+  const perfilDoc = await perfilRef.get();
+  const data = perfilDoc.exists ? perfilDoc.data() : {};
+  if(!(data.isVip || data.esVendedorVip)){
+    try {
+      let base = new Date();
+      if(data.vipExpira && data.vipExpira.toDate && data.vipExpira.toDate().getTime() > base.getTime()){
+        base = data.vipExpira.toDate();
+      }
+      const expira = new Date(base.getTime() + 30*24*60*60*1000);
+      await perfilRef.set({
+        esVendedorVip: true,
+        tipoVip: tipo,
+        vipExpira: firebase.firestore.Timestamp.fromDate(expira),
+        isVip: true,
+        plan: 'vip'
+      }, { merge: true });
+    } catch(e) {
+      console.log(e);
+    }
+  }
+  mostrarToast('✅ Pase VIP activado. Gracias por tu compra con Flow.');
 }
 function cambiarSeccion(s){
   ['vip','perfil','mis-chats','mis-tickets'].forEach(x=>{const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');});
@@ -359,7 +465,7 @@ auth.onAuthStateChanged(async(u)=>{
         if(paseTxt){
           const tipo = currentUserData.tipoVip;
           if(tipo === 'pro') paseTxt.innerText = "👑 Pase VIP Pro activo: impulso cada 8h, 10% off y prioridad máxima.";
-          else if(tipo === 'basico' || currentUserData.esVendedorVip) paseTxt.innerText = "⭐ Pase VIP Básico activo: impulso diario, marco dorado, 5% off y rango visible.";
+          else if(tipo === 'basico' || currentUserData.esVendedorVip || currentUserData.isVip) paseTxt.innerText = "⭐ Pase VIP Básico activo: impulso diario, marco dorado, 5% off y rango visible.";
           else paseTxt.innerText = "Sin pase VIP. Activa el Pase Básico para impulsar anuncios y mostrar rango real.";
         }
       }
@@ -368,8 +474,11 @@ auth.onAuthStateChanged(async(u)=>{
       const btnMant = document.getElementById('menu-btn-mantenimiento-owner');
       if(btnMant) btnMant.classList.remove('hidden');
     }
+    await manejarRetornoPagoVip(u);
   }
 });
+
+escucharPreciosPaseVip();
 
 function cerrarSesion(){auth.signOut().then(()=>{window.location.href='login.html';})}
 </script>

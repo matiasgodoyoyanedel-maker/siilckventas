@@ -91,6 +91,21 @@
       </div>
 
       <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
+        <h4 class="font-bold text-white uppercase text-[11px]">👑 Precio Pase VIP (CLP neto, sin IVA)</h4>
+        <p class="text-[11px] text-zinc-400">Estos valores se cobran en Flow al instante: neto + IVA 19%. No uses botones fijos de Flow.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">VIP Básico</label>
+            <input type="number" min="1" id="admin-precio-vip-basico" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white" placeholder="2990">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">VIP Pro</label>
+            <input type="number" min="1" id="admin-precio-vip-pro" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white" placeholder="5090">
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
         <h4 class="font-bold text-white uppercase text-[11px]">🎨 Temática visual de la página</h4>
         <p class="text-[11px] text-zinc-400">Solo el administrador cambia el fondo y la atmósfera. No elimina funciones: solo pinta el sitio.</p>
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -285,6 +300,11 @@ async function cargarConfiguracionAdmin(){
       btnAviso.innerText = "Activar Aviso";
       btnAviso.className = "w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition";
     }
+    const inputBasico = document.getElementById('admin-precio-vip-basico');
+    const inputPro = document.getElementById('admin-precio-vip-pro');
+    if(inputBasico) inputBasico.value = configGlobalCache.precioPaseVipBasico || configGlobalCache.precioVipBasico || 2990;
+    if(inputPro) inputPro.value = configGlobalCache.precioPaseVipPro || configGlobalCache.precioVipPro || 5090;
+
     const tema = configGlobalCache.tematica || (window.SiilckTema ? SiilckTema.current() : 'aurora');
     const temaTxt = document.getElementById('tematica-actual-txt');
     if(temaTxt) temaTxt.innerText = "Temática activa: " + tema;
@@ -317,6 +337,14 @@ async function toggleAvisoGlobal(){
 async function guardarConfiguracionGlobalAdmin(){
   const texto = document.getElementById('admin-input-aviso').value.trim();
   configGlobalCache.avisoMantenimiento = texto;
+  const basico = Math.round(Number(document.getElementById('admin-precio-vip-basico').value));
+  const pro = Math.round(Number(document.getElementById('admin-precio-vip-pro').value));
+  if(!(basico > 0) || !(pro > 0)){
+    mostrarToast("⚠️ Los precios VIP deben ser mayores a 0.");
+    return;
+  }
+  configGlobalCache.precioPaseVipBasico = basico;
+  configGlobalCache.precioPaseVipPro = pro;
   if(!configGlobalCache.tematica) configGlobalCache.tematica = window.SiilckTema ? SiilckTema.current() : 'aurora';
   await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
   mostrarToast("💾 Configuración guardada con éxito.");
