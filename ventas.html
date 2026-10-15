@@ -217,7 +217,7 @@
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,stockPublicacionActual=1,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
@@ -383,6 +383,8 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const titulo = (p.titulo || '').toLowerCase();
     const juego = (p.juego || '').toLowerCase();
     const region = (p.region || '').toLowerCase();
+    const stockNum = p.stock == null ? 1 : Number(p.stock);
+    if(stockNum <= 0) return;
     if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
     
     const tipoVip = p.tipoVip || 'ninguno';
@@ -433,6 +435,7 @@ async function eliminarPublicacionAdmin(pubId){
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
   precioBasePublicacionActual = parseInt(p.precio) || 0;
+  stockPublicacionActual = p.stock == null ? 1 : Number(p.stock);
   vendedorActualUidCache = p.vendedorUid;
   publicacionActualIdCache = id;
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
@@ -466,6 +469,9 @@ async function agregarAlCarritoDesdeModal(){
     publicacionId: publicacionActualIdCache,
     titulo: document.getElementById('modal-pub-titulo').innerText,
     precio: precioBasePublicacionActual + costoGarantia,
+    precioBase: precioBasePublicacionActual,
+    garantia: costoGarantia,
+    stock: stockPublicacionActual,
     foto: document.getElementById('modal-pub-img').src || "",
     cantidadSeleccionada: 1,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()

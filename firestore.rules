@@ -147,6 +147,25 @@ service cloud.firestore {
       allow write: if isOwner();
     }
 
+    // --- Órdenes, ventas y entregas automáticas (escribe el servidor / Admin SDK) ---
+    match /ordenes/{ordenId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /ventas/{ventaId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /entregas/{entregaId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
     // --- Foro ---
     match /foros/{foroId} {
       allow read: if true;

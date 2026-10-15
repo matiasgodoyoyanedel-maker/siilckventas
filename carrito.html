@@ -43,6 +43,12 @@
     <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
     <button id="btn-pagar-flow" onclick="pagarConFlow()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</button>
   </div>
+
+  <div id="box-entrega-auto" class="hidden web-panel rounded-3xl p-6 space-y-3 border border-emerald-500/40">
+    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-wider"><i class="fas fa-key mr-1.5"></i> Entrega automática</h3>
+    <p id="txt-entrega-estado" class="text-[11px] text-zinc-300">Confirmando tu pago con Flow y entregando la cuenta...</p>
+    <div id="lista-entregas-auto" class="space-y-3"></div>
+  </div>
 </div>
 
 <script>
@@ -61,6 +67,8 @@ auth.onAuthStateChanged(async(u)=>{
   }
   emailGlobal = u.email || 'cliente@siiilckventas.com';
   cargarCarritoEnVivo(u.uid);
+  escucharEntregasAutomaticas(u.uid);
+  intentarConfirmarRetornoFlow();
 });
 
 function cargarCarritoEnVivo(uid){
@@ -161,22 +169,37 @@ async function eliminarItemCarrito(itemId, uid){
   await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
 }
 
+async function payloadPagoFlow(){
+  const idToken = await auth.currentUser.getIdToken();
+  return {
+    uid: auth.currentUser.uid,
+    email: emailGlobal,
+    idToken,
+    amount: totalFinalGlobal
+  };
+}
+
 async function pagarConFlow(){
   const btn = document.getElementById('btn-pagar-flow');
   if(totalFinalGlobal <= 0){
     alert('Tu carrito está vacío');
     return;
   }
+  if(!auth.currentUser){
+    window.location.href = 'login.html';
+    return;
+  }
   btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con Flow...';
   btn.disabled = true;
 
   try {
+    const payload = await payloadPagoFlow();
     let res, data;
     try {
       res = await fetch('/api/crear', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: totalFinalGlobal, email: emailGlobal })
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
+        body: JSON.stringify(payload)
       });
       data = await res.json();
     } catch(e) {}
@@ -184,8 +207,8 @@ async function pagarConFlow(){
     if(!data || !data.flowUrl){
       res = await fetch('/siilckventas/api/crear', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: totalFinalGlobal, email: emailGlobal })
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
+        body: JSON.stringify(payload)
       });
       data = await res.json();
     }
@@ -202,6 +225,47 @@ async function pagarConFlow(){
     btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
     btn.disabled = false;
   }
+}
+
+async function intentarConfirmarRetornoFlow(){
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const ok = params.get('ok');
+  if(ok === '1' || token){
+    const box = document.getElementById('box-entrega-auto');
+    if(box) box.classList.remove('hidden');
+  }
+  if(!token) return;
+  const body = 'token=' + encodeURIComponent(token);
+  try {
+    await fetch('/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+  } catch(e) {
+    try { await fetch('/siilckventas/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }); } catch(err) {}
+  }
+}
+
+function escucharEntregasAutomaticas(uid){
+  db.collection('entregas').where('compradorUid', '==', uid).onSnapshot(snapshot => {
+    if(snapshot.empty) return;
+    const box = document.getElementById('box-entrega-auto');
+    const list = document.getElementById('lista-entregas-auto');
+    const estado = document.getElementById('txt-entrega-estado');
+    if(box) box.classList.remove('hidden');
+    if(estado) estado.innerText = 'Pago confirmado. Estas son tus cuentas, entregadas en automático.';
+    let h = '';
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      (d.cuentas || []).forEach(c => {
+        h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-emerald-500/20 text-xs space-y-1">
+          <h4 class="font-black text-white">${c.titulo || 'Cuenta'}</h4>
+          <p class="text-zinc-300">Email: <span class="text-yellow-400 font-bold">${c.emailCuenta || '—'}</span></p>
+          <p class="text-zinc-300">Password: <span class="text-yellow-400 font-bold">${c.passwordCuenta || '—'}</span></p>
+          <p class="text-zinc-400">Tel: ${c.telefono || '—'} · Recuperación: ${c.recuperacion || '—'}</p>
+        </div>`;
+      });
+    });
+    if(list) list.innerHTML = h || `<p class="text-[11px] text-zinc-500">Esperando la confirmación de Flow...</p>`;
+  });
 }
 </script>
 </body>
