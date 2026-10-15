@@ -24,11 +24,10 @@
     <p class="text-xs text-zinc-400">Registra tus datos y referencias para verificar tu aptitud en nuestra plataforma.</p>
   </div>
 
-  <!-- AVISO RIGUROSO NUEVO -->
   <div class="bg-yellow-500/10 border border-yellow-500/20 border-l-4 border-l-yellow-400 p-4 rounded-xl space-y-2">
     <h3 class="text-[11px] font-black uppercase tracking-wider text-yellow-400 flex items-center gap-2"><i class="fas fa-shield-halved"></i> Proceso de inspección rigurosa - Hasta 7 días hábiles</h3>
     <p class="text-[11px] leading-relaxed text-zinc-300">
-      En Siilckventas todas las solicitudes para ser vendedor pasan por una inspección rigurosa anti-estafas. Revisamos manualmente que tu RUT coincida con el titular bancario, que las fotos del carnet sean reales y legibles, que el video y las referencias no sean sacadas de YouTube/Eldorado, y que no existan cuentas robadas. Tus datos son almacenados de forma encriptada (AES-256) y solo se usan para verificación de identidad y prevención de fraude bajo la Ley de Protección de Datos Personales de Chile. Si subes una foto falsa, cuenta robada o datos que no coinciden, tu solicitud será rechazada y quedas bloqueado 30 días para volver a postular. Al enviar este formulario aceptas este proceso.
+      En Siilckventas todas las solicitudes para ser vendedor pasan por una inspección rigurosa anti-estafas. Revisamos manualmente que tus datos coincidan, que las fotos del carnet sean reales y legibles, que el video y las referencias no sean falsos, y que no existan cuentas robadas. Tus datos son almacenados de forma encriptada (AES-256) y solo se usan para verificación de identidad y prevención de fraude. Al enviar este formulario aceptas este proceso.
     </p>
   </div>
 
@@ -49,7 +48,6 @@
       </div>
     </div>
 
-    <!-- CAMPO NUEVO RUT -->
     <div>
       <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">RUT / Documento de Identidad *</label>
       <input type="text" id="f-rut" placeholder="12.345.678-9" class="w-full neo-input rounded-xl px-4 py-3 text-white">
@@ -62,7 +60,7 @@
 
     <div>
       <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">¿Tienes experiencia en ventas de cuentas en otras plataformas? *</label>
-      <textarea id="f-experiencia" rows="2" placeholder="Menciona plataformas (Eldorado, G2G, grupos) y tiempo de experiencia..." class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea>
+      <textarea id="f-experiencia" rows="2" placeholder="Menciona plataformas y tiempo de experiencia..." class="w-full neo-input rounded-xl px-4 py-3 text-white resize-none"></textarea>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -76,7 +74,6 @@
       </div>
     </div>
 
-    <!-- NUEVO BLOQUE CARNET -->
     <div class="space-y-3 p-4 rounded-2xl bg-zinc-900/60 border border-yellow-500/10">
       <h4 class="text-[11px] font-black uppercase tracking-wider text-yellow-400"><i class="fas fa-id-card mr-1"></i> Verificación de Identidad *</h4>
 
@@ -109,27 +106,22 @@
       </div>
     </div>
 
-    <!-- SUBIDA MÚLTIPLE DE FOTOS DE REFERENCIAS (PC Y MÓVIL) -->
     <div>
-      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Fotos de Referencia de Ventas Anteriores (Múltiples imágenes) *</label>
+      <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Fotos de Referencia de Ventas Anteriores *</label>
       <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer relative bg-zinc-900/50" onclick="document.getElementById('f-fotos-input').click()">
         <input type="file" id="f-fotos-input" accept="image/*" multiple class="hidden" onchange="manejarReferenciasMultiples(this)">
         <div class="space-y-1.5">
           <i class="fas fa-images text-yellow-400 text-2xl"></i>
-          <p class="text-xs font-semibold text-zinc-300" id="f-fotos-label">Toca aquí para seleccionar o arrastrar varias capturas (PC / Móvil)</p>
-          <p class="text-[10px] text-zinc-500">Puedes adjuntar capturas de calificaciones o entregas exitosas</p>
+          <p class="text-xs font-semibold text-zinc-300" id="f-fotos-label">Toca aquí para seleccionar varias capturas</p>
         </div>
       </div>
       <div id="f-fotos-preview-grid" class="grid grid-cols-4 gap-2 pt-2"></div>
     </div>
 
-    <!-- PALOMITA TERMINOS NUEVA -->
     <div class="flex gap-2 items-start p-3 rounded-xl bg-zinc-900 border border-zinc-800">
       <input type="checkbox" id="f-terminos" class="mt-0.5 w-4 h-4 accent-yellow-500" required />
       <label for="f-terminos" class="text-[11px] leading-relaxed text-zinc-400">
-        Acepto los <a href="terminos.html" target="_blank" class="text-yellow-400 underline">Términos y Condiciones</a> y la
-        <a href="privacidad.html" target="_blank" class="text-yellow-400 underline">Política de Privacidad</a>.
-        Autorizo a SiilckVentas a almacenar mis datos personales, fotos de carnet y referencias de forma segura y encriptada únicamente con fines de verificación de identidad, prevención de estafas y pagos de ventas. *
+        Acepto los Términos y Condiciones y la Política de Privacidad de SiilckVentas. Autorizo el almacenamiento seguro de mis datos para verificación de identidad y prevención de fraude. *
       </label>
     </div>
 
@@ -140,9 +132,9 @@
     <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check-circle"></i></div>
     <div class="space-y-2">
       <h3 class="text-base font-black text-white">¡Formulario completado con éxito!</h3>
-      <p class="text-xs text-zinc-300 leading-relaxed">Nos pondremos en contacto a la brevedad. Tu solicitud entró en proceso de inspección rigurosa de hasta 7 días hábiles.</p>
+      <p class="text-xs text-zinc-300 leading-relaxed">Tu solicitud entró en proceso de inspección rigurosa de hasta 7 días hábiles.</p>
     </div>
-    <a href="index.html" class="w-full bg-yellow-500 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs block text-center shadow-lg transition">Continúa navegando</a>
+    <a href="index.html" class="w-full bg-yellow-500 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs block text-center shadow-lg transition">Volver al inicio</a>
   </div>
 
   <div class="text-center pt-2 border-t border-zinc-800">
@@ -167,7 +159,7 @@ function manejarReferenciasMultiples(input){
       reader.onload = function(e){
         referenciasBase64List.push(e.target.result);
         grid.innerHTML += `<div class="w-full h-16 rounded-lg overflow-hidden border border-zinc-700 bg-zinc-900"><img src="${e.target.result}" class="w-full h-full object-cover"></div>`;
-        document.getElementById('f-fotos-label').innerText = `${referenciasBase64List.length} imágenes cargadas correctamente ✅`;
+        document.getElementById('f-fotos-label').innerText = `${referenciasBase64List.length} imágenes cargadas ✅`;
       }
       reader.readAsDataURL(file);
     });
@@ -202,16 +194,16 @@ async function enviarFormularioPostulacion(){
   const volumen = document.getElementById('f-volumen').value.trim();
   const terminos = document.getElementById('f-terminos').checked;
 
-  if(!nombre ||!contacto ||!pais ||!rut ||!motivo ||!experiencia ||!conocio ||!volumen){
+  if(!nombre || !contacto || !pais || !rut || !motivo || !experiencia || !conocio || !volumen){
     alert("Por favor completa todos los campos obligatorios.");
     return;
   }
-  if(!carnetFrenteB64 ||!carnetAtrasB64 ||!selfieB64){
+  if(!carnetFrenteB64 || !carnetAtrasB64 || !selfieB64){
     alert("Debes subir foto del carnet por delante, por detrás y selfie sosteniéndolo.");
     return;
   }
   if(!terminos){
-    alert("Debes aceptar los Términos y Condiciones y la Política de Privacidad.");
+    alert("Debes aceptar los Términos y Condiciones.");
     return;
   }
 
@@ -231,9 +223,7 @@ async function enviarFormularioPostulacion(){
       selfieCarnet: selfieB64,
       referenciasFotos: referenciasBase64List,
       aceptoTerminos: true,
-      aceptoTerminosFecha: firebase.firestore.FieldValue.serverTimestamp(),
       estado: 'pendiente_revision',
-      fechaLimiteRevision: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 7*24*60*60*1000)),
       fecha: firebase.firestore.FieldValue.serverTimestamp()
     });
 
