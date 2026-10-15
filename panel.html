@@ -231,13 +231,15 @@ async function publicarNuevoVendedor(uid){
     const d = doc.exists ? doc.data() : {};
     const nombre = (d.username || 'Vendedor').split(' ')[0];
     const comuna = d.comuna || d.ciudad || 'Santiago';
-    await db.collection('recentActivity').add({
+    const payload = {
       type: 'new_seller',
       nombreAnonimizado: nombre.charAt(0).toUpperCase() + nombre.slice(1) + ' de ' + comuna,
       producto: '',
       comuna,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    };
+    await db.collection('recentActivity').add(payload);
+    await db.collection('configuracion').doc('global').set({ ultimaActividad: payload }, { merge: true });
   }catch(e){ console.log(e); }
 }
 

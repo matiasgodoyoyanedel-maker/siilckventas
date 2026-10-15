@@ -145,21 +145,28 @@
     });
   }
 
+  function claveAct(u) {
+    if (!u) return "";
+    const t = u.createdAt || {};
+    return [u.type, u.nombreAnonimizado, u.producto, t.seconds || t._seconds || ""].join("|");
+  }
+
   function listenActivity(db) {
-    db.collection("recentActivity").orderBy("createdAt", "desc").limit(8).onSnapshot(function (snap) {
+    db.collection("configuracion").doc("global").onSnapshot(function (doc) {
+      const u = doc.exists ? (doc.data().ultimaActividad || null) : null;
+      if (!u) return;
+      const key = claveAct(u);
       if (!primedActivity) {
         primedActivity = true;
-        const first = snap.docs[0];
-        if (first) mostrarBarra(first.id, first.data());
+        lastBarId = key;
+        mostrarBarra(key, u);
         return;
       }
-      snap.docChanges().forEach(function (ch) {
-        if (ch.type !== "added") return;
-        const d = ch.doc.data();
-        if (ch.doc.id === lastBarId) return;
-        mostrarBarra(ch.doc.id, d);
-        mostrarToast(d);
-      });
+      if (key && key !== lastBarId) {
+        lastBarId = key;
+        mostrarBarra(key, u);
+        mostrarToast(u);
+      }
     }, function () {});
   }
 
