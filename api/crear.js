@@ -18,7 +18,8 @@ export default async function handler(req, res) {
     const resultado = await crearPagoDesdeCarrito({
       uid: body.uid,
       email: body.email,
-      idToken
+      idToken,
+      amount: body.amount
     });
     if (!resultado.ok) return res.status(400).json(resultado);
     return res.status(200).json({
