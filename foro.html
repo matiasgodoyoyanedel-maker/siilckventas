@@ -16,7 +16,6 @@
 </head>
 <body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
-<!-- PANTALLA DE CARGA (LOGO) -->
 <div id="foro-loading-screen">
   <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black shadow-2xl mb-4 animate-bounce"><i class="fas fa-comments text-2xl"></i></div>
   <h2 class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-indigo-400">FORO</span></h2>
@@ -99,7 +98,6 @@ function cargarTemasForoEnVivo(){
       const yaDioLike = auth.currentUser && (t.likes || []).includes(auth.currentUser.uid);
       const likeBtnClass = yaDioLike ? "text-rose-500 bg-rose-500/10 border-rose-500/30" : "text-zinc-400 bg-zinc-900 border-zinc-800 hover:text-white";
 
-      // Obtener datos frescos del perfil del autor para asegurar perfiles reales
       let autorNombre = t.autorNombre || "Gamer";
       let autorLogoHtml = t.autorLogo ? `<img src="${t.autorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs text-indigo-400"></i>`;
       let autorRango = t.autorRango || "Gamer";
