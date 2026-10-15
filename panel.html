@@ -135,10 +135,34 @@ auth.onAuthStateChanged(async(u)=>{
     if(loader){ loader.style.opacity = '0'; setTimeout(()=>loader.remove(), 400); }
   }, 300);
 
-  if(!u || u.uid !== OWNER_UID){
+  if(!u){
+    alert("⛔ Debes iniciar sesión con la cuenta de administrador.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Verificación estricta del UID de Dueño
+  if(u.uid !== OWNER_UID){
     alert("⛔ Acceso denegado. Solo el administrador principal puede entrar aquí.");
     window.location.href = "index.html";
     return;
+  }
+
+  // Si es el dueño, garantizamos permisos de vendedor y VIP Pro automáticos para que pueda vender
+  const perfilRef = db.collection('perfiles').doc(u.uid);
+  const perfilDoc = await perfilRef.get();
+  if(!perfilDoc.exists || !perfilDoc.data().cuentaVendedorActiva){
+    await perfilRef.set({
+      uid: u.uid,
+      username: "siilck_owner",
+      logo: "👑",
+      esVendedorVip: true,
+      tipoVip: "pro",
+      cuentaVendedorActiva: true,
+      postuladoFormulario: true,
+      vendedorId: "owner_admin",
+      creadoEn: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
   }
 
   cargarPostulacionesAdmin();
@@ -165,8 +189,8 @@ async function cargarPostulacionesAdmin(){
 
 async function aprobarPostulacion(postId, uid){
   await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'aprobado'});
-  await db.collection('perfiles').doc(uid).update({postuladoFormulario: true});
-  mostrarToast("✅ Postulación aprobada con éxito.");
+  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true});
+  mostrarToast("✅ Postulación aprobada y cuenta de vendedor activada con éxito.");
   cargarPostulacionesAdmin();
 }
 
@@ -184,21 +208,32 @@ async function cargarUsuariosAdmin(){
     const d = doc.data();
     const uid = doc.id;
     const username = d.username || "Sin nombre";
+    const esVendedor = d.cuentaVendedorActiva ? `<span class="text-emerald-400 font-bold">Vendedor Activo</span>` : `<span class="text-zinc-400">Usuario normal</span>`;
     const estadoBloqueo = d.bloqueado ? `<span class="text-rose-500 font-bold">Bloqueado</span>` : `<span class="text-emerald-400 font-bold">Activo</span>`;
     const btnBloquearTxt = d.bloqueado ? "Desbloquear" : "Bloquear";
     const btnBloquearCls = d.bloqueado ? "bg-emerald-600 hover:bg-emerald-500" : "bg-rose-600 hover:bg-rose-500";
+    const btnRolTxt = d.cuentaVendedorActiva ? "Quitar Vendedor" : "Hacer Vendedor";
+    const btnRolCls = d.cuentaVendedorActiva ? "bg-amber-600 hover:bg-amber-500" : "bg-indigo-600 hover:bg-indigo-500";
 
     h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div>
         <h4 class="font-bold text-white text-sm">@${username}</h4>
-        <p class="text-[10px] text-zinc-400">UID: ${uid} • Estado: ${estadoBloqueo}</p>
+        <p class="text-[10px] text-zinc-400">UID: ${uid} • Estado: ${estadoBloqueo} • Rol: ${esVendedor}</p>
       </div>
       <div class="flex items-center gap-2">
+        <button onclick="toggleRolVendedor('${uid}', ${!!d.cuentaVendedorActiva})" class="${btnRolCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnRolTxt}</button>
         <button onclick="toggleBloquearUsuario('${uid}', ${!!d.bloqueado})" class="${btnBloquearCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnBloquearTxt}</button>
       </div>
     </div>`;
   });
   box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay usuarios registrados.</p>`;
+}
+
+async function toggleRolVendedor(uid, estadoActual){
+  const nuevoEstado = !estadoActual;
+  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: nuevoEstado});
+  mostrarToast(nuevoEstado ? "⭐ Rol de vendedor otorgado." : "⚠️ Rol de vendedor retirado (perdió insignias).");
+  cargarUsuariosAdmin();
 }
 
 async function toggleBloquearUsuario(uid, estadoActual){
@@ -226,6 +261,7 @@ async function cargarConfiguracionAdmin(){
 
     const btnAviso = document.getElementById('btn-toggle-aviso');
     if(configGlobalCache.avisoNotifActivo){
+      btnAvisotText = "Desactivar Aviso (Activo)";
       btnAviso.innerText = "Desactivar Aviso (Activo)";
       btnAviso.className = "w-full bg-yellow-500 text-zinc-950 font-black py-2.5 rounded-xl uppercase transition";
     }else{
