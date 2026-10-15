@@ -19,12 +19,26 @@
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
   .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
   .radio-warranty{accent-color:#eab308}
-  .decor-side-left, .decor-side-right{position:fixed;top:15vh;width:120px;height:70vh;pointer-events:none;z-index:0;opacity:0.25;background-repeat:no-repeat;background-size:contain}
-  .decor-side-left{left:10px}
-  .decor-side-right{right:10px}
+  
+  /* PANTALLA DE CARGA PROFESIONAL */
+  #app-loading-screen{position:fixed;inset:0;background:#09090b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
+  .loading-spinner{width:50px;height:50px;border:4px solid rgba(234,179,8,0.2);border-top-color:#eab308;border-radius:50%;animation:spin 0.8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* FONDOS TEMÁTICOS REALISTAS */
+  .theme-halloween{background:radial-gradient(circle at center, #2a0b00 0%, #0c0301 100%) !important}
+  .theme-navidad{background:radial-gradient(circle at center, #02200f 0%, #020b06 100%) !important}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
+
+<!-- PANTALLA DE CARGA (LOGO) -->
+<div id="app-loading-screen">
+  <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-2xl shadow-yellow-500/40 mb-4 animate-bounce"><i class="fas fa-crown text-2xl"></i></div>
+  <h2 class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></h2>
+  <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mt-1">Cargando sistema seguro...</p>
+  <div class="loading-spinner mt-6"></div>
+</div>
 
 <!-- MODAL BLOQUEO PERMANENTE -->
 <div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[600] p-4 text-center">
@@ -58,8 +72,7 @@
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
-<div id="decor-left-el" class="decor-side-left"></div>
-<div id="decor-right-el" class="decor-side-right"></div>
+<div id="decor-fx-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
 
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
@@ -148,6 +161,11 @@
           <button onclick="filtrarPorJuegoRapido('League of Legends')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-bolt text-amber-400"></i> LoL / Riot</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
           <button onclick="filtrarPorJuegoRapido('GTA V')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-car text-orange-400"></i> GTA V</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
           <button onclick="filtrarPorJuegoRapido('Minecraft')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-hammer text-emerald-500"></i> Minecraft</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <!-- Nuevos juegos añadidos -->
+          <button onclick="filtrarPorJuegoRapido('Genshin Impact')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-star text-purple-400"></i> Genshin Impact</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('Call of Duty')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-crosshairs text-sky-400"></i> Call of Duty</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('Clash Royale')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-chess-rook text-amber-500"></i> Clash Royale</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('FIFA / FC')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-futbol text-emerald-400"></i> FIFA / EA FC</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
         </div>
       </div>
     </div>
@@ -230,7 +248,7 @@
               <label class="block font-bold text-zinc-300 mb-1">Descripción Detallada</label>
               <textarea id="ticket-desc" rows="3" placeholder="Explica tu caso con todo detalle..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea>
             </div>
-            <button onclick="enviarReporteTicketEmail()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase tracking-wider shadow">Enviar Reporte (Correo Matias Godoy)</button>
+            <button onclick="enviarReporteTicketEmail()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase tracking-wider shadow">Enviar</button>
           </div>
 
           <div class="border-t border-zinc-800 pt-4 space-y-3">
@@ -332,20 +350,22 @@
     </div>
   </div>
 
-  <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
+  <!-- PERFIL DE VENDEDOR CENTRADO Y ESTÉTICO -->
+  <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-3xl mx-auto w-full animate-page">
     <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">← Volver al Marketplace</button>
-    <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6">
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-        <div id="vendedor-perfil-logo-box" class="w-20 h-20 rounded-2xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shadow-xl shrink-0"><i class="fas fa-user"></i></div>
-        <div class="space-y-1 flex-grow">
-          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-            <h3 id="vendedor-perfil-nombre" class="text-xl font-black text-white">--</h3>
-            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
-          </div>
-          <p class="text-xs text-zinc-400"><i class="fas fa-thumbs-up text-emerald-400 mr-1"></i> 99.1% Positivo • 100% Confiable</p>
+    <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6 text-center flex flex-col items-center">
+      <div id="vendedor-perfil-logo-box" class="w-24 h-24 rounded-3xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-4xl font-black text-yellow-400 overflow-hidden shadow-2xl shrink-0"><i class="fas fa-user"></i></div>
+      <div class="space-y-2">
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <h3 id="vendedor-perfil-nombre" class="text-2xl font-black text-white">--</h3>
+          <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-3 py-1 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
         </div>
+        <p class="text-xs text-zinc-400"><i class="fas fa-thumbs-up text-emerald-400 mr-1"></i> 99.1% Positivo • 100% Confiable en Escrow</p>
       </div>
-      <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-3"></div>
+      <div class="w-full border-t border-zinc-800 pt-4">
+        <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4 text-left">Cuentas Activas del Vendedor</h4>
+        <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+      </div>
     </div>
   </div>
 
@@ -357,7 +377,7 @@
     <div class="space-y-4 text-xs">
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option><option value="Steam Key">Steam Key</option><option value="League of Legends">League of Legends</option><option value="GTA V">GTA V</option><option value="Minecraft">Minecraft</option></select></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option><option value="Steam Key">Steam Key</option><option value="League of Legends">League of Legends</option><option value="GTA V">GTA V</option><option value="Minecraft">Minecraft</option><option value="Genshin Impact">Genshin Impact</option><option value="Call of Duty">Call of Duty</option><option value="Clash Royale">Clash Royale</option><option value="FIFA / FC">FIFA / EA FC</option></select></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       </div>
       <div class="grid grid-cols-3 gap-2">
@@ -481,7 +501,11 @@ function filtrarPorJuegoRapido(juego){
 }
 
 auth.onAuthStateChanged(async(u)=>{
-  setTimeout(()=>{ document.getElementById('main-body-fade').classList.remove('opacity-0'); }, 50);
+  setTimeout(()=>{ 
+    document.getElementById('main-body-fade').classList.remove('opacity-0'); 
+    const loader = document.getElementById('app-loading-screen');
+    if(loader){ loader.style.opacity = '0'; setTimeout(()=>loader.remove(), 400); }
+  }, 300);
   
   db.collection('configuracion').doc('global').onSnapshot(doc => {
     if(doc.exists){
@@ -572,20 +596,26 @@ function verificarEstadoVipReal(userData){
 }
 
 function aplicarTematicaVisualReal(tema){
-  const left = document.getElementById('decor-left-el');
-  const right = document.getElementById('decor-right-el');
-  left.innerHTML = ""; right.innerHTML = "";
+  const fxCont = document.getElementById('decor-fx-container');
+  fxCont.innerHTML = "";
+  document.body.classList.remove('theme-halloween', 'theme-navidad');
   
   if(tema === 'halloween'){
-    document.body.style.backgroundColor = '#120700';
-    left.innerHTML = '<div style="font-size:60px">🎃</div><div style="font-size:50px;margin-top:100px">🏚️</div>';
-    right.innerHTML = '<div style="font-size:60px;text-align:right">🎃</div><div style="font-size:50px;text-align:right;margin-top:120px">🦇</div>';
+    document.body.classList.add('theme-halloween');
+    fxCont.innerHTML = `
+      <div style="position:absolute;top:10%;left:5%;font-size:50px;animation:floatH 4s ease-in-out infinite">🎃</div>
+      <div style="position:absolute;top:40%;right:8%;font-size:60px;animation:floatH 6s ease-in-out infinite">🦇</div>
+      <div style="position:absolute;bottom:15%;left:10%;font-size:55px;animation:floatH 5s ease-in-out infinite">👻</div>
+      <style>@keyframes floatH{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}</style>
+    `;
   }else if(tema === 'navidad'){
-    document.body.style.backgroundColor = '#03120a';
-    left.innerHTML = '<div style="font-size:70px">🎄</div><div style="font-size:60px;margin-top:120px">🎅</div>';
-    right.innerHTML = '<div style="font-size:70px;text-align:right">🎄</div><div style="font-size:60px;text-align:right;margin-top:120px">🎁</div>';
-  }else{
-    document.body.style.backgroundColor = '#09090b';
+    document.body.classList.add('theme-navidad');
+    fxCont.innerHTML = `
+      <div style="position:absolute;top:8%;left:8%;font-size:55px;animation:floatN 5s ease-in-out infinite">🎄</div>
+      <div style="position:absolute;top:30%;right:10%;font-size:60px;animation:floatN 7s ease-in-out infinite">🎅</div>
+      <div style="position:absolute;bottom:20%;left:15%;font-size:50px;animation:floatN 4s ease-in-out infinite">❄️</div>
+      <style>@keyframes floatN{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}</style>
+    `;
   }
 }
 
@@ -924,10 +954,10 @@ async function enviarReporteTicketEmail(){
 
   const asunto = encodeURIComponent(`[Soporte SiilckVentas] Ticket: ${motivo} - Usuario: @${currentUserData.username || 'Gamer'}`);
   const cuerpo = encodeURIComponent(`Hola Matias,\n\nSe ha generado un nuevo ticket de soporte en la plataforma:\n\nMotivo: ${motivo}\nUsuario: @${currentUserData.username}\nUID: ${auth.currentUser.uid}\n\nDescripción:\n${desc}\n\nPor favor revisar y responder a la brevedad.`);
-  window.location.href = `mailto:matiasgodoy@gmail.com?subject=${asunto}&body=${cuerpo}`;
+  window.location.href = `mailto:matiasgodoyoyanedel@gmail.com?subject=${asunto}&body=${cuerpo}`;
 
   document.getElementById('ticket-desc').value = "";
-  mostrarToast("📩 ¡Ticket enviado a tu correo y registrado correctamente!");
+  mostrarToast("📩 ¡Ticket enviado con éxito!");
   cargarMisTicketsUsuario();
 }
 
@@ -949,13 +979,13 @@ async function abrirPerfilVendedorPorUid(uid){
   let nombre = "Vendedor VIP", logo = "";
   if(pDoc.exists){const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || "";}
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
-  document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">👑</span>`;
+  document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-3xl">👑</span>`;
 
   const grid = document.getElementById('vendedor-tienda-grid');
   let h = "";
   globalPublicacionesCache.forEach(p => {
     if(p.vendedorUid === uid){
-      h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex justify-between items-center"><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span><span class="text-[9px] text-zinc-400">${p.juego}</span></div></div>`;
+      h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex justify-between items-center"><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span><span class="text-[9px] text-zinc-400">${p.juego}</span></div></div>`;
     }
   });
   grid.innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">Sin publicaciones.</p>`;
