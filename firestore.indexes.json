@@ -1,0 +1,13 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "chats_p2p",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "publicacionId", "order": "ASCENDING" },
+        { "fieldPath": "compradorUid", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

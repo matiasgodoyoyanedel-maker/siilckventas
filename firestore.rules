@@ -1,0 +1,171 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Dueños del sitio (los mismos UID que usa el panel / publicaciones)
+    function isOwner() {
+      return signedIn() && (
+        request.auth.uid == 'YwjfajkyMXMRHd18eII4dwV03NF3' ||
+        request.auth.uid == 'w4JA6UUF7WeC6UJweKAKdWYMHf73'
+      );
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function perfilPrivilegedKeys() {
+      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'vipExpira'];
+    }
+
+    // --- Perfiles ---
+    // Lectura pública: login (unicidad de username ANTES de autenticar),
+    // marketplace, foro y panel admin (lista completa).
+    match /perfiles/{userId} {
+      allow read: if true;
+
+      allow create: if isOwner() || (
+        isSelf(userId) &&
+        (!('esVendedorVip' in request.resource.data) || request.resource.data.esVendedorVip == false) &&
+        (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false)
+      );
+
+      allow update: if isOwner() || (
+        isSelf(userId) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(perfilPrivilegedKeys())
+      );
+
+      allow delete: if isOwner();
+    }
+
+    // --- Marketplace ---
+    match /publicaciones/{pubId} {
+      allow read: if true;
+
+      allow create: if signedIn()
+        && request.resource.data.vendedorUid == request.auth.uid;
+
+      allow update: if isOwner() || (
+        signedIn()
+        && resource.data.vendedorUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['impulsadoEn'])
+      );
+
+      allow delete: if isOwner()
+        || (signedIn() && resource.data.vendedorUid == request.auth.uid);
+    }
+
+    // Credenciales de cuentas en venta (solo dueño o el vendedor)
+    match /cuentas_secretas/{secretId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.vendedorUid == request.auth.uid);
+
+      allow create: if isOwner()
+        || (signedIn() && request.resource.data.vendedorUid == request.auth.uid);
+
+      allow update, delete: if isOwner()
+        || (signedIn() && resource.data.vendedorUid == request.auth.uid);
+    }
+
+    // --- Carrito ---
+    match /carritos/{uid} {
+      allow read, write: if isSelf(uid);
+
+      match /items/{itemId} {
+        allow read, write: if isSelf(uid);
+      }
+    }
+
+    // --- Chats P2P ---
+    match /chats_p2p/{chatId} {
+      function chatDoc() {
+        return get(/databases/$(database)/documents/chats_p2p/$(chatId)).data;
+      }
+
+      function isChatPartyFrom(data) {
+        return signedIn() && (
+          data.compradorUid == request.auth.uid ||
+          data.vendedorUid == request.auth.uid
+        );
+      }
+
+      function isChatParty() {
+        return isOwner() || isChatPartyFrom(chatDoc());
+      }
+
+      allow read: if isOwner() || isChatPartyFrom(resource.data);
+
+      allow create: if signedIn()
+        && request.resource.data.compradorUid == request.auth.uid
+        && request.resource.data.vendedorUid is string
+        && request.resource.data.compradorUid != request.resource.data.vendedorUid;
+
+      allow update: if isOwner() || isChatPartyFrom(resource.data);
+
+      allow delete: if isOwner();
+
+      match /mensajes/{msgId} {
+        allow read: if isChatParty();
+
+        allow create: if isChatParty()
+          && request.resource.data.remitenteUid == request.auth.uid;
+
+        allow update, delete: if isOwner();
+      }
+    }
+
+    // --- Tickets de soporte ---
+    match /tickets/{ticketId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.uid == request.auth.uid);
+
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid;
+
+      allow update, delete: if isOwner();
+    }
+
+    // --- Postulaciones (carnet / selfie: solo admin o el postulante) ---
+    match /postulaciones_vendedores/{postId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.uid == request.auth.uid);
+
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.estado == 'pendiente_revision';
+
+      allow update, delete: if isOwner();
+    }
+
+    // --- Configuración global (tema, mantención, avisos) ---
+    match /configuracion/{docId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    // --- Foro ---
+    match /foros/{foroId} {
+      allow read: if true;
+
+      allow create: if signedIn()
+        && request.resource.data.autorUid == request.auth.uid;
+
+      allow update: if isOwner() || (
+        signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+      );
+
+      allow delete: if isOwner()
+        || (signedIn() && resource.data.autorUid == request.auth.uid);
+    }
+
+    // Todo lo demás queda cerrado
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
