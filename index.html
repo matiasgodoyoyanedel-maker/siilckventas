@@ -1,12 +1,14 @@
-ñ<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-sv-theme="aurora">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SiilckVentas - Marketplace & Escrow Global</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4,.font-heading{font-family:'Outfit',sans-serif}
  .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
@@ -91,8 +93,8 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
     <button onclick="cambiarSeccion('vip')" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-yellow-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold"><i class="fas fa-crown"></i></div>
-      <h3 class="font-bold text-white text-sm">Planes VIP</h3>
-      <p class="text-[11px] text-zinc-400">Destaca tus publicaciones y obtén descuentos exclusivos.</p>
+      <h3 class="font-bold text-white text-sm">Pases VIP</h3>
+      <p class="text-[11px] text-zinc-400">Activa el Pase Básico para impulsar anuncios, marco dorado y descuentos en el carrito.</p>
     </button>
     <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-rose-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold"><i class="fas fa-ticket-alt"></i></div>
@@ -119,33 +121,45 @@
 
   <div id="seccion-vip" class="hidden space-y-6 w-full animate-page text-left">
     <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
-      <h2 class="text-xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2>
+      <h2 class="text-xl font-black text-white font-heading">Elige tu Pase VIP Vendedor</h2>
       <button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Cerrar</button>
     </div>
+    <p class="text-xs text-zinc-300 leading-relaxed">El <strong class="text-yellow-400">Pase Básico</strong> ya no es solo una insignia: impulsa tus cuentas al tope, muestra rango real a los compradores y te da marco dorado. El Pro suma más potencia, no reemplaza lo que el B ya hace.</p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-      <div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
+      <div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between overflow-hidden">
+        <span class="pase-ribbon">Más elegido</span>
         <div class="space-y-4 text-center">
-          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Aprendiz / Básico</span>
+          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase B · Aprendiz Estelar</span>
           <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
+          <p class="text-[11px] text-zinc-300 leading-relaxed">Enciende tu vitrina. El Pase B te pone en primera fila del marketplace para que tus cuentas se vean, se confíen y se vendan más rápido.</p>
           <div class="text-3xl font-black text-yellow-400">$2.990 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
           <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
-            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil.</li>
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil, foro y fichas.</li>
             <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li>
+            <li><i class="fas fa-bolt text-yellow-400 mr-2"></i> <strong>Impulso diario:</strong> sube 1 anuncio al tope cada 24 horas.</li>
+            <li><i class="fas fa-star text-yellow-400 mr-2"></i> Cinta <strong>DESTACADO</strong> y estela dorada en tus publicaciones.</li>
+            <li><i class="fas fa-id-badge text-yellow-400 mr-2"></i> Rango visible <strong>⭐ VIP Básico</strong> (ya no aparece solo “Verificado”).</li>
+            <li><i class="fas fa-gem text-yellow-400 mr-2"></i> Marco dorado de vendedor VIP en marketplace.</li>
+            <li><i class="fas fa-sort-amount-up text-yellow-400 mr-2"></i> Prioridad media en el ranking frente a cuentas sin pase.</li>
           </ul>
         </div>
-        <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Básico ($2.990)</a>
+        <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Activar Pase Básico ($2.990)</a>
       </div>
       <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
         <div class="space-y-4 text-center">
-          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Pro</span>
+          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase Pro · Máximo alcance</span>
           <h3 class="text-2xl font-black text-white">VIP PRO</h3>
+          <p class="text-[11px] text-zinc-300 leading-relaxed">Para vendedores que quieren dominar el ranking: más descuento, impulso más frecuente y el sello rojo que nadie ignora.</p>
           <div class="text-3xl font-black text-rose-500">$5.090 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
           <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
             <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li>
             <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li>
+            <li><i class="fas fa-bolt text-rose-500 mr-2"></i> Impulso acelerado cada <strong>8 horas</strong> (más rápido que el Pase B).</li>
+            <li><i class="fas fa-fire text-rose-500 mr-2"></i> Prioridad máxima sobre Básico y cuentas sin pase.</li>
+            <li><i class="fas fa-crown text-rose-500 mr-2"></i> Marco rojo Pro + estela animada premium.</li>
           </ul>
         </div>
-        <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Pro ($5.090)</a>
+        <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Activar Pase Pro ($5.090)</a>
       </div>
     </div>
   </div>
@@ -196,6 +210,10 @@
       <div class="space-y-4 text-xs">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username-input" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        <div id="pase-activo-box" class="bg-zinc-950/70 border border-yellow-500/20 rounded-2xl p-3.5 space-y-1">
+          <p class="text-[10px] uppercase font-black tracking-widest text-yellow-400">Pase activo</p>
+          <p id="pase-activo-txt" class="text-xs text-zinc-300">Sin pase VIP. Activa el Pase Básico para impulsar anuncios y mostrar rango real.</p>
+        </div>
         <button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
       </div>
     </div>
@@ -208,7 +226,7 @@
 const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,authCheckHecho=false;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
-function initCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});}function animateCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234,179,8,${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});requestAnimationFrame(animateCanvas);}window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
+function initCanvas(){if(window.SiilckTema){SiilckTema.bindCanvas(canvas);return;}canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});}function animateCanvas(){if(window.SiilckTema)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234,179,8,${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});requestAnimationFrame(animateCanvas);}window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
 
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -309,6 +327,13 @@ auth.onAuthStateChanged(async(u)=>{
         const metodoPagoInput = document.getElementById('user-metodo-pago');
         if(userNameInput) userNameInput.value = currentUserData.username || "";
         if(metodoPagoInput) metodoPagoInput.value = currentUserData.metodoPago || "";
+        const paseTxt = document.getElementById('pase-activo-txt');
+        if(paseTxt){
+          const tipo = currentUserData.tipoVip;
+          if(tipo === 'pro') paseTxt.innerText = "👑 Pase VIP Pro activo: impulso cada 8h, 10% off y prioridad máxima.";
+          else if(tipo === 'basico' || currentUserData.esVendedorVip) paseTxt.innerText = "⭐ Pase VIP Básico activo: impulso diario, marco dorado, 5% off y rango visible.";
+          else paseTxt.innerText = "Sin pase VIP. Activa el Pase Básico para impulsar anuncios y mostrar rango real.";
+        }
       }
     }catch(e){console.log(e);}
     if(u.uid===OWNER_UID){

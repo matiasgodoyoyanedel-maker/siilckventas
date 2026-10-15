@@ -1,0 +1,81 @@
+:root {
+  --sv-bg: #070b14;
+  --sv-accent: #38bdf8;
+  --sv-gold: #eab308;
+  --sv-glow-a: 56, 189, 248;
+  --sv-glow-b: 234, 179, 8;
+}
+html[data-sv-theme="aurora"] {
+  --sv-bg: #070b14;
+  --sv-accent: #38bdf8;
+  --sv-gold: #eab308;
+  --sv-glow-a: 56, 189, 248;
+  --sv-glow-b: 234, 179, 8;
+}
+html[data-sv-theme="clasico"] {
+  --sv-bg: #09090b;
+  --sv-accent: #eab308;
+  --sv-gold: #eab308;
+  --sv-glow-a: 234, 179, 8;
+  --sv-glow-b: 251, 191, 36;
+}
+html[data-sv-theme="neon"] {
+  --sv-bg: #0a0510;
+  --sv-accent: #f43f5e;
+  --sv-gold: #22d3ee;
+  --sv-glow-a: 244, 63, 94;
+  --sv-glow-b: 34, 211, 238;
+}
+html[data-sv-theme="esmeralda"] {
+  --sv-bg: #06110c;
+  --sv-accent: #34d399;
+  --sv-gold: #fbbf24;
+  --sv-glow-a: 52, 211, 153;
+  --sv-glow-b: 251, 191, 36;
+}
+body {
+  background-color: var(--sv-bg) !important;
+}
+.sv-theme-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 55% at 12% -8%, rgba(var(--sv-glow-a), 0.16), transparent 58%),
+    radial-gradient(ellipse 80% 50% at 92% 108%, rgba(var(--sv-glow-b), 0.14), transparent 52%),
+    radial-gradient(ellipse 40% 30% at 70% 20%, rgba(var(--sv-glow-a), 0.06), transparent 60%),
+    linear-gradient(180deg, var(--sv-bg) 0%, #04050a 100%);
+}
+.sv-theme-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+}
+.pase-ribbon {
+  position: absolute;
+  top: 10px;
+  left: -6px;
+  background: linear-gradient(90deg, #eab308, #facc15);
+  color: #09090b;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 8px 18px rgba(234,179,8,0.35);
+}
+.marco-vip-basico {
+  box-shadow: 0 0 0 2px #eab308, 0 0 16px rgba(234,179,8,0.45);
+}
+.marco-vip-pro {
+  box-shadow: 0 0 0 2px #ef4444, 0 0 16px rgba(239,68,68,0.45);
+}
