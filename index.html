@@ -21,11 +21,13 @@
   .radio-warranty{accent-color:#eab308}
   @keyframes vipGlow{0%,100%{box-shadow:0 0 15px rgba(234,179,8,0.3)}50%{box-shadow:0 0 30px rgba(234,179,8,0.6)}}
   .vip-card-glow{animation:vipGlow 2s infinite ease-in-out;border:2px solid #eab308 !important}
+  @keyframes pulseTop{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  .insignia-top-amarilla{animation:pulseTop 1.5s infinite ease-in-out;background:linear-gradient(135deg,#eab308,#ca8a04);color:#09090b;font-weight:900}
+  .insignia-top-roja{animation:pulseTop 1.2s infinite ease-in-out;background:linear-gradient(135deg,#ef4444,#991b1b);color:#fff;font-weight:900}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<!-- CONTENEDOR DE EFECTOS TEMÁTICOS DINÁMICOS -->
 <div id="efectos-tematicos-container" class="fixed inset-0 pointer-events-none z-40 overflow-hidden"></div>
 
 <!-- MANTENIMIENTO GLOBAL -->
@@ -86,7 +88,7 @@
     </div>
 
     <div class="flex items-center space-x-2 shrink-0 mx-auto sm:mx-0">
-      <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="bg-zinc-900 border border-zinc-800 hover:border-yellow-500/50 text-yellow-400 px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"><i class="fas fa-comments"></i> Mensajes</button>
+      <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="bg-zinc-900 border border-zinc-800 hover:border-yellow-500/50 text-yellow-400 px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 relative"><i class="fas fa-comments"></i> Mensajes <span id="badge-mensajes-notif" class="hidden absolute -top-1 -right-1 w-3 h-3 rounded-full bg-rose-500 border border-zinc-950 animate-ping"></span></button>
       <a href="carrito.html" class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Carrito</a>
 
       <div id="auth-nav-area" class="flex items-center space-x-2">
@@ -101,6 +103,7 @@
         <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition"><i class="fas fa-bars"></i></button>
         <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-60 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarPublicarCuenta()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase shadow"><i class="fas fa-plus-square text-sm"></i> Vender Cuenta</button>
+          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='foro.html'" class="w-full bg-zinc-900 hover:bg-zinc-800 text-yellow-400 border border-yellow-500/30 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase"><i class="fas fa-comments text-sm"></i> Foro Comunidad</button>
           <div class="border-t border-zinc-800 my-1"></div>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('perfil'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-user-circle text-yellow-400 text-sm w-4"></i> Mi Perfil Gamer</button>
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30"><i class="fas fa-tools text-sm w-4"></i> 🛠️ Panel Admin</button>
@@ -110,162 +113,203 @@
   </div>
 </header>
 
-<main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col items-center">
-<section id="view-dashboard" class="w-full space-y-6 animate-page">
+<!-- CONTENEDOR PRINCIPAL CON SIDEBAR CATALOGO TIPO CINE -->
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
   
-  <div class="web-panel rounded-2xl p-2.5 max-w-4xl mx-auto"><div class="flex items-center justify-center gap-3 overflow-x-auto hide-scrollbar">
-    <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
-    <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace</button>
-    <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP</button>
-  </div></div>
-
-  <div id="seccion-inicio" class="w-full space-y-6 max-w-5xl mx-auto">
-    <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
-      <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Elige tu Juego Favorito</span>
-      <h2 class="text-2xl md:text-3xl font-extrabold text-white">Explora Cuentas Verificadas al Instante</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
-        <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-fire text-yellow-400"></i> Free Fire</button>
-        <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</button>
-        <button onclick="filtrarPorJuegoRapido('Valorant')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-shield-alt text-rose-400"></i> Valorant</button>
-        <button onclick="filtrarPorJuegoRapido('Roblox')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-cube text-emerald-400"></i> Roblox</button>
+  <!-- SIDEBAR CATALOGO DE JUEGOS (ESTILO CINE) -->
+  <aside class="w-full lg:w-64 shrink-0 space-y-3">
+    <div class="web-panel rounded-2xl p-4 border border-yellow-500/30 space-y-3 sticky top-20">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+        <h4 class="text-xs font-black text-yellow-400 uppercase"><i class="fas fa-film mr-1.5"></i> Catálogo de Juegos</h4>
+        <span class="text-[9px] bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded font-mono">15+</span>
+      </div>
+      <div class="space-y-1.5 max-h-[70vh] overflow-y-auto pr-1 hide-scrollbar" id="sidebar-catalogo-juegos">
+        <button onclick="filtrarPorJuegoRapido('')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-th-large w-4 text-yellow-400"></i> Todos los Juegos</button>
+        <button onclick="filtrarPorJuegoRapido('Free Fire')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-fire w-4 text-yellow-400"></i> Free Fire</button>
+        <button onclick="filtrarPorJuegoRapido('Fortnite')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-gamepad w-4 text-blue-400"></i> Fortnite</button>
+        <button onclick="filtrarPorJuegoRapido('Valorant')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-shield-alt w-4 text-rose-400"></i> Valorant</button>
+        <button onclick="filtrarPorJuegoRapido('Roblox')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-cube w-4 text-emerald-400"></i> Roblox</button>
+        <button onclick="filtrarPorJuegoRapido('League of Legends')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-dragon w-4 text-amber-500"></i> League of Legends</button>
+        <button onclick="filtrarPorJuegoRapido('Counter Strike 2')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-crosshairs w-4 text-orange-400"></i> Counter Strike 2</button>
+        <button onclick="filtrarPorJuegoRapido('GTA V')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-car w-4 text-green-400"></i> GTA V Online</button>
+        <button onclick="filtrarPorJuegoRapido('Brawl Stars')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-star w-4 text-yellow-300"></i> Brawl Stars</button>
+        <button onclick="filtrarPorJuegoRapido('Clash Royale')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-chess-rook w-4 text-purple-400"></i> Clash Royale</button>
+        <button onclick="filtrarPorJuegoRapido('Genshin Impact')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-wand-magic-sparkles w-4 text-sky-400"></i> Genshin Impact</button>
+        <button onclick="filtrarPorJuegoRapido('Minecraft')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-hammer w-4 text-amber-700"></i> Minecraft</button>
+        <button onclick="filtrarPorJuegoRapido('Call of Duty')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-skull w-4 text-zinc-400"></i> Call of Duty</button>
+        <button onclick="filtrarPorJuegoRapido('EA FC 26')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-yellow-500/10 hover:text-yellow-400 transition flex items-center gap-2"><i class="fas fa-futbol w-4 text-emerald-500"></i> EA FC 26 / FIFA</button>
       </div>
     </div>
-  </div>
+  </aside>
 
-  <div id="seccion-mercado" class="w-full space-y-5 max-w-7xl mx-auto animate-page">
-    <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-      <h3 class="text-sm font-extrabold text-yellow-400 uppercase"><i class="fas fa-store mr-1.5"></i> Marketplace Activo</h3>
-      <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase shadow transition"><i class="fas fa-plus"></i> Publicar Cuenta</button>
-    </div>
-    <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando...</p></div>
-  </div>
+  <!-- CONTENIDO CENTRAL DINÁMICO -->
+  <div class="flex-grow space-y-6">
+    <section id="view-dashboard" class="w-full space-y-6 animate-page">
+      
+      <div class="web-panel rounded-2xl p-2.5 max-w-4xl mx-auto"><div class="flex items-center justify-center gap-3 overflow-x-auto hide-scrollbar">
+        <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
+        <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace</button>
+        <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP</button>
+      </div></div>
 
-  <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-5xl mx-auto shadow-xl">
-    <div class="space-y-2 text-center sm:text-left">
-      <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor</span>
-      <h3 class="text-xl md:text-2xl font-black text-white">¿Quieres trabajar con nosotros y publicar tus cuentas?</h3>
-    </div>
-    <a href="formulario.html" class="bg-yellow-500 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase shadow transition shrink-0">Postular Aquí</a>
-  </div>
-
-  <!-- PERFIL -->
-  <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
-    <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Gamer</span>
-      <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 underline">Cerrar</button>
-    </h3>
-    <div class="space-y-3 text-xs">
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2 text-zinc-400"></div>
-      <div>
-        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Galería / PC)</label>
-        <div class="drag-drop-zone rounded-xl p-4 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('perfil-foto-file-input').click()">
-          <input type="file" id="perfil-foto-file-input" accept="image/*" class="hidden" onchange="manejarSeleccionFotoPerfil(this)">
-          <p class="text-xs text-zinc-300" id="perfil-foto-label">Toca para seleccionar imagen</p>
+      <div id="seccion-inicio" class="w-full space-y-6 max-w-5xl mx-auto">
+        <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
+          <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Catálogo Gamer Oficial</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white">Explora Cuentas Verificadas al Instante</h2>
         </div>
       </div>
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método de Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2 text-white"></div>
-      <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow">Guardar</button>
-    </div>
-  </div>
 
-  <!-- PERFIL VENDEDOR -->
-  <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
-    <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">← Volver</button>
-    <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 space-y-6">
-      <div class="flex items-center gap-4">
-        <div id="vendedor-perfil-logo-box" class="w-20 h-20 rounded-2xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shadow"></div>
-        <div><h3 id="vendedor-perfil-nombre" class="text-xl font-black text-white">--</h3><span class="text-xs text-emerald-400">Verificado</span></div>
-      </div>
-      <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-    </div>
-  </div>
-
-  <!-- MIS MENSAJES -->
-  <div id="seccion-mis-chats" class="hidden space-y-5 max-w-3xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page">
-    <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-comments mr-1.5"></i> Mis Mensajes & Chats Activos</h3>
-      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">Volver</button>
-    </div>
-    <div id="lista-chats-usuario" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando chats...</p></div>
-  </div>
-
-  <!-- SALA DE CHAT ACTIVO -->
-  <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page border border-yellow-500/30">
-    <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <div>
-        <h3 class="text-xs font-bold text-white">Conversando con: <span id="chat-nombre-interlocutor" class="text-yellow-400 font-black">--</span></h3>
-        <span id="chat-titulo-oferta" class="text-[10px] text-zinc-400">Oferta --</span>
-      </div>
-      <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 underline">← Volver a Mensajes</button>
-    </div>
-    <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
-    <div class="flex gap-2">
-      <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
-      <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
-    </div>
-  </div>
-
-  <!-- APARTADO PLAN VIP (AVANZADO 7% / APRENDIZ 3%) -->
-  <div id="seccion-vip" class="hidden space-y-6 max-w-4xl mx-auto animate-page">
-    <div class="text-center space-y-2">
-      <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Membresías Elite para Vendedores</span>
-      <h2 class="text-2xl md:text-3xl font-black text-white">Eleva tu Experiencia al Siguiente Nivel</h2>
-      <p class="text-xs text-zinc-400 max-w-lg mx-auto">Selecciona el plan que mejor se adapte a tu ritmo de ventas en la plataforma.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-      <!-- PLAN APRENDIZ ($2.990 - 3% DESCUENTO) -->
-      <div class="vip-banner-box rounded-3xl p-6 sm:p-8 space-y-5 text-center relative overflow-hidden flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-300 text-zinc-950 flex items-center justify-center text-3xl font-black mx-auto shadow-xl"><i class="fas fa-seedling"></i></div>
-          <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3.5 py-1 rounded-full border border-yellow-500/40">Nivel Aprendiz</span>
-          <h3 class="text-xl font-black text-white">Plan VIP Vendedor Aprendiz</h3>
-          <div class="text-2xl font-black text-yellow-400">$2.990 CLP <span class="text-xs text-zinc-400 font-normal">/ mes</span></div>
-          <p class="text-xs text-zinc-300 leading-relaxed">Ideal para dar tus primeros pasos con ventajas esenciales. Disfruta de un borde estelar dorado básico, prioridad estándar en el buscador y un **3% de descuento directo** en las compras de tu carrito.</p>
+      <div id="seccion-mercado" class="w-full space-y-5 max-w-7xl mx-auto animate-page">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <h3 class="text-sm font-extrabold text-yellow-400 uppercase"><i class="fas fa-store mr-1.5"></i> Marketplace Activo</h3>
+          <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase shadow transition"><i class="fas fa-plus"></i> Publicar Cuenta</button>
         </div>
-        <button onclick="manejarBotonPlanVip('aprendiz')" class="w-full bg-gradient-to-r from-yellow-500 to-amber-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase text-xs shadow-xl transition">Activar Plan Aprendiz</button>
+        <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando...</p></div>
       </div>
 
-      <!-- PLAN AVANZADO ($5.090 - 7% DESCUENTO) -->
-      <div class="vip-advanced-box rounded-3xl p-6 sm:p-8 space-y-5 text-center relative overflow-hidden flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-zinc-950 flex items-center justify-center text-3xl font-black mx-auto shadow-xl"><i class="fas fa-crown"></i></div>
-          <span class="bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase px-3.5 py-1 rounded-full border border-amber-500/40">Nivel Avanzado Máximo</span>
-          <h3 class="text-xl font-black text-white">Plan VIP Vendedor Avanzado</h3>
-          <div class="text-2xl font-black text-amber-400">$5.090 CLP <span class="text-xs text-zinc-400 font-normal">/ mes</span></div>
-          <p class="text-xs text-zinc-300 leading-relaxed">Diseñado para vendedores profesionales que dominan el mercado. Obtén una corona mítica animada, máxima prioridad absoluta en el buscador, insignias de veterano exclusivas y un impresionante **7% de descuento especial** en tus compras.</p>
+      <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-5xl mx-auto shadow-xl">
+        <div class="space-y-2 text-center sm:text-left">
+          <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor</span>
+          <h3 class="text-xl md:text-2xl font-black text-white">¿Quieres trabajar con nosotros y publicar tus cuentas?</h3>
         </div>
-        <button onclick="manejarBotonPlanVip('avanzado')" class="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-zinc-950 font-black py-3.5 rounded-xl uppercase text-xs shadow-xl transition">Activar Plan Avanzado</button>
+        <a href="formulario.html" class="bg-yellow-500 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase shadow transition shrink-0">Postular Aquí</a>
       </div>
-    </div>
-  </div>
 
-  <!-- PUBLICAR -->
-  <div id="seccion-publicar" class="hidden space-y-5 max-w-2xl mx-auto web-panel rounded-3xl p-8 shadow-2xl animate-page border border-zinc-800">
-    <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
-      <h3 class="text-sm font-extrabold text-white uppercase"><i class="fas fa-plus-circle text-yellow-400 mr-2"></i> Publicar Cuenta</h3>
-      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">Cancelar</button>
-    </div>
-    <div class="space-y-4 text-xs">
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
-      <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option></select></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio (CLP) *</label><input type="number" id="pub-precio" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+      <!-- PERFIL CON GESTION Y REORDENAMIENTO DE CUENTAS -->
+      <div id="seccion-perfil" class="hidden space-y-6 max-w-2xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
+        <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+          <h3 class="text-xs font-bold text-white"><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Gamer & Mis Publicaciones</h3>
+          <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 underline">Cerrar</button>
+        </div>
+        
+        <div class="space-y-4 text-xs">
+          <!-- CUENTA REGRESIVA VIP EN VIVO -->
+          <div id="perfil-vip-countdown-box" class="hidden bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-2xl text-center space-y-1">
+            <span class="text-yellow-400 font-bold uppercase tracking-wider block">👑 Estado VIP Activo</span>
+            <div id="vip-countdown-timer" class="text-lg font-black text-white font-mono">--:--:--</div>
+          </div>
+
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2 text-zinc-400"></div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Galería / PC)</label>
+            <div class="drag-drop-zone rounded-xl p-4 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('perfil-foto-file-input').click()">
+              <input type="file" id="perfil-foto-file-input" accept="image/*" class="hidden" onchange="manejarSeleccionFotoPerfil(this)">
+              <p class="text-xs text-zinc-300" id="perfil-foto-label">Toca para seleccionar imagen</p>
+            </div>
+          </div>
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método de Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2 text-white"></div>
+          <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow">Guardar Cambios de Perfil</button>
+        </div>
+
+        <!-- LISTA DE MIS PUBLICACIONES PARA REORDENAR -->
+        <div class="space-y-3 pt-4 border-t border-zinc-800">
+          <h4 class="font-bold text-white text-xs uppercase"><i class="fas fa-list-ol text-yellow-400 mr-1.5"></i> Mis Cuentas Publicadas (Arrastra o reordena con prioridad)</h4>
+          <div id="mis-cuentas-reordenar-grid" class="space-y-2"></div>
+        </div>
       </div>
-      <div class="grid grid-cols-3 gap-2">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+
+      <!-- PERFIL VENDEDOR -->
+      <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
+        <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">← Volver</button>
+        <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 space-y-6">
+          <div class="flex items-center gap-4">
+            <div id="vendedor-perfil-logo-box" class="w-20 h-20 rounded-2xl bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shadow"></div>
+            <div><h3 id="vendedor-perfil-nombre" class="text-xl font-black text-white">--</h3><span class="text-xs text-emerald-400">Verificado</span></div>
+          </div>
+          <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        </div>
       </div>
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía *</label><textarea id="pub-descripcion" rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
-      <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
-        <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
-        <p class="text-xs text-zinc-300" id="pub-foto-label">Subir foto</p>
+
+      <!-- MIS MENSAJES -->
+      <div id="seccion-mis-chats" class="hidden space-y-5 max-w-3xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page">
+        <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+          <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-comments mr-1.5"></i> Mis Mensajes & Chats Activos</h3>
+          <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">Volver</button>
+        </div>
+        <div id="lista-chats-usuario" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando chats...</p></div>
       </div>
-      <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase shadow">Publicar</button>
-    </div>
+
+      <!-- SALA DE CHAT ACTIVO -->
+      <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page border border-yellow-500/30">
+        <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+          <div>
+            <h3 class="text-xs font-bold text-white">Conversando con: <span id="chat-nombre-interlocutor" class="text-yellow-400 font-black">--</span></h3>
+            <span id="chat-titulo-oferta" class="text-[10px] text-zinc-400">Oferta --</span>
+          </div>
+          <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 underline">← Volver a Mensajes</button>
+        </div>
+        <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
+        <div class="flex gap-2">
+          <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
+          <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
+        </div>
+      </div>
+
+      <!-- PLAN VIP (APRENDIZ 3% / AVANZADO 7%) -->
+      <div id="seccion-vip" class="hidden space-y-6 max-w-4xl mx-auto animate-page">
+        <div class="text-center space-y-2">
+          <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Membresías Elite para Vendedores</span>
+          <h2 class="text-2xl md:text-3xl font-black text-white">Eleva tu Experiencia al Siguiente Nivel</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+          <!-- PLAN APRENDIZ ($2.990 - 3% DESCUENTO) -->
+          <div class="vip-banner-box rounded-3xl p-6 sm:p-8 space-y-5 text-center relative overflow-hidden flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-300 text-zinc-950 flex items-center justify-center text-3xl font-black mx-auto shadow-xl"><i class="fas fa-seedling"></i></div>
+              <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3.5 py-1 rounded-full border border-yellow-500/40">Nivel Aprendiz</span>
+              <h3 class="text-xl font-black text-white">Plan VIP Vendedor Aprendiz</h3>
+              <div class="text-2xl font-black text-yellow-400">$2.990 CLP <span class="text-xs text-zinc-400 font-normal">/ mes</span></div>
+              <p class="text-xs text-zinc-300 leading-relaxed">Borde estelar dorado básico, prioridad estándar en el buscador, insignia TOP amarilla y un **3% de descuento directo** en las compras de tu carrito.</p>
+            </div>
+            <button onclick="manejarBotonPlanVip('aprendiz')" class="w-full bg-gradient-to-r from-yellow-500 to-amber-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase text-xs shadow-xl transition">Activar Plan Aprendiz</button>
+          </div>
+
+          <!-- PLAN AVANZADO ($5.090 - 7% DESCUENTO) -->
+          <div class="vip-advanced-box rounded-3xl p-6 sm:p-8 space-y-5 text-center relative overflow-hidden flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-zinc-950 flex items-center justify-center text-3xl font-black mx-auto shadow-xl"><i class="fas fa-crown"></i></div>
+              <span class="bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase px-3.5 py-1 rounded-full border border-amber-500/40">Nivel Avanzado Máximo</span>
+              <h3 class="text-xl font-black text-white">Plan VIP Vendedor Avanzado</h3>
+              <div class="text-2xl font-black text-amber-400">$5.090 CLP <span class="text-xs text-zinc-400 font-normal">/ mes</span></div>
+              <p class="text-xs text-zinc-300 leading-relaxed">Corona mítica animada, máxima prioridad absoluta en el buscador, insignia TOP roja parpadeante y un impresionante **7% de descuento especial** en tus compras.</p>
+            </div>
+            <button onclick="manejarBotonPlanVip('avanzado')" class="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-zinc-950 font-black py-3.5 rounded-xl uppercase text-xs shadow-xl transition">Activar Plan Avanzado</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PUBLICAR CON VALIDACIÓN DE 100 CARACTERES MÍNIMO -->
+      <div id="seccion-publicar" class="hidden space-y-5 max-w-2xl mx-auto web-panel rounded-3xl p-8 shadow-2xl animate-page border border-zinc-800">
+        <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
+          <h3 class="text-sm font-extrabold text-white uppercase"><i class="fas fa-plus-circle text-yellow-400 mr-2"></i> Publicar Cuenta</h3>
+          <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 underline">Cancelar</button>
+        </div>
+        <div class="space-y-4 text-xs">
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option><option value="League of Legends">League of Legends</option><option value="Counter Strike 2">Counter Strike 2</option><option value="GTA V">GTA V</option><option value="Brawl Stars">Brawl Stars</option><option value="Clash Royale">Clash Royale</option><option value="Genshin Impact">Genshin Impact</option><option value="Minecraft">Minecraft</option><option value="Call of Duty">Call of Duty</option><option value="EA FC 26">EA FC 26</option></select></div>
+            <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio (CLP) *</label><input type="number" id="pub-precio" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+            <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+            <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía / Descripción sobre la cuenta (Mínimo 100 caracteres) *</label>
+            <textarea id="pub-descripcion" rows="4" oninput="actualizarContadorCaracteres(this.value)" placeholder="Detalla al máximo la cuenta..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea>
+            <span id="contador-caracteres" class="text-[10px] text-zinc-400 block pt-1">0 / 100 caracteres mínimos</span>
+          </div>
+          <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
+            <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
+            <p class="text-xs text-zinc-300" id="pub-foto-label">Subir foto</p>
+          </div>
+          <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase shadow">Publicar Cuenta</button>
+        </div>
+      </div>
+    </section>
   </div>
-</section>
 </main>
 
 <!-- MODAL DETALLES Y GARANTÍA ESCROW -->
@@ -359,6 +403,7 @@ function cambiarSeccion(s){
   });
   const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
   if(s === 'mis-chats') cargarListaChatsUsuario();
+  if(s === 'perfil') renderizarMisCuentasParaReordenar();
 }
 
 function ejecutarBusquedaEnVivo(v){
@@ -421,11 +466,18 @@ auth.onAuthStateChanged(async(u)=>{
         document.getElementById('nav-user-email').innerText = currentUserData.username || "Gamer";
         document.getElementById('user-username').value = currentUserData.username || "";
         document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
+
+        // GESTIÓN DE CUENTA REGRESIVA VIP EN VIVO
+        if(currentUserData.esVendedorVip && currentUserData.vipExpira){
+          document.getElementById('perfil-vip-countdown-box').classList.remove('hidden');
+          iniciarCuentaRegresivaVip(currentUserData.vipExpira.toDate());
+        }
       }
     });
 
     if(u.uid === OWNER_UID){document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');}
     cargarPublicacionesEnVivo();
+    verificarNotificacionesMensajes(u.uid);
   }else{
     currentUserData = null;
     document.getElementById('nav-btn-ir-login').classList.remove('hidden');
@@ -434,7 +486,33 @@ auth.onAuthStateChanged(async(u)=>{
   }
 });
 
-// APLICAR TEMÁTICAS NOTORIAS CON JAVASCRIPT Y ELEMENTOS VISUALES (Calabazas, Copos de Nieve, Sol)
+function iniciarCuentaRegresivaVip(fechaExpira){
+  setInterval(()=>{
+    const ahora = new Date().getTime();
+    const distancia = fechaExpira.getTime() - ahora;
+    if(distancia > 0){
+      const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+      document.getElementById('vip-countdown-timer').innerText = `${dias}d ${horas}h ${minutos}m restantes`;
+    }else{
+      document.getElementById('vip-countdown-timer').innerText = "Membresía expirada";
+    }
+  }, 1000);
+}
+
+async function verificarNotificacionesMensajes(uid){
+  const q1 = db.collection('chats_p2p').where('compradorUid', '==', uid);
+  const q2 = db.collection('chats_p2p').where('vendedorUid', '==', uid);
+  q1.onSnapshot(s1 => {
+    q2.onSnapshot(s2 => {
+      if(!s1.empty || !s2.empty){
+        document.getElementById('badge-mensajes-notif').classList.remove('hidden');
+      }
+    });
+  });
+}
+
 function aplicarTematicaNotoriaConJS(tema){
   const container = document.getElementById('efectos-tematicos-container');
   container.innerHTML = "";
@@ -444,43 +522,34 @@ function aplicarTematicaNotoriaConJS(tema){
     document.body.style.backgroundColor = '#1a0500';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #ff5500 0%, #1a0500 70%)';
     logoTitle.innerHTML = '🎃 SIILCK<span class="text-orange-400">VENTAS</span> 🕷️';
-    
-    // Crear calabazas y telarañas flotantes
     for(let i=0; i<6; i++){
       const elem = document.createElement('div');
       elem.innerHTML = i % 2 === 0 ? '🎃' : '🕸️';
       elem.className = 'absolute text-2xl animate-bounce';
       elem.style.left = (Math.random() * 90 + 5) + '%';
       elem.style.top = (Math.random() * 80 + 10) + '%';
-      elem.style.animationDuration = (Math.random() * 3 + 2) + 's';
       container.appendChild(elem);
     }
   }else if(tema === 'navidad'){
     document.body.style.backgroundColor = '#02180a';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #059669 0%, #02180a 70%)';
     logoTitle.innerHTML = '🎄 SIILCK<span class="text-emerald-400">VENTAS</span> ❄️';
-
-    // Crear copos de nieve cayendo
-    for(let i=0; i<25; i++){
+    for(let i=0; i<20; i++){
       const snow = document.createElement('div');
       snow.innerHTML = '❄';
-      snow.className = 'absolute text-white text-opacity-80 animate-pulse';
+      snow.className = 'absolute text-white text-opacity-80';
       snow.style.left = (Math.random() * 100) + '%';
       snow.style.top = (Math.random() * -20) + '%';
-      snow.style.fontSize = (Math.random() * 12 + 10) + 'px';
-      snow.style.animation = `fallSnow ${Math.random() * 5 + 3}s linear infinite`;
+      snow.style.fontSize = (Math.random() * 10 + 10) + 'px';
       container.appendChild(snow);
     }
   }else if(tema === 'verano'){
     document.body.style.backgroundColor = '#021024';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #0284c7 0%, #021024 70%)';
     logoTitle.innerHTML = '☀️ SIILCK<span class="text-cyan-400">VENTAS</span> 🌴';
-
-    // Crear sol tropical flotante
     const sun = document.createElement('div');
     sun.innerHTML = '☀️';
     sun.className = 'absolute text-4xl top-4 right-8 animate-spin';
-    sun.style.animationDuration = '15s';
     container.appendChild(sun);
   }else{
     document.body.style.backgroundColor = '#09090b';
@@ -516,6 +585,14 @@ function manejarSeleccionFoto(input){
   }
 }
 
+function actualizarContadorCaracteres(val){
+  const len = val.length;
+  const el = document.getElementById('contador-caracteres');
+  el.innerText = `${len} / 100 caracteres mínimos`;
+  if(len >= 100){ el.className = "text-[10px] text-emerald-400 block pt-1 font-bold"; }
+  else{ el.className = "text-[10px] text-rose-400 block pt-1"; }
+}
+
 async function manejarBotonPlanVip(tipo){
   if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
   const unMesDespues = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -530,7 +607,16 @@ async function manejarBotonPlanVip(tipo){
 function cargarPublicacionesEnVivo(){
   db.collection('publicaciones').orderBy('fecha', 'desc').onSnapshot(snapshot => {
     globalPublicacionesCache = [];
-    snapshot.forEach(doc => {globalPublicacionesCache.push({id: doc.id, ...doc.data()});});
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      // Eliminar undefined en nombres o títulos
+      globalPublicacionesCache.push({
+        id: doc.id,
+        titulo: data.titulo || "Cuenta Gamer Verificada",
+        vendedorNombre: data.vendedorNombre || "Vendedor Gamer",
+        ...data
+      });
+    });
     renderizarGridPublicaciones(globalPublicacionesCache);
   });
 }
@@ -543,24 +629,37 @@ function renderizarGridPublicaciones(ps, filtro=""){
     if(filtro && !titulo.includes(filtro) && !juego.includes(filtro)) return;
     
     const esVipPub = p.esVip || false;
-    const cardClass = esVipPub ? "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3";
+    const nivelVipVendedor = p.nivelVipVendedor || 'aprendiz';
+    
+    // Insignias TOP dinámicas
+    let insigniaTopHtml = "";
+    if(esVipPub){
+      if(nivelVipVendedor === 'avanzado'){
+        insigniaTopHtml = '<span class="absolute top-2 right-2 insignia-top-roja text-[9px] px-2 py-0.5 rounded shadow">🔥 TOP ADV</span>';
+      }else{
+        insigniaTopHtml = '<span class="absolute top-2 right-2 insignia-top-amarilla text-[9px] px-2 py-0.5 rounded shadow">⭐ TOP VIP</span>';
+      }
+    }
+
+    const cardClass = esVipPub ? "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 relative";
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
     const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') || p.vendedorLogo.startsWith('data:image') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs"></i>`;
 
     h+=`<div class="${cardClass}">
+      ${insigniaTopHtml}
       <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
-      <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4> ${esVipPub ? '<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2 py-0.5 rounded">VIP</span>' : ''}</div>
+      <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4></div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')"><span>Stock: ${p.stock || 1}</span><span>Nivel: ${p.nivel || 'N/A'}</span></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800">
         <div onclick="abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer">
           <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
-          <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre || 'Vendedor'}</span>
+          <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre}</span>
         </div>
         <span class="text-yellow-400 font-extrabold text-xs" onclick="abrirModalPub('${p.id}')">$${parseInt(p.precio||0).toLocaleString('es-CL')}</span>
       </div>
     </div>`;
   });
-  g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles.</p>`;
+  g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles para este juego.</p>`;
 }
 
 async function abrirModalPub(id){
@@ -574,7 +673,7 @@ async function abrirModalPub(id){
   document.getElementById('modal-cantidad-val').innerText = cantidadSeleccionadaModal;
   document.getElementById('modal-stock-max').innerText = stockMaximoModal;
   
-  document.getElementById('modal-pub-titulo').innerText=p.titulo;
+  document.getElementById('modal-pub-titulo').innerText=p.titulo || "Cuenta Gamer";
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor";
   
@@ -747,6 +846,36 @@ async function abrirPerfilVendedorPorUid(uid){
   grid.innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">Sin publicaciones.</p>`;
 }
 
+async function renderizarMisCuentasParaReordenar(){
+  if(!auth.currentUser) return;
+  const uid = auth.currentUser.uid;
+  const grid = document.getElementById('mis-cuentas-reordenar-grid');
+  let h = "";
+  const misPubs = globalPublicacionesCache.filter(p => p.vendedorUid === uid);
+  misPubs.forEach((p, index) => {
+    h += `<div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 flex items-center justify-between text-xs">
+      <div><b>${index + 1}.</b> ${p.titulo} ($${parseInt(p.precio||0).toLocaleString('es-CL')})</div>
+      <div class="flex gap-1">
+        <button onclick="moverPrioridadPublicacion('${p.id}', -1)" class="w-7 h-7 rounded bg-zinc-800 hover:bg-zinc-700 text-white font-bold">↑</button>
+        <button onclick="moverPrioridadPublicacion('${p.id}', 1)" class="w-7 h-7 rounded bg-zinc-800 hover:bg-zinc-700 text-white font-bold">↓</button>
+      </div>
+    </div>`;
+  });
+  grid.innerHTML = h || '<p class="text-zinc-500">No tienes cuentas publicadas.</p>';
+}
+
+async function moverPrioridadPublicacion(id, direccion){
+  // Ajusta la fecha para cambiar el orden de prioridad en tiempo real
+  const pubRef = db.collection('publicaciones').doc(id);
+  const doc = await pubRef.get();
+  if(doc.exists){
+    const nuevaFecha = new Date().getTime() + (direccion * 1000);
+    await pubRef.update({fecha: firebase.firestore.Timestamp.fromMillis(nuevaFecha)});
+    mostrarToast("⚡ Prioridad actualizada");
+    renderizarMisCuentasParaReordenar();
+  }
+}
+
 async function crearPublicacionMarketplace(){
   if(!auth.currentUser)return;
   const titulo = document.getElementById('pub-titulo').value.trim();
@@ -758,16 +887,20 @@ async function crearPublicacionMarketplace(){
   const descripcion = document.getElementById('pub-descripcion').value.trim();
 
   if(!titulo || !precio || !nivel || !region || !descripcion){mostrarAlertaToast("Aviso", "Llena todos los campos.");return;}
+  if(descripcion.length < 100){mostrarAlertaToast("Aviso", "La descripción de la cuenta debe tener al menos 100 caracteres.");return;}
+
+  const esVipUser = currentUserData.esVendedorVip || false;
+  const nivelVipUser = currentUserData.nivelVip || 'aprendiz';
 
   await db.collection('publicaciones').add({
     vendedorUid: auth.currentUser.uid,
     vendedorNombre: currentUserData.username || "Vendedor",
     vendedorLogo: currentUserData.logo || "👑",
     titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, stock: stock, descripcion: descripcion,
-    foto: fotoBase64Seleccionada || "", esVip: true, fecha: firebase.firestore.FieldValue.serverTimestamp()
+    foto: fotoBase64Seleccionada || "", esVip: esVipUser, nivelVipVendedor: nivelVipUser, fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  mostrarToast("🚀 ¡Publicado!");
+  mostrarToast("🚀 ¡Publicado con éxito!");
   cambiarSeccion('mercado');
 }
 
