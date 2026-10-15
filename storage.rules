@@ -1,0 +1,9 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Las fotos van en Firestore (base64). Storage no se usa en el sitio.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
