@@ -12,6 +12,7 @@
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
   .web-panel{background:rgba(18,18,24,0.9);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   .vip-banner-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 35px rgba(234,179,8,0.25)}
+  .vip-banner-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 35px rgba(239,68,68,0.25)}
   .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
@@ -22,11 +23,12 @@
   .radio-warranty{accent-color:#eab308}
   @keyframes vipGlow{0%,100%{box-shadow:0 0 15px rgba(234,179,8,0.3)}50%{box-shadow:0 0 30px rgba(234,179,8,0.6)}}
   .vip-card-glow{animation:vipGlow 2s infinite ease-in-out;border:2px solid #eab308 !important}
+  @keyframes vipGlowPro{0%,100%{box-shadow:0 0 15px rgba(239,68,68,0.3)}50%{box-shadow:0 0 30px rgba(239,68,68,0.6)}}
+  .vip-card-glow-pro{animation:vipGlowPro 2s infinite ease-in-out;border:2px solid #ef4444 !important}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<!-- MODAL MANTENIMIENTO GLOBAL O BLOQUEO -->
 <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[500] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto animate-bounce"><i class="fas fa-tools"></i></div>
@@ -53,7 +55,6 @@
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
 
-<!-- HEADER CORPORATIVO CENTRADO Y RESPONSIVE -->
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center space-x-3 cursor-pointer shrink-0 mx-auto sm:mx-0" onclick="cambiarSeccion('inicio')">
@@ -61,13 +62,17 @@
       <div><span class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Marketplace Global & Escrow</span></div>
     </div>
     
-    <!-- BUSCADOR SUPERIOR MEJORADO Y CENTRADO -->
     <div class="flex-grow max-w-lg relative order-last sm:order-none w-full sm:w-auto">
       <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite, Valorant..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition">
       <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-yellow-400 text-xs"></i>
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
+      <!-- ACCESO DIRECTO AL CARRITO CON ÍCONO -->
+      <a href="carrito.html" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer">
+        <i class="fas fa-shopping-cart text-sm"></i>
+      </a>
+
       <div id="auth-nav-area" class="flex items-center space-x-2">
         <a href="login.html" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login</a>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
@@ -89,7 +94,6 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
             <i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados
           </button>
-          <!-- APARTADO MANTENIMIENTO EXCLUSIVO DUEÑO -->
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30">
             <i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel
           </button>
@@ -105,16 +109,15 @@
   <div class="web-panel rounded-2xl p-2.5 max-w-4xl mx-auto"><div class="flex items-center justify-center gap-3 overflow-x-auto hide-scrollbar">
     <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 hover:text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
     <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas</button>
-    <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Plan VIP Vendedor</button>
+    <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Planes VIP Vendedor</button>
   </div></div>
 
-  <!-- SECCIÓN INICIO CON LISTA DE JUEGOS ACTUALES INTERACTIVOS (FILTRO RÁPIDO) -->
+  <!-- SECCIÓN INICIO CON BARRA DE JUEGOS TIPO CARTEL DE CINE A LA IZQUIERDA -->
   <div id="seccion-inicio" class="w-full space-y-6 max-w-5xl mx-auto">
     <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
       <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Elige tu Juego Favorito</span>
       <h2 class="text-2xl md:text-3xl font-extrabold font-heading text-white">Explora Cuentas Verificadas al Instante</h2>
       
-      <!-- LISTA DE JUEGOS POPULARES ACTUALES -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
         <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-fire text-yellow-400"></i> Free Fire</button>
         <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</button>
@@ -128,19 +131,20 @@
     </div>
   </div>
 
-  <!-- SECCIÓN MARKETPLACE (LO PRIMORDIAL: LAS CUENTas) -->
   <div id="seccion-mercado" class="w-full space-y-5 max-w-7xl mx-auto animate-page">
     <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
       <div>
         <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
         <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
       </div>
-      <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
+      <div class="flex items-center gap-2">
+        <a href="carrito.html" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
+        <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
+      </div>
     </div>
     <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
   </div>
 
-  <!-- PANCARTA TRABAJA CON NOSOTROS (UBICADA ABAJO PARA NO MOLESTAR) -->
   <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-5xl mx-auto shadow-xl">
     <div class="space-y-2 text-center sm:text-left">
       <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor Oficial</span>
@@ -152,7 +156,6 @@
     </a>
   </div>
 
-  <!-- VISTA DE PERFIL DE VENDEROR (LÍMITE DE CAMBIO DE FOTO 3 VECES AL MES + CIERRE AUTOMÁTICO SUAVE) -->
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
     <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
       <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Vendedor Gamer</span>
@@ -161,7 +164,7 @@
     <div class="space-y-3 text-xs">
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"></div>
       <div>
-        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (URL o Emoji)</label>
+        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Emoji o URL)</label>
         <input type="text" id="user-logo" placeholder="Emoji o Link de imagen" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white">
         <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios restantes este mes: 3/3</span>
       </div>
@@ -170,7 +173,6 @@
     </div>
   </div>
 
-  <!-- VISTA PERFIL TIENDA VENDEDOR -->
   <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-5xl mx-auto w-full animate-page">
     <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">← Volver al Marketplace</button>
     <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6">
@@ -190,7 +192,7 @@
 
   <div id="seccion-mis-chats" class="hidden space-y-5 max-w-3xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page">
     <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
+      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados (Desde Publicaciones)</h3>
       <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
     </div>
     <div id="lista-chats-usuario" class="space-y-3"></div>
@@ -208,16 +210,22 @@
     </div>
   </div>
 
-  <div id="seccion-vip" class="hidden space-y-4 max-w-3xl mx-auto animate-page">
-    <div class="vip-banner-box rounded-3xl p-8 md:p-10 space-y-6 text-center relative overflow-hidden">
-      <div class="absolute -top-12 -right-12 w-48 h-48 bg-yellow-500/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-300 text-zinc-950 flex items-center justify-center text-4xl font-black mx-auto shadow-xl"><i class="fas fa-crown"></i></div>
-      <div class="space-y-2">
-        <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Membresía Elite de Vendedor</span>
-        <h3 class="text-2xl md:text-3xl font-black font-heading text-white tracking-wide">PLAN VIP VENDEDOR - $2.990 CLP / MES</h3>
-        <p class="text-xs md:text-sm text-zinc-300 max-w-lg mx-auto leading-relaxed">Borde estelar dorado, corona distintiva y prioridad máxima en el buscador.</p>
-      </div>
-      <button onclick="pagarMercadoPago(2990, 'Suscripción Plan VIP Vendedor - SiilckVentas')" class="bg-gradient-to-r from-yellow-500 to-amber-400 text-zinc-950 font-black px-10 py-4 rounded-2xl text-xs uppercase shadow-2xl transition">Activar Plan VIP Vendedor</button>
+  <!-- PLANES VIP DIFERENCIADOS CON LOS LINKS DE FLOW REALES -->
+  <div id="seccion-vip" class="hidden space-y-6 max-w-3xl mx-auto animate-page">
+    <!-- VIP BÁSICO ($2.990) - Insignia Amarilla -->
+    <div class="vip-banner-box rounded-3xl p-8 space-y-4 text-center relative overflow-hidden">
+      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Aprendiz / Básico</span>
+      <h3 class="text-2xl font-black text-white">VIP BÁSICO - $2.990 CLP / MES</h3>
+      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia estelar **amarilla**, 5% de descuento en tus compras en el carrito y prioridad estándar.</p>
+      <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="inline-block bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg transition">Pagar VIP Básico ($2.990)</a>
+    </div>
+
+    <!-- VIP PRO / AVANZADO ($5.090) - Insignia Rojo Intenso -->
+    <div class="vip-banner-box-pro rounded-3xl p-8 space-y-4 text-center relative overflow-hidden">
+      <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Avanzado / Pro</span>
+      <h3 class="text-2xl font-black text-white">VIP PRO - $5.090 CLP / MES</h3>
+      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia en **rojo intenso**, máximo rango, 10% de descuento en el carrito y máxima prioridad en el buscador.</p>
+      <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="inline-block bg-rose-600 hover:bg-rose-500 text-white font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg transition">Pagar VIP Pro ($5.090)</a>
     </div>
   </div>
 
@@ -248,7 +256,6 @@
 </section>
 </main>
 
-<!-- MODAL DETALLES Y COMPRA -->
 <div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
   <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
     <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
@@ -274,7 +281,7 @@
     </div>
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
       <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Total</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span></div>
-      <button onclick="pagarPublicacionActualMercadoPago()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition">Comprar con Mercado Pago</button>
+      <button onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
     </div>
   </div>
 </div>
@@ -417,66 +424,6 @@ function manejarSeleccionFoto(input){
   }
 }
 
-// -------------------------------------------------------------
-// FUNCION AUTOMATIZADA MERCADO PAGO (PRODUCTION ACCESS TOKEN)
-// -------------------------------------------------------------
-async function pagarMercadoPago(monto, descripcion) {
-    const accessToken = "APP_USR-4fc68658-4aee-476c-9911-94c1477c8d4b"; 
-
-    const preference = {
-        items: [
-            {
-                title: descripcion,
-                unit_price: Number(monto),
-                quantity: 1,
-                currency_id: "CLP"
-            }
-        ],
-        back_urls: {
-            success: window.location.href,
-            failure: window.location.href,
-            pending: window.location.href
-        },
-        auto_return: "approved"
-    };
-
-    try {
-        let response = await fetch('https://api.mercadopago.com/checkout/preferences', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify(preference)
-        });
-
-        let data = await response.json();
-        
-        if (data.init_point) {
-            window.location.href = data.init_point;
-        } else {
-            alert("No se pudo generar el enlace de pago. Verifica los datos.");
-        }
-    } catch (error) {
-        console.error("Error al conectar con Mercado Pago:", error);
-        alert("Ocurrió un error al procesar el pago.");
-    }
-}
-
-function pagarPublicacionActualMercadoPago() {
-    const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
-    const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
-    const totalPagar = precioBasePublicacionActual + costoGarantia;
-    const tituloPub = document.getElementById('modal-pub-titulo').innerText;
-
-    if (!totalPagar || totalPagar <= 0) {
-        alert("Monto no válido.");
-        return;
-    }
-
-    pagarMercadoPago(totalPagar, `Cuenta: ${tituloPub} (SiilckVentas)`);
-}
-
 function cargarPublicacionesEnVivo(){
   db.collection('publicaciones').orderBy('fecha', 'desc').onSnapshot(snapshot => {
     globalPublicacionesCache = [];
@@ -495,11 +442,19 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const region = (p.region || '').toLowerCase();
     if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
     
-    const esVipPub = p.esVip || false;
-    const cardClass = esVipPub ? "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden" : "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
-    const badgeVip = esVipPub ? `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Elite</span>` : '';
+    const tipoVip = p.tipoVip || 'ninguno';
+    let cardClass = "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
+    let badgeVip = '';
+
+    if(tipoVip === 'pro'){
+      cardClass = "web-panel vip-card-glow-pro rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden";
+      badgeVip = `<span class="text-[9px] bg-rose-600 text-white font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Pro</span>`;
+    }else if(tipoVip === 'basico' || p.esVip){
+      cardClass = "web-panel vip-card-glow rounded-2xl cursor-pointer p-4 space-y-3 relative overflow-hidden";
+      badgeVip = `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Básico</span>`;
+    }
+
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    
     const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs"></i>`;
 
     h+=`<div class="${cardClass}">
@@ -566,6 +521,27 @@ function actualizarPrecioTotalModal(){
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
   const total = precioBasePublicacionActual + costoGarantia;
   document.getElementById('modal-pub-precio-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+}
+
+async function agregarAlCarritoDesdeModal(){
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
+  const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const precioTotalItem = precioBasePublicacionActual + costoGarantia;
+  const titulo = document.getElementById('modal-pub-titulo').innerText;
+  const foto = document.getElementById('modal-pub-img').src || "";
+
+  await db.collection('carritos').doc(auth.currentUser.uid).collection('items').add({
+    publicacionId: publicacionActualIdCache,
+    titulo: titulo,
+    precio: precioTotalItem,
+    foto: foto,
+    cantidadSeleccionada: 1,
+    agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  document.getElementById('modal-pub-detalles').classList.add('hidden');
+  mostrarToast("🛒 ¡Producto agregado al carrito con éxito!");
 }
 
 function abrirPerfilVendedorDesdeModal(){
@@ -675,12 +651,17 @@ async function crearPublicacionMarketplace(){
 
   if(!titulo || !precio || !nivel || !region || !descripcion){mostrarAlertaToast("Campos Incompletos", "Llena todos los campos.");return;}
 
+  // Verificar tipo VIP del usuario para asignarle su insignia automática
+  const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
+  const uData = userDoc.exists ? userDoc.data() : {};
+  const tipoVip = uData.tipoVip || 'basico';
+
   await db.collection('publicaciones').add({
     vendedorUid: auth.currentUser.uid,
     vendedorNombre: currentUserData.username || "Vendedor",
     vendedorLogo: currentUserData.logo || "👑",
     titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, vinculo: vinculo, descripcion: descripcion,
-    foto: fotoBase64Seleccionada || "", esVip: true, fecha: firebase.firestore.FieldValue.serverTimestamp()
+    foto: fotoBase64Seleccionada || "", esVip: true, tipoVip: tipoVip, fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
   mostrarToast("🚀 ¡Cuenta publicada en vivo!");
