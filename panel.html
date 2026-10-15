@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel Master - Mantenimiento & Control</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>VelosterCarrito - Tu Carrito Gamer</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -13,53 +13,33 @@
 </head>
 <body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
-<div class="max-w-4xl w-full space-y-6">
-  <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black shadow-lg"><i class="fas fa-shield-alt"></i></div>
-      <div>
-        <h2 class="text-lg font-black text-white">Panel Master Exclusivo</h2>
-        <p class="text-xs text-zinc-400">Control absoluto y sincronización en tiempo real</p>
-      </div>
-    </div>
-    <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver a la Web</a>
+<div class="max-w-3xl w-full space-y-6">
+  <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 text-center space-y-2">
+    <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-xl font-black mx-auto shadow-lg"><i class="fas fa-shopping-cart"></i></div>
+    <h2 class="text-xl font-black text-white">Bienvenido a VelosterCarrito</h2>
+    <p class="text-xs text-yellow-400 font-bold">No lo llenes mucho o se puede caer tu mercancía 🛒📦</p>
   </div>
 
-  <!-- CONTROL DE TEMÁTICAS VISUALES Y MANTENIMIENTO -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-      <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-palette mr-1.5"></i> Temáticas de Temporada & Fondo</h3>
-      <div class="grid grid-cols-2 gap-2.5 text-xs">
-        <button onclick="cambiarTematicaGlobal('default')" class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold transition">🌌 Normal / Espacio</button>
-        <button onclick="cambiarTematicaGlobal('halloween')" class="p-3 rounded-xl bg-zinc-900 border border-orange-500/40 hover:border-orange-500 text-orange-400 font-bold transition">🎃 Halloween</button>
-        <button onclick="cambiarTematicaGlobal('navidad')" class="p-3 rounded-xl bg-zinc-900 border border-rose-500/40 hover:border-rose-500 text-rose-400 font-bold transition">🎄 Navidad</button>
-        <button onclick="cambiarTematicaGlobal('verano')" class="p-3 rounded-xl bg-zinc-900 border border-cyan-500/40 hover:border-cyan-500 text-cyan-400 font-bold transition">☀️ Verano / Neón</button>
-        <button onclick="cambiarTematicaGlobal('noche')" class="col-span-2 p-3 rounded-xl bg-zinc-900 border border-indigo-500/40 hover:border-indigo-500 text-indigo-400 font-bold transition">🌙 Modo Noche Profundo</button>
-      </div>
-    </div>
-
-    <div class="web-panel rounded-3xl p-6 space-y-4 border border-rose-500/30">
-      <h3 class="text-xs font-bold text-rose-400 uppercase"><i class="fas fa-tools mr-1.5"></i> Modo Mantenimiento Global</h3>
-      <p class="text-xs text-zinc-400">Al activar el mantenimiento, ningún usuario podrá operar hasta que lo desactives.</p>
-      
-      <div class="flex gap-2">
-        <button onclick="toggleModoMantenimiento(true)" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase text-xs shadow transition">Activar Mantenimiento</button>
-        <button onclick="toggleModoMantenimiento(false)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-black py-3 rounded-xl uppercase text-xs shadow transition">Desactivar</button>
-      </div>
-      <button onclick="enviarAvisoMantenimientoBreve()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase shadow transition">📢 Enviar Aviso: "Mantenimiento en Breve"</button>
-    </div>
-  </div>
-
-  <!-- CONTROL DE USUARIOS (BLOQUEO POR ID INDEPENDIENTE) -->
   <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-users mr-1.5"></i> Gestión de Usuarios & IDs Independientes</h3>
-    <div id="admin-usuarios-list" class="space-y-2 text-xs"><p class="text-zinc-500">Cargando usuarios registrados...</p></div>
+    <h3 class="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-3">Productos en tu Carrito (En Vivo)</h3>
+    
+    <div id="carrito-items-list" class="space-y-3">
+      <p class="text-xs text-zinc-500 text-center py-8">Cargando tu carrito independiente...</p>
+    </div>
+
+    <!-- DESGLOSE DE PRECIOS -->
+    <div id="carrito-desglose-box" class="hidden border-t border-zinc-800 pt-4 space-y-2 text-xs">
+      <div class="flex justify-between text-zinc-400"><span>Subtotal:</span><span id="txt-subtotal">$0 CLP</span></div>
+      <div class="flex justify-between text-zinc-400"><span>IVA (19%):</span><span id="txt-iva">$0 CLP</span></div>
+      <div class="flex justify-between text-emerald-400 font-bold" id="row-descuento-vip"><span>Descuento VIP (5%):</span><span id="txt-descuento">-$0 CLP</span></div>
+      <div class="flex justify-between text-sm font-black text-white pt-2 border-t border-zinc-800"><span>Total Final:</span><span id="txt-total-final" class="text-yellow-400">$0 CLP</span></div>
+    </div>
   </div>
 
-  <!-- REPORTES DE USUARIOS -->
-  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-flag mr-1.5"></i> Reportes Recibidos de Usuarios</h3>
-    <div id="admin-reportes-list" class="space-y-2 text-xs"><p class="text-zinc-500">Sin reportes activos.</p></div>
+  <!-- BOTONES DE NAVEGACIÓN Y PAGO -->
+  <div class="flex flex-col sm:flex-row gap-3">
+    <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
+    <button onclick="pagarCarritoMercadoPago()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition"><i class="fas fa-shopping-bag mr-1.5"></i> Pagar Carrito con Mercado Pago</button>
   </div>
 </div>
 
@@ -67,69 +47,144 @@
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 auth.onAuthStateChanged(async(u)=>{
-  if(!u || u.uid !== OWNER_UID){
-    alert("Acceso exclusivo para el dueño.");
-    window.location.href="index.html";
+  if(!u){
+    alert("Debes iniciar sesión para ver tu carrito.");
+    window.location.href="login.html";
     return;
   }
-  cargarPanelControl();
+  cargarCarritoEnVivo(u.uid);
 });
 
-async function cambiarTematicaGlobal(tema){
-  await db.collection('configuracion').doc('global').set({tematica: tema}, {merge: true});
-  alert("✅ Temática aplicada en tiempo real: " + tema.toUpperCase());
-}
-
-async function toggleModoMantenimiento(estado){
-  await db.collection('configuracion').doc('global').set({mantenimientoActivo: estado}, {merge: true});
-  alert(estado ? "🛠️ Mantenimiento activado y persistente." : "⚡ Mantenimiento desactivado.");
-}
-
-async function enviarAvisoMantenimientoBreve(){
-  await db.collection('configuracion').doc('global').set({avisoMantenimiento: "¡Atención! Entraremos en mantenimiento en breve."}, {merge: true});
-  alert("📢 Aviso de mantenimiento enviado a todos los usuarios en vivo.");
-}
-
-async function cargarPanelControl(){
-  db.collection('perfiles').onSnapshot(snapshot => {
-    let h = "";
+function cargarCarritoEnVivo(uid){
+  db.collection('carritos').doc(uid).collection('items').onSnapshot(snapshot => {
+    let items = [];
     snapshot.forEach(doc => {
-      const u = doc.data();
-      const bloqueado = u.bloqueado ? `<span class="text-rose-400 font-bold">Bloqueado 🚫</span>` : `<span class="text-emerald-400">Activo ✅</span>`;
-      const btnAccion = u.bloqueado ? `<button onclick="toggleBloqueoUser('${doc.id}', false)" class="bg-emerald-600 text-white px-3 py-1 rounded-lg">Desbloquear</button>` : `<button onclick="toggleBloqueoUser('${doc.id}', true)" class="bg-rose-600 text-white px-3 py-1 rounded-lg">Bloquear</button>`;
-      
-      h += `<div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-2">
+      items.push({id: doc.id, ...doc.data()});
+    });
+    renderizarCarrito(items, uid);
+  });
+}
+
+async function renderizarCarrito(items, uid){
+  const listEl = document.getElementById('carrito-items-list');
+  const desgloseBox = document.getElementById('carrito-desglose-box');
+  
+  if(items.length === 0){
+    listEl.innerHTML = `<p class="text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
+    desgloseBox.classList.add('hidden');
+    return;
+  }
+
+  const userDoc = await db.collection('perfiles').doc(uid).get();
+  const userData = userDoc.exists ? userDoc.data() : {};
+  const ahora = new Date().getTime();
+  const expira = userData.vipExpira ? userData.vipExpira.toDate().getTime() : 0;
+  const esVipActivo = userData.esVendedorVip && expira > ahora;
+
+  let h = "";
+  let subtotal = 0;
+
+  items.forEach(item => {
+    const totalItem = (item.precio || 0) * (item.cantidadSeleccionada || 1);
+    subtotal += totalItem;
+
+    h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden border border-zinc-800 shrink-0"><img src="${item.foto || ''}" class="w-full h-full object-cover"></div>
         <div>
-          <b class="text-white">@${u.username || 'Gamer'}</b> 
-          <span class="text-[10px] text-zinc-400 block font-mono">ID Independiente: ${u.uid}</span>
+          <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
+          <span class="text-[10px] text-yellow-400 font-bold">$${parseInt(item.precio||0).toLocaleString('es-CL')} CLP c/u</span>
+          <span class="text-[10px] text-zinc-400 block">Cantidad: ${item.cantidadSeleccionada || 1}</span>
         </div>
-        <div class="flex items-center gap-3">
-          ${bloqueado}
-          ${u.uid !== OWNER_UID ? btnAccion : ''}
-        </div>
-      </div>`;
-    });
-    document.getElementById('admin-usuarios-list').innerHTML = h || '<p class="text-zinc-500">No hay usuarios.</p>';
+      </div>
+      <button onclick="eliminarItemCarrito('${item.id}', '${uid}')" class="text-rose-400 hover:text-rose-300 p-2 text-xs" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+    </div>`;
   });
 
-  db.collection('reportes').onSnapshot(snapshot => {
-    let h = "";
-    snapshot.forEach(doc => {
-      const r = doc.data();
-      h += `<div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 text-xs">
-        <b class="text-yellow-400">Reporte de @${r.autor || 'Usuario'}:</b> ${r.motivo}
-      </div>`;
-    });
-    document.getElementById('admin-reportes-list').innerHTML = h || '<p class="text-zinc-500">No hay reportes.</p>';
-  });
+  listEl.innerHTML = h;
+
+  const iva = Math.round(subtotal * 0.19);
+  let descuento = 0;
+  if(esVipActivo){
+    descuento = Math.round(subtotal * 0.05);
+    document.getElementById('row-descuento-vip').classList.remove('hidden');
+    document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP`;
+  }else{
+    document.getElementById('row-descuento-vip').classList.add('hidden');
+  }
+
+  const totalFinal = (subtotal + iva) - descuento;
+
+  document.getElementById('txt-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')} CLP`;
+  document.getElementById('txt-iva').innerText = `$${iva.toLocaleString('es-CL')} CLP`;
+  document.getElementById('txt-total-final').innerText = `$${totalFinal.toLocaleString('es-CL')} CLP`;
+  desgloseBox.classList.remove('hidden');
 }
 
-async function toggleBloqueoUser(uid, estado){
-  await db.collection('perfiles').doc(uid).update({bloqueado: estado});
-  alert(estado ? "Usuario bloqueado con éxito." : "Usuario desbloqueado.");
+async function eliminarItemCarrito(itemId, uid){
+  await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
+}
+
+// -------------------------------------------------------------
+// FUNCION AUTOMATIZADA MERCADO PAGO PARA EL CARRITO
+// -------------------------------------------------------------
+async function pagarCarritoMercadoPago() {
+    const totalEl = document.getElementById('txt-total-final');
+    if (!totalEl) {
+        alert("No se pudo calcular el total del carrito.");
+        return;
+    }
+
+    const textoTotal = totalEl.innerText.replace(/[^0-9]/g, '');
+    const montoTotal = Number(textoTotal);
+
+    if (!montoTotal || montoTotal <= 0) {
+        alert("El monto total del carrito no es válido para procesar el pago.");
+        return;
+    }
+
+    const accessToken = "APP_USR-4fc68658-4aee-476c-9911-94c1477c8d4b"; 
+
+    const preference = {
+        items: [
+            {
+                title: "Compra Total Carrito - SiilckVentas / Veloster",
+                unit_price: montoTotal,
+                quantity: 1,
+                currency_id: "CLP"
+            }
+        ],
+        back_urls: {
+            success: window.location.href,
+            failure: window.location.href,
+            pending: window.location.href
+        },
+        auto_return: "approved"
+    };
+
+    try {
+        let response = await fetch('https://api.mercadopago.com/checkout/preferences', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(preference)
+        });
+
+        let data = await response.json();
+        
+        if (data.init_point) {
+            window.location.href = data.init_point;
+        } else {
+            alert("No se pudo generar el enlace de pago de Mercado Pago.");
+        }
+    } catch (error) {
+        console.error("Error al conectar con Mercado Pago:", error);
+        alert("Ocurrió un error al procesar el pago.");
+    }
 }
 </script>
 </body>
