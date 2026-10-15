@@ -53,7 +53,6 @@
     </div>
   </div>
 
-  <!-- TAB POSTULACIONES -->
   <div id="tab-postulaciones" class="space-y-4 animate-page max-w-4xl mx-auto w-full">
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
       <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-user-check mr-2"></i> Solicitudes Pendientes para Vender</h3>
@@ -61,7 +60,6 @@
     </div>
   </div>
 
-  <!-- TAB USUARIOS Y BLOQUEOS (CON CORREO Y ID VISIBLES) -->
   <div id="tab-usuarios" class="hidden space-y-4 animate-page max-w-4xl mx-auto w-full">
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
       <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-users mr-2"></i> Control de Usuarios Registrados, IDs y Correos</h3>
@@ -69,36 +67,24 @@
     </div>
   </div>
 
-  <!-- TAB MANTENIMIENTO Y TEMÁTICA -->
   <div id="tab-mantenimiento" class="hidden space-y-4 animate-page max-w-3xl mx-auto w-full">
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4 text-xs">
       <h3 class="font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-tools mr-2"></i> Configuración Global de Sistema</h3>
       
       <div class="space-y-2">
         <label class="block font-bold text-zinc-300">Mensaje de Aviso / Mantenimiento Global</label>
-        <textarea id="admin-input-aviso" rows="3" placeholder="Escribe el mensaje que verán los usuarios..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white resize-none"></textarea>
+        <textarea id="admin-input-aviso" rows="3" placeholder="Escribe el mensaje..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white resize-none"></textarea>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
         <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
           <h4 class="font-bold text-white uppercase text-[11px]">🛠️ Modo Mantención Estricto</h4>
-          <p class="text-[10px] text-zinc-400">Bloquea el acceso a toda la web para todos excepto el dueño.</p>
           <button id="btn-toggle-mantenimiento" onclick="toggleMantenimientoGlobal()" class="w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition">Cargando estado...</button>
         </div>
 
         <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
           <h4 class="font-bold text-white uppercase text-[11px]">🔔 Aviso Programado Activo</h4>
-          <p class="text-[10px] text-zinc-400">Muestra una notificación flotante superior en la web.</p>
           <button id="btn-toggle-aviso" onclick="toggleAvisoGlobal()" class="w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition">Cargando estado...</button>
-        </div>
-      </div>
-
-      <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3 pt-4">
-        <h4 class="font-bold text-white uppercase text-[11px]">🎨 Temática Visual Global de la Página</h4>
-        <div class="grid grid-cols-3 gap-2">
-          <button onclick="cambiarTematicaGlobal('default')" class="p-3 rounded-xl bg-zinc-800 border border-zinc-700 text-white font-bold text-center hover:border-yellow-500">🌌 Normal</button>
-          <button onclick="cambiarTematicaGlobal('halloween')" class="p-3 rounded-xl bg-orange-950/40 border border-orange-500/40 text-orange-400 font-bold text-center hover:border-orange-500">🎃 Halloween</button>
-          <button onclick="cambiarTematicaGlobal('navidad')" class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-400 font-bold text-center hover:border-emerald-500">🎄 Navidad</button>
         </div>
       </div>
 
@@ -160,32 +146,32 @@ auth.onAuthStateChanged(async(u)=>{
 
 async function cargarPostulacionesAdmin(){
   const box = document.getElementById('lista-postulaciones-admin');
-  const snap = await db.collection('perfiles').get();
+  const snap = await db.collection('postulaciones_vendedores').where('estado', '==', 'pendiente_revision').get();
   let h = "";
   snap.forEach(doc => {
     const d = doc.data();
-    if(d.postulacionTexto && !d.postuladoFormulario){
-      h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 space-y-2 text-xs">
-        <div class="flex justify-between items-center"><strong class="text-white">@${d.username || 'Usuario'}</strong> <span class="text-zinc-400">${d.email || 'Sin correo'}</span></div>
-        <p class="text-zinc-300 bg-zinc-900 p-3 rounded-xl border border-zinc-800">${d.postulacionTexto}</p>
-        <div class="flex gap-2 pt-2">
-          <button onclick="aprobarPostulacion('${doc.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl uppercase">✅ Aprobar</button>
-          <button onclick="rechazarPostulacion('${doc.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl uppercase">❌ Rechazar</button>
-        </div>
-      </div>`;
-    }
+    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 space-y-2 text-xs">
+      <div class="flex justify-between items-center"><strong class="text-white">${d.nombre}</strong> <span class="text-yellow-400">RUT: ${d.rut}</span></div>
+      <p class="text-zinc-300">Contacto: ${d.contacto} • País: ${d.pais}</p>
+      <p class="text-zinc-400">Motivo: ${d.motivo}</p>
+      <div class="flex gap-2 pt-2">
+        <button onclick="aprobarPostulacion('${doc.id}', '${d.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl uppercase">✅ Aprobar</button>
+        <button onclick="rechazarPostulacion('${doc.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl uppercase">❌ Rechazar</button>
+      </div>
+    </div>`;
   });
-  box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes en este momento.</p>`;
+  box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes.</p>`;
 }
 
-async function aprobarPostulacion(uid){
+async function aprobarPostulacion(postId, uid){
+  await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'aprobado'});
   await db.collection('perfiles').doc(uid).update({postuladoFormulario: true});
   mostrarToast("✅ Postulación aprobada con éxito.");
   cargarPostulacionesAdmin();
 }
 
-async function rechazarPostulacion(uid){
-  await db.collection('perfiles').doc(uid).update({postulacionTexto: null});
+async function rechazarPostulacion(postId){
+  await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'rechazado'});
   mostrarToast("❌ Postulación rechazada.");
   cargarPostulacionesAdmin();
 }
@@ -197,17 +183,14 @@ async function cargarUsuariosAdmin(){
   snap.forEach(doc => {
     const d = doc.data();
     const uid = doc.id;
-    const correoReal = d.email || d.vendedorCorreo || "Correo no registrado";
     const username = d.username || "Sin nombre";
-    const vendedorIdStr = d.vendedorId ? `(@${d.vendedorId})` : "";
     const estadoBloqueo = d.bloqueado ? `<span class="text-rose-500 font-bold">Bloqueado</span>` : `<span class="text-emerald-400 font-bold">Activo</span>`;
     const btnBloquearTxt = d.bloqueado ? "Desbloquear" : "Bloquear";
     const btnBloquearCls = d.bloqueado ? "bg-emerald-600 hover:bg-emerald-500" : "bg-rose-600 hover:bg-rose-500";
 
     h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div>
-        <h4 class="font-bold text-white text-sm">@${username} ${vendedorIdStr}</h4>
-        <p class="text-yellow-400 font-medium">📧 Correo: ${correoReal}</p>
+        <h4 class="font-bold text-white text-sm">@${username}</h4>
         <p class="text-[10px] text-zinc-400">UID: ${uid} • Estado: ${estadoBloqueo}</p>
       </div>
       <div class="flex items-center gap-2">
@@ -264,12 +247,6 @@ async function toggleAvisoGlobal(){
   await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
   cargarConfiguracionAdmin();
   mostrarToast("🔔 Estado de aviso actualizado.");
-}
-
-async function cambiarTematicaGlobal(tematica){
-  configGlobalCache.tematica = tematica;
-  await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
-  mostrarToast(`🎨 Temática cambiada a: ${tematica}`);
 }
 
 async function guardarConfiguracionGlobalAdmin(){
