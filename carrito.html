@@ -208,7 +208,9 @@ async function activarPasesVipTrasPago(uid){
     await perfilRef.set({
       esVendedorVip: true,
       tipoVip: mejor,
-      vipExpira: firebase.firestore.Timestamp.fromDate(expira)
+      vipExpira: firebase.firestore.Timestamp.fromDate(expira),
+      isVip: true,
+      plan: 'vip'
     }, { merge: true });
     alert('✅ Pase VIP activado por 30 días. Gracias por tu compra con Flow.');
   }catch(e){

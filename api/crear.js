@@ -19,7 +19,8 @@ export default async function handler(req, res) {
       uid: body.uid,
       email: body.email,
       idToken,
-      amount: body.amount
+      amount: body.amount,
+      tipoVipPase: body.tipoVipPase
     });
     if (!resultado.ok) return res.status(400).json(resultado);
     return res.status(200).json({
