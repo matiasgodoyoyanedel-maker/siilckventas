@@ -10,14 +10,12 @@
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
-  .web-panel{background:rgba(18,18,24,0.9);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+  .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   .vip-banner-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 35px rgba(234,179,8,0.25)}
   .vip-banner-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 35px rgba(239,68,68,0.25)}
   .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
-  @keyframes fadeOutSmooth{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(0.95)}}
-  .animate-fade-out{animation:fadeOutSmooth .4s ease forwards}
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
   .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
   .radio-warranty{accent-color:#eab308}
@@ -25,35 +23,47 @@
   .vip-card-glow{animation:vipGlow 2s infinite ease-in-out;border:2px solid #eab308 !important}
   @keyframes vipGlowPro{0%,100%{box-shadow:0 0 15px rgba(239,68,68,0.3)}50%{box-shadow:0 0 30px rgba(239,68,68,0.6)}}
   .vip-card-glow-pro{animation:vipGlowPro 2s infinite ease-in-out;border:2px solid #ef4444 !important}
+  .floating-element{position:fixed;pointer-events:none;z-index:1;animation:floatDown linear infinite}
+  @keyframes floatDown{0%{transform:translateY(-50px) rotate(0deg);opacity:0.8}100%{transform:translateY(105vh) rotate(360deg);opacity:0.2}}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
+<!-- MODAL BLOQUEO PERMANENTE POR ADMINISTRACIÓN -->
+<div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[600] p-4 text-center">
+  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/80">
+    <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-ban"></i></div>
+    <h3 class="text-xl font-black text-white">Acceso Bloqueado Permanentemente</h3>
+    <p class="text-xs text-zinc-300 leading-relaxed">Has sido bloqueado por la administración. No puedes cerrar este aviso hasta que el administrador reactive tu cuenta.</p>
+  </div>
+</div>
+
+<!-- MODAL AVISO MANTENIMIENTO GLOBAL -->
 <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[500] p-4 text-center">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/50">
-    <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto animate-bounce"><i class="fas fa-tools"></i></div>
-    <h3 class="text-xl font-black text-white" id="mantenimiento-titulo">Sitio en Mantenimiento</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed" id="mantenimiento-desc">Estamos optimizando nuestros servidores y pasarela Escrow. Volvemos en breve.</p>
+  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500/50">
+    <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-tools animate-spin"></i></div>
+    <h3 class="text-xl font-black text-white" id="mantenimiento-titulo">Aviso de Mantenimiento</h3>
+    <p class="text-xs text-zinc-300 leading-relaxed" id="mantenimiento-desc">Estamos realizando mejoras en la plataforma. Por favor confirma que estás de acuerdo para continuar.</p>
+    <button onclick="document.getElementById('modal-mantenimiento-global').classList.add('hidden')" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition">Estoy de Acuerdo</button>
   </div>
 </div>
 
 <div id="modal-sesion-requerida" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[300] p-4">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/30 relative animate-page">
+  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/30 relative">
     <button onclick="document.getElementById('modal-sesion-requerida').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
     <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-lock"></i></div>
     <div class="space-y-1.5">
-      <h3 class="text-lg font-bold font-heading text-white tracking-wide">Autenticación Requerida</h3>
-      <p class="text-xs text-zinc-400 leading-relaxed">Para publicar ofertas o realizar compras seguras, debes iniciar sesión en tu cuenta.</p>
+      <h3 class="text-lg font-bold font-heading text-white">Autenticación Requerida</h3>
+      <p class="text-xs text-zinc-400">Debes iniciar sesión para realizar esta acción.</p>
     </div>
-    <div class="pt-2">
-      <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar Sesión Ahora</a>
-    </div>
+    <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar Sesión Ahora</a>
   </div>
 </div>
 
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
+<div id="decorations-layer"></div>
 
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
@@ -68,10 +78,17 @@
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
-      <!-- ACCESO DIRECTO AL CARRITO CON ÍCONO -->
+      <!-- CARRITO CON ACCESO DIRECTO -->
       <a href="carrito.html" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer">
         <i class="fas fa-shopping-cart text-sm"></i>
       </a>
+
+      <!-- CHATS CON PUNTO ROJO DE NOTIFICACIÓN EN TIEMPO REAL -->
+      <button onclick="cambiarSeccion('mis-chats')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P">
+        <i class="fas fa-comments text-sm"></i>
+        <span id="badge-notif-chats" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b] animate-ping"></span>
+        <span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span>
+      </button>
 
       <div id="auth-nav-area" class="flex items-center space-x-2">
         <a href="login.html" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login</a>
@@ -83,7 +100,7 @@
 
       <div class="relative">
         <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition"><i class="fas fa-bars"></i></button>
-        <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-60 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
+        <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-64 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarPublicarCuenta()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider shadow">
             <i class="fas fa-plus-square text-sm"></i> Vender Cuenta
           </button>
@@ -94,6 +111,7 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
             <i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados
           </button>
+          <!-- MANTENCIÓN PANEL: SOLO ACCESIBLE PARA EL DUEÑO -->
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30">
             <i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel
           </button>
@@ -112,64 +130,93 @@
     <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Planes VIP Vendedor</button>
   </div></div>
 
-  <!-- SECCIÓN INICIO CON BARRA DE JUEGOS TIPO CARTEL DE CINE A LA IZQUIERDA -->
-  <div id="seccion-inicio" class="w-full space-y-6 max-w-5xl mx-auto">
-    <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
-      <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Elige tu Juego Favorito</span>
-      <h2 class="text-2xl md:text-3xl font-extrabold font-heading text-white">Explora Cuentas Verificadas al Instante</h2>
+  <!-- DISPOSICIÓN PRINCIPAL: CARTELERA DE JUEGOS A LA IZQUIERDA TIPO CINE -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 w-full">
+    
+    <!-- CARTELERA DE JUEGOS A LA IZQUIERDA -->
+    <div class="lg:col-span-1 space-y-3">
+      <div class="web-panel rounded-3xl p-5 border border-zinc-800 space-y-3 sticky top-24">
+        <div class="border-b border-zinc-800 pb-2.5 flex items-center justify-between">
+          <h3 class="text-xs font-black text-yellow-400 uppercase tracking-wider"><i class="fas fa-film mr-1.5"></i> Cartelera de Juegos</h3>
+          <span class="text-[9px] bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded border border-zinc-800">Sincronizado</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-fire text-yellow-400"></i> Free Fire</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('Valorant')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-shield-alt text-rose-400"></i> Valorant</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('Roblox')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-cube text-emerald-400"></i> Roblox</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('Steam Key')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fab fa-steam text-indigo-400"></i> Steam Key</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('League of Legends')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-bolt text-amber-400"></i> LoL / Riot</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('GTA V')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-car text-orange-400"></i> GTA V</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+          <button onclick="filtrarPorJuegoRapido('Minecraft')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-hammer text-emerald-500"></i> Minecraft</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="lg:col-span-3 space-y-6">
       
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
-        <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-fire text-yellow-400"></i> Free Fire</button>
-        <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</button>
-        <button onclick="filtrarPorJuegoRapido('Valorant')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-shield-alt text-rose-400"></i> Valorant</button>
-        <button onclick="filtrarPorJuegoRapido('Roblox')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-cube text-emerald-400"></i> Roblox</button>
-        <button onclick="filtrarPorJuegoRapido('Steam Key')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fab fa-steam text-indigo-400"></i> Steam Key</button>
-        <button onclick="filtrarPorJuegoRapido('League of Legends')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-bolt text-amber-400"></i> LoL / Riot</button>
-        <button onclick="filtrarPorJuegoRapido('GTA V')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-car text-orange-400"></i> GTA V</button>
-        <button onclick="filtrarPorJuegoRapido('Minecraft')" class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition"><i class="fas fa-hammer text-emerald-500"></i> Minecraft</button>
+      <div id="seccion-inicio" class="w-full space-y-6">
+        <div class="web-panel border border-yellow-500/20 rounded-3xl p-8 space-y-4 text-center shadow-2xl">
+          <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Marketplace & Escrow</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold font-heading text-white">Explora Cuentas Verificadas al Instante</h2>
+          <p class="text-xs text-zinc-400 max-w-lg mx-auto">Selecciona un juego en la cartelera de la izquierda o busca tu cuenta favorita con total seguridad.</p>
+        </div>
       </div>
+
+      <div id="seccion-mercado" class="w-full space-y-5 animate-page">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div>
+            <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
+            <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="carrito.html" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
+            <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
+          </div>
+        </div>
+        <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
+      </div>
+
+      <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+        <div class="space-y-2 text-center sm:text-left">
+          <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor Oficial</span>
+          <h3 class="text-xl md:text-2xl font-black font-heading text-white">¿Quieres trabajar con nosotros? ¿Quieres publicar en nuestra página web?</h3>
+          <p class="text-xs text-zinc-300">Postula hoy mismo rellenando nuestro formulario de verificación rápida.</p>
+        </div>
+        <a href="formulario.html" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase tracking-wider shadow-xl transition shrink-0 inline-flex items-center gap-2">
+          <i class="fas fa-arrow-right"></i> Click Aquí
+        </a>
+      </div>
+
     </div>
+
   </div>
 
-  <div id="seccion-mercado" class="w-full space-y-5 max-w-7xl mx-auto animate-page">
-    <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-      <div>
-        <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
-        <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
-      </div>
-      <div class="flex items-center gap-2">
-        <a href="carrito.html" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
-        <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
-      </div>
-    </div>
-    <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
-  </div>
-
-  <div class="trabaja-banner rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-5xl mx-auto shadow-xl">
-    <div class="space-y-2 text-center sm:text-left">
-      <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-yellow-500/30">Oportunidad de Vendedor Oficial</span>
-      <h3 class="text-xl md:text-2xl font-black font-heading text-white">¿Quieres trabajar con nosotros? ¿Quieres publicar en nuestra página web?</h3>
-      <p class="text-xs text-zinc-300">Postula hoy mismo rellenando nuestro formulario de verificación rápida.</p>
-    </div>
-    <a href="formulario.html" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase tracking-wider shadow-xl transition shrink-0 inline-flex items-center gap-2">
-      <i class="fas fa-arrow-right"></i> Click Aquí
-    </a>
-  </div>
-
+  <!-- SECCIÓN PERFIL GAMER CON SUBIDA DE FOTO DESDE GALERÍA (PC Y CELULAR) -->
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
     <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
       <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Vendedor Gamer</span>
       <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button>
     </h3>
-    <div class="space-y-3 text-xs">
+    <div class="space-y-4 text-xs">
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"></div>
+      
+      <!-- Selector de foto real por galería (PC / Celular) -->
       <div>
-        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto Vendedor (Emoji o URL)</label>
-        <input type="text" id="user-logo" placeholder="Emoji o Link de imagen" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white">
+        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto de Perfil (Galería)</label>
+        <div class="flex items-center gap-3">
+          <div id="perfil-foto-preview-box" class="w-14 h-14 rounded-2xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center overflow-hidden shrink-0"><i class="fas fa-user text-yellow-400"></i></div>
+          <div class="flex-grow">
+            <input type="file" id="input-foto-perfil-galeria" accept="image/*" class="hidden" onchange="manejarSubidaFotoPerfil(this)">
+            <button onclick="document.getElementById('input-foto-perfil-galeria').click()" class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold py-2.5 rounded-xl uppercase text-xs transition"><i class="fas fa-upload mr-1.5"></i> Subir Foto de Galería</button>
+          </div>
+        </div>
         <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios restantes este mes: 3/3</span>
       </div>
+
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
-      <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
+      <button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
     </div>
   </div>
 
@@ -210,21 +257,26 @@
     </div>
   </div>
 
-  <!-- PLANES VIP DIFERENCIADOS CON LOS LINKS DE FLOW REALES -->
+  <!-- PLANES VIP CON LOS LINKS DE FLOW REALES -->
   <div id="seccion-vip" class="hidden space-y-6 max-w-3xl mx-auto animate-page">
+    <div id="vip-status-box" class="web-panel rounded-3xl p-6 text-center border border-zinc-800 mb-4 hidden">
+      <h4 class="text-xs font-bold text-yellow-400 uppercase">Estado de tu Suscripción VIP</h4>
+      <p id="vip-countdown-text" class="text-sm font-black text-white mt-1">Calculando días restantes...</p>
+    </div>
+
     <!-- VIP BÁSICO ($2.990) - Insignia Amarilla -->
     <div class="vip-banner-box rounded-3xl p-8 space-y-4 text-center relative overflow-hidden">
       <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Aprendiz / Básico</span>
-      <h3 class="text-2xl font-black text-white">VIP BÁSICO - $2.990 CLP / MES</h3>
-      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia estelar **amarilla**, 5% de descuento en tus compras en el carrito y prioridad estándar.</p>
+      <h3 class="text-2xl font-black text-white">VIP BÁSICO - $2.990 CLP / 30 DÍAS</h3>
+      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia estelar **amarilla**, 5% de descuento en el carrito y 30 días de duración real.</p>
       <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="inline-block bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg transition">Pagar VIP Básico ($2.990)</a>
     </div>
 
     <!-- VIP PRO / AVANZADO ($5.090) - Insignia Rojo Intenso -->
     <div class="vip-banner-box-pro rounded-3xl p-8 space-y-4 text-center relative overflow-hidden">
       <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Avanzado / Pro</span>
-      <h3 class="text-2xl font-black text-white">VIP PRO - $5.090 CLP / MES</h3>
-      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia en **rojo intenso**, máximo rango, 10% de descuento en el carrito y máxima prioridad en el buscador.</p>
+      <h3 class="text-2xl font-black text-white">VIP PRO - $5.090 CLP / 30 DÍAS</h3>
+      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia en **rojo intenso**, máximo rango, 10% de descuento en el carrito y 30 días de duración real.</p>
       <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="inline-block bg-rose-600 hover:bg-rose-500 text-white font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg transition">Pagar VIP Pro ($5.090)</a>
     </div>
   </div>
@@ -243,7 +295,7 @@
       <div class="grid grid-cols-3 gap-2">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Vínculo *</label><select id="pub-vinculo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"><option value="Google">Google</option><option value="Facebook">Facebook</option></select></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock / Unidades *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       </div>
       <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
       <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
@@ -287,7 +339,7 @@
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,fotoBase64Seleccionada="",fotoPerfilBase64="",precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
@@ -307,6 +359,18 @@ const auth=firebase.auth(),db=firebase.firestore();
 
 function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
+
+function reproducirSonidoNotificacion(){
+  try{
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+  }catch(e){}
+}
 
 function verificarLoginAccion(callback){
   if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
@@ -345,32 +409,33 @@ function filtrarPorJuegoRapido(juego){
 auth.onAuthStateChanged(async(u)=>{
   setTimeout(()=>{ document.getElementById('main-body-fade').classList.remove('opacity-0'); }, 50);
   
+  // Configuración global y temas visuales
   db.collection('configuracion').doc('global').onSnapshot(doc => {
     if(doc.exists){
       const cfg = doc.data();
       if(cfg.mantenimientoActivo){
+        document.getElementById('mantenimiento-titulo').innerText = cfg.tituloMantenimiento || "Aviso de Mantenimiento";
+        document.getElementById('mantenimiento-desc').innerText = cfg.avisoMantenimiento || "Plataforma en actualización.";
         document.getElementById('modal-mantenimiento-global').classList.remove('hidden');
         document.getElementById('modal-mantenimiento-global').classList.add('flex');
       }else{
         document.getElementById('modal-mantenimiento-global').classList.add('hidden');
       }
-      if(cfg.avisoMantenimiento){
-        mostrarAlertaToast("⚠️ Aviso del Sistema", cfg.avisoMantenimiento);
-      }
-      aplicarTematicaVisual(cfg.tematica || 'default');
+      aplicarTematicaVisualReal(cfg.tematica || 'default');
     }
   });
 
   if(u){
     const r=db.collection('perfiles').doc(u.uid);let d=await r.get();
     if(!d.exists){
-      currentUserData={uid:u.uid,username:"Gamer",logo:"👑",cambiosFotoMes:0,bloqueado:false};
+      currentUserData={uid:u.uid,username:u.email.split('@')[0],logo:"",cambiosFotoMes:0,bloqueado:false};
       await r.set(currentUserData);
     }else{currentUserData=d.data();}
 
+    // Control de bloqueo permanente
     if(currentUserData.bloqueado){
-      alert("Tu cuenta ha sido bloqueada por la administración.");
-      auth.signOut();
+      document.getElementById('modal-bloqueado-permanente').classList.remove('hidden');
+      document.getElementById('modal-bloqueado-permanente').classList.add('flex');
       return;
     }
     
@@ -380,17 +445,24 @@ auth.onAuthStateChanged(async(u)=>{
     document.getElementById('nav-user-email').innerText=currentUserData.username||"Gamer";
     
     document.getElementById('user-username').value = currentUserData.username || "";
-    document.getElementById('user-logo').value = currentUserData.logo || "";
     document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
+    
+    if(currentUserData.logo){
+      fotoPerfilBase64 = currentUserData.logo;
+      document.getElementById('perfil-foto-preview-box').innerHTML = `<img src="${currentUserData.logo}" class="w-full h-full object-cover">`;
+    }
     
     const cambiosRestantes = 3 - (currentUserData.cambiosFotoMes || 0);
     document.getElementById('user-foto-contador-msg').innerText = `Cambios de foto restantes este mes: ${cambiosRestantes}/3`;
 
+    // Botón de panel visible SOLO para el dueño
     if(u.uid===OWNER_UID){
       document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');
     }
 
+    verificarEstadoVipReal(currentUserData);
     cargarPublicacionesEnVivo();
+    escucharNotificacionesChatsGlobal(u.uid);
   }else{
     currentUserData=null;
     document.getElementById('nav-btn-ir-login').classList.remove('hidden');
@@ -399,17 +471,64 @@ auth.onAuthStateChanged(async(u)=>{
   }
 });
 
-function aplicarTematicaVisual(tema){
+function verificarEstadoVipReal(userData){
+  if(!userData || !userData.vipExpira) return;
+  const ahora = new Date().getTime();
+  const expira = userData.vipExpira.toDate().getTime();
+  const diferencia = expira - ahora;
+  if(diferencia > 0){
+    const diasRestantes = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
+    document.getElementById('vip-status-box').classList.remove('hidden');
+    document.getElementById('vip-countdown-text').innerText = `Te quedan ${diasRestantes} días reales de suscripción VIP activa 👑`;
+  }
+}
+
+// Temas visuales reales (Halloween con calabazas flotantes que no tapan letras, Navidad, etc.)
+function aplicarTematicaVisualReal(tema){
+  const layer = document.getElementById('decorations-layer');
+  layer.innerHTML = "";
   if(tema === 'halloween'){
     document.body.style.backgroundColor = '#120700';
+    for(let i=0; i<12; i++){
+      const pumpkin = document.createElement('div');
+      pumpkin.className = 'floating-element';
+      pumpkin.innerHTML = '🎃';
+      pumpkin.style.left = `${Math.random()*95}vw`;
+      pumpkin.style.fontSize = `${Math.random()*16+16}px`;
+      pumpkin.style.animationDuration = `${Math.random()*8+6}s`;
+      pumpkin.style.animationDelay = `${Math.random()*5}s`;
+      layer.appendChild(pumpkin);
+    }
   }else if(tema === 'navidad'){
     document.body.style.backgroundColor = '#03120a';
+    for(let i=0; i<15; i++){
+      const snow = document.createElement('div');
+      snow.className = 'floating-element';
+      snow.innerHTML = '❄️';
+      snow.style.left = `${Math.random()*95}vw`;
+      snow.style.fontSize = `${Math.random()*12+12}px`;
+      snow.style.animationDuration = `${Math.random()*6+4}s`;
+      snow.style.animationDelay = `${Math.random()*4}s`;
+      layer.appendChild(snow);
+    }
   }else if(tema === 'verano'){
     document.body.style.backgroundColor = '#030c16';
   }else if(tema === 'noche'){
     document.body.style.backgroundColor = '#020203';
   }else{
     document.body.style.backgroundColor = '#09090b';
+  }
+}
+
+// Subida de foto de perfil desde galería (PC / Celular)
+function manejarSubidaFotoPerfil(input){
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      fotoPerfilBase64 = e.target.result;
+      document.getElementById('perfil-foto-preview-box').innerHTML = `<img src="${fotoPerfilBase64}" class="w-full h-full object-cover">`;
+    }
+    reader.readAsDataURL(input.files[0]);
   }
 }
 
@@ -455,14 +574,14 @@ function renderizarGridPublicaciones(ps, filtro=""){
     }
 
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    const logoVendedorHtml = p.vendedorLogo ? (p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-xs">${p.vendedorLogo}</span>`) : `<i class="fas fa-user text-xs"></i>`;
+    const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
 
     h+=`<div class="${cardClass}">
       <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
       <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> ${badgeVip}</div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')">
         <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span>
-        <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Región: ${p.region || 'N/A'}</span>
+        <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Stock: ${p.stock || 1}</span>
       </div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
         <div onclick="abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
@@ -488,7 +607,7 @@ async function abrirModalPub(id){
   
   const logoBox = document.getElementById('modal-vendedor-logo');
   if(p.vendedorLogo){
-    logoBox.innerHTML = p.vendedorLogo.startsWith('http') ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<span class="text-sm">${p.vendedorLogo}</span>`;
+    logoBox.innerHTML = `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">`;
   }else{
     logoBox.innerHTML = `<i class="fas fa-user text-xs"></i>`;
   }
@@ -505,8 +624,7 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-tags').innerHTML = `
     <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-yellow-400">🎮 ${p.juego}</span>
     <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">⭐ Nivel: ${p.nivel || 'N/A'}</span>
-    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">🌍 Región: ${p.region || 'N/A'}</span>
-    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">🔗 Vínculo: ${p.vinculo || 'Google'}</span>
+    <span class="bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-300">📦 Stock: ${p.stock || 1}</span>
   `;
 
   document.querySelectorAll('input[name="garantia"]')[0].checked = true;
@@ -530,6 +648,9 @@ async function agregarAlCarritoDesdeModal(){
   const precioTotalItem = precioBasePublicacionActual + costoGarantia;
   const titulo = document.getElementById('modal-pub-titulo').innerText;
   const foto = document.getElementById('modal-pub-img').src || "";
+  
+  const pubDoc = await db.collection('publicaciones').doc(publicacionActualIdCache).get();
+  const stockMax = pubDoc.exists ? (pubDoc.data().stock || 1) : 1;
 
   await db.collection('carritos').doc(auth.currentUser.uid).collection('items').add({
     publicacionId: publicacionActualIdCache,
@@ -537,6 +658,7 @@ async function agregarAlCarritoDesdeModal(){
     precio: precioTotalItem,
     foto: foto,
     cantidadSeleccionada: 1,
+    stock: stockMax,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
   });
 
@@ -602,7 +724,42 @@ async function enviarMensajeChatP2P(){
     texto: txt,
     fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
+  await db.collection('chats_p2p').doc(chatActivoId).update({
+    ultimoMensaje: txt,
+    ultimoRemitenteUid: auth.currentUser.uid,
+    actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
+  });
   document.getElementById('chat-input-msg').value = "";
+}
+
+// Notificaciones de mensajes en tiempo real con punto rojo y sonido
+function escucharNotificacionesChatsGlobal(uid){
+  db.collection('chats_p2p').where('compradorUid', '==', uid).onSnapshot(snapshot => {
+    verificarMensajesNuevos(snapshot, uid);
+  });
+  db.collection('chats_p2p').where('vendedorUid', '==', uid).onSnapshot(snapshot => {
+    verificarMensajesNuevos(snapshot, uid);
+  });
+}
+
+function verificarMensajesNuevos(snapshot, uid){
+  let hayNuevos = false;
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if(data.ultimoRemitenteUid && data.ultimoRemitenteUid !== uid){
+      hayNuevos = true;
+    }
+  });
+  const dot = document.getElementById('badge-notif-chats-dot');
+  const ping = document.getElementById('badge-notif-chats');
+  if(hayNuevos){
+    dot.classList.remove('hidden');
+    ping.classList.remove('hidden');
+    reproducirSonidoNotificacion();
+  }else{
+    dot.classList.add('hidden');
+    ping.classList.add('hidden');
+  }
 }
 
 async function cargarListaChatsUsuario(){
@@ -616,7 +773,7 @@ async function cargarListaChatsUsuario(){
   q2.forEach(d => chatsMap.set(d.id, d.data()));
   let h = "";
   chatsMap.forEach((data, id) => {
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')"><div><h4 class="font-bold text-white text-xs">${data.tituloOferta}</h4><p class="text-[10px] text-zinc-400">Comprador: @${data.compradorNombre}</p></div><span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</span></div>`;
+    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')"><div><h4 class="font-bold text-white text-xs">${data.tituloOferta}</h4><p class="text-[10px] text-zinc-400">Último mensaje: ${data.ultimoMensaje || 'Sin mensajes'}</p></div><span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</span></div>`;
   });
   listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
 }
@@ -624,10 +781,10 @@ async function cargarListaChatsUsuario(){
 async function abrirPerfilVendedorPorUid(uid){
   cambiarSeccion('perfil-vendedor');
   const pDoc = await db.collection('perfiles').doc(uid).get();
-  let nombre = "Vendedor VIP", logo = "👑";
-  if(pDoc.exists){const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || "👑";}
+  let nombre = "Vendedor VIP", logo = "";
+  if(pDoc.exists){const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || "";}
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
-  document.getElementById('vendedor-perfil-logo-box').innerHTML = logo.startsWith('http') ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">${logo}</span>`;
+  document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-2xl">👑</span>`;
 
   const grid = document.getElementById('vendedor-tienda-grid');
   let h = "";
@@ -646,12 +803,11 @@ async function crearPublicacionMarketplace(){
   const precio = parseInt(document.getElementById('pub-precio').value);
   const nivel = document.getElementById('pub-nivel').value.trim();
   const region = document.getElementById('pub-region').value.trim();
-  const vinculo = document.getElementById('pub-vinculo').value;
+  const stock = parseInt(document.getElementById('pub-stock').value) || 1;
   const descripcion = document.getElementById('pub-descripcion').value.trim();
 
   if(!titulo || !precio || !nivel || !region || !descripcion){mostrarAlertaToast("Campos Incompletos", "Llena todos los campos.");return;}
 
-  // Verificar tipo VIP del usuario para asignarle su insignia automática
   const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
   const uData = userDoc.exists ? userDoc.data() : {};
   const tipoVip = uData.tipoVip || 'basico';
@@ -659,8 +815,8 @@ async function crearPublicacionMarketplace(){
   await db.collection('publicaciones').add({
     vendedorUid: auth.currentUser.uid,
     vendedorNombre: currentUserData.username || "Vendedor",
-    vendedorLogo: currentUserData.logo || "👑",
-    titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, vinculo: vinculo, descripcion: descripcion,
+    vendedorLogo: currentUserData.logo || "",
+    titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, stock: stock, descripcion: descripcion,
     foto: fotoBase64Seleccionada || "", esVip: true, tipoVip: tipoVip, fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
@@ -668,13 +824,12 @@ async function crearPublicacionMarketplace(){
   cambiarSeccion('mercado');
 }
 
-async function guardarPerfilConLimiteFoto(){
+async function guardarPerfilGamerReal(){
   if(!auth.currentUser)return;
-  const nuevoLogo = document.getElementById('user-logo').value.trim();
   const mp = document.getElementById('user-metodo-pago').value.trim();
   
   let cambios = currentUserData.cambiosFotoMes || 0;
-  if(nuevoLogo !== (currentUserData.logo || "")){
+  if(fotoPerfilBase64 && fotoPerfilBase64 !== (currentUserData.logo || "")){
     if(cambios >= 3){
       mostrarAlertaToast("Límite Alcanzado", "Solo puedes cambiar tu foto de vendedor 3 veces al mes.");
       return;
@@ -682,22 +837,18 @@ async function guardarPerfilConLimiteFoto(){
     cambios += 1;
   }
 
-  await db.collection('perfiles').doc(auth.currentUser.uid).update({
-    logo: nuevoLogo,
+  const datosActualizar = {
     metodoPago: mp,
     cambiosFotoMes: cambios
-  });
+  };
+  if(fotoPerfilBase64) datosActualizar.logo = fotoPerfilBase64;
 
-  currentUserData.logo = nuevoLogo;
+  await db.collection('perfiles').doc(auth.currentUser.uid).update(datosActualizar);
+
+  currentUserData.logo = fotoPerfilBase64 || currentUserData.logo;
   currentUserData.cambiosFotoMes = cambios;
   mostrarToast("¡Perfil guardado con éxito!");
-
-  const perfilSec = document.getElementById('seccion-perfil');
-  perfilSec.classList.add('animate-fade-out');
-  setTimeout(()=>{
-    perfilSec.classList.remove('animate-fade-out');
-    cambiarSeccion('mercado');
-  }, 400);
+  cambiarSeccion('mercado');
 }
 
 function cerrarSesion(){auth.signOut().then(()=>{window.location.reload();})}
