@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-sv-theme="aurora">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Publicar Cuenta - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4,.font-heading{font-family:'Outfit',sans-serif}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
@@ -32,7 +34,7 @@
     <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center"><i class="fas fa-plus-square"></i></div>
-        <div><h3 class="text-sm font-extrabold font-heading text-white uppercase">Crear Nueva Publicación</h3><p class="text-[10px] text-zinc-400">Marketplace oficial con protección Escrow.</p></div>
+        <div><h3 class="text-sm font-extrabold font-heading text-white uppercase">Crear Nueva Publicación</h3><p class="text-[10px] text-zinc-400">Marketplace oficial con protección Escrow. Con Pase Básico puedes impulsarla al tope cada 24h.</p></div>
       </div>
       <button onclick="window.location.href='index.html'" class="text-xs text-zinc-400 hover:text-white underline">Cancelar</button>
     </div>
@@ -76,7 +78,9 @@
 <script>
 const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,fotoBase64Seleccionada="",authCheckHecho=false;
 const OWNER_UID = "w4JA6UUF7WeC6UJweKAKdWYMHf73";
-function initCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});}function animateCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234,179,8,${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});requestAnimationFrame(animateCanvas);}window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
+const OWNER_UID_PRINCIPAL = "YwjfajkyMXMRHd18eII4dwV03NF3";
+function esCuentaOwner(uid){ return uid===OWNER_UID || uid===OWNER_UID_PRINCIPAL; }
+function initCanvas(){if(window.SiilckTema){SiilckTema.bindCanvas(canvas);return;}canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});}function animateCanvas(){if(window.SiilckTema)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234,179,8,${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});requestAnimationFrame(animateCanvas);}window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
 
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -108,13 +112,13 @@ auth.onAuthStateChanged(async(u)=>{
   try{
     const doc=await db.collection('perfiles').doc(u.uid).get();
     if(doc.exists){currentUserData=doc.data();
-      if(u.uid===OWNER_UID){console.log("👑 Dueño bypass");mostrarToast("👑 Modo dueño");return;}
+      if(esCuentaOwner(u.uid)){console.log("👑 Dueño bypass");mostrarToast("👑 Modo dueño");return;}
       if(currentUserData.cuentaVendedorActiva &&!currentUserData.fechaActivacionV2 && currentUserData.versionVendedor!=='v2'){
         await db.collection('perfiles').doc(u.uid).update({cuentaVendedorActiva:false,esBetaAntiguo:true});
         mostrarAlertaToast("Beta Expirada","Cuenta desactivada");setTimeout(()=>{window.location.href='index.html'},2500);return;
       }
       if(!currentUserData.cuentaVendedorActiva){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
-    }else{ if(u.uid===OWNER_UID) return; }
+    }else{ if(esCuentaOwner(u.uid)) return; }
   }catch(e){console.log(e);}
 });
 
@@ -122,7 +126,7 @@ function manejarSeleccionFoto(input){if(input.files && input.files[0]){const rea
 async function crearPublicacionMarketplace(){
   if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
   try{
-    const esDueno=auth.currentUser.uid===OWNER_UID;
+    const esDueno=esCuentaOwner(auth.currentUser.uid);
     const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
     const privEmail=document.getElementById('f-priv-email').value.trim();const privPass=document.getElementById('f-priv-pass').value.trim();const privTel=document.getElementById('f-priv-tel').value.trim();const privRecup=document.getElementById('f-priv-recup').value.trim();const autorizo=document.getElementById('f-autorizo-datos').checked;
     if(!titulo||!precio||!nivel||!region||!descripcion){mostrarAlertaToast("Campos Incompletos","Llena todo");return;}
@@ -130,8 +134,9 @@ async function crearPublicacionMarketplace(){
     if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
     if(!esDueno &&!uData.cuentaVendedorActiva){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
-    const tipoVip=esDueno?'dueno':(uData.tipoVip||'basico');
-    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:true,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true});
+    const vipActivo=esDueno || !!(uData.esVendedorVip && (uData.tipoVip==='basico' || uData.tipoVip==='pro' || uData.tipoVip==='dueno'));
+    const tipoVip=esDueno?'dueno':(vipActivo ? (uData.tipoVip||'basico') : 'ninguno');
+    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true});
     await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
     mostrarToast(esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!");setTimeout(()=>{window.location.href='index.html'},1200);
   }catch(err){console.error(err);mostrarAlertaToast("Error",err.message);}

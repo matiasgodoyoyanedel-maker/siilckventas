@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-sv-theme="aurora">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Marketplace - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
@@ -108,7 +110,7 @@
         <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-3">
           <div>
             <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
-            <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
+            <p class="text-[11px] text-zinc-400">Protección Escrow 100%. Los Pases Básico y Pro impulsan y destacan anuncios al tope.</p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Carrito</a>
@@ -117,6 +119,10 @@
             </div>
             <a href="publicacion.html" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</a>
           </div>
+        </div>
+        <div id="aviso-pase-basico" class="hidden web-panel border border-yellow-500/30 rounded-2xl p-4 text-xs text-zinc-300 flex items-center gap-3">
+          <span class="w-9 h-9 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0"><i class="fas fa-bolt"></i></span>
+          <p><strong class="text-yellow-400">Pase Básico activo.</strong> En tus anuncios aparece el botón <strong>Impulsar</strong>: súbelos al tope del marketplace una vez cada 24 horas, con cinta Destacado y rango ⭐ VIP Básico visible para compradores.</p>
         </div>
         <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
       </div>
@@ -163,7 +169,7 @@
           <div class="space-y-2">
             <div class="flex flex-wrap items-center justify-center gap-2">
               <h3 id="vendedor-perfil-nombre" class="text-2xl font-black text-white">--</h3>
-              <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-3 py-1 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
+              <span id="vendedor-perfil-rango" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-3 py-1 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
             </div>
           </div>
           <div class="w-full border-t border-zinc-800 pt-4">
@@ -215,15 +221,63 @@ const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');le
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){
+  if(window.SiilckTema){ SiilckTema.bindCanvas(canvas); return; }
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];
   for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});
 }
 function animateCanvas(){
+  if(window.SiilckTema) return;
   ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);
   estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234, 179, 8, ${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});
   requestAnimationFrame(animateCanvas);
 }
 window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
+
+function vipScore(p){
+  const now = Date.now();
+  const imp = p.impulsadoEn && p.impulsadoEn.toDate ? p.impulsadoEn.toDate().getTime() : 0;
+  let score = 0;
+  if(imp && (now - imp) < 24*60*60*1000) score += 1000;
+  if(p.tipoVip === 'pro' || p.tipoVip === 'dueno') score += 200;
+  else if(p.tipoVip === 'basico' || p.esVip) score += 100;
+  return score;
+}
+function etiquetaRangoVip(tipoVip, esVip){
+  if(tipoVip === 'pro' || tipoVip === 'dueno') return '👑 VIP Pro';
+  if(tipoVip === 'basico' || esVip) return '⭐ VIP Básico';
+  return 'Verificado';
+}
+function usuarioPuedeImpulsar(){
+  if(!auth.currentUser) return false;
+  if(auth.currentUser.uid === OWNER_UID) return true;
+  const tipo = currentUserData && currentUserData.tipoVip;
+  return !!(currentUserData && currentUserData.esVendedorVip && (tipo === 'basico' || tipo === 'pro' || tipo === 'dueno'));
+}
+function cooldownImpulsoMs(){
+  const tipo = currentUserData && currentUserData.tipoVip;
+  if(tipo === 'pro' || tipo === 'dueno' || (auth.currentUser && auth.currentUser.uid === OWNER_UID)) return 8*60*60*1000;
+  return 24*60*60*1000;
+}
+async function impulsarPublicacion(pubId, ev){
+  if(ev) ev.stopPropagation();
+  if(!auth.currentUser){ window.location.href = 'login.html'; return; }
+  const p = globalPublicacionesCache.find(x => x.id === pubId);
+  if(!p || p.vendedorUid !== auth.currentUser.uid){ mostrarAlertaToast("Impulso", "Solo puedes impulsar tus propias publicaciones."); return; }
+  if(!usuarioPuedeImpulsar()){
+    mostrarAlertaToast("Pase VIP requerido", "El impulso al tope es función del Pase Básico y del Pase Pro.");
+    cambiarSeccion('mercado');
+    return;
+  }
+  const last = p.impulsadoEn && p.impulsadoEn.toDate ? p.impulsadoEn.toDate().getTime() : 0;
+  const wait = cooldownImpulsoMs();
+  if(last && (Date.now() - last) < wait){
+    const hrs = Math.ceil((wait - (Date.now() - last)) / 3600000);
+    mostrarAlertaToast("Impulso en recarga", "Podrás impulsar de nuevo en ~" + hrs + " hora(s).");
+    return;
+  }
+  await db.collection('publicaciones').doc(pubId).update({ impulsadoEn: firebase.firestore.FieldValue.serverTimestamp() });
+  mostrarToast("🚀 ¡Publicación impulsada al tope del marketplace!");
+}
 
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -264,11 +318,22 @@ auth.onAuthStateChanged(async(u)=>{
     db.collection('perfiles').doc(u.uid).onSnapshot(docSnap => {
       if(docSnap.exists){
         const pData = docSnap.data();
+        currentUserData = pData;
         const btnActivarBox = document.getElementById('btn-activar-cuenta-vendedor-container');
         if(pData.postuladoFormulario && !pData.cuentaVendedorActiva){
           btnActivarBox.classList.remove('hidden');
         }else{
           btnActivarBox.classList.add('hidden');
+        }
+        const avisoPase = document.getElementById('aviso-pase-basico');
+        if(avisoPase){
+          if(pData.tipoVip === 'basico'){
+            avisoPase.classList.remove('hidden');
+            avisoPase.classList.add('flex');
+          } else {
+            avisoPase.classList.add('hidden');
+            avisoPase.classList.remove('flex');
+          }
         }
       }
     });
@@ -302,9 +367,11 @@ function cargarPublicacionesEnVivo(){
     globalPublicacionesCache = [];
     snapshot.forEach(doc => { globalPublicacionesCache.push({id: doc.id, ...doc.data()}); });
     globalPublicacionesCache.sort((a, b) => {
-      const vipA = (a.tipoVip === 'pro' || a.tipoVip === 'basico' || a.esVip) ? 1 : 0;
-      const vipB = (b.tipoVip === 'pro' || b.tipoVip === 'basico' || b.esVip) ? 1 : 0;
-      return vipB - vipA;
+      const d = vipScore(b) - vipScore(a);
+      if(d) return d;
+      const fa = a.fecha && a.fecha.toDate ? a.fecha.toDate().getTime() : 0;
+      const fb = b.fecha && b.fecha.toDate ? b.fecha.toDate().getTime() : 0;
+      return fb - fa;
     });
     renderizarGridPublicaciones(globalPublicacionesCache);
   });
@@ -319,27 +386,36 @@ function renderizarGridPublicaciones(ps, filtro=""){
     if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
     
     const tipoVip = p.tipoVip || 'ninguno';
-    let cardClass = "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition";
+    let cardClass = "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition relative";
     let badgeVip = '';
-    if(tipoVip === 'pro'){
-      cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-pro-glow";
+    let ribbon = '';
+    let marcoAvatar = 'border border-yellow-500/40';
+    if(tipoVip === 'pro' || tipoVip === 'dueno'){
+      cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-pro-glow relative";
       badgeVip = `<span class="text-[9px] bg-rose-600 text-white font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Pro</span>`;
+      ribbon = `<span class="pase-ribbon" style="background:linear-gradient(90deg,#ef4444,#f97316);color:#fff">Destacado Pro</span>`;
+      marcoAvatar = 'marco-vip-pro';
     }else if(tipoVip === 'basico' || p.esVip){
-      cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-basico-glow";
-      badgeVip = `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Básico</span>`;
+      cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-basico-glow relative";
+      badgeVip = `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-star"></i> VIP Básico</span>`;
+      ribbon = `<span class="pase-ribbon">Destacado</span>`;
+      marcoAvatar = 'marco-vip-basico';
     }
 
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
     const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
     const botonEliminarAdmin = (auth.currentUser && auth.currentUser.uid === OWNER_UID) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2"><i class="fas fa-trash"></i></button>` : '';
+    const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
+    const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
 
     h+=`<div class="${cardClass}" onclick="abrirModalPub('${p.id}')">
+      ${ribbon}
       ${imgHtml}
-      <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center">${badgeVip} ${botonEliminarAdmin}</div></div>
+      <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
         <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
-          <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
+          <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
           <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre || 'Vendedor'}</span>
         </div>
         <span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span>
@@ -362,7 +438,7 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor";
-  document.getElementById('modal-vendedor-rango').innerText = p.tipoVip === 'pro' ? '👑 VIP Pro' : 'Verificado';
+  document.getElementById('modal-vendedor-rango').innerText = etiquetaRangoVip(p.tipoVip, p.esVip);
   const logoBox = document.getElementById('modal-vendedor-logo');
   logoBox.innerHTML = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
   const fotoBox = document.getElementById('modal-foto-preview-box');
@@ -441,8 +517,11 @@ async function abrirPerfilVendedorPorUid(uid){
   cambiarSeccion('perfil-vendedor');
   const pDoc = await db.collection('perfiles').doc(uid).get();
   let nombre = "Vendedor", logo = "";
-  if(pDoc.exists){ const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || ""; }
+  let rangoPerfil = 'Vendedor Verificado';
+  if(pDoc.exists){ const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || ""; rangoPerfil = etiquetaRangoVip(d.tipoVip, d.esVendedorVip); }
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
+  const rangoEl = document.getElementById('vendedor-perfil-rango');
+  if(rangoEl) rangoEl.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${rangoPerfil}`;
   document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-3xl">👑</span>`;
   let h = "";
   globalPublicacionesCache.forEach(p => {
