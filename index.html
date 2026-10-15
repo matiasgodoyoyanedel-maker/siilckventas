@@ -32,67 +32,9 @@
   <div class="loading-spinner mt-6"></div>
 </div>
 
-<div id="modal-verificacion-correo" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[800] p-4 text-center">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500 animate-glow-gold">
-    <div class="w-20 h-20 rounded-3xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 flex items-center justify-center text-4xl mx-auto animate-bounce"><i class="fas fa-envelope-open-text"></i></div>
-    <h3 class="text-xl font-black text-white font-heading">Verifica tu Correo Electrónico</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed">Hemos enviado un enlace de verificación a tu bandeja de entrada. Por favor, confirma tu correo para continuar navegando en la plataforma.</p>
-    <div class="space-y-2 pt-2">
-      <button onclick="reenviarCorreoVerificacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition">Reenviar Correo de Verificación</button>
-      <button onclick="verificarEstadoVerificacionManual()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold py-3 rounded-xl uppercase tracking-wider text-xs transition">Ya verifiqué / Actualizar Estado</button>
-      <button onclick="cerrarSesion()" class="w-full text-zinc-500 hover:text-zinc-300 text-[11px] pt-2 underline">Cerrar Sesión / Cambiar Cuenta</button>
-    </div>
-  </div>
-</div>
-
-<div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[700] p-4 text-center">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-rose-500">
-    <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-ban"></i></div>
-    <h3 class="text-xl font-black text-white">Tu cuenta ha sido bloqueada</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed">Has sido bloqueado o sancionado por la administración de SiilckVentas. No puedes acceder a la plataforma.</p>
-    <button onclick="cerrarSesion()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition">Cerrar Sesión</button>
-  </div>
-</div>
-
-<div id="modal-mantenimiento-estricto" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[650] p-4 text-center">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500/50">
-    <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-tools"></i></div>
-    <h3 class="text-xl font-black text-white">Plataforma en Mantenimiento</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed" id="mantenimiento-estricto-desc">El sitio se encuentra temporalmente cerrado por actualización de servidores.</p>
-  </div>
-</div>
-
-<div id="modal-aviso-mantenimiento-global" class="fixed top-6 right-6 z-[600] hidden web-panel border border-yellow-500/60 p-5 rounded-2xl shadow-2xl max-w-sm space-y-3 animate-page">
-  <div class="flex items-center justify-between">
-    <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-bell"></i> <span>Aviso Importante</span></div>
-    <button onclick="document.getElementById('modal-aviso-mantenimiento-global').classList.add('hidden')" class="text-zinc-400 hover:text-white"><i class="fas fa-times"></i></button>
-  </div>
-  <p id="aviso-global-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
-</div>
-
-<div id="modal-activar-vendedor" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden items-center justify-center z-[550] p-4 overflow-y-auto">
-  <div class="web-panel max-w-md w-full p-6 rounded-3xl border border-emerald-500/50 space-y-4 my-8">
-    <div class="text-center space-y-1">
-      <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-2xl mx-auto mb-2"><i class="fas fa-store"></i></div>
-      <h3 class="text-lg font-black text-white">Activa tu Cuenta de Vendedor</h3>
-      <p class="text-xs text-zinc-400">¡Tu postulación fue aprobada! Completa tus datos obligatorios para comenzar a publicar cuentas.</p>
-    </div>
-    <div class="space-y-3 text-xs">
-      <div><label class="block font-bold text-zinc-300 mb-1">ID Único de Vendedor (No repetible) *</label><input type="text" id="act-vendedor-id" placeholder="Ej: gamer_pro_2026" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white"></div>
-      <div class="grid grid-cols-2 gap-2">
-        <div><label class="block font-bold text-zinc-300 mb-1">Fecha de Nacimiento *</label><input type="date" id="act-vendedor-fnac" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white"></div>
-        <div><label class="block font-bold text-zinc-300 mb-1">Correo Electrónico *</label><input type="email" id="act-vendedor-correo" placeholder="correo@domain.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white"></div>
-      </div>
-      <div><label class="block font-bold text-zinc-300 mb-1">Datos Bancarios / Método de Pago *</label><textarea id="act-vendedor-banco" rows="2" placeholder="Banco, Tipo de cuenta, RUT, CBU..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea></div>
-      <button onclick="guardarActivacionCuentaVendedor()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase tracking-wider shadow">Activar mi Cuenta Ahora</button>
-    </div>
-  </div>
-</div>
-
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
-<div id="decor-fx-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
 
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
@@ -102,7 +44,7 @@
     </div>
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
       <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer"><i class="fas fa-shopping-cart text-sm"></i></a>
-      <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P"><i class="fas fa-comments text-sm"></i><span id="badge-notif-chats" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b] animate-ping"></span><span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span></button>
+      <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P"><i class="fas fa-comments text-sm"></i><span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span></button>
       <div id="auth-nav-area" class="flex items-center space-x-2">
         <button onclick="window.location.href='login.html'" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login / Registro</button>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
@@ -168,10 +110,10 @@
     <div class="space-y-2.5">
       <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Reclutamiento Oficial</span>
       <h2 class="text-xl md:text-2xl font-black text-white font-heading">¿Quieres trabajar con nosotros?</h2>
-      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Únete al staff de vendedores verificados de SiilckVentas. Postula y empieza a vender sin límites con protección Escrow.</p>
+      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Postula aquí y un administrador revisará tu caso para ver si eres apto. Empieza a vender sin límites con protección Escrow.</p>
     </div>
     <a href="formulario.html" class="shrink-0 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-yellow-500/30 transition transform hover:scale-105 flex items-center gap-2">
-      Ir a Formulario <i class="fas fa-arrow-right"></i>
+      Click Aquí <i class="fas fa-arrow-right"></i>
     </a>
   </div>
 
@@ -337,7 +279,7 @@ async function guardarPerfilGamerReal(){
 auth.onAuthStateChanged(async(u)=>{
   if(!u){
     setTimeout(()=>{
-      if(!auth.currentUser &&!authCheckHecho){
+      if(!auth.currentUser && !authCheckHecho){
         authCheckHecho = true;
         document.getElementById('main-body-fade').classList.remove('opacity-0');
         const loader = document.getElementById('app-loading-screen');
@@ -372,7 +314,6 @@ auth.onAuthStateChanged(async(u)=>{
     if(u.uid===OWNER_UID){
       const btnMant = document.getElementById('menu-btn-mantenimiento-owner');
       if(btnMant) btnMant.classList.remove('hidden');
-      console.log("👑 Dueño detectado YwjfajkyMXMRHd18eII4dwV03NF3");
     }
   }
 });
