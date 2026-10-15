@@ -19,7 +19,7 @@ service cloud.firestore {
     }
 
     function perfilPrivilegedKeys() {
-      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'vipExpira'];
+      return ['bloqueado'];
     }
 
     // --- Perfiles ---

@@ -205,8 +205,9 @@
     <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
       <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
       <div class="space-y-2 text-xs">
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" data-label="Garantía 10 días" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" data-label="Garantía 3 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="5682" data-label="Garantía 6 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>6 meses</span></div><span class="text-fuchsia-400 font-bold">+5.682 CLP</span></label>
       </div>
     </div>
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
@@ -465,12 +466,16 @@ async function agregarAlCarritoDesdeModal(){
   const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const garantiaLabel = garantiaRadio && garantiaRadio.getAttribute('data-label') ? garantiaRadio.getAttribute('data-label') : 'Garantía 10 días';
   await carritoRef.add({
+    tipoItem: 'cuenta',
     publicacionId: publicacionActualIdCache,
     titulo: document.getElementById('modal-pub-titulo').innerText,
     precio: precioBasePublicacionActual + costoGarantia,
     precioBase: precioBasePublicacionActual,
     garantia: costoGarantia,
+    garantiaCosto: costoGarantia,
+    garantiaLabel: garantiaLabel,
     stock: stockPublicacionActual,
     foto: document.getElementById('modal-pub-img').src || "",
     cantidadSeleccionada: 1,

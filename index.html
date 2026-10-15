@@ -143,7 +143,8 @@
             <li><i class="fas fa-sort-amount-up text-yellow-400 mr-2"></i> Prioridad media en el ranking frente a cuentas sin pase.</li>
           </ul>
         </div>
-        <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Activar Pase Básico ($2.990)</a>
+        <button type="button" onclick="verificarLoginAccion(()=>agregarPaseVipAlCarrito('basico'))" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Agregar Pase Básico al Carrito ($2.990)</button>
+        <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full text-center text-[10px] text-zinc-400 hover:text-yellow-400 underline">Pagar directo con Flow (opción anterior)</a>
       </div>
       <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
         <div class="space-y-4 text-center">
@@ -159,7 +160,8 @@
             <li><i class="fas fa-crown text-rose-500 mr-2"></i> Marco rojo Pro + estela animada premium.</li>
           </ul>
         </div>
-        <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Activar Pase Pro ($5.090)</a>
+        <button type="button" onclick="verificarLoginAccion(()=>agregarPaseVipAlCarrito('pro'))" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Agregar Pase Pro al Carrito ($5.090)</button>
+        <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full text-center text-[10px] text-zinc-400 hover:text-rose-400 underline">Pagar directo con Flow (opción anterior)</a>
       </div>
     </div>
   </div>
@@ -244,6 +246,32 @@ function verificarLoginAccion(callback){
 function verificarAccionProtegida(event, url){
   if(!auth.currentUser){ if(event) event.preventDefault(); localStorage.setItem('redirect_after_login', url); window.location.href = 'login.html'; return false; }
   window.location.href = url;
+}
+async function agregarPaseVipAlCarrito(tipo){
+  if(!auth.currentUser){ localStorage.setItem('redirect_after_login', window.location.pathname); window.location.href = 'login.html'; return; }
+  const esPro = tipo === 'pro';
+  const precio = esPro ? 5090 : 2990;
+  const titulo = esPro ? 'Pase VIP Pro (30 días)' : 'Pase VIP Básico (30 días)';
+  const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
+  const snapCart = await carritoRef.get();
+  let yaEsta = false;
+  snapCart.forEach(d => { const x = d.data(); if(x.tipoItem==='pase_vip' && x.tipoVipPase===tipo) yaEsta = true; });
+  if(yaEsta){
+    mostrarToast("🛒 Ese pase ya está en tu carrito");
+    return;
+  }
+  await carritoRef.add({
+    tipoItem: 'pase_vip',
+    tipoVipPase: tipo,
+    titulo: titulo,
+    precio: precio,
+    stock: 1,
+    cantidadSeleccionada: 1,
+    foto: '',
+    garantiaLabel: '',
+    agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  mostrarToast("🛒 ¡Pase agregado al carrito!");
 }
 function cambiarSeccion(s){
   ['vip','perfil','mis-chats','mis-tickets'].forEach(x=>{const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');});
