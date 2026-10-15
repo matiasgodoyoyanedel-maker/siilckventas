@@ -14,6 +14,21 @@
   .vip-card-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 25px rgba(234,179,8,0.2)}
   .vip-card-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 25px rgba(239,68,68,0.2)}
   .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
+  
+  /* ESTELA BRILLANTE VIP */
+  @keyframes estelaVipPro {
+    0%{border-color:#ef4444;box-shadow:0 0 10px rgba(239,68,68,0.4)}
+    50%{border-color:#fbbf24;box-shadow:0 0 22px rgba(251,191,36,0.8)}
+    100%{border-color:#ef4444;box-shadow:0 0 10px rgba(239,68,68,0.4)}
+  }
+  @keyframes estelaVipBasico {
+    0%{border-color:#eab308;box-shadow:0 0 10px rgba(234,179,8,0.4)}
+    50%{border-color:#fef08a;box-shadow:0 0 20px rgba(254,240,138,0.7)}
+    100%{border-color:#eab308;box-shadow:0 0 10px rgba(234,179,8,0.4)}
+  }
+  .card-vip-pro-glow{border:2px solid #ef4444;animation:estelaVipPro 3s infinite ease-in-out}
+  .card-vip-basico-glow{border:2px solid #eab308;animation:estelaVipBasico 3s infinite ease-in-out}
+
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
@@ -39,7 +54,7 @@
   <div class="loading-spinner mt-6"></div>
 </div>
 
-<!-- MODAL BLOQUEO PERMANENTE (SIN BOTÓN X - BUCLE OBLIGATORIO) -->
+<!-- MODAL BLOQUEO PERMANENTE -->
 <div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[700] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-rose-500 animate-glow">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-ban"></i></div>
@@ -49,7 +64,7 @@
   </div>
 </div>
 
-<!-- MODAL MANTENIMIENTO ESTRICTO (BLOQUEO TOTAL) -->
+<!-- MODAL MANTENIMIENTO ESTRICTO -->
 <div id="modal-mantenimiento-estricto" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[650] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500/50">
     <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-tools"></i></div>
@@ -58,13 +73,33 @@
   </div>
 </div>
 
-<!-- NOTIFICACIÓN DE AVISO DE MANTENIMIENTO PROGRAMADO (CON BOTÓN DE CIERRE) -->
+<!-- AVISO DE MANTENIMIENTO PROGRAMADO -->
 <div id="modal-aviso-mantenimiento-global" class="fixed top-6 right-6 z-[600] hidden web-panel border border-yellow-500/60 p-5 rounded-2xl shadow-2xl max-w-sm space-y-3 animate-page">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-bell"></i> <span>Aviso Importante</span></div>
     <button onclick="document.getElementById('modal-aviso-mantenimiento-global').classList.add('hidden')" class="text-zinc-400 hover:text-white"><i class="fas fa-times"></i></button>
   </div>
   <p id="aviso-global-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
+</div>
+
+<!-- MODAL ACTIVACIÓN CUENTA VENDEDOR OBLIGATORIA -->
+<div id="modal-activar-vendedor" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden items-center justify-center z-[550] p-4 overflow-y-auto">
+  <div class="web-panel max-w-md w-full p-6 rounded-3xl border border-emerald-500/50 space-y-4 my-8">
+    <div class="text-center space-y-1">
+      <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-2xl mx-auto mb-2"><i class="fas fa-store"></i></div>
+      <h3 class="text-lg font-black text-white">Activa tu Cuenta de Vendedor</h3>
+      <p class="text-xs text-zinc-400">¡Tu postulación fue aprobada! Completa tus datos obligatorios para comenzar a publicar cuentas.</p>
+    </div>
+    <div class="space-y-3 text-xs">
+      <div><label class="block font-bold text-zinc-300 mb-1">ID Único de Vendedor (No repetible) *</label><input type="text" id="act-vendedor-id" placeholder="Ej: gamer_pro_2026" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white"></div>
+      <div class="grid grid-cols-2 gap-2">
+        <div><label class="block font-bold text-zinc-300 mb-1">Fecha de Nacimiento *</label><input type="date" id="act-vendedor-fnac" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white"></div>
+        <div><label class="block font-bold text-zinc-300 mb-1">Correo Electrónico *</label><input type="email" id="act-vendedor-correo" placeholder="correo@domain.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white"></div>
+      </div>
+      <div><label class="block font-bold text-zinc-300 mb-1">Datos Bancarios / Método de Pago *</label><textarea id="act-vendedor-banco" rows="2" placeholder="Banco, Tipo de cuenta, RUT, CBU..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea></div>
+      <button onclick="guardarActivacionCuentaVendedor()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase tracking-wider shadow">Activar mi Cuenta Ahora</button>
+    </div>
+  </div>
 </div>
 
 <div id="modal-sesion-requerida" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[300] p-4">
@@ -188,13 +223,16 @@
       </div>
 
       <div id="seccion-mercado" class="w-full space-y-5 animate-page">
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-3">
           <div>
             <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
             <p class="text-[11px] text-zinc-400">Protección Escrow 100% garantizada en cada transacción.</p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <a href="carrito.html" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
+            <div id="btn-activar-cuenta-vendedor-container" class="hidden">
+              <button onclick="abrirModalActivarVendedor()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5 animate-bounce"><i class="fas fa-check-circle"></i> Activa tu Cuenta</button>
+            </div>
             <button onclick="verificarPublicarCuenta()" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</button>
           </div>
         </div>
@@ -286,8 +324,8 @@
               <div class="text-3xl font-black text-yellow-400">$2.990 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
               <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
                 <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en publicaciones y perfil.</li>
+                <li><i class="fas fa-check text-yellow-400 mr-2"></i> Estela brillante exclusiva alrededor de tus publicaciones.</li>
                 <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito de compras.</li>
-                <li><i class="fas fa-check text-yellow-400 mr-2"></i> Prioridad en el buscador del marketplace.</li>
               </ul>
             </div>
             <div class="space-y-3">
@@ -303,8 +341,8 @@
               <div class="text-3xl font-black text-rose-500">$5.090 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
               <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
                 <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong> de máximo rango.</li>
+                <li><i class="fas fa-check text-rose-500 mr-2"></i> Estela brillante Pro animada alrededor de tus publicaciones.</li>
                 <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito de compras.</li>
-                <li><i class="fas fa-check text-rose-500 mr-2"></i> Máxima prioridad destacada en el buscador global.</li>
               </ul>
             </div>
             <div class="space-y-3">
@@ -330,31 +368,45 @@
 
   </div>
 
-  <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
-    <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Vendedor Gamer</span>
-      <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button>
-    </h3>
-    <div class="space-y-4 text-xs">
-      <div>
-        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@ - Único)</label>
-        <input type="text" id="user-username-input" placeholder="Tu nombre único..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white">
-      </div>
-      
-      <div>
-        <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto de Perfil (Galería)</label>
-        <div class="flex items-center gap-3">
-          <div id="perfil-foto-preview-box" class="w-14 h-14 rounded-2xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center overflow-hidden shrink-0"><i class="fas fa-user text-yellow-400"></i></div>
-          <div class="flex-grow">
-            <input type="file" id="input-foto-perfil-galeria" accept="image/*" class="hidden" onchange="manejarSubidaFotoPerfil(this)">
-            <button onclick="document.getElementById('input-foto-perfil-galeria').click()" class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold py-2.5 rounded-xl uppercase text-xs transition"><i class="fas fa-upload mr-1.5"></i> Subir Foto de Galería</button>
-          </div>
+  <!-- SECCIÓN PERFIL DOBLE: NORMAL Y VENDEDOR -->
+  <div id="seccion-perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page">
+    <div class="web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4">
+      <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
+        <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Normal Básico</span>
+        <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button>
+      </h3>
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@ - Único)</label>
+          <input type="text" id="user-username-input" placeholder="Tu nombre único..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white">
         </div>
-        <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios restantes este mes: 3/3</span>
+        <div>
+          <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto de Perfil (Galería)</label>
+          <div class="flex items-center gap-3">
+            <div id="perfil-foto-preview-box" class="w-14 h-14 rounded-2xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center overflow-hidden shrink-0"><i class="fas fa-user text-yellow-400"></i></div>
+            <div class="flex-grow">
+              <input type="file" id="input-foto-perfil-galeria" accept="image/*" class="hidden" onchange="manejarSubidaFotoPerfil(this)">
+              <button onclick="document.getElementById('input-foto-perfil-galeria').click()" class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold py-2.5 rounded-xl uppercase text-xs transition"><i class="fas fa-upload mr-1.5"></i> Subir Foto</button>
+            </div>
+          </div>
+          <span id="user-foto-contador-msg" class="text-[10px] text-yellow-400 mt-1 block">Cambios restantes este mes: 3/3</span>
+        </div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        <button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil Normal</button>
       </div>
+    </div>
 
-      <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago Preferido</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
-      <button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
+    <!-- SECCIÓN PERFIL VENDEDOR (SI ESTÁ ACTIVADO) -->
+    <div id="perfil-vendedor-extra-box" class="hidden web-panel border border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4">
+      <h3 class="text-xs font-bold text-emerald-400 border-b border-zinc-800 pb-3 flex items-center gap-2">
+        <i class="fas fa-store text-emerald-400"></i> Perfil Vendedor Oficial
+      </h3>
+      <div class="space-y-3 text-xs text-zinc-300">
+        <div><strong>ID Vendedor:</strong> <span id="lbl-perfil-vendedor-id" class="text-yellow-400">--</span></div>
+        <div><strong>Correo Vendedor:</strong> <span id="lbl-perfil-vendedor-correo">--</span></div>
+        <div><strong>Datos Bancarios:</strong> <span id="lbl-perfil-vendedor-banco">--</span></div>
+        <div><strong>Fecha de Nacimiento:</strong> <span id="lbl-perfil-vendedor-fnac">--</span></div>
+      </div>
     </div>
   </div>
 
@@ -484,7 +536,55 @@ async function verificarPublicarCuenta(){
     setTimeout(()=>{ window.location.href = "formulario.html"; }, 1500);
     return;
   }
+
+  if(!perfilData.cuentaVendedorActiva){
+    abrirModalActivarVendedor();
+    return;
+  }
+
   cambiarSeccion('publicar');
+}
+
+function abrirModalActivarVendedor(){
+  document.getElementById('modal-activar-vendedor').classList.remove('hidden');
+  document.getElementById('modal-activar-vendedor').classList.add('flex');
+}
+
+async function guardarActivacionCuentaVendedor(){
+  if(!auth.currentUser) return;
+  const vId = document.getElementById('act-vendedor-id').value.trim().toLowerCase();
+  const vFnac = document.getElementById('act-vendedor-fnac').value;
+  const vCorreo = document.getElementById('act-vendedor-correo').value.trim();
+  const vBanco = document.getElementById('act-vendedor-banco').value.trim();
+
+  if(!vId || !vFnac || !vCorreo || !vBanco){
+    mostrarAlertaToast("Campos Incompletos", "Todos los campos de activación son obligatorios.");
+    return;
+  }
+
+  // Validar ID de vendedor único
+  const qId = await db.collection('perfiles').where('vendedorId', '==', vId).get();
+  let repetido = false;
+  qId.forEach(doc => {
+    if(doc.id !== auth.currentUser.uid) repetido = true;
+  });
+
+  if(repetido){
+    mostrarAlertaToast("ID Ocupado", "Este ID de vendedor ya está en uso. Elige otro.");
+    return;
+  }
+
+  await db.collection('perfiles').doc(auth.currentUser.uid).update({
+    cuentaVendedorActiva: true,
+    vendedorId: vId,
+    vendedorFnac: vFnac,
+    vendedorCorreo: vCorreo,
+    vendedorBanco: vBanco
+  });
+
+  document.getElementById('modal-activar-vendedor').classList.add('hidden');
+  mostrarToast("🎉 ¡Cuenta de vendedor activada con éxito!");
+  location.reload();
 }
 
 function cambiarSeccion(s){
@@ -494,6 +594,24 @@ function cambiarSeccion(s){
   const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
   if(s === 'mis-chats') cargarListaChatsUsuario();
   if(s === 'mis-tickets') cargarMisTicketsUsuario();
+  if(s === 'perfil') configurarVistaPerfilDoble();
+}
+
+async function configurarVistaPerfilDoble(){
+  if(!auth.currentUser) return;
+  const doc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
+  if(!doc.exists) return;
+  const d = doc.data();
+
+  if(d.cuentaVendedorActiva){
+    document.getElementById('perfil-vendedor-extra-box').classList.remove('hidden');
+    document.getElementById('lbl-perfil-vendedor-id').innerText = `@${d.vendedorId || 'N/A'}`;
+    document.getElementById('lbl-perfil-vendedor-correo').innerText = d.vendedorCorreo || 'N/A';
+    document.getElementById('lbl-perfil-vendedor-banco').innerText = d.vendedorBanco || 'N/A';
+    document.getElementById('lbl-perfil-vendedor-fnac').innerText = d.vendedorFnac || 'N/A';
+  }else{
+    document.getElementById('perfil-vendedor-extra-box').classList.add('hidden');
+  }
 }
 
 function ejecutarBusquedaEnVivo(v){
@@ -548,12 +666,19 @@ auth.onAuthStateChanged(async(u)=>{
         }else{
           document.getElementById('modal-bloqueado-permanente').classList.add('hidden');
         }
+
+        const btnActivarBox = document.getElementById('btn-activar-cuenta-vendedor-container');
+        if(pData.postuladoFormulario && !pData.cuentaVendedorActiva){
+          btnActivarBox.classList.remove('hidden');
+        }else{
+          btnActivarBox.classList.add('hidden');
+        }
       }
     });
 
     const r=db.collection('perfiles').doc(u.uid);let d=await r.get();
     if(!d.exists){
-      currentUserData={uid:u.uid,username:u.email.split('@')[0],logo:"",cambiosFotoMes:0,bloqueado:false,postuladoFormulario:false};
+      currentUserData={uid:u.uid,username:u.email.split('@')[0],logo:"",cambiosFotoMes:0,bloqueado:false,postuladoFormulario:false,cuentaVendedorActiva:false};
       await r.set(currentUserData);
     }else{currentUserData=d.data();}
     
@@ -692,17 +817,24 @@ function renderizarGridPublicaciones(ps, filtro=""){
     let badgeVip = '';
 
     if(tipoVip === 'pro'){
+      cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-pro-glow";
       badgeVip = `<span class="text-[9px] bg-rose-600 text-white font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Pro</span>`;
     }else if(tipoVip === 'basico' || p.esVip){
+      cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-basico-glow";
       badgeVip = `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Básico</span>`;
     }
 
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
     const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
 
+    const botonEliminarAdmin = (auth.currentUser && auth.currentUser.uid === OWNER_UID) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] ml-2"><i class="fas fa-trash"></i></button>` : '';
+
     h+=`<div class="${cardClass}">
       <div onclick="abrirModalPub('${p.id}')">${imgHtml}</div>
-      <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')"><h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> ${badgeVip}</div>
+      <div class="flex justify-between items-start" onclick="abrirModalPub('${p.id}')">
+        <h4 class="font-bold font-heading text-white text-xs line-clamp-1">${p.titulo}</h4> 
+        <div class="flex items-center gap-1">${badgeVip} ${botonEliminarAdmin}</div>
+      </div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400" onclick="abrirModalPub('${p.id}')">
         <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Nivel: ${p.nivel || 'N/A'}</span>
         <span class="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Stock: ${p.stock || 1}</span>
@@ -717,6 +849,14 @@ function renderizarGridPublicaciones(ps, filtro=""){
     </div>`;
   });
   g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles en el marketplace.</p>`;
+}
+
+async function eliminarPublicacionAdmin(pubId){
+  if(!auth.currentUser || auth.currentUser.uid !== OWNER_UID) return;
+  if(confirm("🛠️ [Admin] ¿Estás seguro de eliminar esta publicación para siempre?")){
+    await db.collection('publicaciones').doc(pubId).delete();
+    mostrarToast("🗑️ Publicación eliminada por el administrador.");
+  }
 }
 
 async function abrirModalPub(id){
@@ -1038,6 +1178,13 @@ async function crearPublicacionMarketplace(){
 
   const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
   const uData = userDoc.exists ? userDoc.data() : {};
+  
+  if(!uData.cuentaVendedorActiva){
+    mostrarAlertaToast("Aviso", "No puedes publicar tu cuenta. Primero debes activar tu cuenta de vendedor.");
+    abrirModalActivarVendedor();
+    return;
+  }
+
   const tipoVip = uData.tipoVip || 'basico';
 
   await db.collection('publicaciones').add({
