@@ -74,6 +74,19 @@
   </div>
 </div>
 
+<!-- MODAL OBSERVAR POSTULACIÓN EN DETALLE -->
+<div id="modal-detalle-postulacion" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
+  <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
+    <button onclick="document.getElementById('modal-detalle-postulacion').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
+    <h3 class="text-base font-black text-yellow-400 uppercase"><i class="fas fa-search mr-2"></i> Observar Postulación Detallada</h3>
+    <div id="modal-detalle-contenido" class="space-y-3 text-xs bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-zinc-300"></div>
+    <div class="flex gap-2 pt-2">
+      <button id="btn-modal-aprobar" class="flex-1 bg-emerald-600 text-white font-extrabold py-3 rounded-xl uppercase">Aprobar Postulación</button>
+      <button id="btn-modal-rechazar" class="flex-1 bg-rose-600 text-white font-extrabold py-3 rounded-xl uppercase">Rechazar & Borrar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -130,26 +143,43 @@ function cargarPostulacionesAdmin(){
       const id = doc.id;
       const estadoPost = p.estado || 'Pendiente';
       const colorEstado = estadoPost === 'Aprobado' ? 'text-emerald-400' : (estadoPost === 'Rechazado' ? 'text-rose-400' : 'text-yellow-400');
-      const fotoEvidencia = p.fotoEvidencia ? `<div class="w-full h-32 rounded-xl overflow-hidden bg-zinc-950 mt-2 border border-zinc-800"><img src="${p.fotoEvidencia}" class="w-full h-full object-cover"></div>` : "";
 
-      h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3 text-xs">
-        <div class="flex flex-col sm:flex-row justify-between gap-2 border-b border-zinc-800 pb-2">
-          <div>
-            <h4 class="font-bold text-white text-sm">${p.nombreCompleto || 'Postulante'} (@${p.username})</h4>
-            <p class="text-zinc-400">Discord: ${p.discord || 'N/A'} • Experiencia: ${p.experiencia || 'N/A'}</p>
-          </div>
-          <span class="text-[10px] ${colorEstado} font-bold px-2.5 py-1 bg-zinc-950 rounded border border-zinc-800 h-fit">Estado: ${estadoPost}</span>
+      h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex items-center justify-between text-xs">
+        <div>
+          <h4 class="font-bold text-white text-sm">${p.nombreCompleto || 'Postulante'} (@${p.username})</h4>
+          <p class="text-zinc-400">Discord: ${p.discord || 'N/A'} • Estado: <span class="${colorEstado} font-bold">${estadoPost}</span></p>
         </div>
-        <p class="text-zinc-300 bg-zinc-950 p-3 rounded-xl border border-zinc-800"><strong>Motivo / Respuesta:</strong> ${p.motivo || 'Sin detalles'}</p>
-        ${fotoEvidencia}
-        <div class="flex gap-2 pt-2">
-          <button onclick="aprobarPostulacion('${id}', '${p.uid}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Aprobar</button>
-          <button onclick="rechazarPostulacion('${id}', '${p.uid}')" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Rechazar</button>
+        <div class="flex gap-2">
+          <button onclick="abrirModalDetallePostulacion('${id}')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-xl font-bold"><i class="fas fa-search mr-1"></i> Observar Detalle</button>
+          <button onclick="aprobarPostulacion('${id}', '${p.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-xl font-bold">Aprobar</button>
+          <button onclick="rechazarPostulacion('${id}', '${p.uid}')" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-2 rounded-xl font-bold">Rechazar & Borrar</button>
         </div>
       </div>`;
     });
     document.getElementById('lista-postulaciones-admin').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones registradas.</p>`;
   });
+}
+
+async function abrirModalDetallePostulacion(postId){
+  const doc = await db.collection('postulaciones_vendedores').doc(postId).get();
+  if(!doc.exists) return;
+  const p = doc.data();
+  const fotoEvidencia = p.fotoEvidencia ? `<div class="w-full h-40 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 mt-2"><img src="${p.fotoEvidencia}" class="w-full h-full object-cover"></div>` : "<p class='text-zinc-500'>Sin foto adjunta</p>";
+
+  document.getElementById('modal-detalle-contenido').innerHTML = `
+    <p><strong>Nombre Completo:</strong> ${p.nombreCompleto || 'N/A'}</p>
+    <p><strong>Usuario (@):</strong> ${p.username || 'N/A'}</p>
+    <p><strong>Discord:</strong> ${p.discord || 'N/A'}</p>
+    <p><strong>Experiencia:</strong> ${p.experiencia || 'N/A'}</p>
+    <p><strong>Motivo / Respuesta:</strong> ${p.motivo || 'N/A'}</p>
+    <div><strong>Foto / Captura de Postulación:</strong> ${fotoEvidencia}</div>
+  `;
+
+  document.getElementById('btn-modal-aprobar').onclick = () => { aprobarPostulacion(postId, p.uid); document.getElementById('modal-detalle-postulacion').classList.add('hidden'); };
+  document.getElementById('btn-modal-rechazar').onclick = () => { rechazarPostulacion(postId, p.uid); document.getElementById('modal-detalle-postulacion').classList.add('hidden'); };
+
+  document.getElementById('modal-detalle-postulacion').classList.remove('hidden');
+  document.getElementById('modal-detalle-postulacion').classList.add('flex');
 }
 
 async function aprobarPostulacion(postId, userUid){
@@ -161,11 +191,12 @@ async function aprobarPostulacion(postId, userUid){
 }
 
 async function rechazarPostulacion(postId, userUid){
-  await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'Rechazado'});
+  // Se borra automáticamente de la base de datos y de la vista
+  await db.collection('postulaciones_vendedores').doc(postId).delete();
   if(userUid){
     await db.collection('perfiles').doc(userUid).update({postuladoFormulario: false});
   }
-  alert("Postulación rechazada.");
+  alert("Postulación rechazada y eliminada correctamente.");
 }
 
 function cargarUsuariosAdmin(){
