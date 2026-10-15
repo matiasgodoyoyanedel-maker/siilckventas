@@ -8,9 +8,9 @@
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
   body{background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2,h3,h4{font-family:'Outfit',sans-serif}
-  .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
-  .neo-input{background:#09090b;border:1px solid #27272a;transition:all .2s ease}
-  .neo-input:focus{border-color:#eab308;box-shadow:0 0 15px rgba(234,179,8,0.25);outline:none}
+ .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+ .neo-input{background:#09090b;border:1px solid #27272a;transition:all.2s ease}
+ .neo-input:focus{border-color:#eab308;box-shadow:0 0 15px rgba(234,179,8,0.25);outline:none}
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -27,10 +27,10 @@
   <div id="box-login" class="space-y-4 text-xs relative z-10">
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Correo Electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contraseña</label><input type="password" id="login-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
-    
+
     <button onclick="iniciarSesionEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg shadow-yellow-500/20 transition">Entrar al Sistema</button>
     <button onclick="loginConGoogle()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-3 rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2.5"><i class="fab fa-google text-yellow-400 text-sm"></i> Continuar con Google</button>
-    
+
     <div class="text-center pt-3">
       <p class="text-zinc-400 text-[11px]">¿No tienes cuenta? <button onclick="alternarModoRegistro(true)" class="text-yellow-400 font-bold hover:underline">Regístrate aquí</button></p>
     </div>
@@ -44,21 +44,21 @@
     </div>
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Correo Electrónico *</label><input type="email" id="reg-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
     <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Contraseña *</label><input type="password" id="reg-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
-    
+
     <div class="flex items-start gap-2.5 pt-1">
       <input type="checkbox" id="reg-terminos" class="mt-0.5 rounded accent-yellow-500 cursor-pointer">
       <label for="reg-terminos" class="text-[10px] text-zinc-300 cursor-pointer leading-relaxed">Acepto los términos y condiciones de comercio seguro.</label>
     </div>
 
     <button onclick="registrarUsuarioEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition mt-1">Crear Cuenta</button>
-    
+
     <div class="text-center pt-2">
       <p class="text-zinc-400 text-[11px]">¿Ya tienes cuenta? <button onclick="alternarModoRegistro(false)" class="text-yellow-400 font-bold hover:underline">Inicia Sesión</button></p>
     </div>
   </div>
 
   <div id="login-error-msg" class="text-center text-rose-400 font-bold text-[11px] relative z-10"></div>
-  
+
   <div class="text-center pt-4 border-t border-zinc-800 relative z-10">
     <a href="index.html" class="text-zinc-400 hover:text-yellow-400 text-xs font-bold transition flex items-center justify-center gap-1.5"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
   </div>
@@ -69,21 +69,33 @@ const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 
+// === FIX GLOBAL: SESION LOCAL VINCULADA PARA TODOS ===
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+.then(()=>{console.log("✅ Login en modo LOCAL - sesión persistente")})
+.catch(e=>console.error(e));
+
 function mostrarError(m){document.getElementById('login-error-msg').innerText=m;}
 
 function alternarModoRegistro(esRegistro){
   mostrarError("");
   document.getElementById('box-login').classList.toggle('hidden', esRegistro);
-  document.getElementById('box-registro').classList.toggle('hidden', !esRegistro);
-  document.getElementById('form-main-title').innerText = esRegistro ? "Registro de Cuenta" : "Iniciar Sesión";
+  document.getElementById('box-registro').classList.toggle('hidden',!esRegistro);
+  document.getElementById('form-main-title').innerText = esRegistro? "Registro de Cuenta" : "Iniciar Sesión";
+}
+
+function obtenerRedirect(){
+  const r = localStorage.getItem('redirect_after_login');
+  if(r){ localStorage.removeItem('redirect_after_login'); return r; }
+  return "index.html";
 }
 
 async function iniciarSesionEmail(){
   const e=document.getElementById('login-email').value.trim(), p=document.getElementById('login-password').value;
   if(!e||!p){mostrarError("Completa todos los campos.");return;}
   try{
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     await auth.signInWithEmailAndPassword(e,p);
-    window.location.replace("index.html");
+    window.location.replace(obtenerRedirect());
   }catch(err){mostrarError(err.message);}
 }
 
@@ -93,42 +105,44 @@ async function registrarUsuarioEmail(){
   const p = document.getElementById('reg-password').value;
   const term = document.getElementById('reg-terminos').checked;
 
-  if(!username || !e || !p){mostrarError("Todos los campos son obligatorios.");return;}
+  if(!username ||!e ||!p){mostrarError("Todos los campos son obligatorios.");return;}
   if(/\d/.test(username)){mostrarError("El nombre de usuario no puede contener números.");return;}
   if(!term){mostrarError("Debes aceptar los términos y condiciones.");return;}
 
   try{
-    const userQuery = await db.collection('perfiles').where('username', '==', username).get();
+    const userQuery = await db.collection('perfiles').where('username', '==', username.toLowerCase()).get();
     if(!userQuery.empty){
       mostrarError("Este nombre de usuario ya está en uso. Elige otro.");
       return;
     }
 
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const cred = await auth.createUserWithEmailAndPassword(e,p);
     await db.collection('perfiles').doc(cred.user.uid).set({
       uid: cred.user.uid,
-      username: username,
+      username: username.toLowerCase(),
       logo: "👑",
       esVendedorVip: false,
       postuladoFormulario: false,
       creadoEn: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    window.location.replace("index.html");
+    window.location.replace(obtenerRedirect());
   }catch(err){mostrarError(err.message);}
 }
 
 async function loginConGoogle(){
   try{
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const provider=new firebase.auth.GoogleAuthProvider();
     const result=await auth.signInWithPopup(provider);
     const user=result.user;
-    
+
     const r=db.collection('perfiles').doc(user.uid);
     const d=await r.get();
     if(!d.exists){
       const baseName = (user.displayName || "Gamer").replace(/[^a-zA-Z]/g, "");
-      const username = baseName + Math.floor(100+Math.random()*900);
+      const username = (baseName + Math.floor(100+Math.random()*900)).toLowerCase();
       await r.set({
         uid: user.uid,
         username: username,
@@ -138,9 +152,20 @@ async function loginConGoogle(){
         creadoEn: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
-    window.location.replace("index.html");
+    window.location.replace(obtenerRedirect());
   }catch(err){mostrarError(err.message);}
 }
+
+// Si ya está logueado, no mostrar login
+auth.onAuthStateChanged(u=>{
+  if(u){
+    // Si ya está logueado y entró al login por error, lo mandamos al index o donde quería ir
+    const currentPage = window.location.pathname;
+    if(currentPage.includes('login.html')){
+      setTimeout(()=>{ window.location.replace(obtenerRedirect()); }, 500);
+    }
+  }
+});
 </script>
 </body>
 </html>
