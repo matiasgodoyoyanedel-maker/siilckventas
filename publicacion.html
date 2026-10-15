@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Publicar Cuenta - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
+  body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
+  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+  .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .animate-page{animation:fadeIn .25s ease forwards}
+  .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
+  .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
+</style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between">
+
+<canvas id="canvas-bg"></canvas>
+
+<header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-lg shadow-yellow-500/20"><i class="fas fa-crown text-base"></i></div>
+      <div><span class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Publicación Segura</span></div>
+    </div>
+    <button onclick="window.location.href='index.html'" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition"><i class="fas fa-arrow-left mr-1"></i> Volver al Inicio</button>
+  </div>
+</header>
+
+<main class="flex-grow max-w-2xl w-full mx-auto px-4 py-8 flex flex-col items-center">
+  <div class="web-panel rounded-3xl p-8 shadow-2xl animate-page border border-zinc-800 w-full space-y-5">
+    <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-base"><i class="fas fa-plus-square"></i></div>
+        <div>
+          <h3 class="text-sm font-extrabold font-heading text-white uppercase">Crear Nueva Publicación</h3>
+          <p class="text-[10px] text-zinc-400">Publica tu cuenta en el marketplace oficial con protección Escrow.</p>
+        </div>
+      </div>
+      <button onclick="window.location.href='index.html'" class="text-xs text-zinc-400 hover:text-white underline">Cancelar</button>
+    </div>
+
+    <div class="space-y-4 text-xs">
+      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80 Full Skins" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+      
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option><option value="Steam Key">Steam Key</option><option value="League of Legends">League of Legends</option><option value="GTA V">GTA V</option><option value="Minecraft">Minecraft</option><option value="Genshin Impact">Genshin Impact</option><option value="Call of Duty">Call of Duty</option><option value="Clash Royale">Clash Royale</option><option value="FIFA / FC">FIFA / EA FC</option></select></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2">
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock / Unidades *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
+      </div>
+
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía / Descripción *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta, métodos de entrega..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
+
+      <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
+        <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
+        <p class="text-xs text-zinc-300" id="pub-foto-label"><i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5 text-sm"></i> Toca para subir foto o captura de la cuenta</p>
+      </div>
+
+      <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase shadow transition tracking-wider">Publicar en Marketplace</button>
+    </div>
+  </div>
+</main>
+
+<div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
+<div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
+
+<script>
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,fotoBase64Seleccionada="";
+
+function initCanvas(){
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];
+  for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});
+}
+function animateCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);
+  estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234, 179, 8, ${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});
+  requestAnimationFrame(animateCanvas);
+}
+window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
+
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(),db=firebase.firestore();
+
+function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
+function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
+
+auth.onAuthStateChanged(async(u)=>{
+  if(!u){
+    window.location.href = 'login.html';
+    return;
+  }
+  const doc = await db.collection('perfiles').doc(u.uid).get();
+  if(doc.exists){
+    currentUserData = doc.data();
+    if(!currentUserData.cuentaVendedorActiva){
+      mostrarAlertaToast("Acceso Denegado", "Debes activar tu cuenta de vendedor para publicar.");
+      setTimeout(()=>{ window.location.href = 'index.html'; }, 2000);
+    }
+  }
+});
+
+function manejarSeleccionFoto(input){
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      fotoBase64Seleccionada = e.target.result;
+      document.getElementById('pub-foto-label').innerText = "Imagen cargada con éxito ✅";
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+async function crearPublicacionMarketplace(){
+  if(!auth.currentUser) return;
+  const titulo = document.getElementById('pub-titulo').value.trim();
+  const juego = document.getElementById('pub-juego').value;
+  const precio = parseInt(document.getElementById('pub-precio').value);
+  const nivel = document.getElementById('pub-nivel').value.trim();
+  const region = document.getElementById('pub-region').value.trim();
+  const stock = parseInt(document.getElementById('pub-stock').value) || 1;
+  const descripcion = document.getElementById('pub-descripcion').value.trim();
+
+  if(!titulo || !precio || !nivel || !region || !descripcion){
+    mostrarAlertaToast("Campos Incompletos", "Por favor llena todos los campos obligatorios.");
+    return;
+  }
+
+  const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
+  const uData = userDoc.exists ? userDoc.data() : {};
+  
+  if(!uData.cuentaVendedorActiva){
+    mostrarAlertaToast("Aviso", "No puedes publicar tu cuenta. Primero debes activar tu cuenta de vendedor.");
+    return;
+  }
+
+  const tipoVip = uData.tipoVip || 'basico';
+
+  await db.collection('publicaciones').add({
+    vendedorUid: auth.currentUser.uid,
+    vendedorNombre: currentUserData.username || "Vendedor",
+    vendedorLogo: currentUserData.logo || "",
+    titulo: titulo, 
+    juego: juego, 
+    precio: precio, 
+    nivel: nivel, 
+    region: region, 
+    stock: stock, 
+    descripcion: descripcion,
+    foto: fotoBase64Seleccionada || "", 
+    esVip: true, 
+    tipoVip: tipoVip, 
+    fecha: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  mostrarToast("🚀 ¡Cuenta publicada en vivo con éxito!");
+  setTimeout(()=>{
+    window.location.href = 'index.html';
+  }, 1200);
+}
+</script>
+</body>
+</html>
+
