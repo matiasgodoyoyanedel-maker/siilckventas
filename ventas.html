@@ -32,7 +32,6 @@
 
 <canvas id="canvas-bg"></canvas>
 
-<!-- MODAL ACTIVACIÓN CUENTA VENDEDOR -->
 <div id="modal-activar-vendedor" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden items-center justify-center z-[550] p-4 overflow-y-auto">
   <div class="web-panel max-w-md w-full p-6 rounded-3xl border border-emerald-500/50 space-y-4 my-8">
     <div class="text-center space-y-1">
@@ -122,7 +121,6 @@
         <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
       </div>
 
-      <!-- SECCIÓN MIS CHATS -->
       <div id="seccion-mis-chats" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
         <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
           <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
@@ -133,7 +131,6 @@
         </div>
       </div>
 
-      <!-- SECCIÓN CHAT ACTIVO -->
       <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto w-full animate-page">
         <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-yellow-500/30">
           <div class="border-b border-zinc-800 pb-3 flex flex-wrap items-center justify-between gap-2">
@@ -156,11 +153,9 @@
             <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
             <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
           </div>
-          <div id="chat-cerrado-aviso" class="hidden text-center text-xs text-rose-400 font-bold bg-rose-500/10 py-2 rounded-xl border border-rose-500/30">🔒 Chat cerrado por el vendedor. No se pueden enviar más mensajes.</div>
         </div>
       </div>
 
-      <!-- SECCIÓN PERFIL VENDEDOR -->
       <div id="seccion-perfil-vendedor" class="hidden space-y-6 max-w-3xl mx-auto w-full animate-page">
         <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">← Volver al Marketplace</button>
         <div class="web-panel border border-yellow-500/30 rounded-3xl p-6 md:p-8 space-y-6 text-center flex flex-col items-center">
@@ -277,10 +272,10 @@ auth.onAuthStateChanged(async(u)=>{
         }
       }
     });
-    cargarPublicacionesIn Vivo();
+    cargarPublicacionesEnVivo();
   }else{
     currentUserData=null;
-    cargarPublicacionesInVivo();
+    cargarPublicacionesEnVivo();
   }
 });
 
@@ -302,7 +297,7 @@ async function guardarActivacionCuentaVendedor(){
   location.reload();
 }
 
-function cargarPublicacionesInVivo(){
+function cargarPublicacionesEnVivo(){
   db.collection('publicaciones').orderBy('fecha', 'desc').onSnapshot(snapshot => {
     globalPublicacionesCache = [];
     snapshot.forEach(doc => { globalPublicacionesCache.push({id: doc.id, ...doc.data()}); });
