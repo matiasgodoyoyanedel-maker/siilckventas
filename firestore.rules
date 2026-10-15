@@ -19,7 +19,7 @@ service cloud.firestore {
     }
 
     function perfilPrivilegedKeys() {
-      return ['bloqueado'];
+      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'vipExpira', 'isVip', 'plan'];
     }
 
     // --- Perfiles ---
@@ -31,6 +31,7 @@ service cloud.firestore {
       allow create: if isOwner() || (
         isSelf(userId) &&
         (!('esVendedorVip' in request.resource.data) || request.resource.data.esVendedorVip == false) &&
+        (!('isVip' in request.resource.data) || request.resource.data.isVip == false) &&
         (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false)
       );
 
