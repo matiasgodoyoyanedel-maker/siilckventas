@@ -163,12 +163,18 @@
     }, function () {});
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+  function boot() {
     ensureUi();
     pintarWhatsapp(WA_DEFAULT);
     waitFirebase(function (db) {
       listenConfig(db);
       listenActivity(db);
     });
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
 })();
