@@ -7,6 +7,13 @@
         { "fieldPath": "publicacionId", "order": "ASCENDING" },
         { "fieldPath": "compradorUid", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "recentActivity",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

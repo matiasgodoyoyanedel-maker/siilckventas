@@ -210,6 +210,12 @@
     apply(currentTheme());
     bindCanvas(document.getElementById("canvas-bg"));
     listenConfig();
+    if (!document.querySelector("script[data-sv-social]")) {
+      const s = document.createElement("script");
+      s.src = "social.js";
+      s.setAttribute("data-sv-social", "1");
+      document.body.appendChild(s);
+    }
   });
 
   window.addEventListener("resize", function () {
