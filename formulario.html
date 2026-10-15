@@ -27,7 +27,7 @@
   <div class="bg-yellow-500/10 border border-yellow-500/20 border-l-4 border-l-yellow-400 p-4 rounded-xl space-y-2">
     <h3 class="text-[11px] font-black uppercase tracking-wider text-yellow-400 flex items-center gap-2"><i class="fas fa-shield-halved"></i> Proceso de inspección rigurosa - Hasta 7 días hábiles</h3>
     <p class="text-[11px] leading-relaxed text-zinc-300">
-      En Siilckventas todas las solicitudes para ser vendedor pasan por una inspección rigurosa anti-estafas. Revisamos manualmente que tus datos coincidan, que las fotos del carnet sean reales y legibles, que el video y las referencias no sean falsos, y que no existan cuentas robadas. Tus datos son almacenados de forma encriptada (AES-256) y solo se usan para verificación de identidad y prevención de fraude. Al enviar este formulario aceptas este proceso.
+      En Siilckventas todas las solicitudes para ser vendedor pasan por una inspección rigurosa anti-estafas. Revisamos manualmente que tus datos coincidan, que las fotos del carnet sean reales y legibles, y que no existan cuentas robadas. Al enviar este formulario aceptas este proceso.
     </p>
   </div>
 
@@ -125,14 +125,14 @@
       </label>
     </div>
 
-    <button onclick="enviarFormularioPostulacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition">Enviar Postulación Oficial</button>
+    <button id="btn-enviar-postulacion" onclick="enviarFormularioPostulacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition">Enviar Postulación Oficial</button>
   </div>
 
   <div id="success-container" class="hidden text-center space-y-4 py-6">
     <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check-circle"></i></div>
     <div class="space-y-2">
-      <h3 class="text-base font-black text-white">¡Formulario completado con éxito!</h3>
-      <p class="text-xs text-zinc-300 leading-relaxed">Tu solicitud entró en proceso de inspección rigurosa de hasta 7 días hábiles.</p>
+      <h3 class="text-base font-black text-white" id="success-title-msg">¡Tu formulario ha sido enviado con éxito!</h3>
+      <p class="text-xs text-zinc-300 leading-relaxed" id="success-desc-msg">Pronto nos contactaremos contigo. Tu solicitud entró en proceso de inspección rigurosa de hasta 7 días hábiles.</p>
     </div>
     <a href="index.html" class="w-full bg-yellow-500 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs block text-center shadow-lg transition">Volver al inicio</a>
   </div>
@@ -207,6 +207,10 @@ async function enviarFormularioPostulacion(){
     return;
   }
 
+  const btnEnviar = document.getElementById('btn-enviar-postulacion');
+  btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Enviando postulación...';
+  btnEnviar.disabled = true;
+
   try{
     await db.collection('postulaciones_vendedores').add({
       uid: auth.currentUser.uid,
@@ -235,6 +239,8 @@ async function enviarFormularioPostulacion(){
     document.getElementById('success-container').classList.remove('hidden');
   }catch(err){
     alert("Error al enviar: " + err.message);
+    btnEnviar.innerHTML = 'Enviar Postulación Oficial';
+    btnEnviar.disabled = false;
   }
 }
 </script>
