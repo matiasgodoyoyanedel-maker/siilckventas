@@ -172,7 +172,33 @@
         <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
       </div>
 
-      <!-- PLANES VIP CON BOTÓN OPACO SI TIENE VIP Y CUENTA REGRESIVA REAL -->
+      <!-- SECCIÓN DE MIS CHATS CENTRADA Y ORDENADA -->
+      <div id="seccion-mis-chats" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
+        <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
+          <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+            <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
+            <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
+          </div>
+          <div id="lista-chats-usuario" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN DE CHAT ACTIVO -->
+      <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto w-full animate-page">
+        <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-yellow-500/30">
+          <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+            <div><h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Chat Privado</h3><span class="text-[10px] text-emerald-400">🔒 Canal confidencial Escrow</span></div>
+            <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 hover:text-white underline">← Mis Chats</button>
+          </div>
+          <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
+          <div class="flex gap-2">
+            <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
+            <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLANES VIP CON AVISO DE PRÓXIMAMENTE MÁS FUNCIONES -->
       <div id="seccion-vip" class="hidden space-y-6 w-full animate-page">
         <div class="text-center space-y-2">
           <h2 class="text-2xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2>
@@ -217,6 +243,9 @@
               <a id="btn-comprar-pro" href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" onclick="activarSimulacionVip('pro')" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Pro ($5.090)</a>
             </div>
           </div>
+        </div>
+        <div class="text-center pt-2">
+          <span class="inline-block bg-zinc-900 border border-zinc-800 text-yellow-400 text-xs px-4 py-2 rounded-xl font-bold">🚀 Próximamente más funciones exclusivas para potenciar tus ventas en SiilckVentas.</span>
         </div>
       </div>
 
@@ -275,26 +304,6 @@
         </div>
       </div>
       <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-3"></div>
-    </div>
-  </div>
-
-  <div id="seccion-mis-chats" class="hidden space-y-5 max-w-3xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page">
-    <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
-      <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
-    </div>
-    <div id="lista-chats-usuario" class="space-y-3"></div>
-  </div>
-
-  <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page border border-yellow-500/30">
-    <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <div><h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Chat Privado</h3><span class="text-[10px] text-emerald-400">🔒 Canal confidencial Escrow</span></div>
-      <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 hover:text-white underline">← Mis Chats</button>
-    </div>
-    <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
-    <div class="flex gap-2">
-      <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
-      <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
     </div>
   </div>
 
@@ -395,10 +404,14 @@ function verificarLoginAccion(callback){
   callback();
 }
 
-function verificarPublicarCuenta(){
+async function verificarPublicarCuenta(){
   if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
-  if(!currentUserData.postuladoFormulario){
-    mostrarAlertaToast("Aviso Requerido", "Debes rellenar el formulario de vendedor para ver si eres apto.");
+  
+  const perfilDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
+  const perfilData = perfilDoc.exists ? perfilDoc.data() : {};
+  
+  if(!perfilData.postuladoFormulario){
+    mostrarAlertaToast("Aviso Requerido", "Debes ser aprobado por el administrador en las postulaciones para poder publicar cuentas.");
     setTimeout(()=>{ window.location.href = "formulario.html"; }, 1500);
     return;
   }
@@ -444,7 +457,7 @@ auth.onAuthStateChanged(async(u)=>{
   if(u){
     const r=db.collection('perfiles').doc(u.uid);let d=await r.get();
     if(!d.exists){
-      currentUserData={uid:u.uid,username:u.email.split('@')[0],logo:"",cambiosFotoMes:0,bloqueado:false};
+      currentUserData={uid:u.uid,username:u.email.split('@')[0],logo:"",cambiosFotoMes:0,bloqueado:false,postuladoFormulario:false};
       await r.set(currentUserData);
     }else{currentUserData=d.data();}
 
@@ -561,7 +574,6 @@ function cargarPublicacionesEnVivo(){
     snapshot.forEach(doc => {
       globalPublicacionesCache.push({id: doc.id, ...doc.data()});
     });
-    // Ordenar para que los VIP aparezcan siempre primero
     globalPublicacionesCache.sort((a, b) => {
       const vipA = (a.tipoVip === 'pro' || a.tipoVip === 'basico' || a.esVip) ? 1 : 0;
       const vipB = (b.tipoVip === 'pro' || b.tipoVip === 'basico' || b.esVip) ? 1 : 0;
@@ -786,9 +798,11 @@ function verificarMensajesNuevos(snapshot, uid){
   const dot = document.getElementById('badge-notif-chats-dot');
   const ping = document.getElementById('badge-notif-chats');
   if(hayNuevos){
+    if(dot.classList.contains('hidden')){
+      reproducirSonidoNotificacion(); // Sonido "tin" y notificación visual
+    }
     dot.classList.remove('hidden');
     ping.classList.remove('hidden');
-    reproducirSonidoNotificacion();
   }else{
     dot.classList.add('hidden');
     ping.classList.add('hidden');
