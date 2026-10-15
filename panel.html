@@ -1,321 +1,285 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Panel de Administración y Mantenimiento - SiilckVentas</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel de Administración - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
-  h1,h2,h3,h4{font-family:'Outfit',sans-serif}
+  body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
+  .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
   .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
-  #panel-loading-screen{position:fixed;inset:0;background:#09090b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .animate-page{animation:fadeIn .25s ease forwards}
+  #app-loading-screen{position:fixed;inset:0;background:#09090b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
   .loading-spinner{width:50px;height:50px;border:4px solid rgba(234,179,8,0.2);border-top-color:#eab308;border-radius:50%;animation:spin 0.8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  @keyframes pulseGlow{0%,100%{box-shadow:0 0 15px rgba(239,68,68,0.3)}50%{box-shadow:0 0 35px rgba(239,68,68,0.6)}}
-  .animate-glow{animation:pulseGlow 2s infinite}
 </style>
 </head>
-<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+<body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<div id="panel-loading-screen">
-  <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white font-black shadow-2xl mb-4 animate-bounce"><i class="fas fa-tools text-2xl"></i></div>
-  <h2 class="text-lg font-black font-heading tracking-tight text-white">PANEL<span class="text-rose-500">ADMIN</span></h2>
-  <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mt-1">Cargando consola total...</p>
+<div id="app-loading-screen">
+  <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-zinc-950 font-black shadow-2xl mb-4 animate-bounce"><i class="fas fa-tools text-2xl"></i></div>
+  <h2 class="text-lg font-black font-heading tracking-tight text-white">PANEL DE <span class="text-rose-500">ADMINISTRACIÓN</span></h2>
+  <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mt-1">Verificando credenciales de Dueño...</p>
   <div class="loading-spinner mt-6"></div>
 </div>
 
-<div class="max-w-5xl w-full space-y-6">
-  <div class="web-panel rounded-3xl p-6 border border-rose-500/40 flex flex-wrap items-center justify-between gap-4">
+<div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
+<canvas id="canvas-bg"></canvas>
+
+<header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-zinc-950 font-black shadow-lg"><i class="fas fa-shield-alt text-base"></i></div>
+      <div><span class="text-lg font-black font-heading tracking-tight text-white">ADMIN<span class="text-rose-500">PANEL</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Control Absoluto</span></div>
+    </div>
     <div class="flex items-center gap-3">
-      <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center text-xl font-black"><i class="fas fa-tools"></i></div>
-      <div>
-        <h2 class="text-xl font-black text-white">Panel de Administración & Mantenimiento Total</h2>
-        <p class="text-xs text-rose-400 font-bold">Consola exclusiva del Administrador</p>
-      </div>
+      <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition"><i class="fas fa-store mr-1.5"></i> Ir a la Web</a>
+      <button onclick="cerrarSesionAdmin()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition"><i class="fas fa-sign-out-alt mr-1"></i> Salir</button>
     </div>
-    <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver a la Tienda</a>
   </div>
+</header>
 
-  <!-- CONTROL DE MANTENIMIENTO Y AVISOS -->
-  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-sliders-h mr-1.5"></i> Control de Mantenimiento y Anuncios Globales</h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-      <div>
-        <label class="block font-bold text-zinc-300 mb-1">Temática Visual</label>
-        <select id="config-tematica" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white">
-          <option value="default">Por defecto (Oscuro Gamer)</option>
-          <option value="halloween">🎃 Halloween</option>
-          <option value="navidad">🎄 Navidad</option>
-        </select>
-      </div>
-      <div>
-        <label class="block font-bold text-zinc-300 mb-1">Modo Mantenimiento Estricto</label>
-        <select id="config-mantenimiento" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white">
-          <option value="no">Desactivado (Operativo)</option>
-          <option value="si">Activado (Bloqueo Total)</option>
-        </select>
-      </div>
-      <div>
-        <label class="block font-bold text-zinc-300 mb-1">Aviso Notificación Mantenimiento</label>
-        <select id="config-aviso-activo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white">
-          <option value="no">Desactivado</option>
-          <option value="si">Enviar Notificación a Todos</option>
-        </select>
-      </div>
-    </div>
-    <div>
-      <label class="block font-bold text-zinc-300 mb-1 text-xs">Descripción del Mantenimiento Programado / Aviso</label>
-      <input type="text" id="config-aviso-desc" placeholder="Ej: Se realizará mantención de servidores a las 22:00 hrs..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white text-xs">
-    </div>
-    <button onclick="guardarConfiguracionGlobal()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow">Guardar Cambios y Enviar Alertas</button>
-  </div>
-
-  <!-- USUARIOS EN LÍNEA Y GESTIÓN DE BLOQUEOS -->
-  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-users mr-1.5"></i> Usuarios Registrados y Control de Bloqueo</h3>
-    <div id="lista-usuarios-en-linea" class="space-y-3">
-      <p class="text-xs text-zinc-500 text-center py-6">Cargando usuarios...</p>
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+  
+  <div class="web-panel rounded-2xl p-3 max-w-2xl mx-auto">
+    <div class="flex items-center justify-center gap-2 overflow-x-auto hide-scrollbar">
+      <button onclick="cambiarTabAdmin('postulaciones')" id="btn-tab-postulaciones" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-rose-600 text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-user-check mr-1"></i> Postulaciones Vendedor</button>
+      <button onclick="cambiarTabAdmin('usuarios')" id="btn-tab-usuarios" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-users mr-1"></i> Usuarios & Bloqueos</button>
+      <button onclick="cambiarTabAdmin('mantenimiento')" id="btn-tab-mantenimiento" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-tools mr-1"></i> Mantención & Temática</button>
     </div>
   </div>
 
-  <!-- GESTIÓN DETALLADA DE POSTULACIONES DE VENDEDORES -->
-  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-user-check mr-1.5"></i> Postulaciones de Vendedores (Detalladas)</h3>
-    <div id="lista-postulaciones-panel" class="space-y-3">
-      <p class="text-xs text-zinc-500 text-center py-6">Cargando postulaciones...</p>
+  <!-- TAB POSTULACIONES -->
+  <div id="tab-postulaciones" class="space-y-4 animate-page max-w-4xl mx-auto w-full">
+    <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
+      <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-user-check mr-2"></i> Solicitudes Pendientes para Vender</h3>
+      <div id="lista-postulaciones-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando postulaciones...</p></div>
     </div>
   </div>
 
-  <!-- POSTULANTES APROBADOS / TRABAJADORES -->
-  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-users-cog mr-1.5"></i> Postulantes Aprobados / Trabajadores</h3>
-    <div id="lista-postulantes-aprobados" class="space-y-3">
-      <p class="text-xs text-zinc-500 text-center py-6">Cargando trabajadores...</p>
+  <!-- TAB USUARIOS Y BLOQUEOS (CON CORREO Y ID VISIBLES) -->
+  <div id="tab-usuarios" class="hidden space-y-4 animate-page max-w-4xl mx-auto w-full">
+    <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
+      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-users mr-2"></i> Control de Usuarios Registrados, IDs y Correos</h3>
+      <div id="lista-usuarios-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando usuarios...</p></div>
     </div>
   </div>
 
-  <!-- CANAL DE MENSAJERÍA ADMIN -> TRABAJADOR -->
-  <div id="panel-chat-trabajador-box" class="hidden web-panel rounded-3xl p-6 space-y-4 border border-yellow-500/40">
-    <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <div>
-        <h3 id="chat-trabajador-titulo" class="text-xs font-bold text-yellow-400 uppercase tracking-wider">Canal Admin con Trabajador</h3>
-        <span class="text-[10px] text-zinc-400">Canal exclusivo unidireccional de inicio</span>
+  <!-- TAB MANTENIMIENTO Y TEMÁTICA -->
+  <div id="tab-mantenimiento" class="hidden space-y-4 animate-page max-w-3xl mx-auto w-full">
+    <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4 text-xs">
+      <h3 class="font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-tools mr-2"></i> Configuración Global de Sistema</h3>
+      
+      <div class="space-y-2">
+        <label class="block font-bold text-zinc-300">Mensaje de Aviso / Mantenimiento Global</label>
+        <textarea id="admin-input-aviso" rows="3" placeholder="Escribe el mensaje que verán los usuarios..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white resize-none"></textarea>
       </div>
-      <button onclick="document.getElementById('panel-chat-trabajador-box').classList.add('hidden')" class="text-xs text-zinc-400 hover:text-white underline">Cerrar</button>
-    </div>
-    <div id="chat-trabajador-mensajes" class="h-48 overflow-y-auto space-y-2 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
-    <div class="flex gap-2">
-      <input type="text" id="chat-trabajador-input" placeholder="Escribe un mensaje al trabajador..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
-      <button onclick="enviarMensajeAdminTrabajador()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+        <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
+          <h4 class="font-bold text-white uppercase text-[11px]">🛠️ Modo Mantención Estricto</h4>
+          <p class="text-[10px] text-zinc-400">Bloquea el acceso a toda la web para todos excepto el dueño.</p>
+          <button id="btn-toggle-mantenimiento" onclick="toggleMantenimientoGlobal()" class="w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition">Cargando estado...</button>
+        </div>
+
+        <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
+          <h4 class="font-bold text-white uppercase text-[11px]">🔔 Aviso Programado Activo</h4>
+          <p class="text-[10px] text-zinc-400">Muestra una notificación flotante superior en la web.</p>
+          <button id="btn-toggle-aviso" onclick="toggleAvisoGlobal()" class="w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition">Cargando estado...</button>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3 pt-4">
+        <h4 class="font-bold text-white uppercase text-[11px]">🎨 Temática Visual Global de la Página</h4>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="cambiarTematicaGlobal('default')" class="p-3 rounded-xl bg-zinc-800 border border-zinc-700 text-white font-bold text-center hover:border-yellow-500">🌌 Normal</button>
+          <button onclick="cambiarTematicaGlobal('halloween')" class="p-3 rounded-xl bg-orange-950/40 border border-orange-500/40 text-orange-400 font-bold text-center hover:border-orange-500">🎃 Halloween</button>
+          <button onclick="cambiarTematicaGlobal('navidad')" class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-400 font-bold text-center hover:border-emerald-500">🎄 Navidad</button>
+        </div>
+      </div>
+
+      <button onclick="guardarConfiguracionGlobalAdmin()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider shadow">Guardar Cambios Globales</button>
     </div>
   </div>
-</div>
+
+</main>
 
 <script>
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[];
+const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
+
+function initCanvas(){
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];
+  for(let i=0;i<60;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});
+}
+function animateCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);
+  estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(239, 68, 68, ${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});
+  requestAnimationFrame(animateCanvas);
+}
+window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
+
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
-let chatTrabajadorUidActual = null;
+
+function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
+
+function cambiarTabAdmin(tab){
+  ['postulaciones','usuarios','mantenimiento'].forEach(t=>{
+    document.getElementById(`tab-${t}`).classList.add('hidden');
+    document.getElementById(`btn-tab-${t}`).className="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap";
+  });
+  document.getElementById(`tab-${tab}`).classList.remove('hidden');
+  document.getElementById(`btn-tab-${tab}`).className="px-4 py-2 rounded-xl text-xs font-extrabold bg-rose-600 text-white uppercase tracking-wider transition whitespace-nowrap";
+  
+  if(tab === 'postulaciones') cargarPostulacionesAdmin();
+  if(tab === 'usuarios') cargarUsuariosAdmin();
+  if(tab === 'mantenimiento') cargarConfiguracionAdmin();
+}
 
 auth.onAuthStateChanged(async(u)=>{
-  setTimeout(()=>{
-    const loader = document.getElementById('panel-loading-screen');
+  setTimeout(()=>{ 
+    document.getElementById('main-body-fade').classList.remove('opacity-0'); 
+    const loader = document.getElementById('app-loading-screen');
     if(loader){ loader.style.opacity = '0'; setTimeout(()=>loader.remove(), 400); }
   }, 300);
 
   if(!u || u.uid !== OWNER_UID){
-    alert("Acceso denegado. Solo el administrador puede entrar aquí.");
+    alert("⛔ Acceso denegado. Solo el administrador principal puede entrar aquí.");
     window.location.href = "index.html";
     return;
   }
-  
-  cargarConfiguracionGlobal();
-  cargarUsuariosEnLinea();
-  cargarPostulacionesPendientes();
-  cargarPostulantesAprobados();
+
+  cargarPostulacionesAdmin();
 });
 
-async function cargarConfiguracionGlobal(){
-  const doc = await db.collection('configuracion').doc('global').get();
-  if(doc.exists){
+async function cargarPostulacionesAdmin(){
+  const box = document.getElementById('lista-postulaciones-admin');
+  const snap = await db.collection('perfiles').get();
+  let h = "";
+  snap.forEach(doc => {
     const d = doc.data();
-    document.getElementById('config-tematica').value = d.tematica || 'default';
-    document.getElementById('config-mantenimiento').value = d.mantenimientoActivo ? 'si' : 'no';
-    document.getElementById('config-aviso-activo').value = d.avisoNotifActivo ? 'si' : 'no';
-    document.getElementById('config-aviso-desc').value = d.avisoMantenimiento || '';
-  }
-}
-
-async function guardarConfiguracionGlobal(){
-  const tematica = document.getElementById('config-tematica').value;
-  const mantenimientoActivo = document.getElementById('config-mantenimiento').value === 'si';
-  const avisoNotifActivo = document.getElementById('config-aviso-activo').value === 'si';
-  const avisoMantenimiento = document.getElementById('config-aviso-desc').value.trim();
-
-  await db.collection('configuracion').doc('global').set({
-    tematica: tematica,
-    mantenimientoActivo: mantenimientoActivo,
-    avisoNotifActivo: avisoNotifActivo,
-    avisoMantenimiento: avisoMantenimiento
-  }, {merge: true});
-
-  alert("¡Configuración global guardada y publicada en vivo!");
-}
-
-async function cargarUsuariosEnLinea(){
-  db.collection('perfiles').onSnapshot(snapshot => {
-    let h = "";
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      const uid = doc.id;
-      if(uid === OWNER_UID) return; // Ocultar admin de la lista
-      
-      const estaBloqueado = d.bloqueado ? '<span class="text-rose-500 font-bold">Bloqueado ❌</span>' : '<span class="text-emerald-400 font-bold">En Línea 🟢</span>';
-      const btnBloquearTexto = d.bloqueado ? 'Desbloquear' : 'Bloquear';
-      const btnBloquearClass = d.bloqueado ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-rose-600 hover:bg-rose-500';
-
-      h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div>
-          <h4 class="font-bold text-white">@${d.username || 'Usuario'} <span class="text-zinc-500 text-[10px]">(${uid})</span></h4>
-          <p class="text-[10px] text-zinc-400 mt-0.5">Estado: ${estaBloqueado}</p>
-        </div>
-        <button onclick="toggleBloquearUsuario('${uid}', ${!d.bloqueado})" class="${btnBloquearClass} text-white font-bold px-4 py-2 rounded-xl uppercase">${btnBloquearTexto}</button>
-      </div>`;
-    });
-    document.getElementById('lista-usuarios-en-linea').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay usuarios registrados.</p>`;
-  });
-}
-
-async function toggleBloquearUsuario(uid, bloquear){
-  await db.collection('perfiles').doc(uid).update({bloqueado: bloquear});
-  alert(bloquear ? "Usuario bloqueado con éxito." : "Usuario desbloqueado.");
-}
-
-async function cargarPostulacionesPendientes(){
-  db.collection('postulaciones_vendedores').onSnapshot(snapshot => {
-    let h = "";
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      const id = doc.id;
-      const estadoActual = d.estado || 'Pendiente';
-      
-      let badgeEstado = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      if(estadoActual === 'En Proceso') badgeEstado = 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      if(estadoActual === 'Aprobado') badgeEstado = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-
-      const fotoEvidenciaHtml = d.foto ? `<div class="w-24 h-24 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 mt-2"><img src="${d.foto}" class="w-full h-full object-cover"></div>` : '';
-
-      h += `<div class="web-panel p-5 rounded-2xl border border-zinc-800 space-y-3 text-xs">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2">
-          <div>
-            <h4 class="font-bold text-white text-sm">@${d.username || 'Usuario'}</h4>
-            <span class="text-[10px] text-zinc-400">UID: ${d.uid}</span>
-          </div>
-          <span class="px-3 py-1 rounded-full text-[10px] font-bold border ${badgeEstado}">Estado: ${estadoActual}</span>
-        </div>
-        <div class="space-y-1 text-zinc-300">
-          <p><strong>Experiencia / Detalles:</strong> ${d.experiencia || 'Sin detalles'}</p>
-          ${fotoEvidenciaHtml}
-        </div>
-        <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-zinc-800">
-          <button onclick="cambiarEstadoPostulacion('${id}', 'Pendiente', '${d.uid}')" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-3 py-1.5 rounded-xl uppercase text-[10px]">Pendiente</button>
-          <button onclick="cambiarEstadoPostulacion('${id}', 'En Proceso', '${d.uid}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-xl uppercase text-[10px]">En Proceso</button>
-          <button onclick="cambiarEstadoPostulacion('${id}', 'Aprobado', '${d.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl uppercase text-[10px]">Aprobar</button>
+    if(d.postulacionTexto && !d.postuladoFormulario){
+      h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 space-y-2 text-xs">
+        <div class="flex justify-between items-center"><strong class="text-white">@${d.username || 'Usuario'}</strong> <span class="text-zinc-400">${d.email || 'Sin correo'}</span></div>
+        <p class="text-zinc-300 bg-zinc-900 p-3 rounded-xl border border-zinc-800">${d.postulacionTexto}</p>
+        <div class="flex gap-2 pt-2">
+          <button onclick="aprobarPostulacion('${doc.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl uppercase">✅ Aprobar</button>
+          <button onclick="rechazarPostulacion('${doc.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl uppercase">❌ Rechazar</button>
         </div>
       </div>`;
-    });
-    document.getElementById('lista-postulaciones-panel').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones registradas.</p>`;
+    }
   });
+  box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes en este momento.</p>`;
 }
 
-async function cambiarEstadoPostulacion(postId, nuevoEstado, uid){
-  await db.collection('postulaciones_vendedores').doc(postId).update({estado: nuevoEstado});
-  if(nuevoEstado === 'Aprobado'){
-    await db.collection('perfiles').doc(uid).update({postuladoFormulario: true});
-  }else{
-    await db.collection('perfiles').doc(uid).update({postuladoFormulario: false});
-  }
-  alert(`Postulación actualizada a: ${nuevoEstado}`);
+async function aprobarPostulacion(uid){
+  await db.collection('perfiles').doc(uid).update({postuladoFormulario: true});
+  mostrarToast("✅ Postulación aprobada con éxito.");
+  cargarPostulacionesAdmin();
 }
 
-async function cargarPostulantesAprobados(){
-  const snap = await db.collection('perfiles').where('postuladoFormulario', '==', true).get();
+async function rechazarPostulacion(uid){
+  await db.collection('perfiles').doc(uid).update({postulacionTexto: null});
+  mostrarToast("❌ Postulación rechazada.");
+  cargarPostulacionesAdmin();
+}
+
+async function cargarUsuariosAdmin(){
+  const box = document.getElementById('lista-usuarios-admin');
+  const snap = await db.collection('perfiles').get();
   let h = "";
   snap.forEach(doc => {
     const d = doc.data();
     const uid = doc.id;
-    const estadoCastigo = d.castigado ? '<span class="text-rose-500 font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">⚠️ Castigado</span>' : '<span class="text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/30">Activo</span>';
-    
+    const correoReal = d.email || d.vendedorCorreo || "Correo no registrado";
+    const username = d.username || "Sin nombre";
+    const vendedorIdStr = d.vendedorId ? `(@${d.vendedorId})` : "";
+    const estadoBloqueo = d.bloqueado ? `<span class="text-rose-500 font-bold">Bloqueado</span>` : `<span class="text-emerald-400 font-bold">Activo</span>`;
+    const btnBloquearTxt = d.bloqueado ? "Desbloquear" : "Bloquear";
+    const btnBloquearCls = d.bloqueado ? "bg-emerald-600 hover:bg-emerald-500" : "bg-rose-600 hover:bg-rose-500";
+
     h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div>
-        <h4 class="font-bold text-white">@${d.username || 'Usuario'} <span class="text-zinc-500 text-[10px]">(${uid})</span></h4>
-        <p class="text-[10px] text-zinc-400 mt-0.5">Estado: ${estadoCastigo}</p>
+        <h4 class="font-bold text-white text-sm">@${username} ${vendedorIdStr}</h4>
+        <p class="text-yellow-400 font-medium">📧 Correo: ${correoReal}</p>
+        <p class="text-[10px] text-zinc-400">UID: ${uid} • Estado: ${estadoBloqueo}</p>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="abrirChatTrabajador('${uid}', '${d.username || 'Trabajador'}')" class="bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 font-bold px-3 py-1.5 rounded-xl text-[10px] uppercase border border-yellow-500/40"><i class="fas fa-comment mr-1"></i> Mensaje Admin</button>
-        <button onclick="darCastigoTrabajador('${uid}')" class="bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 font-bold px-3 py-1.5 rounded-xl text-[10px] uppercase border border-rose-500/40"><i class="fas fa-ban mr-1"></i> Dar Castigo</button>
+        <button onclick="toggleBloquearUsuario('${uid}', ${!!d.bloqueado})" class="${btnBloquearCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnBloquearTxt}</button>
       </div>
     </div>`;
   });
-  document.getElementById('lista-postulantes-aprobados').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay trabajadores aprobados todavía.</p>`;
+  box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay usuarios registrados.</p>`;
 }
 
-async function abrirChatTrabajador(uid, nombre){
-  chatTrabajadorUidActual = uid;
-  document.getElementById('chat-trabajador-titulo').innerText = `Canal Admin con @${nombre}`;
-  document.getElementById('panel-chat-trabajador-box').classList.remove('hidden');
-
-  const chatId = `admin_trabajador_${uid}`;
-  const chatRef = db.collection('chats_admin_trabajador').doc(chatId);
-  const chatDoc = await chatRef.get();
-  if(!chatDoc.exists){
-    await chatRef.set({
-      adminUid: OWNER_UID,
-      trabajadorUid: uid,
-      trabajadorNombre: nombre,
-      actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-
-  db.collection('chats_admin_trabajador').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(snapshot => {
-    let h = "";
-    snapshot.forEach(mDoc => {
-      const m = mDoc.data();
-      const esAdmin = m.remitenteUid === OWNER_UID;
-      const align = esAdmin ? "text-right bg-yellow-500/10 border-yellow-500/30 ml-auto" : "text-left bg-zinc-900 border-zinc-800 mr-auto";
-      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align}"><span class="text-[9px] text-yellow-400 font-bold block">${esAdmin ? 'Administrador' : nombre}</span><p class="text-xs text-white">${m.texto}</p></div>`;
-    });
-    const box = document.getElementById('chat-trabajador-mensajes');
-    box.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación con este trabajador.</p>`;
-    box.scrollTop = box.scrollHeight;
-  });
+async function toggleBloquearUsuario(uid, estadoActual){
+  const nuevoEstado = !estadoActual;
+  await db.collection('perfiles').doc(uid).update({bloqueado: nuevoEstado});
+  mostrarToast(nuevoEstado ? "🔒 Usuario bloqueado." : "🔓 Usuario desbloqueado.");
+  cargarUsuariosAdmin();
 }
 
-async function enviarMensajeAdminTrabajador(){
-  const txt = document.getElementById('chat-trabajador-input').value.trim();
-  if(!txt || !chatTrabajadorUidActual) return;
-  const chatId = `admin_trabajador_${chatTrabajadorUidActual}`;
+let configGlobalCache = {};
+async function cargarConfiguracionAdmin(){
+  const doc = await db.collection('configuracion').doc('global').get();
+  if(doc.exists){
+    configGlobalCache = doc.data();
+    document.getElementById('admin-input-aviso').value = configGlobalCache.avisoMantenimiento || "";
+    
+    const btnMaint = document.getElementById('btn-toggle-mantenimiento');
+    if(configGlobalCache.mantenimientoActivo){
+      btnMaint.innerText = "Desactivar Mantención (Activa)";
+      btnMaint.className = "w-full bg-rose-600 text-white font-bold py-2.5 rounded-xl uppercase transition";
+    }else{
+      btnMaint.innerText = "Activar Mantención";
+      btnMaint.className = "w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition";
+    }
 
-  await db.collection('chats_admin_trabajador').doc(chatId).collection('mensajes').add({
-    remitenteUid: OWNER_UID,
-    texto: txt,
-    fecha: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  document.getElementById('chat-trabajador-input').value = "";
-}
-
-async function darCastigoTrabajador(uid){
-  if(confirm("¿Estás seguro de dar castigo a este trabajador? Quedará registrado en su perfil permanentemente.")){
-    await db.collection('perfiles').doc(uid).update({
-      castigado: true,
-      postuladoFormulario: false
-    });
-    alert("Castigo aplicado con éxito.");
-    cargarPostulantesAprobados();
+    const btnAviso = document.getElementById('btn-toggle-aviso');
+    if(configGlobalCache.avisoNotifActivo){
+      btnAviso.innerText = "Desactivar Aviso (Activo)";
+      btnAviso.className = "w-full bg-yellow-500 text-zinc-950 font-black py-2.5 rounded-xl uppercase transition";
+    }else{
+      btnAviso.innerText = "Activar Aviso";
+      btnAviso.className = "w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition";
+    }
   }
 }
+
+async function toggleMantenimientoGlobal(){
+  configGlobalCache.mantenimientoActivo = !configGlobalCache.mantenimientoActivo;
+  await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
+  cargarConfiguracionAdmin();
+  mostrarToast("🛠️ Estado de mantención actualizado.");
+}
+
+async function toggleAvisoGlobal(){
+  configGlobalCache.avisoNotifActivo = !configGlobalCache.avisoNotifActivo;
+  await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
+  cargarConfiguracionAdmin();
+  mostrarToast("🔔 Estado de aviso actualizado.");
+}
+
+async function cambiarTematicaGlobal(tematica){
+  configGlobalCache.tematica = tematica;
+  await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
+  mostrarToast(`🎨 Temática cambiada a: ${tematica}`);
+}
+
+async function guardarConfiguracionGlobalAdmin(){
+  const texto = document.getElementById('admin-input-aviso').value.trim();
+  configGlobalCache.avisoMantenimiento = texto;
+  await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
+  mostrarToast("💾 Configuración guardada con éxito.");
+}
+
+function cerrarSesionAdmin(){auth.signOut().then(()=>{window.location.href="index.html";})}
 </script>
 </body>
 </html>
