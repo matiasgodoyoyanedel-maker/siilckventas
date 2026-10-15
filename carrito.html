@@ -159,7 +159,6 @@ async function eliminarItemCarrito(itemId, uid){
   await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
 }
 
-// NUEVO: PAGO CON FLOW REAL
 async function pagarConFlow(){
   const btn = document.getElementById('btn-pagar-flow');
   if(totalFinalGlobal <= 0){
@@ -170,7 +169,6 @@ async function pagarConFlow(){
   btn.disabled = true;
 
   try {
-    // Tu crear.js está en /siilckventas/api/crear.js según tu GitHub, probamos las dos rutas
     let res, data;
     try {
       res = await fetch('/api/crear', {
@@ -193,7 +191,6 @@ async function pagarConFlow(){
     if(data.flowUrl){
       window.location.href = data.flowUrl;
     } else {
-      console.log(data);
       alert('Error Flow: ' + (data.error || JSON.stringify(data)));
       btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
       btn.disabled = false;
