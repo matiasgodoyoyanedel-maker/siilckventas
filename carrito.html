@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>VelosterCarrito - Tu Carrito Gamer</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<!-- SDK Oficial de Mercado Pago -->
-<script src="https://sdk.mercadopago.com/js/v2"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
@@ -33,15 +31,15 @@
     <div id="carrito-desglose-box" class="hidden border-t border-zinc-800 pt-4 space-y-2 text-xs">
       <div class="flex justify-between text-zinc-400"><span>Subtotal:</span><span id="txt-subtotal">$0 CLP</span></div>
       <div class="flex justify-between text-zinc-400"><span>IVA (19%):</span><span id="txt-iva">$0 CLP</span></div>
-      <div class="flex justify-between text-emerald-400 font-bold" id="row-descuento-vip"><span>Descuento VIP (5%):</span><span id="txt-descuento">-$0 CLP</span></div>
+      <div class="flex justify-between text-emerald-400 font-bold" id="row-descuento-vip"><span>Descuento VIP:</span><span id="txt-descuento">-$0 CLP</span></div>
       <div class="flex justify-between text-sm font-black text-white pt-2 border-t border-zinc-800"><span>Total Final:</span><span id="txt-total-final" class="text-yellow-400">$0 CLP</span></div>
     </div>
   </div>
 
-  <!-- BOTONES DE NAVEGACIÓN Y PAGO -->
+  <!-- BOTONES DE NAVEGACIÓN Y PAGO FLOW -->
   <div class="flex flex-col sm:flex-row gap-3">
     <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
-    <button onclick="pagarCarritoMercadoPago()" id="btn-pagar-mp" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition"><i class="fas fa-shopping-bag mr-1.5"></i> Pagar con Mercado Pago</button>
+    <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</a>
   </div>
 </div>
 
@@ -49,9 +47,6 @@
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-
-// Credenciales configuradas
-const MP_ACCESS_TOKEN = "YTno7fZwxTgBOMA0xLEmQTGxSC8yy3wP";
 
 auth.onAuthStateChanged(async(u)=>{
   if(!u){
@@ -87,12 +82,15 @@ async function renderizarCarrito(items, uid){
   const ahora = new Date().getTime();
   const expira = userData.vipExpira ? userData.vipExpira.toDate().getTime() : 0;
   const esVipActivo = userData.esVendedorVip && expira > ahora;
+  const tipoVip = userData.tipoVip || 'basico';
 
   let h = "";
   let subtotal = 0;
 
   items.forEach(item => {
-    const totalItem = (item.precio || 0) * (item.cantidadSeleccionada || 1);
+    const cantidad = item.cantidadSeleccionada || 1;
+    const stockDisponible = item.stock || item.unidades || 1;
+    const totalItem = (item.precio || 0) * cantidad;
     subtotal += totalItem;
 
     h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
@@ -101,7 +99,13 @@ async function renderizarCarrito(items, uid){
         <div>
           <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
           <span class="text-[10px] text-yellow-400 font-bold">$${parseInt(item.precio||0).toLocaleString('es-CL')} CLP c/u</span>
-          <span class="text-[10px] text-zinc-400 block">Cantidad: ${item.cantidadSeleccionada || 1}</span>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-[10px] text-zinc-400">Cantidad:</span>
+            <button onclick="cambiarCantidadItem('${item.id}', '${uid}', ${cantidad - 1}, ${stockDisponible})" class="w-5 h-5 bg-zinc-800 text-white rounded text-xs flex items-center justify-center hover:bg-zinc-700">-</button>
+            <span class="text-xs font-bold text-white">${cantidad}</span>
+            <button onclick="cambiarCantidadItem('${item.id}', '${uid}', ${cantidad + 1}, ${stockDisponible})" class="w-5 h-5 bg-zinc-800 text-white rounded text-xs flex items-center justify-center hover:bg-zinc-700">+</button>
+            <span class="text-[9px] text-zinc-500 ml-1">(Stock: ${stockDisponible})</span>
+          </div>
         </div>
       </div>
       <button onclick="eliminarItemCarrito('${item.id}', '${uid}')" class="text-rose-400 hover:text-rose-300 p-2 text-xs" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
@@ -113,9 +117,15 @@ async function renderizarCarrito(items, uid){
   const iva = Math.round(subtotal * 0.19);
   let descuento = 0;
   if(esVipActivo){
-    descuento = Math.round(subtotal * 0.05);
-    document.getElementById('row-descuento-vip').classList.remove('hidden');
-    document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP`;
+    if(tipoVip === 'pro'){
+      descuento = Math.round(subtotal * 0.10); // 10% descuento VIP Pro
+      document.getElementById('row-descuento-vip').classList.remove('hidden');
+      document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Pro 10%)`;
+    }else{
+      descuento = Math.round(subtotal * 0.05); // 5% descuento VIP Básico
+      document.getElementById('row-descuento-vip').classList.remove('hidden');
+      document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Básico 5%)`;
+    }
   }else{
     document.getElementById('row-descuento-vip').classList.add('hidden');
   }
@@ -128,75 +138,19 @@ async function renderizarCarrito(items, uid){
   desgloseBox.classList.remove('hidden');
 }
 
-async function eliminarItemCarrito(itemId, uid){
-  await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
+async function cambiarCantidadItem(itemId, uid, nuevaCantidad, stockMaximo){
+  if(nuevaCantidad < 1) return;
+  if(nuevaCantidad > stockMaximo){
+    alert(`Solo hay ${stockMaximo} unidad(es) disponible(s) para esta cuenta.`);
+    return;
+  }
+  await db.collection('carritos').doc(uid).collection('items').doc(itemId).update({
+    cantidadSeleccionada: nuevaCantidad
+  });
 }
 
-// -------------------------------------------------------------
-// PAGO AUTOMATIZADO CON PREFERENCIA DINÁMICA DE MERCADO PAGO
-// -------------------------------------------------------------
-async function pagarCarritoMercadoPago() {
-    const totalEl = document.getElementById('txt-total-final');
-    if (!totalEl) {
-        alert("No se pudo calcular el total del carrito.");
-        return;
-    }
-
-    const textoTotal = totalEl.innerText.replace(/[^0-9]/g, '');
-    const montoTotal = Number(textoTotal);
-
-    if (!montoTotal || montoTotal <= 0) {
-        alert("El monto total del carrito no es válido.");
-        return;
-    }
-
-    const btnPagar = document.getElementById('btn-pagar-mp');
-    btnPagar.innerText = "Generando pasarela segura...";
-    btnPagar.disabled = true;
-
-    const preferenceData = {
-        items: [
-            {
-                title: "Compra Carrito Gamer - SiilckVentas",
-                unit_price: montoTotal,
-                quantity: 1,
-                currency_id: "CLP"
-            }
-        ],
-        back_urls: {
-            success: window.location.href,
-            failure: window.location.href,
-            pending: window.location.href
-        },
-        auto_return: "approved"
-    };
-
-    try {
-        const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${MP_ACCESS_TOKEN}`
-            },
-            body: JSON.stringify(preferenceData)
-        });
-
-        const data = await response.json();
-
-        if (data.init_point) {
-            window.location.href = data.init_point;
-        } else {
-            console.error("Respuesta MP:", data);
-            alert("No se pudo generar el pago. Verifica tus credenciales de Mercado Pago.");
-            btnPagar.innerText = "Pagar con Mercado Pago";
-            btnPagar.disabled = false;
-        }
-    } catch (error) {
-        console.error("Error de conexión:", error);
-        alert("Ocurrió un error al conectar con la pasarela de pagos.");
-        btnPagar.innerText = "Pagar con Mercado Pago";
-        btnPagar.disabled = false;
-    }
+async function eliminarItemCarrito(itemId, uid){
+  await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
 }
 </script>
 </body>
