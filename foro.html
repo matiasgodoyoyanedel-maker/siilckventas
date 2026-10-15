@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Foro Oficial - SiilckVentas</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Foros de Discusión Gamer - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -14,94 +14,152 @@
 <body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
 <div class="max-w-4xl w-full space-y-6">
-  <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+  
+  <div class="web-panel rounded-3xl p-6 border border-indigo-500/30 flex flex-wrap items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black shadow-lg"><i class="fas fa-comments"></i></div>
+      <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/40 flex items-center justify-center text-xl font-black"><i class="fas fa-comments"></i></div>
       <div>
-        <h2 class="text-lg font-black text-white">Foro Oficial de la Comunidad</h2>
-        <p class="text-xs text-zinc-400">Discusiones, soporte y dudas sobre Escrow y cuentas gamer</p>
+        <h2 class="text-xl font-black text-white">Foros Oficiales & Tickets Gamer</h2>
+        <p class="text-xs text-indigo-400 font-bold">Comunidad, soporte, reportes y debates</p>
       </div>
     </div>
-    <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al Marketplace</a>
+    <a href="index.html" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al Sitio Web</a>
   </div>
 
-  <!-- CREAR NUEVO TEMA -->
-  <div class="web-panel rounded-3xl p-6 space-y-4 border border-yellow-500/30">
-    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-pen-nib mr-1.5"></i> Crear un Nuevo Hilo</h3>
+  <!-- PESTAÑA REGLAS DEL FORO -->
+  <div class="web-panel rounded-3xl p-6 space-y-3 border border-yellow-500/30">
+    <h3 class="text-xs font-black text-yellow-400 uppercase tracking-wider flex items-center gap-2"><i class="fas fa-shield-alt"></i> Normas Oficiales de la Comunidad</h3>
+    <ul class="text-xs text-zinc-300 space-y-2 bg-zinc-950 p-4 rounded-2xl border border-zinc-800">
+      <li>❌ <strong>Cero abuso y spam:</strong> No se toleran publicaciones repetitivas ni faltas de respeto.</li>
+      <li>❌ <strong>Prohibido estafar:</strong> Cualquier intento de estafa será sancionado con bloqueo permanente.</li>
+      <li>❌ <strong>Cuentas con hacks:</strong> No está permitido publicar cuentas baneadas o con historial de cheats.</li>
+      <li>⏰ <strong>Ser puntual:</strong> Mantén la seriedad en las transacciones y entrega de cuentas en el marketplace.</li>
+      <li>🤝 <strong>Respeto mutuo:</strong> Trata a todos los compradores y vendedores con total educación.</li>
+    </ul>
+  </div>
+
+  <!-- CREAR TEMA O TICKET -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-plus-circle mr-1.5"></i> Crear Nuevo Tema / Ticket de Soporte</h3>
     <div class="space-y-3 text-xs">
-      <input type="text" id="foro-titulo" placeholder="Título del tema o duda..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500">
-      <select id="foro-categoria" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-yellow-500">
-        <option value="General">💬 Discusión General de Juegos</option>
-        <option value="Escrow">🛡️ Dudas y Seguridad de Escrow</option>
-        <option value="Soporte">🛠️ Soporte Técnico</option>
-        <option value="Vendedores">👑 Zona Exclusiva de Vendedores</option>
-      </select>
-      <textarea id="foro-contenido" rows="3" placeholder="Escribe tu mensaje o consulta detallada..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none focus:outline-none focus:border-yellow-500"></textarea>
-      <button onclick="publicarHiloForo()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider shadow transition">Publicar en el Foro</button>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block font-bold text-zinc-300 mb-1">Categoría / Tipo</label>
+          <select id="foro-categoria" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white">
+            <option value="Dudas Generales">💡 Dudas Generales</option>
+            <option value="Reporte Estafa">🚨 Reporte de Estafa</option>
+            <option value="Juegos & Cuentas">🎮 Juegos & Cuentas</option>
+            <option value="Soporte VIP">👑 Soporte VIP</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-zinc-300 mb-1">Título del Tema</label>
+          <input type="text" id="foro-titulo" placeholder="Ej: Problema con método de pago..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white">
+        </div>
+      </div>
+      <div>
+        <label class="block font-bold text-zinc-300 mb-1">Contenido / Mensaje Detallado</label>
+        <textarea id="foro-contenido" rows="3" placeholder="Describe tu duda o reporte..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea>
+      </div>
+      <button onclick="publicarTemaForoCompleto()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-3 rounded-xl uppercase tracking-wider shadow">Publicar en el Foro</button>
     </div>
   </div>
 
-  <!-- LISTADO DE HILOS -->
+  <!-- LISTADO DE TEMAS Y DEBATES -->
   <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-list mr-1.5"></i> Hilos Recientes</h3>
-    <div id="foro-hilos-list" class="space-y-3 text-xs"><p class="text-zinc-500">Cargando discusiones...</p></div>
+    <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-list mr-1.5"></i> Debates y Tickets Recientes</h3>
+    <div id="lista-foros-completos" class="space-y-4">
+      <p class="text-xs text-zinc-500 text-center py-8">Cargando foros...</p>
+    </div>
   </div>
+
 </div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
+let currentUserId = null;
 
-async function publicarHiloForo(){
-  const user = auth.currentUser;
-  if(!user){alert("Debes iniciar sesión para participar en el foro.");window.location.href="login.html";return;}
-  
-  const titulo = document.getElementById('foro-titulo').value.trim();
+auth.onAuthStateChanged(u => {
+  if(u) currentUserId = u.uid;
+  cargarForosCompletosEnVivo();
+});
+
+function cargarForosCompletosEnVivo(){
+  db.collection('foros').orderBy('fecha', 'desc').onSnapshot(snapshot => {
+    let h = "";
+    snapshot.forEach(doc => {
+      const f = doc.data();
+      const id = doc.id;
+      const likesCount = f.likesCount || 0;
+      const usuariosLikes = f.usuariosLikes || [];
+      const yaDioLike = currentUserId && usuariosLikes.includes(currentUserId);
+      const btnLikeClass = yaDioLike ? "bg-rose-500 text-white pointer-events-none" : "bg-zinc-800 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30";
+
+      h += `<div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 space-y-3 text-xs">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="bg-indigo-500/20 text-indigo-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-indigo-500/30">${f.categoria || 'General'}</span>
+            <h4 class="font-bold text-white text-sm mt-1.5">${f.titulo}</h4>
+          </div>
+          <span class="text-[10px] text-zinc-500">Por @${f.autor || 'Gamer'}</span>
+        </div>
+        <p class="text-zinc-300 leading-relaxed">${f.contenido}</p>
+        <div class="flex items-center justify-between pt-2 border-t border-zinc-800">
+          <button onclick="darLikeForo('${id}')" class="${btnLikeClass} px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition">
+            <i class="fas fa-heart"></i> <span id="like-count-${id}">${likesCount}</span> Me gusta ${yaDioLike ? '(Dado)' : ''}
+          </button>
+          <span class="text-[10px] text-zinc-500">ID Ticket: ${id.substring(0,6)}</span>
+        </div>
+      </div>`;
+    });
+    document.getElementById('lista-foros-completos').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-8">No hay temas en el foro aún. ¡Crea el primero!</p>`;
+  });
+}
+
+async function publicarTemaForoCompleto(){
+  if(!auth.currentUser){ alert("Debes iniciar sesión para publicar en el foro."); return; }
   const categoria = document.getElementById('foro-categoria').value;
+  const titulo = document.getElementById('foro-titulo').value.trim();
   const contenido = document.getElementById('foro-contenido').value.trim();
+  if(!titulo || !contenido){ alert("Llena todos los campos."); return; }
 
-  if(!titulo || !contenido){alert("Por favor completa el título y el contenido.");return;}
+  const perfilDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
+  const username = perfilDoc.exists ? (perfilDoc.data().username || "Gamer") : "Gamer";
 
-  const perfilDoc = await db.collection('perfiles').doc(user.uid).get();
-  const userData = perfilDoc.exists ? perfilDoc.data() : {};
-  const username = userData.username || "Gamer";
-  let insignia = "";
-  if(user.uid === OWNER_UID) insignia = "👑 <span class='text-rose-400'>Dueño</span>";
-  else if(userData.esVendedorVip && userData.nivelVip === 'avanzado') insignia = "🔥 <span class='text-amber-400'>VIP Avanzado</span>";
-  else if(userData.esVendedorVip) insignia = "⭐ <span class='text-yellow-400'>VIP Aprendiz</span>";
-
-  await db.collection('foro_hilos').add({
-    uid: user.uid,
-    autor: username,
-    insignia: insignia,
-    titulo: titulo,
+  await db.collection('foros').add({
     categoria: categoria,
+    titulo: titulo,
     contenido: contenido,
+    autor: username,
+    autorUid: auth.currentUser.uid,
+    likesCount: 0,
+    usuariosLikes: [],
     fecha: firebase.firestore.FieldValue.serverTimestamp()
   });
 
   document.getElementById('foro-titulo').value = "";
   document.getElementById('foro-contenido').value = "";
-  alert("¡Hilo publicado con éxito en el foro!");
+  alert("¡Tema publicado con éxito en el foro!");
 }
 
-db.collection('foro_hilos').orderBy('fecha', 'desc').onSnapshot(snapshot => {
-  let h = "";
-  snapshot.forEach(doc => {
-    const hilos = doc.data();
-    h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-2">
-      <div class="flex items-center justify-between">
-        <span class="bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase">${hilos.categoria}</span>
-        <span class="text-[10px] text-zinc-500">Por <b>${hilos.autor}</b> ${hilos.insignia}</span>
-      </div>
-      <h4 class="font-bold text-white text-sm">${hilos.titulo}</h4>
-      <p class="text-xs text-zinc-300 leading-relaxed">${hilos.contenido}</p>
-    </div>`;
-  });
-  document.getElementById('foro-hilos-list').innerHTML = h || '<p class="text-zinc-500">No hay hilos en el foro todavía. ¡Sé el primero en comentar!</p>';
-});
+async function darLikeForo(foroId){
+  if(!auth.currentUser){ alert("Inicia sesión para dar 'Me gusta'."); return; }
+  const ref = db.collection('foros').doc(foroId);
+  const doc = await ref.get();
+  if(!doc.exists) return;
+  const data = doc.data();
+  const likesList = data.usuariosLikes || [];
+
+  if(!likesList.includes(auth.currentUser.uid)){
+    likesList.push(auth.currentUser.uid);
+    await ref.update({
+      usuariosLikes: likesList,
+      likesCount: likesList.length
+    });
+  }
+}
 </script>
 </body>
 </html>
