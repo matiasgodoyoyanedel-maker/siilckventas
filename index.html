@@ -15,7 +15,6 @@
   .vip-card-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 25px rgba(239,68,68,0.2)}
   .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
   
-  /* ESTELA BRILLANTE VIP */
   @keyframes estelaVipPro {
     0%{border-color:#ef4444;box-shadow:0 0 10px rgba(239,68,68,0.4)}
     50%{border-color:#fbbf24;box-shadow:0 0 22px rgba(251,191,36,0.8)}
@@ -54,7 +53,6 @@
   <div class="loading-spinner mt-6"></div>
 </div>
 
-<!-- MODAL BLOQUEO PERMANENTE -->
 <div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[700] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-rose-500 animate-glow">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-ban"></i></div>
@@ -64,7 +62,6 @@
   </div>
 </div>
 
-<!-- MODAL MANTENIMIENTO ESTRICTO -->
 <div id="modal-mantenimiento-estricto" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[650] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500/50">
     <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-tools"></i></div>
@@ -73,7 +70,6 @@
   </div>
 </div>
 
-<!-- AVISO DE MANTENIMIENTO PROGRAMADO -->
 <div id="modal-aviso-mantenimiento-global" class="fixed top-6 right-6 z-[600] hidden web-panel border border-yellow-500/60 p-5 rounded-2xl shadow-2xl max-w-sm space-y-3 animate-page">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-bell"></i> <span>Aviso Importante</span></div>
@@ -82,7 +78,6 @@
   <p id="aviso-global-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
 </div>
 
-<!-- MODAL ACTIVACIÓN CUENTA VENDEDOR OBLIGATORIA -->
 <div id="modal-activar-vendedor" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden items-center justify-center z-[550] p-4 overflow-y-auto">
   <div class="web-panel max-w-md w-full p-6 rounded-3xl border border-emerald-500/50 space-y-4 my-8">
     <div class="text-center space-y-1">
@@ -239,7 +234,7 @@
         <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
       </div>
 
-      <!-- SECCIÓN MIS CHATS -->
+      <!-- SECCIÓN MIS CHATS (CON OPCIÓN DE BORRAR CHAT) -->
       <div id="seccion-mis-chats" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
         <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
           <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
@@ -368,9 +363,9 @@
 
   </div>
 
-  <!-- SECCIÓN PERFIL DOBLE: NORMAL Y VENDEDOR -->
-  <div id="seccion-perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page">
-    <div class="web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4">
+  <!-- SECCIÓN PERFIL DOBLE CENTRADA Y ORDENADA -->
+  <div id="seccion-perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page flex flex-col items-center">
+    <div class="web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4 w-full">
       <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
         <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Normal Básico</span>
         <button onclick="cambiarSeccion('mercado')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button>
@@ -396,8 +391,8 @@
       </div>
     </div>
 
-    <!-- SECCIÓN PERFIL VENDEDOR (SI ESTÁ ACTIVADO) -->
-    <div id="perfil-vendedor-extra-box" class="hidden web-panel border border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4">
+    <!-- SECCIÓN PERFIL VENDEDOR -->
+    <div id="perfil-vendedor-extra-box" class="hidden web-panel border border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4 w-full">
       <h3 class="text-xs font-bold text-emerald-400 border-b border-zinc-800 pb-3 flex items-center gap-2">
         <i class="fas fa-store text-emerald-400"></i> Perfil Vendedor Oficial
       </h3>
@@ -455,7 +450,6 @@
 </section>
 </main>
 
-<!-- MODAL DETALLE PUBLICACIÓN -->
 <div id="modal-pub-detalles" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-50 p-4 overflow-y-auto">
   <div class="web-panel max-w-lg w-full p-6 rounded-3xl border border-yellow-500/30 space-y-4 relative animate-page my-8">
     <button onclick="document.getElementById('modal-pub-detalles').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
@@ -562,7 +556,6 @@ async function guardarActivacionCuentaVendedor(){
     return;
   }
 
-  // Validar ID de vendedor único
   const qId = await db.collection('perfiles').where('vendedorId', '==', vId).get();
   let repetido = false;
   qId.forEach(doc => {
@@ -606,7 +599,7 @@ async function configurarVistaPerfilDoble(){
   if(d.cuentaVendedorActiva){
     document.getElementById('perfil-vendedor-extra-box').classList.remove('hidden');
     document.getElementById('lbl-perfil-vendedor-id').innerText = `@${d.vendedorId || 'N/A'}`;
-    document.getElementById('lbl-perfil-vendedor-correo').innerText = d.vendedorCorreo || 'N/A';
+    document.getElementById('lbl-perfil-vendedor-correo').innerText = d.vendedorCorreo || auth.currentUser.email || 'N/A';
     document.getElementById('lbl-perfil-vendedor-banco').innerText = d.vendedorBanco || 'N/A';
     document.getElementById('lbl-perfil-vendedor-fnac').innerText = d.vendedorFnac || 'N/A';
   }else{
@@ -678,9 +671,15 @@ auth.onAuthStateChanged(async(u)=>{
 
     const r=db.collection('perfiles').doc(u.uid);let d=await r.get();
     if(!d.exists){
-      currentUserData={uid:u.uid,username:u.email.split('@')[0],logo:"",cambiosFotoMes:0,bloqueado:false,postuladoFormulario:false,cuentaVendedorActiva:false};
+      currentUserData={uid:u.uid,username:u.email.split('@')[0],email:u.email,logo:"",cambiosFotoMes:0,bloqueado:false,postuladoFormulario:false,cuentaVendedorActiva:false};
       await r.set(currentUserData);
-    }else{currentUserData=d.data();}
+    }else{
+      currentUserData=d.data();
+      if(!currentUserData.email && u.email){
+        currentUserData.email = u.email;
+        await r.update({email: u.email});
+      }
+    }
     
     document.getElementById('nav-btn-ir-login').classList.add('hidden');
     document.getElementById('nav-user-logged-box').classList.remove('hidden');
@@ -1105,9 +1104,26 @@ async function cargarListaChatsUsuario(){
   let h = "";
   chatsMap.forEach((data, id) => {
     const estadoTxt = data.chatCerrado ? "🔒 Cerrado" : "🟢 Activo";
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xs shrink-0"><i class="fas fa-ticket-alt"></i></span><div><h4 class="font-bold text-white text-xs">Venta de cuenta y trato con admin</h4><p class="text-[10px] text-zinc-400">Último mensaje: ${data.ultimoMensaje || 'Sin mensajes'} • <span class="text-yellow-400">${estadoTxt}</span></p></div></div><span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</span></div>`;
+    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2 hover:border-yellow-500/40 transition">
+      <div class="flex items-center gap-3 cursor-pointer flex-grow" onclick="abrirSalaChatActivo('${id}')">
+        <span class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xs shrink-0"><i class="fas fa-ticket-alt"></i></span>
+        <div><h4 class="font-bold text-white text-xs">Venta de cuenta y trato con admin</h4><p class="text-[10px] text-zinc-400">Último mensaje: ${data.ultimoMensaje || 'Sin mensajes'} • <span class="text-yellow-400">${estadoTxt}</span></p></div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="abrirSalaChatActivo('${id}')" class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir</button>
+        <button onclick="borrarChatP2PUsuario('${id}')" class="bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white text-xs px-3 py-1.5 rounded-xl transition" title="Eliminar Chat"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`;
   });
   listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
+}
+
+async function borrarChatP2PUsuario(chatId){
+  if(confirm("¿Estás seguro de eliminar este chat de tu lista?")){
+    await db.collection('chats_p2p').doc(chatId).delete();
+    mostrarToast("🗑️ Chat eliminado con éxito.");
+    cargarListaChatsUsuario();
+  }
 }
 
 async function enviarReporteTicketEmail(){
@@ -1232,7 +1248,8 @@ async function guardarPerfilGamerReal(){
   const datosActualizar = {
     username: nuevoUsername,
     metodoPago: mp,
-    cambiosFotoMes: cambios
+    cambiosFotoMes: cambios,
+    email: auth.currentUser.email || ""
   };
   if(fotoPerfilBase64) datosActualizar.logo = fotoPerfilBase64;
 
