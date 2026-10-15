@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Foro Oficial - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
+  body{background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  h1,h2,h3,h4{font-family:'Outfit',sans-serif}
+  .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+</style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+
+<div class="max-w-4xl w-full space-y-6">
+  <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-2xl font-black shadow-lg"><i class="fas fa-comments"></i></div>
+      <div>
+        <h2 class="text-lg font-black text-white">Foro Oficial de la Comunidad</h2>
+        <p class="text-xs text-zinc-400">Discusiones, soporte y dudas sobre Escrow y cuentas gamer</p>
+      </div>
+    </div>
+    <a href="index.html" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al Marketplace</a>
+  </div>
+
+  <!-- CREAR NUEVO TEMA -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-yellow-500/30">
+    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-pen-nib mr-1.5"></i> Crear un Nuevo Hilo</h3>
+    <div class="space-y-3 text-xs">
+      <input type="text" id="foro-titulo" placeholder="Título del tema o duda..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500">
+      <select id="foro-categoria" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-yellow-500">
+        <option value="General">💬 Discusión General de Juegos</option>
+        <option value="Escrow">🛡️ Dudas y Seguridad de Escrow</option>
+        <option value="Soporte">🛠️ Soporte Técnico</option>
+        <option value="Vendedores">👑 Zona Exclusiva de Vendedores</option>
+      </select>
+      <textarea id="foro-contenido" rows="3" placeholder="Escribe tu mensaje o consulta detallada..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none focus:outline-none focus:border-yellow-500"></textarea>
+      <button onclick="publicarHiloForo()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3 rounded-xl uppercase tracking-wider shadow transition">Publicar en el Foro</button>
+    </div>
+  </div>
+
+  <!-- LISTADO DE HILOS -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="text-xs font-bold text-yellow-400 uppercase"><i class="fas fa-list mr-1.5"></i> Hilos Recientes</h3>
+    <div id="foro-hilos-list" class="space-y-3 text-xs"><p class="text-zinc-500">Cargando discusiones...</p></div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(),db=firebase.firestore();
+const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
+
+async function publicarHiloForo(){
+  const user = auth.currentUser;
+  if(!user){alert("Debes iniciar sesión para participar en el foro.");window.location.href="login.html";return;}
+  
+  const titulo = document.getElementById('foro-titulo').value.trim();
+  const categoria = document.getElementById('foro-categoria').value;
+  const contenido = document.getElementById('foro-contenido').value.trim();
+
+  if(!titulo || !contenido){alert("Por favor completa el título y el contenido.");return;}
+
+  const perfilDoc = await db.collection('perfiles').doc(user.uid).get();
+  const userData = perfilDoc.exists ? perfilDoc.data() : {};
+  const username = userData.username || "Gamer";
+  let insignia = "";
+  if(user.uid === OWNER_UID) insignia = "👑 <span class='text-rose-400'>Dueño</span>";
+  else if(userData.esVendedorVip && userData.nivelVip === 'avanzado') insignia = "🔥 <span class='text-amber-400'>VIP Avanzado</span>";
+  else if(userData.esVendedorVip) insignia = "⭐ <span class='text-yellow-400'>VIP Aprendiz</span>";
+
+  await db.collection('foro_hilos').add({
+    uid: user.uid,
+    autor: username,
+    insignia: insignia,
+    titulo: titulo,
+    categoria: categoria,
+    contenido: contenido,
+    fecha: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  document.getElementById('foro-titulo').value = "";
+  document.getElementById('foro-contenido').value = "";
+  alert("¡Hilo publicado con éxito en el foro!");
+}
+
+db.collection('foro_hilos').orderBy('fecha', 'desc').onSnapshot(snapshot => {
+  let h = "";
+  snapshot.forEach(doc => {
+    const hilos = doc.data();
+    h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase">${hilos.categoria}</span>
+        <span class="text-[10px] text-zinc-500">Por <b>${hilos.autor}</b> ${hilos.insignia}</span>
+      </div>
+      <h4 class="font-bold text-white text-sm">${hilos.titulo}</h4>
+      <p class="text-xs text-zinc-300 leading-relaxed">${hilos.contenido}</p>
+    </div>`;
+  });
+  document.getElementById('foro-hilos-list').innerHTML = h || '<p class="text-zinc-500">No hay hilos en el foro todavía. ¡Sé el primero en comentar!</p>';
+});
+</script>
+</body>
+</html>
