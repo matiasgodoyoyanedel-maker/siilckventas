@@ -58,6 +58,14 @@
     </div>
   </div>
 
+  <!-- REVISIÓN DE TICKETS Y REPORTES DE USUARIOS -->
+  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-ticket-alt mr-1.5"></i> Tickets de Soporte & Reportes Recibidos</h3>
+    <div id="lista-tickets-admin" class="space-y-3">
+      <p class="text-xs text-zinc-500 text-center py-6">Cargando tickets...</p>
+    </div>
+  </div>
+
   <!-- REVISIÓN DETALLADA DE POSTULACIONES DE VENDEDORES -->
   <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
     <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-file-alt mr-1.5"></i> Postulaciones de Nuevos Vendedores (Detalladas)</h3>
@@ -99,6 +107,7 @@ auth.onAuthStateChanged(async(u)=>{
     window.location.href="index.html";
     return;
   }
+  cargarTicketsAdmin();
   cargarPostulacionesAdmin();
   cargarUsuariosAdmin();
 });
@@ -133,6 +142,36 @@ async function desactivarAvisoMantenimiento(){
   }, {merge: true});
   alert("¡Aviso general desactivado!");
   document.getElementById('input-aviso-mant').value = "";
+}
+
+function cargarTicketsAdmin(){
+  db.collection('tickets').onSnapshot(snapshot => {
+    let h = "";
+    snapshot.forEach(doc => {
+      const t = doc.data();
+      const id = doc.id;
+      const estadoColor = t.estado === 'En revisión' ? 'text-yellow-400' : 'text-zinc-400';
+
+      h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div>
+          <h4 class="font-bold text-white text-sm">@${t.username} - ${t.motivo}</h4>
+          <p class="text-zinc-300 mt-1">${t.descripcion}</p>
+          <p class="text-[10px] text-zinc-500 mt-1">Estado actual: <span class="${estadoColor} font-bold">${t.estado}</span></p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="cambiarEstadoTicket('${id}', 'En revisión')" class="bg-yellow-500 text-zinc-950 font-bold px-3 py-2 rounded-xl">Marcar En Revisión</button>
+          <button onclick="cambiarEstadoTicket('${id}', 'Pendiente')" class="bg-zinc-800 text-zinc-300 font-bold px-3 py-2 rounded-xl">Marcar Pendiente</button>
+          <button onclick="db.collection('tickets').doc('${id}').delete()" class="bg-rose-600 text-white font-bold px-3 py-2 rounded-xl">Eliminar</button>
+        </div>
+      </div>`;
+    });
+    document.getElementById('lista-tickets-admin').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay tickets de soporte registrados.</p>`;
+  });
+}
+
+async function cambiarEstadoTicket(id, nuevoEstado){
+  await db.collection('tickets').doc(id).update({estado: nuevoEstado});
+  alert(`Ticket actualizado a: ${nuevoEstado}`);
 }
 
 function cargarPostulacionesAdmin(){
@@ -191,7 +230,6 @@ async function aprobarPostulacion(postId, userUid){
 }
 
 async function rechazarPostulacion(postId, userUid){
-  // Se borra automáticamente de la base de datos y de la vista
   await db.collection('postulaciones_vendedores').doc(postId).delete();
   if(userUid){
     await db.collection('perfiles').doc(userUid).update({postuladoFormulario: false});
