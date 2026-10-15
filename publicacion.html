@@ -17,9 +17,7 @@
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col justify-between">
-
 <canvas id="canvas-bg"></canvas>
-
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
     <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
@@ -29,7 +27,6 @@
     <button onclick="window.location.href='index.html'" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition"><i class="fas fa-arrow-left mr-1"></i> Volver al Inicio</button>
   </div>
 </header>
-
 <main class="flex-grow max-w-2xl w-full mx-auto px-4 py-8 flex flex-col items-center">
   <div class="web-panel rounded-3xl p-8 shadow-2xl animate-page border border-zinc-800 w-full space-y-5">
     <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
@@ -42,26 +39,21 @@
       </div>
       <button onclick="window.location.href='index.html'" class="text-xs text-zinc-400 hover:text-white underline">Cancelar</button>
     </div>
-
     <div class="space-y-4 text-xs">
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80 Full Skins" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
-
       <div class="grid grid-cols-2 gap-3">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option value="Free Fire">Free Fire</option><option value="Fortnite">Fortnite</option><option value="Valorant">Valorant</option><option value="Roblox">Roblox</option><option value="Steam Key">Steam Key</option><option value="League of Legends">League of Legends</option><option value="GTA V">GTA V</option><option value="Minecraft">Minecraft</option><option value="Genshin Impact">Genshin Impact</option><option value="Call of Duty">Call of Duty</option><option value="Clash Royale">Clash Royale</option><option value="FIFA / FC">FIFA / EA FC</option></select></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       </div>
-
       <div class="grid grid-cols-3 gap-2">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock / Unidades *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       </div>
-
       <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía / Descripción *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta, métodos de entrega..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
-
       <div class="space-y-3 p-4 rounded-2xl bg-zinc-900/60 border border-yellow-500/20 mt-2">
         <h4 class="text-[11px] font-black uppercase tracking-wider text-yellow-400"><i class="fas fa-lock mr-1"></i> Datos privados obligatorios - Entrega automática *</h4>
-        <p class="text-[10px] text-zinc-500 leading-relaxed">Estos datos NO se muestran en el marketplace. Se guardan ENCRIPTADOS y solo se desencriptan automáticamente cuando alguien te compre con Flow. Si pones datos falsos serás baneado.</p>
+        <p class="text-[10px] text-zinc-500 leading-relaxed">Estos datos NO se muestran en el marketplace. Se guardan ENCRIPTADOS y solo se desencriptan automáticamente cuando alguien te compre con Flow.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Email real de la cuenta *</label><input type="email" id="f-priv-email" placeholder="cuenta.real@gmail.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
           <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Contraseña actual *</label><input type="text" id="f-priv-pass" placeholder="Contraseña real" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
@@ -71,28 +63,24 @@
           <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Correo de recuperación / ID del juego *</label><input type="text" id="f-priv-recup" placeholder="correo de recupero o ID" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
         </div>
       </div>
-
       <div class="flex gap-2 items-start p-3 rounded-xl bg-zinc-900 border border-zinc-800">
         <input type="checkbox" id="f-autorizo-datos" class="mt-0.5 w-4 h-4 accent-yellow-500" />
-        <label for="f-autorizo-datos" class="text-[11px] leading-relaxed text-zinc-300 select-none cursor-pointer">Autorizo a entregar los datos de mi cuenta de forma automática después del pago con Flow para quitar estafas y garantizar la entrega al comprador. Entiendo que si entrego datos falsos seré sancionado y mi cuenta de vendedor será bloqueada. *</label>
+        <label for="f-autorizo-datos" class="text-[11px] leading-relaxed text-zinc-300 select-none cursor-pointer">Autorizo a entregar los datos de mi cuenta de forma automática después del pago con Flow.</label>
       </div>
-
       <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
         <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
         <p class="text-xs text-zinc-300" id="pub-foto-label"><i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5 text-sm"></i> Toca para subir foto o captura de la cuenta</p>
       </div>
-
       <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase shadow transition tracking-wider">Publicar en Marketplace</button>
     </div>
   </div>
 </main>
-
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
-
 <script>
 const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,fotoBase64Seleccionada="";
-
+// === ID DUEÑO - REEMPLAZA ESTO CON TU UID ===
+const OWNER_UID = "TU_UID_AQUI"; // EJ: "oJ9kL8mNq7pR6sT5uV4wX3yZ2aB1"
 function initCanvas(){
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];
   for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});
@@ -103,41 +91,42 @@ function animateCanvas(){
   requestAnimationFrame(animateCanvas);
 }
 window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
-
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-
 function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
 function simpleEnc(str){ try{ return btoa(unescape(encodeURIComponent(str))) }catch(e){ return btoa(str) } }
-
 auth.onAuthStateChanged(async(u)=>{
   if(!u){ window.location.href = 'login.html'; return; }
+  console.log("Tu UID de dueño es:", u.uid);
   try{
     const doc = await db.collection('perfiles').doc(u.uid).get();
     if(doc.exists){
       let data = doc.data();
-      // === QUITA VENDEDORES BETA ANTIGUOS ===
+      currentUserData = data;
+      // === BYPASS DUEÑO - TU SI PUEDES PUBLICAR SIEMPRE ===
+      if(u.uid === OWNER_UID){
+        console.log("👑 Acceso de dueño detectado - bypass activo");
+        return; // no chequeamos nada, te dejamos publicar
+      }
+      // === QUITA VENDEDORES BETA ANTIGUOS (NO AFECTA AL DUEÑO) ===
       if(data.cuentaVendedorActiva &&!data.fechaActivacionV2 && data.versionVendedor!== 'v2'){
-        await db.collection('perfiles').doc(u.uid).update({
-          cuentaVendedorActiva: false,
-          esBetaAntiguo: true,
-          cuentaVendedorBetaDesactivada: true
-        });
-        mostrarAlertaToast("Beta Expirada", "Tu cuenta vendedor beta fue desactivada. Debes activar tu cuenta de vendedor oficial de nuevo.");
+        await db.collection('perfiles').doc(u.uid).update({ cuentaVendedorActiva: false, esBetaAntiguo: true });
+        mostrarAlertaToast("Beta Expirada", "Tu cuenta vendedor beta fue desactivada.");
         setTimeout(()=>{ window.location.href = 'index.html'; }, 2500);
         return;
       }
-      currentUserData = data;
       if(!currentUserData.cuentaVendedorActiva){
         mostrarAlertaToast("Acceso Denegado", "Debes activar tu cuenta de vendedor para publicar.");
         setTimeout(()=>{ window.location.href = 'index.html'; }, 2000);
       }
+    } else {
+      // Si no tiene perfil pero es dueño, lo dejamos pasar igual
+      if(u.uid === OWNER_UID) return;
     }
   }catch(e){ console.log(e); }
 });
-
 function manejarSeleccionFoto(input){
   if(input.files && input.files[0]){
     const reader = new FileReader();
@@ -148,10 +137,10 @@ function manejarSeleccionFoto(input){
     reader.readAsDataURL(input.files[0]);
   }
 }
-
 async function crearPublicacionMarketplace(){
   if(!auth.currentUser) return;
   try{
+    const esDueno = auth.currentUser.uid === OWNER_UID;
     const titulo = document.getElementById('pub-titulo').value.trim();
     const juego = document.getElementById('pub-juego').value;
     const precio = parseInt(document.getElementById('pub-precio').value);
@@ -164,38 +153,36 @@ async function crearPublicacionMarketplace(){
     const privTel = document.getElementById('f-priv-tel').value.trim();
     const privRecup = document.getElementById('f-priv-recup').value.trim();
     const autorizo = document.getElementById('f-autorizo-datos').checked;
-
     if(!titulo ||!precio ||!nivel ||!region ||!descripcion){
-      mostrarAlertaToast("Campos Incompletos", "Por favor llena todos los campos obligatorios."); return;
+      mostrarAlertaToast("Campos Incompletos", "Llena todos los campos obligatorios."); return;
     }
     if(!privEmail ||!privPass ||!privRecup){
-      mostrarAlertaToast("Datos Privados Obligatorios", "Debes llenar el recuadro amarillo con email, contraseña y recuperación real."); return;
+      mostrarAlertaToast("Datos Privados Obligatorios", "Llena el recuadro amarillo."); return;
     }
     if(!autorizo){
-      mostrarAlertaToast("Autorización Requerida", "Debes marcar la palomita de autorizar entrega automática."); return;
+      mostrarAlertaToast("Autorización Requerida", "Marca la palomita."); return;
     }
-
     const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
     const uData = userDoc.exists? userDoc.data() : {};
     if(!currentUserData) currentUserData = uData;
-
-    if(!uData.cuentaVendedorActiva){
-      mostrarAlertaToast("Aviso", "No puedes publicar. Activa tu cuenta de vendedor."); return;
+    // === VALIDACION VENDEDOR - SI ERES DUEÑO TE SALTAS TODO ===
+    if(!esDueno){
+      if(!uData.cuentaVendedorActiva){
+        mostrarAlertaToast("Aviso", "No puedes publicar. Activa tu cuenta de vendedor."); return;
+      }
     }
-
-    const tipoVip = uData.tipoVip || 'basico';
-
+    const tipoVip = esDueno? 'dueno' : (uData.tipoVip || 'basico');
     const docRef = await db.collection('publicaciones').add({
       vendedorUid: auth.currentUser.uid,
-      vendedorNombre: currentUserData?.username || uData.username || "Vendedor",
+      vendedorNombre: currentUserData?.username || uData.username || (esDueno? "Dueño Siilck" : "Vendedor"),
       vendedorLogo: currentUserData?.logo || uData.logo || "",
-      titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, stock: stock, descripcion: descripcion,
+      titulo, juego, precio, nivel, region, stock, descripcion,
       foto: fotoBase64Seleccionada || "",
-      esVip: true, tipoVip: tipoVip,
+      esVip: true, tipoVip,
+      esPublicacionDueno: esDueno,
       fecha: firebase.firestore.FieldValue.serverTimestamp(),
       tieneDatosPrivados: true
     });
-
     await db.collection('cuentas_secretas').doc(docRef.id).set({
       publicacionId: docRef.id,
       vendedorUid: auth.currentUser.uid,
@@ -206,10 +193,8 @@ async function crearPublicacionMarketplace(){
       autorizadoEntregaAuto: true,
       fecha: firebase.firestore.FieldValue.serverTimestamp()
     });
-
-    mostrarToast("🚀 ¡Cuenta publicada con entrega automática!");
+    mostrarToast(esDueno? "👑 ¡Publicado como dueño!" : "🚀 ¡Cuenta publicada!");
     setTimeout(()=>{ window.location.href = 'index.html'; }, 1200);
-
   }catch(err){
     console.error(err);
     mostrarAlertaToast("Error al publicar", err.message);
