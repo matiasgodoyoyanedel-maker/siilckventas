@@ -11,25 +11,22 @@
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
   .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
-  .vip-banner-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 35px rgba(234,179,8,0.25)}
-  .vip-banner-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 35px rgba(239,68,68,0.25)}
+  .vip-card-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 25px rgba(234,179,8,0.2)}
+  .vip-card-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 25px rgba(239,68,68,0.2)}
   .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
   .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all .2s ease}
   .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
   .radio-warranty{accent-color:#eab308}
-  @keyframes vipGlow{0%,100%{box-shadow:0 0 15px rgba(234,179,8,0.3)}50%{box-shadow:0 0 30px rgba(234,179,8,0.6)}}
-  .vip-card-glow{animation:vipGlow 2s infinite ease-in-out;border:2px solid #eab308 !important}
-  @keyframes vipGlowPro{0%,100%{box-shadow:0 0 15px rgba(239,68,68,0.3)}50%{box-shadow:0 0 30px rgba(239,68,68,0.6)}}
-  .vip-card-glow-pro{animation:vipGlowPro 2s infinite ease-in-out;border:2px solid #ef4444 !important}
-  .floating-element{position:fixed;pointer-events:none;z-index:1;animation:floatDown linear infinite}
-  @keyframes floatDown{0%{transform:translateY(-50px) rotate(0deg);opacity:0.8}100%{transform:translateY(105vh) rotate(360deg);opacity:0.2}}
+  .decor-side-left, .decor-side-right{position:fixed;top:15vh;width:120px;height:70vh;pointer-events:none;z-index:0;opacity:0.25;background-repeat:no-repeat;background-size:contain}
+  .decor-side-left{left:10px}
+  .decor-side-right{right:10px}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<!-- MODAL BLOQUEO PERMANENTE POR ADMINISTRACIÓN -->
+<!-- MODAL BLOQUEO PERMANENTE -->
 <div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[600] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-4 border border-rose-500/80">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-ban"></i></div>
@@ -41,9 +38,9 @@
 <!-- MODAL AVISO MANTENIMIENTO GLOBAL -->
 <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[500] p-4 text-center">
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-yellow-500/50">
-    <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-tools animate-spin"></i></div>
+    <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-tools"></i></div>
     <h3 class="text-xl font-black text-white" id="mantenimiento-titulo">Aviso de Mantenimiento</h3>
-    <p class="text-xs text-zinc-300 leading-relaxed" id="mantenimiento-desc">Estamos realizando mejoras en la plataforma. Por favor confirma que estás de acuerdo para continuar.</p>
+    <p class="text-xs text-zinc-300 leading-relaxed" id="mantenimiento-desc">Aviso general de la administración.</p>
     <button onclick="document.getElementById('modal-mantenimiento-global').classList.add('hidden')" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition">Estoy de Acuerdo</button>
   </div>
 </div>
@@ -52,10 +49,8 @@
   <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 text-center border border-yellow-500/30 relative">
     <button onclick="document.getElementById('modal-sesion-requerida').classList.add('hidden')" class="absolute top-4 right-4 text-zinc-400 hover:text-white w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
     <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-lock"></i></div>
-    <div class="space-y-1.5">
-      <h3 class="text-lg font-bold font-heading text-white">Autenticación Requerida</h3>
-      <p class="text-xs text-zinc-400">Debes iniciar sesión para realizar esta acción.</p>
-    </div>
+    <h3 class="text-lg font-bold font-heading text-white">Autenticación Requerida</h3>
+    <p class="text-xs text-zinc-400">Debes iniciar sesión para realizar esta acción.</p>
     <a href="login.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg block text-center transition">Iniciar Sesión Ahora</a>
   </div>
 </div>
@@ -63,7 +58,8 @@
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
-<div id="decorations-layer"></div>
+<div id="decor-left-el" class="decor-side-left"></div>
+<div id="decor-right-el" class="decor-side-right"></div>
 
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
@@ -78,12 +74,10 @@
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
-      <!-- CARRITO CON ACCESO DIRECTO -->
       <a href="carrito.html" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer">
         <i class="fas fa-shopping-cart text-sm"></i>
       </a>
 
-      <!-- CHATS CON PUNTO ROJO DE NOTIFICACIÓN EN TIEMPO REAL -->
       <button onclick="cambiarSeccion('mis-chats')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P">
         <i class="fas fa-comments text-sm"></i>
         <span id="badge-notif-chats" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b] animate-ping"></span>
@@ -111,7 +105,6 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
             <i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados
           </button>
-          <!-- MANTENCIÓN PANEL: SOLO ACCESIBLE PARA EL DUEÑO -->
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30">
             <i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel
           </button>
@@ -130,10 +123,9 @@
     <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Planes VIP Vendedor</button>
   </div></div>
 
-  <!-- DISPOSICIÓN PRINCIPAL: CARTELERA DE JUEGOS A LA IZQUIERDA TIPO CINE -->
+  <!-- DISPOSICIÓN: CARTELERA DE JUEGOS A LA IZQUIERDA -->
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 w-full">
     
-    <!-- CARTELERA DE JUEGOS A LA IZQUIERDA -->
     <div class="lg:col-span-1 space-y-3">
       <div class="web-panel rounded-3xl p-5 border border-zinc-800 space-y-3 sticky top-24">
         <div class="border-b border-zinc-800 pb-2.5 flex items-center justify-between">
@@ -153,7 +145,6 @@
       </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <div class="lg:col-span-3 space-y-6">
       
       <div id="seccion-inicio" class="w-full space-y-6">
@@ -193,7 +184,6 @@
 
   </div>
 
-  <!-- SECCIÓN PERFIL GAMER CON SUBIDA DE FOTO DESDE GALERÍA (PC Y CELULAR) -->
   <div id="seccion-perfil" class="hidden space-y-4 max-w-xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
     <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
       <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Vendedor Gamer</span>
@@ -202,7 +192,6 @@
     <div class="space-y-4 text-xs">
       <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username" readonly class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"></div>
       
-      <!-- Selector de foto real por galería (PC / Celular) -->
       <div>
         <label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Foto de Perfil (Galería)</label>
         <div class="flex items-center gap-3">
@@ -239,7 +228,7 @@
 
   <div id="seccion-mis-chats" class="hidden space-y-5 max-w-3xl mx-auto web-panel rounded-3xl p-6 shadow-xl animate-page">
     <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados (Desde Publicaciones)</h3>
+      <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
       <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
     </div>
     <div id="lista-chats-usuario" class="space-y-3"></div>
@@ -257,27 +246,51 @@
     </div>
   </div>
 
-  <!-- PLANES VIP CON LOS LINKS DE FLOW REALES -->
-  <div id="seccion-vip" class="hidden space-y-6 max-w-3xl mx-auto animate-page">
-    <div id="vip-status-box" class="web-panel rounded-3xl p-6 text-center border border-zinc-800 mb-4 hidden">
-      <h4 class="text-xs font-bold text-yellow-400 uppercase">Estado de tu Suscripción VIP</h4>
-      <p id="vip-countdown-text" class="text-sm font-black text-white mt-1">Calculando días restantes...</p>
+  <!-- PLANES VIP ORDENADOS LADO A LADO Y CON CONTADOR REAL -->
+  <div id="seccion-vip" class="hidden space-y-6 max-w-5xl mx-auto animate-page">
+    <div class="text-center space-y-2">
+      <h2 class="text-2xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2>
+      <p class="text-xs text-zinc-400">Descuentos exclusivos, insignias destacadas y prioridad en el marketplace.</p>
     </div>
 
-    <!-- VIP BÁSICO ($2.990) - Insignia Amarilla -->
-    <div class="vip-banner-box rounded-3xl p-8 space-y-4 text-center relative overflow-hidden">
-      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Aprendiz / Básico</span>
-      <h3 class="text-2xl font-black text-white">VIP BÁSICO - $2.990 CLP / 30 DÍAS</h3>
-      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia estelar **amarilla**, 5% de descuento en el carrito y 30 días de duración real.</p>
-      <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="inline-block bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg transition">Pagar VIP Básico ($2.990)</a>
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+      <!-- VIP BÁSICO ($2.990) -->
+      <div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Aprendiz / Básico</span>
+          <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
+          <div class="text-3xl font-black text-yellow-400">$2.990 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en publicaciones y perfil.</li>
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito de compras.</li>
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Prioridad estándar en el buscador del marketplace.</li>
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Duración real garantizada de 30 días.</li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <div id="vip-basico-countdown" class="hidden text-center text-xs font-bold text-yellow-400 bg-yellow-500/10 p-2.5 rounded-xl border border-yellow-500/30">--</div>
+          <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" onclick="activarSimulacionVip('basico')" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Básico ($2.990)</a>
+        </div>
+      </div>
 
-    <!-- VIP PRO / AVANZADO ($5.090) - Insignia Rojo Intenso -->
-    <div class="vip-banner-box-pro rounded-3xl p-8 space-y-4 text-center relative overflow-hidden">
-      <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Avanzado / Pro</span>
-      <h3 class="text-2xl font-black text-white">VIP PRO - $5.090 CLP / 30 DÍAS</h3>
-      <p class="text-xs text-zinc-300 max-w-md mx-auto">Insignia en **rojo intenso**, máximo rango, 10% de descuento en el carrito y 30 días de duración real.</p>
-      <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="inline-block bg-rose-600 hover:bg-rose-500 text-white font-black px-8 py-3 rounded-xl text-xs uppercase shadow-lg transition">Pagar VIP Pro ($5.090)</a>
+      <!-- VIP PRO / AVANZADO ($5.090) -->
+      <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Avanzado / Pro</span>
+          <h3 class="text-2xl font-black text-white">VIP PRO</h3>
+          <div class="text-3xl font-black text-rose-500">$5.090 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong> de máximo rango.</li>
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito de compras.</li>
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> Máxima prioridad destacada en el buscador global.</li>
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> Soporte prioritario 24/7 y 30 días de duración real.</li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <div id="vip-pro-countdown" class="hidden text-center text-xs font-bold text-rose-400 bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/30">--</div>
+          <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" onclick="activarSimulacionVip('pro')" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Pro ($5.090)</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -319,7 +332,7 @@
     <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="abrirPerfilVendedorDesdeModal()">
         <div id="modal-vendedor-logo" class="w-10 h-10 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden"><i class="fas fa-user"></i></div>
-        <div><span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span><span class="text-[10px] text-emerald-400">Verificado</span></div>
+        <div><span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span></div>
       </div>
       <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
     </div>
@@ -373,12 +386,12 @@ function reproducirSonidoNotificacion(){
 }
 
 function verificarLoginAccion(callback){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
   callback();
 }
 
 function verificarPublicarCuenta(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
   if(!currentUserData.postuladoFormulario){
     mostrarAlertaToast("Aviso Requerido", "Debes rellenar el formulario de vendedor para ver si eres apto.");
     setTimeout(()=>{ window.location.href = "formulario.html"; }, 1500);
@@ -409,13 +422,11 @@ function filtrarPorJuegoRapido(juego){
 auth.onAuthStateChanged(async(u)=>{
   setTimeout(()=>{ document.getElementById('main-body-fade').classList.remove('opacity-0'); }, 50);
   
-  // Configuración global y temas visuales
   db.collection('configuracion').doc('global').onSnapshot(doc => {
     if(doc.exists){
       const cfg = doc.data();
-      if(cfg.mantenimientoActivo){
-        document.getElementById('mantenimiento-titulo').innerText = cfg.tituloMantenimiento || "Aviso de Mantenimiento";
-        document.getElementById('mantenimiento-desc').innerText = cfg.avisoMantenimiento || "Plataforma en actualización.";
+      if(cfg.mantenimientoActivo && cfg.avisoMantenimiento){
+        document.getElementById('mantenimiento-desc').innerText = cfg.avisoMantenimiento;
         document.getElementById('modal-mantenimiento-global').classList.remove('hidden');
         document.getElementById('modal-mantenimiento-global').classList.add('flex');
       }else{
@@ -432,7 +443,6 @@ auth.onAuthStateChanged(async(u)=>{
       await r.set(currentUserData);
     }else{currentUserData=d.data();}
 
-    // Control de bloqueo permanente
     if(currentUserData.bloqueado){
       document.getElementById('modal-bloqueado-permanente').classList.remove('hidden');
       document.getElementById('modal-bloqueado-permanente').classList.add('flex');
@@ -455,7 +465,6 @@ auth.onAuthStateChanged(async(u)=>{
     const cambiosRestantes = 3 - (currentUserData.cambiosFotoMes || 0);
     document.getElementById('user-foto-contador-msg').innerText = `Cambios de foto restantes este mes: ${cambiosRestantes}/3`;
 
-    // Botón de panel visible SOLO para el dueño
     if(u.uid===OWNER_UID){
       document.getElementById('menu-btn-mantenimiento-owner').classList.remove('hidden');
     }
@@ -478,39 +487,32 @@ function verificarEstadoVipReal(userData){
   const diferencia = expira - ahora;
   if(diferencia > 0){
     const diasRestantes = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
-    document.getElementById('vip-status-box').classList.remove('hidden');
-    document.getElementById('vip-countdown-text').innerText = `Te quedan ${diasRestantes} días reales de suscripción VIP activa 👑`;
+    const boxBasico = document.getElementById('vip-basico-countdown');
+    const boxPro = document.getElementById('vip-pro-countdown');
+    if(userData.tipoVip === 'pro'){
+      boxPro.innerText = `⏳ Suscripción Pro Activa: Quedan ${diasRestantes} días`;
+      boxPro.classList.remove('hidden');
+    }else{
+      boxBasico.innerText = `⏳ Suscripción Básica Activa: Quedan ${diasRestantes} días`;
+      boxBasico.classList.remove('hidden');
+    }
   }
 }
 
-// Temas visuales reales (Halloween con calabazas flotantes que no tapan letras, Navidad, etc.)
+// Temáticas visuales notables en los bordes sin molestar el contenido
 function aplicarTematicaVisualReal(tema){
-  const layer = document.getElementById('decorations-layer');
-  layer.innerHTML = "";
+  const left = document.getElementById('decor-left-el');
+  const right = document.getElementById('decor-right-el');
+  left.innerHTML = ""; right.innerHTML = "";
+  
   if(tema === 'halloween'){
     document.body.style.backgroundColor = '#120700';
-    for(let i=0; i<12; i++){
-      const pumpkin = document.createElement('div');
-      pumpkin.className = 'floating-element';
-      pumpkin.innerHTML = '🎃';
-      pumpkin.style.left = `${Math.random()*95}vw`;
-      pumpkin.style.fontSize = `${Math.random()*16+16}px`;
-      pumpkin.style.animationDuration = `${Math.random()*8+6}s`;
-      pumpkin.style.animationDelay = `${Math.random()*5}s`;
-      layer.appendChild(pumpkin);
-    }
+    left.innerHTML = '<div style="font-size:60px">🎃</div><div style="font-size:50px;margin-top:100px">🏚️</div>';
+    right.innerHTML = '<div style="font-size:60px;text-align:right">🎃</div><div style="font-size:50px;text-align:right;margin-top:120px">🦇</div>';
   }else if(tema === 'navidad'){
     document.body.style.backgroundColor = '#03120a';
-    for(let i=0; i<15; i++){
-      const snow = document.createElement('div');
-      snow.className = 'floating-element';
-      snow.innerHTML = '❄️';
-      snow.style.left = `${Math.random()*95}vw`;
-      snow.style.fontSize = `${Math.random()*12+12}px`;
-      snow.style.animationDuration = `${Math.random()*6+4}s`;
-      snow.style.animationDelay = `${Math.random()*4}s`;
-      layer.appendChild(snow);
-    }
+    left.innerHTML = '<div style="font-size:70px">🎄</div><div style="font-size:60px;margin-top:120px">🎅</div>';
+    right.innerHTML = '<div style="font-size:70px;text-align:right">🎄</div><div style="font-size:60px;text-align:right;margin-top:120px">🎁</div>';
   }else if(tema === 'verano'){
     document.body.style.backgroundColor = '#030c16';
   }else if(tema === 'noche'){
@@ -520,7 +522,6 @@ function aplicarTematicaVisualReal(tema){
   }
 }
 
-// Subida de foto de perfil desde galería (PC / Celular)
 function manejarSubidaFotoPerfil(input){
   if(input.files && input.files[0]){
     const reader = new FileReader();
@@ -604,6 +605,7 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción detallada.';
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor Verificado";
+  document.getElementById('modal-vendedor-rango').innerText = p.tipoVip === 'pro' ? '👑 VIP Pro' : (p.tipoVip === 'basico' ? '⭐ VIP Básico' : 'Básico');
   
   const logoBox = document.getElementById('modal-vendedor-logo');
   if(p.vendedorLogo){
@@ -641,18 +643,29 @@ function actualizarPrecioTotalModal(){
   document.getElementById('modal-pub-precio-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
 }
 
+// Control de duplicados en el carrito: impide añadir la misma cuenta si su stock es 1 y ya está agregada
 async function agregarAlCarritoDesdeModal(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  
+  const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
+  const snapshotExistente = await carritoRef.where('publicacionId', '==', publicacionActualIdCache).get();
+  
+  const pubDoc = await db.collection('publicaciones').doc(publicacionActualIdCache).get();
+  const stockMax = pubDoc.exists ? (pubDoc.data().stock || 1) : 1;
+
+  if(!snapshotExistente.empty && stockMax <= 1){
+    mostrarAlertaToast("Aviso", "Esta cuenta ya está en tu carrito y solo tiene 1 unidad disponible.");
+    document.getElementById('modal-pub-detalles').classList.add('hidden');
+    return;
+  }
+
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
   const precioTotalItem = precioBasePublicacionActual + costoGarantia;
   const titulo = document.getElementById('modal-pub-titulo').innerText;
   const foto = document.getElementById('modal-pub-img').src || "";
-  
-  const pubDoc = await db.collection('publicaciones').doc(publicacionActualIdCache).get();
-  const stockMax = pubDoc.exists ? (pubDoc.data().stock || 1) : 1;
 
-  await db.collection('carritos').doc(auth.currentUser.uid).collection('items').add({
+  await carritoRef.add({
     publicacionId: publicacionActualIdCache,
     titulo: titulo,
     precio: precioTotalItem,
@@ -672,7 +685,7 @@ function abrirPerfilVendedorDesdeModal(){
 }
 
 async function iniciarChatPrivadoVendedor(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
   if(auth.currentUser.uid === vendedorActualUidCache){mostrarAlertaToast("Aviso", "No puedes chatear contigo mismo.");return;}
 
   document.getElementById('modal-pub-detalles').classList.add('hidden');
@@ -687,6 +700,7 @@ async function iniciarChatPrivadoVendedor(){
       compradorUid: auth.currentUser.uid,
       compradorNombre: currentUserData.username || "Comprador",
       vendedorUid: vendedorActualUidCache,
+      vendedorNombre: document.getElementById('modal-vendedor-nombre').innerText,
       tituloOferta: document.getElementById('modal-pub-titulo').innerText,
       actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
     });
@@ -701,14 +715,20 @@ async function abrirSalaChatActivo(chatId){
   const chatDoc = await db.collection('chats_p2p').doc(chatId).get();
   if(chatDoc.exists){document.getElementById('chat-titulo-oferta').innerText = "Chat Privado: " + chatDoc.data().tituloOferta;}
 
-  db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(snapshot => {
+  db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(async snapshot => {
     let h = "";
-    snapshot.forEach(doc => {
-      const m = doc.data();
+    for(const docSnap of snapshot.docs){
+      const m = docSnap.data();
       const esMio = m.remitenteUid === auth.currentUser.uid;
+      
+      // Consultar rango del remitente para mostrarlo en el chat sin undefined
+      const perfilRemitenteDoc = await db.collection('perfiles').doc(m.remitenteUid).get();
+      const pRData = perfilRemitenteDoc.exists ? perfilRemitenteDoc.data() : {};
+      const rangoTxt = pRData.tipoVip === 'pro' ? '👑 VIP Pro' : (pRData.tipoVip === 'basico' ? '⭐ VIP Básico' : 'Básico');
+
       const align = esMio ? "text-right bg-yellow-500/10 border-yellow-500/30 ml-auto" : "text-left bg-zinc-900 border-zinc-800 mr-auto";
-      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align} space-y-1"><span class="block text-[9px] text-zinc-400 font-bold">${m.remitenteNombre}</span><p class="text-xs text-white">${m.texto}</p></div>`;
-    });
+      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align} space-y-1"><div class="flex items-center justify-between gap-2"><span class="text-[9px] text-yellow-400 font-bold">${m.remitenteNombre || 'Usuario'}</span><span class="text-[8px] bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded">${rangoTxt}</span></div><p class="text-xs text-white">${m.texto}</p></div>`;
+    }
     const box = document.getElementById('chat-mensajes-box');
     box.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
     box.scrollTop = box.scrollHeight;
@@ -732,7 +752,6 @@ async function enviarMensajeChatP2P(){
   document.getElementById('chat-input-msg').value = "";
 }
 
-// Notificaciones de mensajes en tiempo real con punto rojo y sonido
 function escucharNotificacionesChatsGlobal(uid){
   db.collection('chats_p2p').where('compradorUid', '==', uid).onSnapshot(snapshot => {
     verificarMensajesNuevos(snapshot, uid);
@@ -762,6 +781,7 @@ function verificarMensajesNuevos(snapshot, uid){
   }
 }
 
+// Chats 100% personales y privados entre comprador y vendedor
 async function cargarListaChatsUsuario(){
   if(!auth.currentUser) return;
   const uid = auth.currentUser.uid;
