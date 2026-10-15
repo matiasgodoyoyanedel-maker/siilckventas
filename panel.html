@@ -122,13 +122,14 @@ async function desactivarAvisoMantenimiento(){
   document.getElementById('input-aviso-mant').value = "";
 }
 
-// Visualización detallada de cada respuesta y fotos de la postulación
 function cargarPostulacionesAdmin(){
   db.collection('postulaciones_vendedores').onSnapshot(snapshot => {
     let h = "";
     snapshot.forEach(doc => {
       const p = doc.data();
       const id = doc.id;
+      const estadoPost = p.estado || 'Pendiente';
+      const colorEstado = estadoPost === 'Aprobado' ? 'text-emerald-400' : (estadoPost === 'Rechazado' ? 'text-rose-400' : 'text-yellow-400');
       const fotoEvidencia = p.fotoEvidencia ? `<div class="w-full h-32 rounded-xl overflow-hidden bg-zinc-950 mt-2 border border-zinc-800"><img src="${p.fotoEvidencia}" class="w-full h-full object-cover"></div>` : "";
 
       h += `<div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3 text-xs">
@@ -137,17 +138,17 @@ function cargarPostulacionesAdmin(){
             <h4 class="font-bold text-white text-sm">${p.nombreCompleto || 'Postulante'} (@${p.username})</h4>
             <p class="text-zinc-400">Discord: ${p.discord || 'N/A'} • Experiencia: ${p.experiencia || 'N/A'}</p>
           </div>
-          <span class="text-[10px] text-yellow-400 font-bold px-2 py-1 bg-zinc-950 rounded border border-zinc-800 h-fit">Estado: ${p.estado || 'Pendiente'}</span>
+          <span class="text-[10px] ${colorEstado} font-bold px-2.5 py-1 bg-zinc-950 rounded border border-zinc-800 h-fit">Estado: ${estadoPost}</span>
         </div>
         <p class="text-zinc-300 bg-zinc-950 p-3 rounded-xl border border-zinc-800"><strong>Motivo / Respuesta:</strong> ${p.motivo || 'Sin detalles'}</p>
         ${fotoEvidencia}
         <div class="flex gap-2 pt-2">
-          <button onclick="aprobarPostulacion('${id}', '${p.uid}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Aprobar (Bienvenida)</button>
-          <button onclick="rechazarPostulacion('${id}', '${p.uid}')" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Rechazar (No Apto)</button>
+          <button onclick="aprobarPostulacion('${id}', '${p.uid}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Aprobar</button>
+          <button onclick="rechazarPostulacion('${id}', '${p.uid}')" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-extrabold py-2.5 rounded-xl uppercase">Rechazar</button>
         </div>
       </div>`;
     });
-    document.getElementById('lista-postulaciones-admin').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes.</p>`;
+    document.getElementById('lista-postulaciones-admin').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones registradas.</p>`;
   });
 }
 
@@ -156,12 +157,15 @@ async function aprobarPostulacion(postId, userUid){
   if(userUid){
     await db.collection('perfiles').doc(userUid).update({postuladoFormulario: true});
   }
-  alert("¡Postulación aprobada! El usuario ya forma parte de la comunidad de vendedores.");
+  alert("¡Postulación aprobada con éxito!");
 }
 
 async function rechazarPostulacion(postId, userUid){
   await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'Rechazado'});
-  alert("Postulación rechazada. Se ha notificado que no es apto.");
+  if(userUid){
+    await db.collection('perfiles').doc(userUid).update({postuladoFormulario: false});
+  }
+  alert("Postulación rechazada.");
 }
 
 function cargarUsuariosAdmin(){
@@ -189,7 +193,7 @@ function cargarUsuariosAdmin(){
 
 async function bloquearUsuario(uid, bloquear){
   await db.collection('perfiles').doc(uid).update({bloqueado: bloquear});
-  alert(bloquear ? "Usuario bloqueado permanentemente (no podrá cerrar el aviso)." : "Usuario desbloqueado.");
+  alert(bloquear ? "Usuario bloqueado permanentemente." : "Usuario desbloqueado.");
 }
 </script>
 </body>
