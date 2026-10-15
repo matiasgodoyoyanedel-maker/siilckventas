@@ -28,7 +28,8 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
-<div id="efectos-tematicos-container" class="fixed inset-0 pointer-events-none z-40 overflow-hidden"></div>
+<!-- HALLOWEEN OPTIMIZADO (Z-INDEX BAJO, NO TAPA LETRAS) -->
+<div id="efectos-tematicos-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40"></div>
 
 <!-- MANTENIMIENTO GLOBAL -->
 <div id="modal-mantenimiento-global" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[500] p-4 text-center">
@@ -113,10 +114,9 @@
   </div>
 </header>
 
-<!-- CONTENEDOR PRINCIPAL CON SIDEBAR CATALOGO TIPO CINE -->
-<main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6 relative z-10">
   
-  <!-- SIDEBAR CATALOGO DE JUEGOS (ESTILO CINE) -->
+  <!-- SIDEBAR CATALOGO DE JUEGOS -->
   <aside class="w-full lg:w-64 shrink-0 space-y-3">
     <div class="web-panel rounded-2xl p-4 border border-yellow-500/30 space-y-3 sticky top-20">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -142,7 +142,7 @@
     </div>
   </aside>
 
-  <!-- CONTENIDO CENTRAL DINÁMICO -->
+  <!-- CONTENIDO CENTRAL -->
   <div class="flex-grow space-y-6">
     <section id="view-dashboard" class="w-full space-y-6 animate-page">
       
@@ -175,7 +175,7 @@
         <a href="formulario.html" class="bg-yellow-500 text-zinc-950 font-black px-6 py-3.5 rounded-2xl text-xs uppercase shadow transition shrink-0">Postular Aquí</a>
       </div>
 
-      <!-- PERFIL CON GESTION Y REORDENAMIENTO DE CUENTAS -->
+      <!-- PERFIL CON CUENTA REGRESIVA Y REORDENAMIENTO -->
       <div id="seccion-perfil" class="hidden space-y-6 max-w-2xl mx-auto web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl animate-page">
         <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
           <h3 class="text-xs font-bold text-white"><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Perfil Gamer & Mis Publicaciones</h3>
@@ -183,7 +183,6 @@
         </div>
         
         <div class="space-y-4 text-xs">
-          <!-- CUENTA REGRESIVA VIP EN VIVO -->
           <div id="perfil-vip-countdown-box" class="hidden bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-2xl text-center space-y-1">
             <span class="text-yellow-400 font-bold uppercase tracking-wider block">👑 Estado VIP Activo</span>
             <div id="vip-countdown-timer" class="text-lg font-black text-white font-mono">--:--:--</div>
@@ -201,9 +200,8 @@
           <button onclick="guardarPerfilConLimiteFoto()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow">Guardar Cambios de Perfil</button>
         </div>
 
-        <!-- LISTA DE MIS PUBLICACIONES PARA REORDENAR -->
         <div class="space-y-3 pt-4 border-t border-zinc-800">
-          <h4 class="font-bold text-white text-xs uppercase"><i class="fas fa-list-ol text-yellow-400 mr-1.5"></i> Mis Cuentas Publicadas (Arrastra o reordena con prioridad)</h4>
+          <h4 class="font-bold text-white text-xs uppercase"><i class="fas fa-list-ol text-yellow-400 mr-1.5"></i> Mis Cuentas Publicadas (Dar Prioridad)</h4>
           <div id="mis-cuentas-reordenar-grid" class="space-y-2"></div>
         </div>
       </div>
@@ -245,7 +243,7 @@
         </div>
       </div>
 
-      <!-- PLAN VIP (APRENDIZ 3% / AVANZADO 7%) -->
+      <!-- PLAN VIP CON BOTÓN DE PAGO REAL DE FLOW -->
       <div id="seccion-vip" class="hidden space-y-6 max-w-4xl mx-auto animate-page">
         <div class="text-center space-y-2">
           <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Membresías Elite para Vendedores</span>
@@ -253,7 +251,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-          <!-- PLAN APRENDIZ ($2.990 - 3% DESCUENTO) -->
+          <!-- PLAN APRENDIZ ($2.990 - 3%) -->
           <div class="vip-banner-box rounded-3xl p-6 sm:p-8 space-y-5 text-center relative overflow-hidden flex flex-col justify-between">
             <div class="space-y-4">
               <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-300 text-zinc-950 flex items-center justify-center text-3xl font-black mx-auto shadow-xl"><i class="fas fa-seedling"></i></div>
@@ -265,7 +263,7 @@
             <button onclick="manejarBotonPlanVip('aprendiz')" class="w-full bg-gradient-to-r from-yellow-500 to-amber-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase text-xs shadow-xl transition">Activar Plan Aprendiz</button>
           </div>
 
-          <!-- PLAN AVANZADO ($5.090 - 7% DESCUENTO) -->
+          <!-- PLAN AVANZADO ($5.090 - 7% - NUEVO LINK FLOW) -->
           <div class="vip-advanced-box rounded-3xl p-6 sm:p-8 space-y-5 text-center relative overflow-hidden flex flex-col justify-between">
             <div class="space-y-4">
               <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-zinc-950 flex items-center justify-center text-3xl font-black mx-auto shadow-xl"><i class="fas fa-crown"></i></div>
@@ -467,7 +465,6 @@ auth.onAuthStateChanged(async(u)=>{
         document.getElementById('user-username').value = currentUserData.username || "";
         document.getElementById('user-metodo-pago').value = currentUserData.metodoPago || "";
 
-        // GESTIÓN DE CUENTA REGRESIVA VIP EN VIVO
         if(currentUserData.esVendedorVip && currentUserData.vipExpira){
           document.getElementById('perfil-vip-countdown-box').classList.remove('hidden');
           iniciarCuentaRegresivaVip(currentUserData.vipExpira.toDate());
@@ -522,35 +519,22 @@ function aplicarTematicaNotoriaConJS(tema){
     document.body.style.backgroundColor = '#1a0500';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #ff5500 0%, #1a0500 70%)';
     logoTitle.innerHTML = '🎃 SIILCK<span class="text-orange-400">VENTAS</span> 🕷️';
-    for(let i=0; i<6; i++){
+    for(let i=0; i<4; i++){
       const elem = document.createElement('div');
       elem.innerHTML = i % 2 === 0 ? '🎃' : '🕸️';
-      elem.className = 'absolute text-2xl animate-bounce';
-      elem.style.left = (Math.random() * 90 + 5) + '%';
-      elem.style.top = (Math.random() * 80 + 10) + '%';
+      elem.className = 'absolute text-xl opacity-30 select-none';
+      elem.style.left = (Math.random() * 85 + 5) + '%';
+      elem.style.top = (Math.random() * 85 + 5) + '%';
       container.appendChild(elem);
     }
   }else if(tema === 'navidad'){
     document.body.style.backgroundColor = '#02180a';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #059669 0%, #02180a 70%)';
     logoTitle.innerHTML = '🎄 SIILCK<span class="text-emerald-400">VENTAS</span> ❄️';
-    for(let i=0; i<20; i++){
-      const snow = document.createElement('div');
-      snow.innerHTML = '❄';
-      snow.className = 'absolute text-white text-opacity-80';
-      snow.style.left = (Math.random() * 100) + '%';
-      snow.style.top = (Math.random() * -20) + '%';
-      snow.style.fontSize = (Math.random() * 10 + 10) + 'px';
-      container.appendChild(snow);
-    }
   }else if(tema === 'verano'){
     document.body.style.backgroundColor = '#021024';
     document.body.style.backgroundImage = 'radial-gradient(circle at 50% 20%, #0284c7 0%, #021024 70%)';
     logoTitle.innerHTML = '☀️ SIILCK<span class="text-cyan-400">VENTAS</span> 🌴';
-    const sun = document.createElement('div');
-    sun.innerHTML = '☀️';
-    sun.className = 'absolute text-4xl top-4 right-8 animate-spin';
-    container.appendChild(sun);
   }else{
     document.body.style.backgroundColor = '#09090b';
     document.body.style.backgroundImage = 'none';
@@ -598,10 +582,15 @@ async function manejarBotonPlanVip(tipo){
   const unMesDespues = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
   await db.collection('perfiles').doc(auth.currentUser.uid).update({
     esVendedorVip: true,
-    nivelVip: tipo, // 'aprendiz' (3%) o 'avanzado' (7%)
+    nivelVip: tipo,
     vipExpira: firebase.firestore.Timestamp.fromDate(unMesDespues)
   });
-  window.open("https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c", "_blank");
+  // Enlace Flow actualizado para Avanzado y Aprendiz
+  if(tipo === 'avanzado'){
+    window.open("https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024", "_blank");
+  }else{
+    window.open("https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c", "_blank");
+  }
 }
 
 function cargarPublicacionesEnVivo(){
@@ -609,7 +598,6 @@ function cargarPublicacionesEnVivo(){
     globalPublicacionesCache = [];
     snapshot.forEach(doc => {
       const data = doc.data();
-      // Eliminar undefined en nombres o títulos
       globalPublicacionesCache.push({
         id: doc.id,
         titulo: data.titulo || "Cuenta Gamer Verificada",
@@ -617,6 +605,14 @@ function cargarPublicacionesEnVivo(){
         ...data
       });
     });
+    
+    // ORDENAR: LOS VIP APARECEN PRIMERO EN EL MARKETPLACE
+    globalPublicacionesCache.sort((a, b) => {
+      const vipA = a.esVip ? 1 : 0;
+      const vipB = b.esVip ? 1 : 0;
+      return vipB - vipA;
+    });
+
     renderizarGridPublicaciones(globalPublicacionesCache);
   });
 }
@@ -631,7 +627,6 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const esVipPub = p.esVip || false;
     const nivelVipVendedor = p.nivelVipVendedor || 'aprendiz';
     
-    // Insignias TOP dinámicas
     let insigniaTopHtml = "";
     if(esVipPub){
       if(nivelVipVendedor === 'avanzado'){
@@ -711,7 +706,7 @@ function actualizarPrecioTotalModal(){
 }
 
 async function agregarAlCarritoDesdeModal(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');document.getElementById('modal-sesion-requerida').classList.remove('hidden');return;}
   
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
@@ -738,7 +733,7 @@ async function agregarAlCarritoDesdeModal(){
 }
 
 function comprarConFlowVerificado(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');document.getElementById('modal-sesion-requerida').classList.remove('hidden');return;}
   window.open("https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c", "_blank");
 }
 
@@ -748,7 +743,7 @@ function abrirPerfilVendedorDesdeModal(){
 }
 
 async function iniciarChatPrivadoVendedor(){
-  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.remove('hidden');document.getElementById('modal-sesion-requerida').classList.add('flex');return;}
+  if(!auth.currentUser){document.getElementById('modal-sesion-requerida').classList.add('flex');document.getElementById('modal-sesion-requerida').classList.remove('hidden');return;}
   if(auth.currentUser.uid === vendedorActualUidCache){mostrarAlertaToast("Aviso", "No puedes chatear contigo mismo.");return;}
 
   document.getElementById('modal-pub-detalles').classList.add('hidden');
@@ -865,7 +860,6 @@ async function renderizarMisCuentasParaReordenar(){
 }
 
 async function moverPrioridadPublicacion(id, direccion){
-  // Ajusta la fecha para cambiar el orden de prioridad en tiempo real
   const pubRef = db.collection('publicaciones').doc(id);
   const doc = await pubRef.get();
   if(doc.exists){
