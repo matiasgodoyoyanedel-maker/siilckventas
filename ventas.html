@@ -8,10 +8,10 @@
 <script src="tema.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
   .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   @keyframes estelaVipPro {
     0%{border-color:#ef4444;box-shadow:0 0 10px rgba(239,68,68,0.4)}
@@ -205,8 +205,9 @@
     <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
       <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
       <div class="space-y-2 text-xs">
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" data-label="Garantía 10 días" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" data-label="Garantía 3 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="5682" data-label="Garantía 6 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>6 meses</span></div><span class="text-fuchsia-400 font-bold">+5.682 CLP</span></label>
       </div>
     </div>
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
@@ -219,6 +220,8 @@
 <script>
 const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
+const OWNER_UID_ALT="w4JA6UUF7WeC6UJweKAKdWYMHf73";
+function esAdminDueño(uid){ return uid===OWNER_UID || uid===OWNER_UID_ALT; }
 
 function initCanvas(){
   if(window.SiilckTema){ SiilckTema.bindCanvas(canvas); return; }
@@ -249,13 +252,13 @@ function etiquetaRangoVip(tipoVip, esVip){
 }
 function usuarioPuedeImpulsar(){
   if(!auth.currentUser) return false;
-  if(auth.currentUser.uid === OWNER_UID) return true;
+  if(esAdminDueño(auth.currentUser.uid)) return true;
   const tipo = currentUserData && currentUserData.tipoVip;
   return !!(currentUserData && currentUserData.esVendedorVip && (tipo === 'basico' || tipo === 'pro' || tipo === 'dueno'));
 }
 function cooldownImpulsoMs(){
   const tipo = currentUserData && currentUserData.tipoVip;
-  if(tipo === 'pro' || tipo === 'dueno' || (auth.currentUser && auth.currentUser.uid === OWNER_UID)) return 8*60*60*1000;
+  if(tipo === 'pro' || tipo === 'dueno' || (auth.currentUser && esAdminDueño(auth.currentUser.uid))) return 8*60*60*1000;
   return 24*60*60*1000;
 }
 async function impulsarPublicacion(pubId, ev){
@@ -404,7 +407,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
 
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
     const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
-    const botonEliminarAdmin = (auth.currentUser && auth.currentUser.uid === OWNER_UID) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2"><i class="fas fa-trash"></i></button>` : '';
+    const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
     const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
     const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
 
@@ -426,7 +429,10 @@ function renderizarGridPublicaciones(ps, filtro=""){
 }
 
 async function eliminarPublicacionAdmin(pubId){
-  if(!auth.currentUser || auth.currentUser.uid !== OWNER_UID) return;
+  if(!auth.currentUser || !esAdminDueño(auth.currentUser.uid)){
+    mostrarAlertaToast("Solo el dueño", "Únicamente el administrador puede eliminar publicaciones de otros usuarios.");
+    return;
+  }
   if(confirm("¿Eliminar esta publicación?")){ await db.collection('publicaciones').doc(pubId).delete(); mostrarToast("🗑️ Eliminada"); }
 }
 
@@ -462,12 +468,16 @@ async function agregarAlCarritoDesdeModal(){
   const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const garantiaLabel = garantiaRadio && garantiaRadio.getAttribute('data-label') ? garantiaRadio.getAttribute('data-label') : 'Garantía 10 días';
   await carritoRef.add({
+    tipoItem: 'cuenta',
     publicacionId: publicacionActualIdCache,
     titulo: document.getElementById('modal-pub-titulo').innerText,
     precio: precioBasePublicacionActual + costoGarantia,
     foto: document.getElementById('modal-pub-img').src || "",
     cantidadSeleccionada: 1,
+    garantiaCosto: costoGarantia,
+    garantiaLabel: garantiaLabel,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
   });
   document.getElementById('modal-pub-detalles').classList.add('hidden');
