@@ -105,6 +105,9 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
             <i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados
           </button>
+          <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
+            <i class="fas fa-ticket-alt text-rose-400 text-sm w-4"></i> Mis Tickets & Soporte
+          </button>
           <a href="foro.html" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5">
             <i class="fas fa-comments text-indigo-400 text-sm w-4"></i> Ir al Foro Completo
           </a>
@@ -124,6 +127,7 @@
     <button onclick="cambiarSeccion('inicio')" id="btn-sec-inicio" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 hover:text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-home mr-1.5"></i> Inicio</button>
     <button onclick="cambiarSeccion('mercado')" id="btn-sec-mercado" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-yellow-500 text-zinc-950 uppercase tracking-wider transition shadow whitespace-nowrap"><i class="fas fa-store mr-1.5"></i> Marketplace</button>
     <a href="foro.html" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-indigo-400 border border-indigo-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-comments mr-1.5"></i> Foro Gamer</a>
+    <button onclick="cambiarSeccion('mis-tickets')" id="btn-sec-tickets" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-rose-400 border border-rose-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-ticket-alt mr-1.5"></i> Crear / Ver Tickets</button>
     <button onclick="cambiarSeccion('vip')" id="btn-sec-vip" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-zinc-800 text-yellow-400 border border-yellow-500/30 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-crown text-yellow-400 mr-1.5"></i> Planes VIP</button>
   </div></div>
 
@@ -172,7 +176,7 @@
         <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
       </div>
 
-      <!-- SECCIÓN DE MIS CHATS CENTRADA Y ORDENADA -->
+      <!-- SECCIÓN MIS CHATS (CENTRADA Y ORDENADA) -->
       <div id="seccion-mis-chats" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
         <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
           <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
@@ -183,22 +187,60 @@
         </div>
       </div>
 
-      <!-- SECCIÓN DE CHAT ACTIVO -->
+      <!-- SECCIÓN CHAT ACTIVO -->
       <div id="seccion-chat-activo" class="hidden space-y-4 max-w-2xl mx-auto w-full animate-page">
         <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-yellow-500/30">
-          <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
-            <div><h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Chat Privado</h3><span class="text-[10px] text-emerald-400">🔒 Canal confidencial Escrow</span></div>
-            <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 hover:text-white underline">← Mis Chats</button>
+          <div class="border-b border-zinc-800 pb-3 flex flex-wrap items-center justify-between gap-2">
+            <div><h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Chat Privado</h3><span id="chat-subestado-txt" class="text-[10px] text-emerald-400">🔒 Canal confidencial Escrow</span></div>
+            <div class="flex items-center gap-2">
+              <div id="vendedor-cerrar-chat-box" class="hidden">
+                <button onclick="cerrarChatP2PDefinitivo()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-xl text-[10px] uppercase shadow">🔒 Cerrar Chat</button>
+              </div>
+              <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 hover:text-white underline">← Mis Chats</button>
+            </div>
           </div>
           <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
-          <div class="flex gap-2">
+          <div id="chat-input-area" class="flex gap-2">
             <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
             <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
+          </div>
+          <div id="chat-cerrado-aviso" class="hidden text-center text-xs text-rose-400 font-bold bg-rose-500/10 py-2 rounded-xl border border-rose-500/30">🔒 Chat cerrado por el vendedor. No se pueden enviar más mensajes.</div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN MIS TICKETS & SOPORTE -->
+      <div id="seccion-mis-tickets" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
+        <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
+          <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+            <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider"><i class="fas fa-ticket-alt mr-1.5"></i> Crear Reporte / Ticket de Soporte</h3>
+            <button onclick="cambiarSeccion('mercado')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
+          </div>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-zinc-300 mb-1">Motivo del Ticket</label>
+              <select id="ticket-motivo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white">
+                <option value="Estafa">🚨 Estafa</option>
+                <option value="Pago realizado y el cliente no me quiere entregar la cuenta">💸 Pago realizado y el cliente no me quiere entregar la cuenta</option>
+                <option value="Cuenta con datos cambiados">🔑 Cuenta con datos cambiados</option>
+                <option value="Cuenta baneada">🚫 Cuenta baneada</option>
+                <option value="Otro problema">❓ Otro problema / Duda general</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-zinc-300 mb-1">Descripción Detallada</label>
+              <textarea id="ticket-desc" rows="3" placeholder="Explica tu caso con todo detalle..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea>
+            </div>
+            <button onclick="enviarReporteTicketEmail()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase tracking-wider shadow">Enviar Reporte (Correo Matias Godoy)</button>
+          </div>
+
+          <div class="border-t border-zinc-800 pt-4 space-y-3">
+            <h4 class="font-bold text-white text-xs uppercase"><i class="fas fa-history text-yellow-400 mr-1.5"></i> Estado de Mis Tickets Activos</h4>
+            <div id="lista-tickets-usuario" class="space-y-2.5"></div>
           </div>
         </div>
       </div>
 
-      <!-- PLANES VIP CON AVISO DE PRÓXIMAMENTE MÁS FUNCIONES -->
+      <!-- PLANES VIP -->
       <div id="seccion-vip" class="hidden space-y-6 w-full animate-page">
         <div class="text-center space-y-2">
           <h2 class="text-2xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2>
@@ -419,11 +461,12 @@ async function verificarPublicarCuenta(){
 }
 
 function cambiarSeccion(s){
-  ['inicio','mercado','vip','publicar','perfil','perfil-vendedor','mis-chats','chat-activo'].forEach(x=>{
+  ['inicio','mercado','vip','publicar','perfil','perfil-vendedor','mis-chats','chat-activo','mis-tickets'].forEach(x=>{
     const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');
   });
   const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
   if(s === 'mis-chats') cargarListaChatsUsuario();
+  if(s === 'mis-tickets') cargarMisTicketsUsuario();
 }
 
 function ejecutarBusquedaEnVivo(v){
@@ -689,7 +732,7 @@ async function agregarAlCarritoDesdeModal(){
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
   const precioTotalItem = precioBasePublicacionActual + costoGarantia;
   const titulo = document.getElementById('modal-pub-titulo').innerText;
-  const foto = document.getElementById('modal-pub-img').src || "";
+  const foto = document.getElementById('modal-pub-img'].src || "";
 
   await carritoRef.add({
     publicacionId: publicacionActualIdCache,
@@ -728,6 +771,7 @@ async function iniciarChatPrivadoVendedor(){
       vendedorUid: vendedorActualUidCache,
       vendedorNombre: document.getElementById('modal-vendedor-nombre').innerText,
       tituloOferta: document.getElementById('modal-pub-titulo').innerText,
+      chatCerrado: false,
       actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
     });
     chatActivoId = nuevoChat.id;
@@ -739,7 +783,29 @@ async function abrirSalaChatActivo(chatId){
   chatActivoId = chatId;
   cambiarSeccion('chat-activo');
   const chatDoc = await db.collection('chats_p2p').doc(chatId).get();
-  if(chatDoc.exists){document.getElementById('chat-titulo-oferta').innerText = "Chat Privado: " + chatDoc.data().tituloOferta;}
+  if(!chatDoc.exists) return;
+  const chatData = chatDoc.data();
+  document.getElementById('chat-titulo-oferta').innerText = "Chat Privado: " + chatData.tituloOferta;
+
+  const esVendedor = auth.currentUser && auth.currentUser.uid === chatData.vendedorUid;
+  const cerrarBox = document.getElementById('vendedor-cerrar-chat-box');
+  if(esVendedor && !chatData.chatCerrado){
+    cerrarBox.classList.remove('hidden');
+  }else{
+    cerrarBox.classList.add('hidden');
+  }
+
+  const inputArea = document.getElementById('chat-input-area');
+  const cerradoAviso = document.getElementById('chat-cerrado-aviso');
+  if(chatData.chatCerrado){
+    inputArea.classList.add('hidden');
+    cerradoAviso.classList.remove('hidden');
+    document.getElementById('chat-subestado-txt').innerText = "🔒 Chat cerrado por el vendedor";
+  }else{
+    inputArea.classList.remove('hidden');
+    cerradoAviso.classList.add('hidden');
+    document.getElementById('chat-subestado-txt').innerText = "🔒 Canal confidencial Escrow";
+  }
 
   db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(async snapshot => {
     let h = "";
@@ -749,16 +815,31 @@ async function abrirSalaChatActivo(chatId){
       
       const perfilRemitenteDoc = await db.collection('perfiles').doc(m.remitenteUid).get();
       const pRData = perfilRemitenteDoc.exists ? perfilRemitenteDoc.data() : {};
-      const rangoTxt = pRData.tipoVip === 'pro' ? '👑 VIP Pro' : (pRData.tipoVip === 'basico' ? '⭐ VIP Básico' : 'Básico');
-      const nombreRealRemitente = m.remitenteNombre || pRData.username || "Gamer";
+      
+      let rangoRolTxt = "Comprador Básico";
+      if(m.remitenteUid === chatData.vendedorUid){
+        rangoRolTxt = pRData.tipoVip === 'pro' ? '👑 Vendedor VIP Pro' : (pRData.tipoVip === 'basico' ? '⭐ Vendedor VIP Básico' : 'Vendedor Básico');
+      }else{
+        rangoRolTxt = pRData.tipoVip === 'pro' ? '👑 Comprador VIP Pro' : (pRData.tipoVip === 'basico' ? '⭐ Comprador VIP Básico' : 'Comprador Básico');
+      }
 
+      const nombreRealRemitente = m.remitenteNombre || pRData.username || "Gamer";
       const align = esMio ? "text-right bg-yellow-500/10 border-yellow-500/30 ml-auto" : "text-left bg-zinc-900 border-zinc-800 mr-auto";
-      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align} space-y-1"><div class="flex items-center justify-between gap-2"><span class="text-[9px] text-yellow-400 font-bold">${nombreRealRemitente}</span><span class="text-[8px] bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded">${rangoTxt}</span></div><p class="text-xs text-white">${m.texto}</p></div>`;
+      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${align} space-y-1"><div class="flex items-center justify-between gap-2"><span class="text-[9px] text-yellow-400 font-bold">${nombreRealRemitente}</span><span class="text-[8px] bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded">${rangoRolTxt}</span></div><p class="text-xs text-white">${m.texto}</p></div>`;
     }
     const box = document.getElementById('chat-mensajes-box');
     box.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
     box.scrollTop = box.scrollHeight;
   });
+}
+
+async function cerrarChatP2PDefinitivo(){
+  if(!chatActivoId) return;
+  if(confirm("¿Estás seguro de cerrar este chat? Ninguno de los dos podrá escribir más.")){
+    await db.collection('chats_p2p').doc(chatActivoId).update({chatCerrado: true});
+    mostrarToast("🔒 Chat cerrado con éxito.");
+    abrirSalaChatActivo(chatActivoId);
+  }
 }
 
 async function enviarMensajeChatP2P(){
@@ -799,7 +880,7 @@ function verificarMensajesNuevos(snapshot, uid){
   const ping = document.getElementById('badge-notif-chats');
   if(hayNuevos){
     if(dot.classList.contains('hidden')){
-      reproducirSonidoNotificacion(); // Sonido "tin" y notificación visual
+      reproducirSonidoNotificacion();
     }
     dot.classList.remove('hidden');
     ping.classList.remove('hidden');
@@ -820,9 +901,48 @@ async function cargarListaChatsUsuario(){
   q2.forEach(d => chatsMap.set(d.id, d.data()));
   let h = "";
   chatsMap.forEach((data, id) => {
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')"><div><h4 class="font-bold text-white text-xs">${data.tituloOferta}</h4><p class="text-[10px] text-zinc-400">Último mensaje: ${data.ultimoMensaje || 'Sin mensajes'}</p></div><span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</span></div>`;
+    const estadoTxt = data.chatCerrado ? "🔒 Cerrado" : "🟢 Activo";
+    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between cursor-pointer hover:border-yellow-500/40 transition" onclick="abrirSalaChatActivo('${id}')"><div><h4 class="font-bold text-white text-xs">${data.tituloOferta}</h4><p class="text-[10px] text-zinc-400">Último mensaje: ${data.ultimoMensaje || 'Sin mensajes'} • <span class="text-yellow-400">${estadoTxt}</span></p></div><span class="bg-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</span></div>`;
   });
   listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
+}
+
+async function enviarReporteTicketEmail(){
+  if(!auth.currentUser){ document.getElementById('modal-sesion-requerida').classList.add('flex'); return; }
+  const motivo = document.getElementById('ticket-motivo').value;
+  const desc = document.getElementById('ticket-desc').value.trim();
+  if(!desc){ mostrarAlertaToast("Aviso", "Escribe una descripción detallada para el ticket."); return; }
+
+  // Guardar en Firestore para control de "Mis Tickets"
+  await db.collection('tickets').add({
+    uid: auth.currentUser.uid,
+    username: currentUserData.username || "Gamer",
+    motivo: motivo,
+    descripcion: desc,
+    estado: "Pendiente",
+    fecha: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // Abrir cliente de correo automático hacia matiasgodoy@gmail.com
+  const asunto = encodeURIComponent(`[Soporte SiilckVentas] Ticket: ${motivo} - Usuario: @${currentUserData.username || 'Gamer'}`);
+  const cuerpo = encodeURIComponent(`Hola Matias,\n\nSe ha generado un nuevo ticket de soporte en la plataforma:\n\nMotivo: ${motivo}\nUsuario: @${currentUserData.username}\nUID: ${auth.currentUser.uid}\n\nDescripción:\n${desc}\n\nPor favor revisar y responder a la brevedad.`);
+  window.location.href = `mailto:matiasgodoy@gmail.com?subject=${asunto}&body=${cuerpo}`;
+
+  document.getElementById('ticket-desc').value = "";
+  mostrarToast("📩 ¡Ticket enviado a tu correo y registrado correctamente!");
+  cargarMisTicketsUsuario();
+}
+
+async function cargarMisTicketsUsuario(){
+  if(!auth.currentUser) return;
+  const snap = await db.collection('tickets').where('uid', '==', auth.currentUser.uid).get();
+  let h = "";
+  snap.forEach(doc => {
+    const t = doc.data();
+    const estadoColor = t.estado === 'En revisión' ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' : 'text-zinc-400 bg-zinc-900 border-zinc-800';
+    h += `<div class="bg-zinc-900 p-3.5 rounded-xl border border-zinc-800 flex items-center justify-between text-xs"><div><h5 class="font-bold text-white">${t.motivo}</h5><p class="text-[10px] text-zinc-400 line-clamp-1">${t.descripcion}</p></div><span class="text-[10px] font-bold px-2.5 py-1 rounded-lg border ${estadoColor}">${t.estado}</span></div>`;
+  });
+  document.getElementById('lista-tickets-usuario').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-4">No has creado tickets de soporte aún.</p>`;
 }
 
 async function abrirPerfilVendedorPorUid(uid){
