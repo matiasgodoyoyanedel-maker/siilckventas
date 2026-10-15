@@ -9,11 +9,11 @@
   body{touch-action:manipulation;background-color:#09090b;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4,.font-heading{font-family:'Outfit',sans-serif}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
- .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+.web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
- .animate-page{animation:fadeIn.25s ease forwards}
- .drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all.2s ease}
- .drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
+.animate-page{animation:fadeIn.25s ease forwards}
+.drag-drop-zone{border:2px dashed rgba(234,179,8,0.3);transition:all.2s ease}
+.drag-drop-zone:hover{border-color:#eab308;background:rgba(234,179,8,0.03)}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col justify-between">
@@ -59,41 +59,23 @@
 
       <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía / Descripción *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta, métodos de entrega..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
 
-      <!-- === INICIO AÑADIDO RIGUROSO - NO TOCA LO DE ARRIBA === -->
       <div class="space-y-3 p-4 rounded-2xl bg-zinc-900/60 border border-yellow-500/20 mt-2">
         <h4 class="text-[11px] font-black uppercase tracking-wider text-yellow-400"><i class="fas fa-lock mr-1"></i> Datos privados obligatorios - Entrega automática *</h4>
-        <p class="text-[10px] text-zinc-500 leading-relaxed">Estos datos NO se muestran en el marketplace. Se guardan ENCRIPTADOS en otra colección y solo se desencriptan automáticamente cuando alguien te compre con Flow. Si pones datos falsos serás baneado.</p>
-
+        <p class="text-[10px] text-zinc-500 leading-relaxed">Estos datos NO se muestran en el marketplace. Se guardan ENCRIPTADOS y solo se desencriptan automáticamente cuando alguien te compre con Flow. Si pones datos falsos serás baneado.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Email real de la cuenta *</label>
-            <input type="email" id="f-priv-email" placeholder="cuenta.real@gmail.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white">
-          </div>
-          <div>
-            <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Contraseña actual *</label>
-            <input type="text" id="f-priv-pass" placeholder="Contraseña real" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white">
-          </div>
+          <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Email real de la cuenta *</label><input type="email" id="f-priv-email" placeholder="cuenta.real@gmail.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+          <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Contraseña actual *</label><input type="text" id="f-priv-pass" placeholder="Contraseña real" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
         </div>
-
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Teléfono vinculado / 2FA</label>
-            <input type="text" id="f-priv-tel" placeholder="+56 9... o código" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white">
-          </div>
-          <div>
-            <label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Correo de recuperación / ID del juego *</label>
-            <input type="text" id="f-priv-recup" placeholder="correo de recupero o ID" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white">
-          </div>
+          <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Teléfono vinculado / 2FA</label><input type="text" id="f-priv-tel" placeholder="+56 9... o código" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+          <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Correo de recuperación / ID del juego *</label><input type="text" id="f-priv-recup" placeholder="correo de recupero o ID" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
         </div>
       </div>
 
       <div class="flex gap-2 items-start p-3 rounded-xl bg-zinc-900 border border-zinc-800">
         <input type="checkbox" id="f-autorizo-datos" class="mt-0.5 w-4 h-4 accent-yellow-500" />
-        <label for="f-autorizo-datos" class="text-[11px] leading-relaxed text-zinc-300 select-none cursor-pointer">
-          Autorizo a entregar los datos de mi cuenta de forma automática después del pago con Flow para quitar estafas y garantizar la entrega al comprador. Entiendo que si entrego datos falsos seré sancionado y mi cuenta de vendedor será bloqueada. *
-        </label>
+        <label for="f-autorizo-datos" class="text-[11px] leading-relaxed text-zinc-300 select-none cursor-pointer">Autorizo a entregar los datos de mi cuenta de forma automática después del pago con Flow para quitar estafas y garantizar la entrega al comprador. Entiendo que si entrego datos falsos seré sancionado y mi cuenta de vendedor será bloqueada. *</label>
       </div>
-      <!-- === FIN AÑADIDO RIGUROSO === -->
 
       <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
         <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
@@ -128,23 +110,32 @@ const auth=firebase.auth(),db=firebase.firestore();
 
 function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
-
-// Encriptado simple cliente (en tu api lo re-encriptas bien con tu KEY)
 function simpleEnc(str){ try{ return btoa(unescape(encodeURIComponent(str))) }catch(e){ return btoa(str) } }
 
 auth.onAuthStateChanged(async(u)=>{
-  if(!u){
-    window.location.href = 'login.html';
-    return;
-  }
-  const doc = await db.collection('perfiles').doc(u.uid).get();
-  if(doc.exists){
-    currentUserData = doc.data();
-    if(!currentUserData.cuentaVendedorActiva){
-      mostrarAlertaToast("Acceso Denegado", "Debes activar tu cuenta de vendedor para publicar.");
-      setTimeout(()=>{ window.location.href = 'index.html'; }, 2000);
+  if(!u){ window.location.href = 'login.html'; return; }
+  try{
+    const doc = await db.collection('perfiles').doc(u.uid).get();
+    if(doc.exists){
+      let data = doc.data();
+      // === QUITA VENDEDORES BETA ANTIGUOS ===
+      if(data.cuentaVendedorActiva &&!data.fechaActivacionV2 && data.versionVendedor!== 'v2'){
+        await db.collection('perfiles').doc(u.uid).update({
+          cuentaVendedorActiva: false,
+          esBetaAntiguo: true,
+          cuentaVendedorBetaDesactivada: true
+        });
+        mostrarAlertaToast("Beta Expirada", "Tu cuenta vendedor beta fue desactivada. Debes activar tu cuenta de vendedor oficial de nuevo.");
+        setTimeout(()=>{ window.location.href = 'index.html'; }, 2500);
+        return;
+      }
+      currentUserData = data;
+      if(!currentUserData.cuentaVendedorActiva){
+        mostrarAlertaToast("Acceso Denegado", "Debes activar tu cuenta de vendedor para publicar.");
+        setTimeout(()=>{ window.location.href = 'index.html'; }, 2000);
+      }
     }
-  }
+  }catch(e){ console.log(e); }
 });
 
 function manejarSeleccionFoto(input){
@@ -160,79 +151,69 @@ function manejarSeleccionFoto(input){
 
 async function crearPublicacionMarketplace(){
   if(!auth.currentUser) return;
-  const titulo = document.getElementById('pub-titulo').value.trim();
-  const juego = document.getElementById('pub-juego').value;
-  const precio = parseInt(document.getElementById('pub-precio').value);
-  const nivel = document.getElementById('pub-nivel').value.trim();
-  const region = document.getElementById('pub-region').value.trim();
-  const stock = parseInt(document.getElementById('pub-stock').value) || 1;
-  const descripcion = document.getElementById('pub-descripcion').value.trim();
+  try{
+    const titulo = document.getElementById('pub-titulo').value.trim();
+    const juego = document.getElementById('pub-juego').value;
+    const precio = parseInt(document.getElementById('pub-precio').value);
+    const nivel = document.getElementById('pub-nivel').value.trim();
+    const region = document.getElementById('pub-region').value.trim();
+    const stock = parseInt(document.getElementById('pub-stock').value) || 1;
+    const descripcion = document.getElementById('pub-descripcion').value.trim();
+    const privEmail = document.getElementById('f-priv-email').value.trim();
+    const privPass = document.getElementById('f-priv-pass').value.trim();
+    const privTel = document.getElementById('f-priv-tel').value.trim();
+    const privRecup = document.getElementById('f-priv-recup').value.trim();
+    const autorizo = document.getElementById('f-autorizo-datos').checked;
 
-  // === NUEVA VALIDACION RIGUROSA - AÑADIDA ===
-  const privEmail = document.getElementById('f-priv-email').value.trim();
-  const privPass = document.getElementById('f-priv-pass').value.trim();
-  const privTel = document.getElementById('f-priv-tel').value.trim();
-  const privRecup = document.getElementById('f-priv-recup').value.trim();
-  const autorizo = document.getElementById('f-autorizo-datos').checked;
+    if(!titulo ||!precio ||!nivel ||!region ||!descripcion){
+      mostrarAlertaToast("Campos Incompletos", "Por favor llena todos los campos obligatorios."); return;
+    }
+    if(!privEmail ||!privPass ||!privRecup){
+      mostrarAlertaToast("Datos Privados Obligatorios", "Debes llenar el recuadro amarillo con email, contraseña y recuperación real."); return;
+    }
+    if(!autorizo){
+      mostrarAlertaToast("Autorización Requerida", "Debes marcar la palomita de autorizar entrega automática."); return;
+    }
 
-  if(!titulo ||!precio ||!nivel ||!region ||!descripcion){
-    mostrarAlertaToast("Campos Incompletos", "Por favor llena todos los campos obligatorios.");
-    return;
+    const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
+    const uData = userDoc.exists? userDoc.data() : {};
+    if(!currentUserData) currentUserData = uData;
+
+    if(!uData.cuentaVendedorActiva){
+      mostrarAlertaToast("Aviso", "No puedes publicar. Activa tu cuenta de vendedor."); return;
+    }
+
+    const tipoVip = uData.tipoVip || 'basico';
+
+    const docRef = await db.collection('publicaciones').add({
+      vendedorUid: auth.currentUser.uid,
+      vendedorNombre: currentUserData?.username || uData.username || "Vendedor",
+      vendedorLogo: currentUserData?.logo || uData.logo || "",
+      titulo: titulo, juego: juego, precio: precio, nivel: nivel, region: region, stock: stock, descripcion: descripcion,
+      foto: fotoBase64Seleccionada || "",
+      esVip: true, tipoVip: tipoVip,
+      fecha: firebase.firestore.FieldValue.serverTimestamp(),
+      tieneDatosPrivados: true
+    });
+
+    await db.collection('cuentas_secretas').doc(docRef.id).set({
+      publicacionId: docRef.id,
+      vendedorUid: auth.currentUser.uid,
+      email_enc: simpleEnc(privEmail),
+      pass_enc: simpleEnc(privPass),
+      tel_enc: simpleEnc(privTel),
+      recup_enc: simpleEnc(privRecup),
+      autorizadoEntregaAuto: true,
+      fecha: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    mostrarToast("🚀 ¡Cuenta publicada con entrega automática!");
+    setTimeout(()=>{ window.location.href = 'index.html'; }, 1200);
+
+  }catch(err){
+    console.error(err);
+    mostrarAlertaToast("Error al publicar", err.message);
   }
-  if(!privEmail ||!privPass ||!privRecup){
-    mostrarAlertaToast("Datos Privados Obligatorios", "Debes llenar el recuadro amarillo con email, contraseña y recuperación real.");
-    return;
-  }
-  if(!autorizo){
-    mostrarAlertaToast("Autorización Requerida", "Debes marcar la palomita de autorizar entrega automática para evitar estafas.");
-    return;
-  }
-
-  const userDoc = await db.collection('perfiles').doc(auth.currentUser.uid).get();
-  const uData = userDoc.exists? userDoc.data() : {};
-
-  if(!uData.cuentaVendedorActiva){
-    mostrarAlertaToast("Aviso", "No puedes publicar tu cuenta. Primero debes activar tu cuenta de vendedor.");
-    return;
-  }
-
-  const tipoVip = uData.tipoVip || 'basico';
-
-  // 1. Crear publicación pública (igual que antes)
-  const docRef = await db.collection('publicaciones').add({
-    vendedorUid: auth.currentUser.uid,
-    vendedorNombre: currentUserData.username || "Vendedor",
-    vendedorLogo: currentUserData.logo || "",
-    titulo: titulo,
-    juego: juego,
-    precio: precio,
-    nivel: nivel,
-    region: region,
-    stock: stock,
-    descripcion: descripcion,
-    foto: fotoBase64Seleccionada || "",
-    esVip: true,
-    tipoVip: tipoVip,
-    fecha: firebase.firestore.FieldValue.serverTimestamp(),
-    tieneDatosPrivados: true // para saber que esta lista para entrega auto
-  });
-
-  // 2. Guardar datos privados ENCRIPTADOS en otra colección (clave para entrega sí o sí)
-  await db.collection('cuentas_secretas').doc(docRef.id).set({
-    publicacionId: docRef.id,
-    vendedorUid: auth.currentUser.uid,
-    email_enc: simpleEnc(privEmail),
-    pass_enc: simpleEnc(privPass),
-    tel_enc: simpleEnc(privTel),
-    recup_enc: simpleEnc(privRecup),
-    autorizadoEntregaAuto: true,
-    fecha: firebase.firestore.FieldValue.serverTimestamp()
-  });
-
-  mostrarToast("🚀 ¡Cuenta publicada con entrega automática!");
-  setTimeout(()=>{
-    window.location.href = 'index.html';
-  }, 1200);
 }
 </script>
 </body>
