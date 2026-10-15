@@ -13,6 +13,7 @@
  .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
  .vip-card-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 25px rgba(234,179,8,0.2)}
  .vip-card-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 25px rgba(239,68,68,0.2)}
+ .trabaja-banner{background:linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(18,18,24,0.95) 100%);border:1px solid rgba(234,179,8,0.4)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
  .animate-page{animation:fadeIn.25s ease forwards}
   #app-loading-screen{position:fixed;inset:0;background:#09090b;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
@@ -45,7 +46,7 @@
 </div>
 
 <div id="modal-bloqueado-permanente" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-[700] p-4 text-center">
-  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-rose-500 animate-glow">
+  <div class="web-panel max-w-md w-full p-8 rounded-3xl space-y-5 border border-rose-500">
     <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-ban"></i></div>
     <h3 class="text-xl font-black text-white">Tu cuenta ha sido bloqueada</h3>
     <p class="text-xs text-zinc-300 leading-relaxed">Has sido bloqueado o sancionado por la administración de SiilckVentas. No puedes acceder a la plataforma.</p>
@@ -127,38 +128,107 @@
 
 <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-12 flex flex-col items-center justify-center">
 <section id="view-dashboard" class="w-full space-y-8 animate-page text-center">
+
   <div class="web-panel border border-yellow-500/30 rounded-3xl p-10 space-y-6 shadow-2xl relative overflow-hidden">
     <div class="absolute -top-12 -right-12 w-36 h-36 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
-    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-xl shadow-yellow-500/30 mx-auto animate-bounce"><i class="fas fa-store text-3xl"></i></div>
+    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-xl shadow-yellow-500/30 mx-auto animate-bounce">
+      <i class="fas fa-store text-3xl"></i>
+    </div>
     <div class="space-y-3">
       <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Marketplace & Escrow Global</span>
       <h1 class="text-3xl md:text-4xl font-black font-heading text-white">Bienvenido a SiilckVentas</h1>
       <p class="text-xs text-zinc-300 max-w-md mx-auto leading-relaxed">Explora miles de cuentas verificadas de Free Fire, Fortnite, Valorant y más con protección Escrow garantizada al 100%.</p>
     </div>
     <div class="pt-2">
-      <a href="ventas.html" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-8 py-4 rounded-2xl text-sm uppercase tracking-wider shadow-2xl shadow-yellow-500/40 transition transform hover:scale-105"><i class="fas fa-store-alt text-lg"></i> Ir a Marketplace</a>
+      <a href="ventas.html" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-8 py-4 rounded-2xl text-sm uppercase tracking-wider shadow-2xl shadow-yellow-500/40 transition transform hover:scale-105">
+        <i class="fas fa-store-alt text-lg"></i> Ir a Marketplace
+      </a>
     </div>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <button onclick="cambiarSeccion('vip')" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-yellow-500/50 text-left space-y-2 transition group"><div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold"><i class="fas fa-crown"></i></div><h3 class="font-bold text-white text-sm">Planes VIP</h3><p class="text-[11px] text-zinc-400">Destaca tus publicaciones y obtén descuentos exclusivos.</p></button>
-    <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-rose-500/50 text-left space-y-2 transition group"><div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold"><i class="fas fa-ticket-alt"></i></div><h3 class="font-bold text-white text-sm">Soporte & Tickets</h3><p class="text-[11px] text-zinc-400">¿Dudas o reportes? Abre un ticket con la administración.</p></button>
-    <a href="foro.html" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-indigo-500/50 text-left space-y-2 transition group block"><div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold"><i class="fas fa-comments"></i></div><h3 class="font-bold text-white text-sm">Foro Gamer</h3><p class="text-[11px] text-zinc-400">Comenta y comparte con la comunidad de jugadores.</p></a>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+    <button onclick="cambiarSeccion('vip')" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-yellow-500/50 text-left space-y-2 transition group">
+      <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold"><i class="fas fa-crown"></i></div>
+      <h3 class="font-bold text-white text-sm">Planes VIP</h3>
+      <p class="text-[11px] text-zinc-400">Destaca tus publicaciones y obtén descuentos exclusivos.</p>
+    </button>
+    <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-rose-500/50 text-left space-y-2 transition group">
+      <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold"><i class="fas fa-ticket-alt"></i></div>
+      <h3 class="font-bold text-white text-sm">Soporte & Tickets</h3>
+      <p class="text-[11px] text-zinc-400">¿Dudas o reportes? Abre un ticket con la administración.</p>
+    </button>
+    <a href="foro.html" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-indigo-500/50 text-left space-y-2 transition group block">
+      <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold"><i class="fas fa-comments"></i></div>
+      <h3 class="font-bold text-white text-sm">Foro Gamer</h3>
+      <p class="text-[11px] text-zinc-400">Comenta y comparte con la comunidad de jugadores.</p>
+    </a>
+  </div>
+
+  <div class="trabaja-banner rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left">
+    <div class="space-y-2.5">
+      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Reclutamiento Oficial</span>
+      <h2 class="text-xl md:text-2xl font-black text-white font-heading">¿Quieres trabajar con nosotros?</h2>
+      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Únete al staff de vendedores verificados de SiilckVentas. Postula y empieza a vender sin límites con protección Escrow.</p>
+    </div>
+    <a href="formulario.html" class="shrink-0 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-yellow-500/30 transition transform hover:scale-105 flex items-center gap-2">
+      Ir a Formulario <i class="fas fa-arrow-right"></i>
+    </a>
   </div>
 
   <div id="seccion-vip" class="hidden space-y-6 w-full animate-page text-left">
-    <div class="flex justify-between items-center border-b border-zinc-800 pb-3"><h2 class="text-xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2><button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Cerrar</button></div>
+    <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
+      <h2 class="text-xl font-black text-white font-heading">Elige tu Rango VIP Vendedor</h2>
+      <button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Cerrar</button>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-      <div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between"><div class="space-y-4 text-center"><span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Aprendiz / Básico</span><h3 class="text-2xl font-black text-white">VIP BÁSICO</h3><div class="text-3xl font-black text-yellow-400">$2.990 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div><ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800"><li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil.</li><li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li></ul></div><a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Básico ($2.990)</a></div>
-      <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between"><div class="space-y-4 text-center"><span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Pro</span><h3 class="text-2xl font-black text-white">VIP PRO</h3><div class="text-3xl font-black text-rose-500">$5.090 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div><ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800"><li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li><li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li></ul></div><a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Pro ($5.090)</a></div>
+      <div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Aprendiz / Básico</span>
+          <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
+          <div class="text-3xl font-black text-yellow-400">$2.990 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil.</li>
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li>
+          </ul>
+        </div>
+        <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Básico ($2.990)</a>
+      </div>
+      <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Plan VIP Pro</span>
+          <h3 class="text-2xl font-black text-white">VIP PRO</h3>
+          <div class="text-3xl font-black text-rose-500">$5.090 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li>
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li>
+          </ul>
+        </div>
+        <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Comprar VIP Pro ($5.090)</a>
+      </div>
     </div>
   </div>
 
   <div id="seccion-mis-tickets" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
-      <div class="border-b border-zinc-800 pb-3 flex justify-between items-center"><h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider"><i class="fas fa-ticket-alt mr-1.5"></i> Crear Reporte / Ticket de Soporte</h3><button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button></div>
+      <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+        <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider"><i class="fas fa-ticket-alt mr-1.5"></i> Crear Reporte / Ticket de Soporte</h3>
+        <button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
+      </div>
       <div class="space-y-3 text-xs">
-        <div><label class="block font-bold text-zinc-300 mb-1">Motivo del Ticket</label><select id="ticket-motivo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white"><option value="Estafa">🚨 Estafa</option><option value="Pago realizado y el cliente no me quiere entregar la cuenta">💸 Pago realizado y el cliente no me quiere entregar la cuenta</option><option value="Cuenta con datos cambiados">🔑 Cuenta con datos cambiados</option><option value="Cuenta baneada">🚫 Cuenta baneada</option><option value="Otro problema">❓ Otro problema / Duda general</option></select></div>
-        <div><label class="block font-bold text-zinc-300 mb-1">Descripción Detallada</label><textarea id="ticket-desc" rows="3" placeholder="Explica tu caso con todo detalle..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea></div>
+        <div>
+          <label class="block font-bold text-zinc-300 mb-1">Motivo del Ticket</label>
+          <select id="ticket-motivo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white">
+            <option value="Estafa">🚨 Estafa</option>
+            <option value="Pago realizado y el cliente no me quiere entregar la cuenta">💸 Pago realizado y el cliente no me quiere entregar la cuenta</option>
+            <option value="Cuenta con datos cambiados">🔑 Cuenta con datos cambiados</option>
+            <option value="Cuenta baneada">🚫 Cuenta baneada</option>
+            <option value="Otro problema">❓ Otro problema / Duda general</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-zinc-300 mb-1">Descripción Detallada</label>
+          <textarea id="ticket-desc" rows="3" placeholder="Explica tu caso con todo detalle..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white resize-none"></textarea>
+        </div>
         <button onclick="enviarReporteTicketEmail()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3 rounded-xl uppercase tracking-wider shadow">Enviar Ticket</button>
       </div>
       <div id="lista-tickets-usuario" class="space-y-2 pt-2"></div>
@@ -167,15 +237,25 @@
 
   <div id="seccion-mis-chats" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
-      <div class="border-b border-zinc-800 pb-3 flex justify-between items-center"><h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3><button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button></div>
+      <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
+        <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
+        <button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Volver</button>
+      </div>
       <div id="lista-chats-usuario" class="space-y-3"></div>
     </div>
   </div>
 
   <div id="seccion-perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4 w-full">
-      <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center"><span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer</span><button onclick="cambiarSeccion('inicio')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button></h3>
-      <div class="space-y-4 text-xs"><div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username-input" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div><div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div><button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button></div>
+      <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
+        <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer</span>
+        <button onclick="cambiarSeccion('inicio')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button>
+      </h3>
+      <div class="space-y-4 text-xs">
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username-input" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        <button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
+      </div>
     </div>
   </div>
 
@@ -184,8 +264,7 @@
 
 <script>
 const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,authCheckHecho=false;
-// === TU UID DUEÑO REAL ===
-const OWNER_UID="w4JA6UUF7WeC6UJweKAKdWYMHf73";
+const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 
 function initCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;estrellas=[];for(let i=0;i<80;i++)estrellas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+0.5,alpha:Math.random(),speed:(Math.random()*0.015+0.002)});}function animateCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#09090b';ctx.fillRect(0,0,canvas.width,canvas.height);estrellas.forEach(e=>{e.alpha+=e.speed;if(e.alpha>1||e.alpha<0.15)e.speed*=-1;ctx.fillStyle=`rgba(234,179,8,${e.alpha})`;ctx.beginPath();ctx.arc(e.x,e.y,e.size,0,Math.PI*2);ctx.fill()});requestAnimationFrame(animateCanvas);}window.addEventListener('resize',initCanvas);initCanvas();animateCanvas();
 
@@ -193,35 +272,22 @@ const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 
-// === FIX SESION GLOBAL - ESTO ES LO QUE EVITA QUE SE CIERRE AL CAMBIAR DE APARTADO ===
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-.then(()=>{console.log("✅ Sesión LOCAL vinculada en INDEX")})
-.catch(e=>console.error(e));
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(()=>{console.log("✅ Sesión LOCAL INDEX")}).catch(e=>console.error(e));
 
 function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
 
 function verificarLoginAccion(callback){
-  if(!auth.currentUser){
-    localStorage.setItem('redirect_after_login', window.location.pathname);
-    window.location.href = 'login.html';
-    return;
-  }
+  if(!auth.currentUser){ localStorage.setItem('redirect_after_login', window.location.pathname); window.location.href = 'login.html'; return; }
   callback();
 }
 function verificarAccionProtegida(event, url){
-  if(!auth.currentUser){
-    if(event) event.preventDefault();
-    localStorage.setItem('redirect_after_login', url);
-    window.location.href = 'login.html';
-    return false;
-  }
+  if(!auth.currentUser){ if(event) event.preventDefault(); localStorage.setItem('redirect_after_login', url); window.location.href = 'login.html'; return false; }
   window.location.href = url;
 }
-
 function cambiarSeccion(s){
-  ['inicio','vip','perfil','mis-chats','mis-tickets'].forEach(x=>{const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');});
-  const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
+  ['vip','perfil','mis-chats','mis-tickets'].forEach(x=>{const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');});
+  if(s!=='inicio'){const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');}
   if(s==='mis-chats') cargarListaChatsUsuario();
   if(s==='mis-tickets') cargarMisTicketsUsuario();
 }
@@ -230,22 +296,26 @@ async function cargarListaChatsUsuario(){
   if(!auth.currentUser) return;
   const uid = auth.currentUser.uid;
   const listEl = document.getElementById('lista-chats-usuario');
-  const q1 = await db.collection('chats_p2p').where('compradorUid', '==', uid).get();
-  const q2 = await db.collection('chats_p2p').where('vendedorUid', '==', uid).get();
-  let chatsMap = new Map();
-  q1.forEach(d => chatsMap.set(d.id, d.data()));
-  q2.forEach(d => chatsMap.set(d.id, d.data()));
-  let h = "";
-  chatsMap.forEach((data, id) => { h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2"><span class="text-xs text-white">Chat P2P</span><a href="ventas.html" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Ver en Ventas</a></div>`; });
-  listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
+  try{
+    const q1 = await db.collection('chats_p2p').where('compradorUid', '==', uid).get();
+    const q2 = await db.collection('chats_p2p').where('vendedorUid', '==', uid).get();
+    let chatsMap = new Map();
+    q1.forEach(d => chatsMap.set(d.id, d.data()));
+    q2.forEach(d => chatsMap.set(d.id, d.data()));
+    let h = "";
+    chatsMap.forEach((data, id) => { h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2"><span class="text-xs text-white">Chat P2P #${id.substring(0,6)}</span><a href="ventas.html" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Ver en Ventas</a></div>`; });
+    listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
+  }catch(e){ listEl.innerHTML=`<p class="text-xs text-rose-400 text-center py-4">${e.message}</p>`}
 }
 async function cargarMisTicketsUsuario(){
   if(!auth.currentUser) return;
-  const snap = await db.collection('tickets').where('uid', '==', auth.currentUser.uid).get();
-  let h = "";
-  snap.forEach(doc => { const t = doc.data(); h += `<div class="bg-zinc-900 p-3.5 rounded-xl border border-zinc-800 text-xs"><h5 class="font-bold text-white">${t.motivo}</h5><p class="text-[10px] text-zinc-400">${t.estado}</p></div>`; });
-  const listaEl = document.getElementById('lista-tickets-usuario');
-  if(listaEl) listaEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-4">No has creado tickets aún.</p>`;
+  try{
+    const snap = await db.collection('tickets').where('uid', '==', auth.currentUser.uid).get();
+    let h = "";
+    snap.forEach(doc => { const t = doc.data(); h += `<div class="bg-zinc-900 p-3.5 rounded-xl border border-zinc-800 text-xs"><h5 class="font-bold text-white">${t.motivo}</h5><p class="text-[10px] text-zinc-400">${t.estado||'Pendiente'}</p></div>`; });
+    const listaEl = document.getElementById('lista-tickets-usuario');
+    if(listaEl) listaEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-4">No has creado tickets aún.</p>`;
+  }catch(e){}
 }
 async function enviarReporteTicketEmail(){
   if(!auth.currentUser){ window.location.href = 'login.html'; return; }
@@ -264,7 +334,6 @@ async function guardarPerfilGamerReal(){
   mostrarToast("¡Perfil actualizado!"); cambiarSeccion('inicio');
 }
 
-// === FIX PRINCIPAL - NO CIERRA SESION AL CAMBIAR ===
 auth.onAuthStateChanged(async(u)=>{
   if(!u){
     setTimeout(()=>{
@@ -282,12 +351,9 @@ auth.onAuthStateChanged(async(u)=>{
   }
   if(authCheckHecho) return;
   authCheckHecho = true;
-
-  // Quitar loader
   document.getElementById('main-body-fade').classList.remove('opacity-0');
   const loader = document.getElementById('app-loading-screen');
   if(loader){ loader.style.opacity = '0'; setTimeout(()=>loader.remove(), 400); }
-
   if(u){
     document.getElementById('nav-btn-ir-login').classList.add('hidden');
     document.getElementById('nav-user-logged-box').classList.remove('hidden');
@@ -306,7 +372,7 @@ auth.onAuthStateChanged(async(u)=>{
     if(u.uid===OWNER_UID){
       const btnMant = document.getElementById('menu-btn-mantenimiento-owner');
       if(btnMant) btnMant.classList.remove('hidden');
-      console.log("👑 Dueño detectado en INDEX");
+      console.log("👑 Dueño detectado YwjfajkyMXMRHd18eII4dwV03NF3");
     }
   }
 });
