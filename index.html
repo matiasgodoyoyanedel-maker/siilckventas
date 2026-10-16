@@ -117,6 +117,7 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('perfil'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-user-circle text-yellow-400 text-sm w-4"></i> Mi Perfil Gamer</button>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados</button>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-ticket-alt text-rose-400 text-sm w-4"></i> Mis Tickets & Soporte</button>
+          <a href="/mis-compras" onclick="return irAMisCompras(event)" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-shopping-bag text-yellow-400 text-sm w-4"></i> Mis compras</a>
           <a href="foro.html" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-comments text-indigo-400 text-sm w-4"></i> Ir al Foro Completo</a>
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30"><i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel</button>
         </div>
@@ -323,6 +324,20 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(()=>{console.log(
 function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
 
+function irAMisCompras(event){
+  if(event) event.preventDefault();
+  const ir = (user) => {
+    if(!user){
+      localStorage.setItem('redirect_after_login', '/mis-compras');
+      window.location.href = '/login?next=/mis-compras';
+      return;
+    }
+    window.location.href = '/mis-compras';
+  };
+  if(auth.currentUser){ ir(auth.currentUser); return false; }
+  const stop = auth.onAuthStateChanged((user) => { stop(); ir(user); });
+  return false;
+}
 function verificarLoginAccion(callback){
   if(!auth.currentUser){ localStorage.setItem('redirect_after_login', window.location.pathname); window.location.href = 'login.html'; return; }
   callback();
