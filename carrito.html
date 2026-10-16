@@ -218,14 +218,35 @@ async function activarPasesVipTrasPago(uid){
   }
 }
 
+function respuestaEsSesion(data){
+  const t = String((data && (data.code || data.error)) || '').toLowerCase();
+  return t.includes('token_expirado') || t.includes('sesion') || t.includes('sesión') || t.includes('expirad');
+}
+async function tokenDePago(){
+  const user = auth.currentUser;
+  if(!user) throw new Error('Debes iniciar sesión para comprar.');
+  try { return await user.getIdToken(true); }
+  catch(e){ return await user.getIdToken(); }
+}
 async function payloadPagoFlow(){
-  const idToken = await auth.currentUser.getIdToken();
+  const idToken = await tokenDePago();
   return {
     uid: auth.currentUser.uid,
-    email: emailGlobal,
+    email: auth.currentUser.email || emailGlobal,
     idToken,
     amount: totalFinalGlobal
   };
+}
+async function pedirPagoFlow(){
+  const payload = await payloadPagoFlow();
+  const res = await fetch('/api/crear', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
+    body: JSON.stringify(payload)
+  });
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch(e) { throw new Error((text || '').slice(0, 80) || 'Flow no devolvió JSON'); }
 }
 
 async function pagarConFlow(){
@@ -242,18 +263,10 @@ async function pagarConFlow(){
   btn.disabled = true;
 
   try {
-    const payload = await payloadPagoFlow();
-    const res = await fetch('/api/crear', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
-      body: JSON.stringify(payload)
-    });
-    const text = await res.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch(e) {
-      throw new Error((text || '').slice(0, 80) || 'Flow no devolvió JSON');
+    let data = await pedirPagoFlow();
+    if(respuestaEsSesion(data) && auth.currentUser){
+      await auth.currentUser.reload().catch(()=>{});
+      data = await pedirPagoFlow();
     }
 
     if(data.flowUrl){

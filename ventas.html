@@ -177,7 +177,7 @@
             </div>
           </div>
           <div class="w-full border-t border-zinc-800 pt-4">
-            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4 text-left">Cuentas Activas del Vendedor</h4>
+            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4 text-left">Cuentas disponibles</h4>
             <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
           </div>
         </div>
@@ -608,11 +608,11 @@ async function abrirPerfilVendedorPorUid(uid){
   document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-3xl">👑</span>`;
   let h = "";
   globalPublicacionesCache.forEach(p => {
-    if(p.vendedorUid === uid){
-      h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span></div>`;
-    }
+    const stockNum = p.stock == null || p.stock === '' ? 1 : Number(p.stock);
+    if(p.vendedorUid !== uid || p.vendida || stockNum <= 0) return;
+    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span></div>`;
   });
-  document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">Sin publicaciones.</p>`;
+  document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }
 
 async function cargarListaChatsUsuario(){

@@ -1,4 +1,5 @@
-import { authAdmin, getDb } from '../lib/logis/db.js';
+import { getDb } from '../lib/logis/db.js';
+import { verificarTokenSesion } from '../lib/logis/sesion.js';
 import { estaPagada, puedeVerDatosCuenta } from '../lib/logis/entrega.js';
 import { confirmarWebhook } from '../lib/logis/pagos.js';
 
@@ -30,13 +31,9 @@ export default async function handler(req, res) {
     const idToken = header.startsWith('Bearer ') ? header.slice(7) : '';
     if (!idToken) return res.status(401).json({ ok: false, error: 'Inicia sesión para ver tu compra.' });
 
-    let uid = '';
-    try {
-      const decoded = await authAdmin().verifyIdToken(idToken);
-      uid = decoded.uid;
-    } catch {
-      return res.status(401).json({ ok: false, error: 'Sesión inválida. Vuelve a iniciar sesión.' });
-    }
+    const sesion = await verificarTokenSesion(idToken);
+    if (!sesion.ok) return res.status(401).json({ ok: false, error: sesion.error });
+    const uid = sesion.uid;
 
     const orderId = String(req.query?.order_id || req.query?.id || '').trim();
     if (!orderId) return res.status(400).json({ ok: false, error: 'Falta el número de orden.' });
