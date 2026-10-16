@@ -261,7 +261,7 @@ function ofertaDe(precio, producto){
 function htmlPrecioOferta(precio, producto, claseAhora){
   const oferta = ofertaDe(precio, producto);
   if(!oferta) return `<span class="text-yellow-400 font-extrabold text-xs">${precioVisible(precio)}</span>`;
-  return `<span class="text-right leading-tight"><span class="block text-[10px] text-zinc-400 line-through">Precio ref. ${precioVisible(oferta.antes)}</span><span class="${claseAhora}">${precioVisible(oferta.ahora)}</span></span>`;
+  return `<span class="text-right leading-tight"><span class="block text-[11px] text-zinc-300 line-through">${precioVisible(oferta.antes)}</span><span class="${claseAhora}">${precioVisible(oferta.ahora)}</span></span>`;
 }
 function htmlBadgeOferta(producto){
   const oferta = ofertaDe(producto && producto.precio, producto);
@@ -681,10 +681,14 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-detalles').classList.add('flex');
 }
 
+function precioCuentaACobrar(base, producto){
+  const oferta = ofertaDe(base, producto);
+  return oferta && oferta.ahora >= 1 ? oferta.ahora : (Number(base) || 0);
+}
 function actualizarPrecioTotalModal(){
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
-  document.getElementById('modal-pub-precio-total').innerText = precioVisible(precioBasePublicacionActual + costoGarantia);
+  document.getElementById('modal-pub-precio-total').innerText = precioVisible(precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual) + costoGarantia);
   const banner = document.getElementById('modal-oferta-banner');
   if(banner){
     const oferta = ofertaDe(precioBasePublicacionActual, ofertaPublicacionActual);
@@ -740,8 +744,9 @@ async function agregarAlCarritoDesdeModal(){
     tipoItem: 'cuenta',
     publicacionId: publicacionActualIdCache,
     titulo: document.getElementById('modal-pub-titulo').innerText,
-    precio: precioBasePublicacionActual + costoGarantia,
+    precio: precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual) + costoGarantia,
     precioBase: precioBasePublicacionActual,
+    precioFinal: precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual),
     garantia: costoGarantia,
     garantiaCosto: costoGarantia,
     garantiaLabel: garantiaLabel,

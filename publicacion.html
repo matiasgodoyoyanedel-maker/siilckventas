@@ -44,7 +44,7 @@
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80 Full Skins" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       <div class="grid grid-cols-2 gap-3">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"></select></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" oninput="actualizarPreviewOferta()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       </div>
       <div class="grid grid-cols-3 gap-2">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
@@ -73,21 +73,22 @@
       </div>
       <div class="bg-black/40 border border-yellow-400/20 rounded-xl p-4 mt-4">
         <label class="flex items-center gap-3 cursor-pointer">
-          <input type="checkbox" id="activarOferta" class="w-5 h-5 accent-yellow-400" onchange="document.getElementById('selectorDescuento').classList.toggle('hidden', !this.checked)" />
-          <span class="text-white font-bold text-sm">🔥 ¿Activar OFERTA llamativa? (Recomendado, vendes más)</span>
+          <input type="checkbox" id="activarOferta" class="w-5 h-5 accent-yellow-400" onchange="document.getElementById('selectorDescuento').classList.toggle('hidden', !this.checked); document.getElementById('texto-oferta-apagada').classList.toggle('hidden', this.checked); actualizarPreviewOferta();" />
+          <span class="text-white font-bold text-sm">🔥 ¿Deseas activar descuento para una venta más rápida? Se te descontará el % elegido</span>
         </label>
-        <p class="text-[11px] text-gray-400 mt-1 ml-8">Muestra tu cuenta como OFERTA: ej: Antes $17.900 tachado -> Ahora $16.000</p>
+        <p id="texto-oferta-apagada" class="text-[11px] text-gray-400 mt-1 ml-8">Muestra tu cuenta como OFERTA: Antes tachado - Ahora con descuento</p>
         <div id="selectorDescuento" class="hidden mt-3 ml-8">
-          <label class="text-xs text-gray-300">Elige % de oferta a mostrar:</label>
-          <select id="descuentoPorcentaje" class="mt-1 w-full bg-zinc-900 border border-zinc-700 text-white rounded-lg p-2 text-sm">
-            <option value="5">5% OFF - Sutil</option>
-            <option value="6">6% OFF</option>
-            <option value="7">7% OFF</option>
-            <option value="8">8% OFF - Recomendado</option>
-            <option value="9">9% OFF</option>
-            <option value="10">10% OFF - Muy llamativo</option>
+          <label class="text-xs text-gray-300">Elige % de descuento:</label>
+          <select id="descuentoPorcentaje" onchange="actualizarPreviewOferta()" class="mt-1 w-full bg-zinc-900 border border-yellow-500/30 text-white rounded-lg p-3 text-sm">
+            <option value="5">5% OFF</option>
+            <option value="8" selected>8% OFF - Recomendado</option>
+            <option value="10">10% OFF</option>
+            <option value="15">15% OFF - Rápido</option>
+            <option value="20">20% OFF - Remate</option>
           </select>
-          <p class="text-[10px] text-gray-500 mt-1">Es solo visual para destacar. Se cobra el precio que tú pongas.</p>
+          <div class="mt-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2">
+            <p id="preview-oferta" class="text-[11px] text-yellow-400 font-bold">Preview: $0 → $0</p>
+          </div>
         </div>
       </div>
       <button id="btn-publicar" onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider disabled:opacity-60">Publicar en Marketplace</button>
@@ -149,6 +150,14 @@ auth.onAuthStateChanged(async(u)=>{
   sel.innerHTML=window.SIILCK_GAMES.map(g=>'<option value="'+window.siilckEsc(g.nombre)+'">'+window.siilckEsc(g.nombre)+'</option>').join('');
 })();
 function manejarSeleccionFoto(input){if(input.files && input.files[0]){const reader=new FileReader();reader.onload=function(e){fotoBase64Seleccionada=e.target.result;document.getElementById('pub-foto-label').innerText="Imagen cargada ✅"};reader.readAsDataURL(input.files[0]);}}
+function actualizarPreviewOferta(){
+  const box=document.getElementById('preview-oferta');
+  if(!box) return;
+  const precioNum=Number(document.getElementById('pub-precio').value)||0;
+  const desc=Number(document.getElementById('descuentoPorcentaje').value)||8;
+  const ahora=Math.round((precioNum*(1-desc/100))/100)*100;
+  box.textContent='Preview: $'+precioNum.toLocaleString('es-CL')+' → $'+ahora.toLocaleString('es-CL');
+}
 let publicacionEnCurso=false;
 function clavePublicacion(titulo,juego,precio){return (String(titulo||'').trim()+'|'+String(juego||'')+'|'+Number(precio||0)).toLowerCase();}
 function publicacionSigueDisponible(p){if(!p||p.vendida)return false;const s=p.stock;if(s==null||s==='')return true;return Number(s)>0;}
@@ -177,11 +186,13 @@ async function crearPublicacionMarketplace(){
     const ofertaBox=document.getElementById('activarOferta');
     const ofertaActiva=!!(ofertaBox && ofertaBox.checked);
     const ofertaElegida=parseInt(document.getElementById('descuentoPorcentaje').value,10);
-    const ofertaDescuento=ofertaActiva ? (ofertaElegida>=5 && ofertaElegida<=10 ? ofertaElegida : 5) : 0;
-    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,ofertaActiva,ofertaDescuento});
+    const porcentajesOferta=[5,8,10,15,20];
+    const ofertaDescuento=ofertaActiva ? (porcentajesOferta.indexOf(ofertaElegida)>=0 ? ofertaElegida : 8) : 0;
+    const precioFinal=ofertaActiva ? Math.round((precio * (1 - ofertaDescuento / 100)) / 100) * 100 : precio;
+    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,ofertaActiva,ofertaDescuento,precioFinal});
     await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
     publicada=true;
-    mostrarToast(esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!");setTimeout(()=>{window.location.href='index.html'},1200);
+    mostrarToast(ofertaActiva ? ("🚀 Publicado. Con "+ofertaDescuento+"% se cobra $"+precioFinal.toLocaleString('es-CL')) : (esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!"));setTimeout(()=>{window.location.href='index.html'},1200);
   }catch(err){console.error(err);mostrarAlertaToast("Error",err.message);}
   finally{
     if(!publicada){
