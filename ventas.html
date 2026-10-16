@@ -96,6 +96,7 @@
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0">
+      <div id="sv-locale-slot"></div>
       <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito"><i class="fas fa-shopping-cart text-sm"></i></a>
       <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats"><i class="fas fa-comments text-sm"></i><span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span></button>
       <button onclick="window.location.href='index.html'" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition"><i class="fas fa-home mr-1"></i> Inicio</button>
@@ -226,8 +227,8 @@
       <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
       <div class="space-y-2 text-xs">
         <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" data-label="Garantía 10 días" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" data-label="Garantía 3 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="5682" data-label="Garantía 6 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>6 meses</span></div><span class="text-fuchsia-400 font-bold">+5.682 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" data-label="Garantía 3 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold" data-precio-clp="2841" data-precio-prefijo="+">+2.841 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="5682" data-label="Garantía 6 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>6 meses</span></div><span class="text-fuchsia-400 font-bold" data-precio-clp="5682" data-precio-prefijo="+">+5.682 CLP</span></label>
       </div>
     </div>
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
@@ -248,6 +249,17 @@ const categoriasAbiertas={juegos:true,stream:true};
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 const OWNER_UID_ALT="w4JA6UUF7WeC6UJweKAKdWYMHf73";
 function esAdminDueño(uid){ return uid===OWNER_UID || uid===OWNER_UID_ALT; }
+function precioVisible(n){
+  if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
+  return '$' + Number(n || 0).toLocaleString('es-CL');
+}
+document.addEventListener('siilck-settings', () => {
+  if(globalPublicacionesCache && globalPublicacionesCache.length){
+    renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+  }
+  const modal = document.getElementById('modal-pub-detalles');
+  if(modal && !modal.classList.contains('hidden')) actualizarPrecioTotalModal();
+});
 
 function initCanvas(){
   if(window.SiilckTema){ SiilckTema.bindCanvas(canvas); return; }
@@ -608,7 +620,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
           <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
           <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre || 'Vendedor'}</span>
         </div>
-        <span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span>
+        <span class="text-yellow-400 font-extrabold text-xs">${precioVisible(p.precio)}</span>
       </div>
     </div>`;
   });
@@ -649,7 +661,7 @@ async function abrirModalPub(id){
 function actualizarPrecioTotalModal(){
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
-  document.getElementById('modal-pub-precio-total').innerText = `$${(precioBasePublicacionActual + costoGarantia).toLocaleString('es-CL')} CLP`;
+  document.getElementById('modal-pub-precio-total').innerText = precioVisible(precioBasePublicacionActual + costoGarantia);
 }
 
 async function pagarProductoConProveedor(ruta, btnId){
@@ -765,7 +777,7 @@ async function abrirPerfilVendedorPorUid(uid){
   globalPublicacionesCache.forEach(p => {
     const stockNum = p.stock == null || p.stock === '' ? 1 : Number(p.stock);
     if(p.vendedorUid !== uid || p.vendida || stockNum <= 0) return;
-    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span></div>`;
+    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><span class="text-yellow-400 font-extrabold text-xs">${precioVisible(p.precio)}</span></div>`;
   });
   document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }
@@ -814,6 +826,7 @@ async function cargarListaChatsUsuario(){
   });
 })();
 </script>
+<script type="module" src="/lib/settings.js"></script>
 <script src="/guardia.js"></script>
 </body>
 </html>

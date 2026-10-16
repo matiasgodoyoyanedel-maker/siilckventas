@@ -102,8 +102,9 @@
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
       <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer"><i class="fas fa-shopping-cart text-sm"></i></a>
       <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P"><i class="fas fa-comments text-sm"></i><span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span></button>
+      <div id="sv-locale-slot"></div>
       <div id="auth-nav-area" class="flex items-center space-x-2">
-        <button onclick="window.location.href='login.html'" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login / Registro</button>
+        <button onclick="window.location.href='login.html'" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login / Registro</span></button>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
           <span id="nav-user-email" class="text-xs font-bold text-yellow-400 max-w-[100px] truncate bg-zinc-900 px-3 py-2 rounded-xl border border-zinc-800">--</span>
           <button onclick="cerrarSesion()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
@@ -131,17 +132,17 @@
 
   <div class="siilck-lobby-final">
     <div class="siilck-welcome-card">
-      <div class="sv-trust-bar"><span class="sv-trust-dot" aria-hidden="true"></span><span>🔒 ESCROW PROTEGIDO • ⚡ ENTREGA INMEDIATA • ✅ VERIFICADAS A MANO</span></div>
+      <div class="sv-trust-bar"><span class="sv-trust-dot" aria-hidden="true"></span><span data-i18n="trust">🔒 ESCROW PROTEGIDO • ⚡ ENTREGA INMEDIATA • ✅ VERIFICADAS A MANO</span></div>
       <div class="welcome-icon">🛍️</div>
-      <h1>Bienvenido a SiilckVentas</h1>
-      <div class="welcome-badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
-      <p class="welcome-sub">Explora miles de cuentas verificadas con protección Escrow garantizada al 100%.</p>
+      <h1 data-i18n="welcome">Bienvenido a SiilckVentas</h1>
+      <div class="welcome-badge" data-i18n="badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
+      <p class="welcome-sub" data-i18n="subtitle">Explora miles de cuentas verificadas con protección Escrow garantizada al 100%.</p>
       <div class="sv-search-wrap">
-        <input id="lobby-search" type="search" placeholder="Buscar juego o streaming..." autocomplete="off" aria-label="Buscar juego o streaming">
+        <input id="lobby-search" type="search" data-i18n-placeholder="search" placeholder="Buscar juego o streaming..." autocomplete="off" aria-label="Buscar juego o streaming">
         <div id="lobby-search-list" class="sv-ac"></div>
       </div>
 
-      <div class="section-label">🎮 JUEGOS POPULARES</div>
+      <div class="section-label" data-i18n="popularGames">🎮 JUEGOS POPULARES</div>
       <div class="game-showcase" id="gameShowcase1">
         <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack1', -1)" aria-label="Juego anterior">‹</button>
         <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack1', 1)" aria-label="Juego siguiente">›</button>
@@ -155,7 +156,7 @@
         <div class="auto-bar"><div class="auto-progress" id="autoProgress1"></div></div>
       </div>
 
-      <div class="section-label" style="margin-top:22px">📺 STREAMING & SERVICIOS</div>
+      <div class="section-label" style="margin-top:22px" data-i18n="streaming">📺 STREAMING & SERVICIOS</div>
       <div class="game-showcase" id="gameShowcase2">
         <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack2', -1)" aria-label="Servicio anterior">‹</button>
         <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack2', 1)" aria-label="Servicio siguiente">›</button>
@@ -169,36 +170,36 @@
         <div class="auto-bar"><div class="auto-progress" id="autoProgress2"></div></div>
       </div>
 
-      <a href="ventas.html" class="welcome-btn">🏪 IR A MARKETPLACE</a>
+      <a href="ventas.html" class="welcome-btn" data-i18n="marketplace">🏪 IR A MARKETPLACE</a>
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
     <button onclick="cambiarSeccion('vip')" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-yellow-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold"><i class="fas fa-crown"></i></div>
-      <h3 class="font-bold text-white text-sm">Pases VIP</h3>
-      <p class="text-[11px] text-zinc-400">Activa el Pase Básico para impulsar anuncios, marco dorado y descuentos en el carrito.</p>
+      <h3 class="font-bold text-white text-sm" data-i18n="vipTitle">Pases VIP</h3>
+      <p class="text-[11px] text-zinc-400" data-i18n="vipText">Activa el Pase Básico para impulsar anuncios, marco dorado y descuentos en el carrito.</p>
     </button>
     <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-rose-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold"><i class="fas fa-ticket-alt"></i></div>
-      <h3 class="font-bold text-white text-sm">Soporte & Tickets</h3>
-      <p class="text-[11px] text-zinc-400">¿Dudas o reportes? Abre un ticket con la administración.</p>
+      <h3 class="font-bold text-white text-sm" data-i18n="supportTitle">Soporte & Tickets</h3>
+      <p class="text-[11px] text-zinc-400" data-i18n="supportText">¿Dudas o reportes? Abre un ticket con la administración.</p>
     </button>
     <a href="foro.html" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-indigo-500/50 text-left space-y-2 transition group block">
       <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold"><i class="fas fa-comments"></i></div>
-      <h3 class="font-bold text-white text-sm">Foro Gamer</h3>
-      <p class="text-[11px] text-zinc-400">Comenta y comparte con la comunidad de jugadores.</p>
+      <h3 class="font-bold text-white text-sm" data-i18n="forumTitle">Foro Gamer</h3>
+      <p class="text-[11px] text-zinc-400" data-i18n="forumText">Comenta y comparte con la comunidad de jugadores.</p>
     </a>
   </div>
 
   <div class="trabaja-banner rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left">
     <div class="space-y-2.5">
-      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Reclutamiento Oficial</span>
-      <h2 class="text-xl md:text-2xl font-black text-white font-heading">¿Quieres trabajar con nosotros?</h2>
-      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Postula aquí y un administrador revisará tu caso para ver si eres apto. Empieza a vender sin límites con protección Escrow.</p>
+      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest" data-i18n="jobsBadge">Reclutamiento Oficial</span>
+      <h2 class="text-xl md:text-2xl font-black text-white font-heading" data-i18n="jobsTitle">¿Quieres trabajar con nosotros?</h2>
+      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed" data-i18n="jobsText">Postula aquí y un administrador revisará tu caso para ver si eres apto. Empieza a vender sin límites con protección Escrow.</p>
     </div>
     <a href="formulario.html" class="shrink-0 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-yellow-500/30 transition transform hover:scale-105 flex items-center gap-2">
-      Click Aquí <i class="fas fa-arrow-right"></i>
+      <span data-i18n="jobsCta">Click Aquí</span> <i class="fas fa-arrow-right"></i>
     </a>
   </div>
 
@@ -786,6 +787,7 @@ function lobbyAutocomplete(v){
   }, 280);
 })();
 </script>
+<script type="module" src="/lib/settings.js"></script>
 <script src="/guardia.js"></script>
 </body>
 </html>
