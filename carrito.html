@@ -57,6 +57,7 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 
 let totalFinalGlobal = 0;
+let itemsCarritoGlobal = [];
 let emailGlobal = 'cliente@siiilckventas.com';
 
 let carritoListo=false;
@@ -96,6 +97,7 @@ function cargarCarritoEnVivo(uid){
 async function renderizarCarrito(items, uid){
   const listEl = document.getElementById('carrito-items-list');
   const desgloseBox = document.getElementById('carrito-desglose-box');
+  itemsCarritoGlobal = items || [];
   
   if(items.length === 0){
     listEl.innerHTML = `<p class="text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
@@ -103,6 +105,15 @@ async function renderizarCarrito(items, uid){
     totalFinalGlobal = 0;
     return;
   }
+
+  const preciosVivos = {};
+  await Promise.all(items.map(async (item) => {
+    if(item.tipoItem === 'pase_vip' || !item.publicacionId) return;
+    const pub = await db.collection('publicaciones').doc(item.publicacionId).get();
+    if(!pub.exists) return;
+    const precio = Math.round(Number(pub.data().precio) || 0);
+    if(precio > 0) preciosVivos[item.id] = precio;
+  }));
 
   const userDoc = await db.collection('perfiles').doc(uid).get();
   const userData = userDoc.exists ? userDoc.data() : {};
@@ -118,7 +129,14 @@ async function renderizarCarrito(items, uid){
     const esPase = item.tipoItem === 'pase_vip';
     const cantidad = item.cantidadSeleccionada || 1;
     const stockDisponible = esPase ? 1 : (item.stock || item.unidades || 1);
-    const totalItem = (item.precio || 0) * cantidad;
+    const garantiaNum = Number(item.garantia ?? item.garantiaCosto ?? 0);
+    const garantiaOk = [0, 2841, 5682].includes(garantiaNum) ? garantiaNum : 0;
+    const baseVivo = preciosVivos[item.id] || 0;
+    const baseGuardado = Number(item.precioBase || 0);
+    const unitario = esPase
+      ? Number(item.precio || 0)
+      : (baseVivo > 0 ? baseVivo + garantiaOk : (baseGuardado > 0 ? baseGuardado + garantiaOk : Number(item.precio || 0)));
+    const totalItem = unitario * cantidad;
     if(esPase) subtotalPases += totalItem;
     else subtotalCuentas += totalItem;
 
@@ -142,7 +160,7 @@ async function renderizarCarrito(items, uid){
         <div>
           <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
           ${garantiaTxt}
-          <span class="text-[10px] text-yellow-400 font-bold">$${parseInt(item.precio||0).toLocaleString('es-CL')} CLP c/u</span>
+          <span class="text-[10px] text-yellow-400 font-bold">$${parseInt(unitario||0).toLocaleString('es-CL')} CLP c/u</span>
           ${qtyBox}
         </div>
       </div>
@@ -239,19 +257,17 @@ async function tokenDePago(){
 }
 async function payloadPagoFlow(){
   const idToken = await tokenDePago();
-  return {
-    uid: auth.currentUser.uid,
-    email: auth.currentUser.email || emailGlobal,
-    idToken,
-    amount: totalFinalGlobal
-  };
+  const cuentas = itemsCarritoGlobal.filter(item => item.tipoItem !== 'pase_vip' && item.publicacionId);
+  const body = {};
+  if(cuentas.length === 1 && itemsCarritoGlobal.length === 1) body.listing_id = cuentas[0].publicacionId;
+  return { idToken, body };
 }
 async function pedirPagoFlow(){
   const payload = await payloadPagoFlow();
-  const res = await fetch('/api/crear', {
+  const res = await fetch('/api/flow/create-order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload.body)
   });
   const text = await res.text();
   try { return JSON.parse(text); }
@@ -260,7 +276,7 @@ async function pedirPagoFlow(){
 
 async function pagarConFlow(){
   const btn = document.getElementById('btn-pagar-flow');
-  if(totalFinalGlobal <= 0){
+  if(!itemsCarritoGlobal.length){
     alert('Tu carrito está vacío');
     return;
   }
@@ -278,8 +294,8 @@ async function pagarConFlow(){
       data = await pedirPagoFlow();
     }
 
-    if(data.flowUrl){
-      window.location.href = data.flowUrl;
+    if(data.url){
+      window.location.href = data.url;
     } else {
       alert('Error Flow: ' + (data.error || JSON.stringify(data)));
       btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
