@@ -402,12 +402,10 @@ async function comprarPaseVipConFlow(tipo){
       let idToken = '';
       try { idToken = await auth.currentUser.getIdToken(true); }
       catch(e){ idToken = await auth.currentUser.getIdToken(); }
-      const montos = totalVipConIva(precio);
       return postCrearPago({
         uid: auth.currentUser.uid,
         email: auth.currentUser.email,
         idToken,
-        amount: montos.total,
         tipoVipPase: tipo
       });
     };
@@ -417,8 +415,8 @@ async function comprarPaseVipConFlow(tipo){
       await auth.currentUser.reload().catch(()=>{});
       data = await pedir();
     }
-    if(data && data.flowUrl){
-      window.location.href = data.flowUrl;
+    if(data && (data.url || data.flowUrl)){
+      window.location.href = data.url || data.flowUrl;
       return;
     }
     mostrarAlertaToast('Error Flow', data && (data.error || JSON.stringify(data)) || 'No se pudo crear el pago.');
