@@ -32,7 +32,12 @@ document.getElementById('recuperar-enviar').addEventListener('click', async () =
   const err = document.getElementById('recuperar-error');
   err.textContent = '';
   try {
-    await auth.sendPasswordResetEmail(email, { url: window.location.origin + '/login' });
+    try {
+      await auth.sendPasswordResetEmail(email, { url: window.location.origin + '/login' });
+    } catch (e) {
+      if (!e || e.code !== 'auth/unauthorized-continue-uri') throw e;
+      await auth.sendPasswordResetEmail(email);
+    }
     document.getElementById('recuperar-form').classList.add('hidden');
     document.getElementById('recuperar-ok').classList.remove('hidden');
   } catch (e) {
