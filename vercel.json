@@ -2,10 +2,13 @@
   "cleanUrls": true,
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "index.html"
+      "includeFiles": "{index.html,lib/gamesList.js}"
     }
   },
   "rewrites": [
+    { "source": "/google78561bbab4dd18b7.html", "destination": "/api/google-verify" },
+    { "source": "/google78561bbab4dd18b7", "destination": "/api/google-verify" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/pago/exito", "destination": "/pago/exito.html" },
     { "source": "/pago/error", "destination": "/pago/error.html" },
     { "source": "/mis-compras/:id", "destination": "/mis-compras.html" }
