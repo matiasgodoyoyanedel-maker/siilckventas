@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperar contraseña - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/tema.css">
+<script src="/tema.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white flex items-center justify-center p-4">
+  <div class="bg-zinc-900 p-8 rounded-2xl w-full max-w-sm border border-zinc-800">
+    <h1 class="text-2xl font-bold">Recuperar contraseña</h1>
+    <p class="text-zinc-400 text-sm mt-1 mb-4">Te enviamos el correo real de Firebase</p>
+    <div id="recuperar-form">
+      <input id="recuperar-email" type="email" placeholder="tu correo" class="w-full p-3 rounded-xl bg-black border border-zinc-700 text-white">
+      <p id="recuperar-error" class="text-red-400 text-xs mt-2"></p>
+      <button type="button" id="recuperar-enviar" class="w-full bg-white text-black py-3 rounded-full font-bold mt-3">Enviar link real</button>
+    </div>
+    <div id="recuperar-ok" class="hidden text-green-400 text-sm">✅ Si el correo existe, te llegó el link real. Revisa spam también.</div>
+    <a href="/login" class="block text-center text-zinc-400 text-sm underline mt-4">Volver al login</a>
+  </div>
+<script>
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"}; // pragma: allowlist secret
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+document.getElementById('recuperar-enviar').addEventListener('click', async () => {
+  const email = document.getElementById('recuperar-email').value.trim();
+  const err = document.getElementById('recuperar-error');
+  err.textContent = '';
+  try {
+    await auth.sendPasswordResetEmail(email, { url: window.location.origin + '/login' });
+    document.getElementById('recuperar-form').classList.add('hidden');
+    document.getElementById('recuperar-ok').classList.remove('hidden');
+  } catch (e) {
+    err.textContent = (e.code || 'error') + ' - ' + (e.message || '');
+  }
+});
+</script>
+<script src="/guardia.js"></script>
+</body>
+</html>
