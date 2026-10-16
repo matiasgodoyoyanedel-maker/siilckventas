@@ -91,6 +91,12 @@
       </div>
 
       <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
+        <h4 class="font-bold text-white uppercase text-[11px]">WhatsApp flotante</h4>
+        <p class="text-[11px] text-zinc-400">Número internacional sin +. Se muestra sobre el banner de mantención en toda la web.</p>
+        <input type="text" id="admin-whatsapp-number" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white" placeholder="56950095612">
+      </div>
+
+      <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
         <h4 class="font-bold text-white uppercase text-[11px]">👑 Precio Pase VIP (CLP neto, sin IVA)</h4>
         <p class="text-[11px] text-zinc-400">Estos valores se cobran en Flow al instante: neto + IVA 19%. No uses botones fijos de Flow.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -219,9 +225,28 @@ async function cargarPostulacionesAdmin(){
   box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes.</p>`;
 }
 
+async function publicarNuevoVendedor(uid){
+  try{
+    const doc = await db.collection('perfiles').doc(uid).get();
+    const d = doc.exists ? doc.data() : {};
+    const nombre = (d.username || 'Vendedor').split(' ')[0];
+    const comuna = d.comuna || d.ciudad || 'Santiago';
+    const payload = {
+      type: 'new_seller',
+      nombreAnonimizado: nombre.charAt(0).toUpperCase() + nombre.slice(1) + ' de ' + comuna,
+      producto: '',
+      comuna,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await db.collection('recentActivity').add(payload);
+    await db.collection('configuracion').doc('global').set({ ultimaActividad: payload }, { merge: true });
+  }catch(e){ console.log(e); }
+}
+
 async function aprobarPostulacion(postId, uid){
   await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'aprobado'});
-  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true});
+  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true, role: 'seller'});
+  await publicarNuevoVendedor(uid);
   mostrarToast("✅ Postulación aprobada y cuenta de vendedor activada con éxito.");
   cargarPostulacionesAdmin();
 }
@@ -263,7 +288,11 @@ async function cargarUsuariosAdmin(){
 
 async function toggleRolVendedor(uid, estadoActual){
   const nuevoEstado = !estadoActual;
-  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: nuevoEstado});
+  await db.collection('perfiles').doc(uid).update({
+    cuentaVendedorActiva: nuevoEstado,
+    role: nuevoEstado ? 'seller' : 'user'
+  });
+  if(nuevoEstado) await publicarNuevoVendedor(uid);
   mostrarToast(nuevoEstado ? "⭐ Rol de vendedor otorgado." : "⚠️ Rol de vendedor retirado (perdió insignias).");
   cargarUsuariosAdmin();
 }
@@ -304,6 +333,8 @@ async function cargarConfiguracionAdmin(){
     const inputPro = document.getElementById('admin-precio-vip-pro');
     if(inputBasico) inputBasico.value = configGlobalCache.precioPaseVipBasico || configGlobalCache.precioVipBasico || 2990;
     if(inputPro) inputPro.value = configGlobalCache.precioPaseVipPro || configGlobalCache.precioVipPro || 5090;
+    const inputWa = document.getElementById('admin-whatsapp-number');
+    if(inputWa) inputWa.value = configGlobalCache.whatsappNumber || '56950095612';
 
     const tema = configGlobalCache.tematica || (window.SiilckTema ? SiilckTema.current() : 'aurora');
     const temaTxt = document.getElementById('tematica-actual-txt');
@@ -345,8 +376,11 @@ async function guardarConfiguracionGlobalAdmin(){
   }
   configGlobalCache.precioPaseVipBasico = basico;
   configGlobalCache.precioPaseVipPro = pro;
+  const wa = (document.getElementById('admin-whatsapp-number').value || '').replace(/\D/g, '') || '56950095612';
+  configGlobalCache.whatsappNumber = wa;
   if(!configGlobalCache.tematica) configGlobalCache.tematica = window.SiilckTema ? SiilckTema.current() : 'aurora';
   await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
+  await db.collection('config').doc('general').set({ whatsappNumber: wa }, { merge: true });
   mostrarToast("💾 Configuración guardada con éxito.");
 }
 
