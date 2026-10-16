@@ -19,6 +19,12 @@
   <div class="web-panel max-w-lg w-full rounded-3xl p-8 text-center space-y-5 border border-emerald-500/40">
     <div class="w-16 h-16 rounded-2xl bg-emerald-500 text-zinc-950 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check"></i></div>
     <h1 id="titulo" class="text-2xl font-black text-white">Confirmando tu pago…</h1>
+    <div id="box-transaccion" class="hidden text-left bg-yellow-500/10 border border-yellow-500/40 rounded-2xl p-4 space-y-1">
+      <p class="text-xs font-bold text-yellow-300">ID de Transacción:</p>
+      <p id="txt-transaccion" class="font-mono font-bold text-white text-lg break-all select-all"></p>
+      <p class="text-[11px] text-zinc-400">Guarda este ID. Si tienes dudas, envíame este ID por WhatsApp y te ayudo.</p>
+      <button type="button" id="btn-copiar-transaccion" class="text-xs bg-yellow-500/20 text-yellow-200 px-3 py-1.5 rounded-lg font-bold">Copiar ID Transacción</button>
+    </div>
     <p id="detalle" class="text-sm text-zinc-300">Flow ya recibió el cobro. Estamos cerrando la orden.</p>
     <a id="btn-datos" href="/carrito.html" class="hidden w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-4 rounded-2xl text-sm uppercase tracking-wide">Ver datos de tu cuenta</a>
     <a href="/index.html" class="block text-xs text-zinc-400 hover:text-white">Volver al inicio</a>
@@ -28,13 +34,28 @@ const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-const orderId=new URLSearchParams(location.search).get('order_id')||'';
+const paramsPago=new URLSearchParams(location.search);
+const orderId=paramsPago.get('order_id')||paramsPago.get('orderId')||'';
 const titulo=document.getElementById('titulo');
 const detalle=document.getElementById('detalle');
 const boton=document.getElementById('btn-datos');
+const boxTransaccion=document.getElementById('box-transaccion');
+const txtTransaccion=document.getElementById('txt-transaccion');
+document.getElementById('btn-copiar-transaccion').addEventListener('click', async()=>{
+  const valor=txtTransaccion.textContent||'';
+  try{ await navigator.clipboard.writeText(valor); }
+  catch(e){}
+});
+function mostrarTransaccion(data){
+  const idTx=(data&&(data.flowOrder||data.flowTransactionId||data.transactionId||data.commerceOrder||data.id))||orderId;
+  if(!idTx) return;
+  txtTransaccion.textContent=idTx;
+  boxTransaccion.classList.remove('hidden');
+}
 
 function pesos(n){return '$'+Number(n||0).toLocaleString('es-CL');}
 function mostrarExito(data){
+  mostrarTransaccion(data);
   const monto=data&&data.total?pesos(data.total):'';
   titulo.textContent=monto?('¡Tu pago de '+monto+' ha sido realizado con éxito!'):'¡Tu pago ha sido realizado con éxito!';
   detalle.textContent=data&&data.tieneCuentas?'Ya puedes ver el correo, la clave y los datos que cargó el vendedor.':'El pase quedó registrado. Si compraste una cuenta, ábrela desde el botón.';
@@ -57,6 +78,7 @@ async function consultar(user){
 }
 
 auth.onAuthStateChanged(async(user)=>{
+  mostrarTransaccion(null);
   if(!orderId){
     mostrarExito(null);
     return;

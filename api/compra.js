@@ -64,6 +64,10 @@ export default async function handler(req, res) {
       paid,
       total,
       commerceOrder: orderId,
+      id: orden.id || orderId,
+      transactionId: orden.transactionId || orderId,
+      flowOrder: orden.flowOrder || '',
+      flowTransactionId: orden.flowTransactionId || orden.flowOrder || orderId,
       estado: orden.estado || orden.status || '',
       tieneCuentas: false
     };

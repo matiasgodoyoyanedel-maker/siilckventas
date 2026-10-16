@@ -21,6 +21,12 @@
     <div class="web-panel rounded-3xl p-6 space-y-2 border border-yellow-500/30">
       <h1 class="text-xl font-black text-white">Datos de tu cuenta</h1>
       <p id="estado" class="text-xs text-zinc-400">Cargando la compra…</p>
+      <div id="box-transaccion" class="hidden text-left bg-yellow-500/10 border border-yellow-500/40 rounded-2xl p-4 space-y-1">
+        <p class="text-xs font-bold text-yellow-300">ID de Transacción:</p>
+        <p id="txt-transaccion" class="font-mono font-bold text-white text-lg break-all select-all"></p>
+        <p class="text-[11px] text-zinc-400">Guarda este ID. Si tienes dudas, envíame este ID por WhatsApp y te ayudo.</p>
+        <button type="button" id="btn-copiar-transaccion" class="text-xs bg-yellow-500/20 text-yellow-200 px-3 py-1.5 rounded-lg font-bold">Copiar ID Transacción</button>
+      </div>
     </div>
     <div id="lista" class="space-y-3"></div>
   </div>
@@ -104,6 +110,14 @@ auth.onAuthStateChanged(async(user)=>{
     const res=await fetch('/api/compra?datos=1&order_id='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+token}});
     const data=await res.json();
     if(!res.ok){ estado.textContent=data.error||'No se pudieron mostrar los datos.'; return; }
+    const idTx=data.flowOrder||data.flowTransactionId||data.transactionId||data.id||id;
+    const txtTx=document.getElementById('txt-transaccion');
+    txtTx.textContent=idTx;
+    document.getElementById('box-transaccion').classList.remove('hidden');
+    document.getElementById('btn-copiar-transaccion').addEventListener('click', async()=>{
+      try{ await navigator.clipboard.writeText(txtTx.textContent||''); }
+      catch(e){}
+    });
     pintar(data.cuentas||[]);
   }catch(e){
     estado.textContent='No se pudieron cargar los datos. Reintenta en unos segundos.';
