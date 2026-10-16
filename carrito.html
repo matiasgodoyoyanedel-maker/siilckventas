@@ -109,10 +109,12 @@ async function renderizarCarrito(items, uid){
   const preciosVivos = {};
   await Promise.all(items.map(async (item) => {
     if(item.tipoItem === 'pase_vip' || !item.publicacionId) return;
-    const pub = await db.collection('publicaciones').doc(item.publicacionId).get();
-    if(!pub.exists) return;
-    const precio = Math.round(Number(pub.data().precio) || 0);
-    if(precio > 0) preciosVivos[item.id] = precio;
+    try {
+      const pub = await db.collection('publicaciones').doc(item.publicacionId).get();
+      if(!pub.exists) return;
+      const precio = Math.round(Number(pub.data().precio) || 0);
+      if(precio > 0) preciosVivos[item.id] = precio;
+    } catch(e) {}
   }));
 
   const userDoc = await db.collection('perfiles').doc(uid).get();
