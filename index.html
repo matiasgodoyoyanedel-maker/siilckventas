@@ -356,8 +356,15 @@ function pintarBotonVip(tipo, neto){
       ? `<i class="fas fa-credit-card mr-1.5"></i> Pagar ${formatearClp(montos.total)} con Flow`
       : 'Precio no configurado';
   }
+  const btnMp = document.getElementById(esPro ? 'btn-pagar-vip-pro-mp' : 'btn-pagar-vip-basico-mp');
+  if(btnMp){
+    btnMp.disabled = !(neto > 0);
+    btnMp.innerHTML = neto > 0
+      ? `Pagar ${formatearClp(montos.total)} con Mercado Pago`
+      : 'Precio no configurado';
+  }
   if(hint && neto > 0){
-    hint.innerText = `Neto ${formatearClp(neto)} + IVA 19% (${formatearClp(montos.iva)}) = ${formatearClp(montos.total)} cobrado por Flow`;
+    hint.innerText = `Neto ${formatearClp(neto)} + IVA 19% (${formatearClp(montos.iva)}) = ${formatearClp(montos.total)}`;
   }
 }
 function escucharPreciosPaseVip(){
