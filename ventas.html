@@ -29,9 +29,23 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
   .radio-warranty{accent-color:#eab308}
-  #cartelera-juegos{max-height:70vh;overflow-y:auto;padding-right:2px}
+  #aside-filtro-juegos{max-height:calc(100vh - 15.5rem)}
+  #aside-filtro-juegos .web-panel{max-height:calc(100vh - 15.5rem);display:flex;flex-direction:column;overflow:hidden}
+  #cartelera-juegos{overflow-y:auto;padding-right:4px;min-height:0}
   .sv-cat-label{color:#FFD740;font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;margin:8px 2px 2px}
+  .sv-cat-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#FFD740;font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;background:transparent;border:0;cursor:pointer;padding:8px 2px 4px;margin-top:6px}
+  .sv-juego-btn{width:100%;display:flex;align-items:center;gap:8px;text-align:left;background:#18181b;border:1px solid #3f3f46;color:#fff;border-radius:12px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:4px}
+  .sv-juego-btn:hover{border-color:#eab308}
+  .sv-juego-ico{width:16px;flex:none;text-align:center;font-size:12px}
+  .sv-juego-nombre{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sv-juego-count{color:#a1a1aa;font-weight:800;font-size:11px;flex:none}
   .sv-cat-on{border-color:#eab308 !important;background:rgba(234,179,8,.12) !important}
+  #filtro-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+  .sv-chip{width:auto;margin:0;border-radius:999px;padding:6px 12px;white-space:nowrap}
+  #paginacion-mercado{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
+  .sv-page-btn{min-width:40px;height:40px;padding:0 14px;border-radius:12px;border:1px solid #3f3f46;background:#27272a;color:#e4e4e7;font-weight:800;font-size:13px;cursor:pointer}
+  .sv-page-btn.activa{background:#facc15;color:#000;border-color:#facc15}
+  #market-grid{justify-content:center}
   .sv-ac{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:#141416;border:1px solid rgba(234,179,8,.4);border-radius:14px;overflow:hidden;z-index:40}
   .sv-ac.open{display:block}
   .sv-ac button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}
@@ -91,26 +105,26 @@
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col items-center">
 <section id="view-dashboard" class="w-full space-y-6 animate-page">
   
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 w-full">
-    
-    <div class="lg:col-span-1 space-y-3">
-      <div class="web-panel rounded-3xl p-5 border border-zinc-800 space-y-3 sticky top-24">
-        <div class="border-b border-zinc-800 pb-2.5 flex items-center justify-between">
-          <h3 class="text-xs font-black text-yellow-400 uppercase tracking-wider"><i class="fas fa-film mr-1.5"></i> Cartelera de Juegos</h3>
-          <span class="text-[9px] bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded border border-zinc-800">Activa</span>
-        </div>
-        <div id="cartelera-juegos" class="flex flex-col gap-2">
+  <div id="layout-mercado" class="flex flex-col lg:flex-row lg:items-start gap-5 w-full">
+
+    <aside id="aside-filtro-juegos" class="hidden lg:block w-[280px] shrink-0 sticky top-20 h-fit">
+      <div class="web-panel rounded-2xl p-4 border border-zinc-800">
+        <h3 class="text-sm font-black text-white mb-3">Filtrar por Juego</h3>
+        <div id="cartelera-juegos" class="flex flex-col">
           <div class="sv-skel-row"></div>
           <div class="sv-skel-row"></div>
           <div class="sv-skel-row"></div>
           <div class="sv-skel-row"></div>
         </div>
       </div>
-    </div>
+    </aside>
 
-    <div class="lg:col-span-3 space-y-6">
+    <div class="flex-1 min-w-0 w-full space-y-6">
       
-      <div id="seccion-mercado" class="w-full space-y-5 animate-page">
+      <div id="seccion-mercado" class="w-full space-y-4 animate-page">
+        <div id="wrap-filtro-chips" class="lg:hidden">
+          <div id="filtro-chips" class="hide-scrollbar"></div>
+        </div>
         <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-3">
           <div>
             <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
@@ -128,7 +142,8 @@
           <span class="w-9 h-9 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0"><i class="fas fa-bolt"></i></span>
           <p><strong class="text-yellow-400">Pase Básico activo.</strong> En tus anuncios aparece el botón <strong>Impulsar</strong>: súbelos al tope del marketplace una vez cada 24 horas, con cinta Destacado y rango ⭐ VIP Básico visible para compradores.</p>
         </div>
-        <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
+        <div id="market-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
+        <nav id="paginacion-mercado" aria-label="Paginación de cuentas"></nav>
       </div>
 
       <div id="seccion-mis-chats" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
@@ -225,7 +240,9 @@
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,stockPublicacionActual=1,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null,filtroMarketplaceActual=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,stockPublicacionActual=1,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null,filtroMarketplaceActual=null,paginaMarketplaceActual=1;
+const CUENTAS_POR_PAGINA=12;
+const categoriasAbiertas={juegos:true,stream:true};
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 const OWNER_UID_ALT="w4JA6UUF7WeC6UJweKAKdWYMHf73";
 function esAdminDueño(uid){ return uid===OWNER_UID || uid===OWNER_UID_ALT; }
@@ -322,30 +339,76 @@ function cambiarSeccion(s){
 
 function ejecutarBusquedaEnVivo(v){
   filtroMarketplaceActual=v.trim().toLowerCase();
+  paginaMarketplaceActual=1;
   renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual);
   pintarSugerencias(v);
   marcarCatalogoActivo(filtroMarketplaceActual);
 }
+function sincronizarQueryJuego(juego){
+  try{
+    const url=new URL(window.location.href);
+    const q=String(juego||'').trim();
+    if(q) url.searchParams.set('game', q);
+    else url.searchParams.delete('game');
+    url.searchParams.delete('juego');
+    url.searchParams.delete('type');
+    history.replaceState({}, '', url.pathname+url.search+url.hash);
+  }catch(e){}
+}
+function scrollAlGridCuentas(){
+  const mercado=document.getElementById('market-grid')||document.getElementById('seccion-mercado');
+  if(!mercado) return;
+  const header=document.querySelector('header');
+  const offset=Math.max(72, header ? header.offsetHeight : 72)+12;
+  const top=mercado.getBoundingClientRect().top;
+  if(top>=offset && top<window.innerHeight*0.45) return;
+  const y=top+window.scrollY-offset;
+  window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
+}
 function filtrarPorJuegoRapido(juego){
   filtroMarketplaceActual=String(juego||'').toLowerCase();
+  paginaMarketplaceActual=1;
   const input=document.getElementById('header-global-search');
   const elegido=(window.SIILCK_GAMES||[]).find(g=>String(g.query).toLowerCase()===filtroMarketplaceActual);
   if(input) input.value=elegido?elegido.nombre:'';
   const box=document.getElementById('buscador-autocomplete');
   if(box) box.classList.remove('open');
+  sincronizarQueryJuego(elegido ? elegido.query : String(juego||''));
   renderizarGridPublicaciones(globalPublicacionesCache, String(juego||'').toLowerCase());
   marcarCatalogoActivo(juego);
-  const mercado=document.getElementById('seccion-mercado');
-  if(mercado){
-    const header=document.querySelector('header');
-    const offset=Math.max(80, header ? header.offsetHeight : 80)+8;
-    const y=mercado.getBoundingClientRect().top+window.scrollY-offset;
-    window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
-  }
+  scrollAlGridCuentas();
 }
 function marcarCatalogoActivo(juego){
-  document.querySelectorAll('#cartelera-juegos [data-query]').forEach(btn=>{
-    btn.classList.toggle('sv-cat-on', btn.dataset.query.toLowerCase()===String(juego||'').toLowerCase());
+  const q=String(juego||'').toLowerCase();
+  document.querySelectorAll('#cartelera-juegos [data-query], #filtro-chips [data-query]').forEach(btn=>{
+    btn.classList.toggle('sv-cat-on', (btn.dataset.query||'').toLowerCase()===q);
+  });
+}
+function publicacionDisponible(p){
+  const stockNum = p.stock == null ? 1 : Number(p.stock);
+  return !(p.vendida || stockNum <= 0);
+}
+function contarCuentasJuego(query){
+  const q=String(query||'').toLowerCase();
+  return (globalPublicacionesCache||[]).filter(p=>{
+    if(!publicacionDisponible(p)) return false;
+    if(!q) return true;
+    if(window.siilckCoincidePublicacion) return window.siilckCoincidePublicacion(q, p);
+    const blob=((p.titulo||'')+' '+(p.juego||'')+' '+(p.region||'')).toLowerCase();
+    return blob.includes(q);
+  }).length;
+}
+function botonJuegoHtml(g, compact){
+  const esc=window.siilckEsc;
+  const n=contarCuentasJuego(g.query);
+  const cls=compact ? 'sv-juego-btn sv-chip shrink-0' : 'sv-juego-btn';
+  return '<button type="button" data-query="'+esc(g.query)+'" class="'+cls+'"><span class="sv-juego-ico"><i class="'+esc(g.icon)+' '+esc(g.iconColor)+'"></i></span><span class="sv-juego-nombre">'+esc(g.nombre)+'</span><span class="sv-juego-count">('+n+')</span></button>';
+}
+function actualizarContadoresCatalogo(){
+  document.querySelectorAll('#cartelera-juegos [data-query], #filtro-chips [data-query]').forEach(btn=>{
+    const n=contarCuentasJuego(btn.dataset.query||'');
+    const c=btn.querySelector('.sv-juego-count');
+    if(c) c.textContent='('+n+')';
   });
 }
 function pintarSugerencias(v){
@@ -360,18 +423,60 @@ function pintarSugerencias(v){
 }
 function pintarCartelera(activo){
   const box=document.getElementById('cartelera-juegos');
+  const chips=document.getElementById('filtro-chips');
   if(!box || !window.SIILCK_GAMES) return;
   const esc=window.siilckEsc;
-  function grupo(titulo, items){
-    return '<p class="sv-cat-label">'+esc(titulo)+'</p>'+items.map(g=>'<button type="button" data-query="'+esc(g.query)+'" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="'+esc(g.icon)+' '+esc(g.iconColor)+'"></i> '+esc(g.nombre)+'</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>').join('');
-  }
   const juegos=window.SIILCK_GAMES.filter(g=>g.categoria==='juego');
   const streams=window.SIILCK_GAMES.filter(g=>g.categoria==='stream');
-  box.innerHTML=grupo('Juegos', juegos)+grupo('Streaming', streams);
+  const total=contarCuentasJuego('');
+  function grupo(id, titulo, items){
+    const abierto=categoriasAbiertas[id]!==false;
+    return '<button type="button" class="sv-cat-toggle" data-cat="'+id+'" aria-expanded="'+(abierto?'true':'false')+'"><span>'+esc(titulo)+'</span><i class="fas fa-chevron-'+(abierto?'up':'down')+'"></i></button><div class="sv-cat-list'+(abierto?'':' hidden')+'" data-cat-list="'+id+'">'+items.map(g=>botonJuegoHtml(g,false)).join('')+'</div>';
+  }
+  const todas='<button type="button" data-query="" class="sv-juego-btn"><span class="sv-juego-ico"><i class="fas fa-border-all text-yellow-400"></i></span><span class="sv-juego-nombre">Todas</span><span class="sv-juego-count">('+total+')</span></button>';
+  box.innerHTML=todas+grupo('juegos','Juegos populares', juegos)+grupo('stream','Streaming & servicios', streams);
   box.querySelectorAll('[data-query]').forEach(btn=>{
     btn.addEventListener('click', ()=>filtrarPorJuegoRapido(btn.dataset.query));
   });
-  if(activo) marcarCatalogoActivo(activo);
+  box.querySelectorAll('[data-cat]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id=btn.dataset.cat;
+      categoriasAbiertas[id]=!(categoriasAbiertas[id]!==false);
+      const list=box.querySelector('[data-cat-list="'+id+'"]');
+      const abierto=categoriasAbiertas[id]!==false;
+      if(list) list.classList.toggle('hidden', !abierto);
+      btn.setAttribute('aria-expanded', abierto?'true':'false');
+      const icon=btn.querySelector('i');
+      if(icon) icon.className='fas fa-chevron-'+(abierto?'up':'down');
+    });
+  });
+  if(chips){
+    chips.innerHTML='<button type="button" data-query="" class="sv-juego-btn sv-chip shrink-0"><span class="sv-juego-nombre">Todas</span><span class="sv-juego-count">('+total+')</span></button>'+juegos.concat(streams).map(g=>botonJuegoHtml(g,true)).join('');
+    chips.querySelectorAll('[data-query]').forEach(btn=>{
+      btn.addEventListener('click', ()=>filtrarPorJuegoRapido(btn.dataset.query));
+    });
+  }
+  if(activo!==undefined && activo!==null) marcarCatalogoActivo(activo);
+}
+function pintarPaginacion(totalPaginas){
+  const nav=document.getElementById('paginacion-mercado');
+  if(!nav) return;
+  if(!totalPaginas){ nav.innerHTML=''; return; }
+  let html='';
+  for(let i=1;i<=totalPaginas;i++){
+    html+='<button type="button" class="sv-page-btn'+(i===paginaMarketplaceActual?' activa':'')+'" data-page="'+i+'">'+i+'</button>';
+  }
+  if(paginaMarketplaceActual<totalPaginas){
+    html+='<button type="button" class="sv-page-btn" data-page="'+(paginaMarketplaceActual+1)+'">Siguiente</button>';
+  }
+  nav.innerHTML=html;
+}
+function irAPaginaMercado(n){
+  const destino=Number(n);
+  if(!destino || destino===paginaMarketplaceActual) return;
+  paginaMarketplaceActual=destino;
+  renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual||'');
+  scrollAlGridCuentas();
 }
 
 auth.onAuthStateChanged(async(u)=>{
@@ -442,12 +547,15 @@ function cargarPublicacionesEnVivo(){
       filtroMarketplaceActual = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
       marcarCatalogoActivo(filtroMarketplaceActual);
     }
+    if(document.querySelector('#cartelera-juegos [data-query]')) actualizarContadoresCatalogo();
+    else pintarCartelera(filtroMarketplaceActual||'');
     renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
   });
 }
 
 function renderizarGridPublicaciones(ps, filtro=""){
-  const g=document.getElementById('market-grid');let h='';
+  const g=document.getElementById('market-grid');
+  const visibles=[];
   ps.forEach(p=>{
     const titulo = (p.titulo || '').toLowerCase();
     const juego = (p.juego || '').toLowerCase();
@@ -457,7 +565,14 @@ function renderizarGridPublicaciones(ps, filtro=""){
     if(filtro && window.siilckCoincidePublicacion){
       if(!window.siilckCoincidePublicacion(filtro, p)) return;
     }else if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
-    
+    visibles.push(p);
+  });
+  const totalPaginas=Math.ceil(visibles.length / CUENTAS_POR_PAGINA);
+  if(totalPaginas && paginaMarketplaceActual>totalPaginas) paginaMarketplaceActual=totalPaginas;
+  if(paginaMarketplaceActual<1) paginaMarketplaceActual=1;
+  const paginaItems=visibles.slice((paginaMarketplaceActual-1)*CUENTAS_POR_PAGINA, paginaMarketplaceActual*CUENTAS_POR_PAGINA);
+  let h='';
+  paginaItems.forEach(p=>{
     const tipoVip = p.tipoVip || 'ninguno';
     let cardClass = "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition relative";
     let badgeVip = '';
@@ -496,6 +611,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
     </div>`;
   });
   g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles.</p>`;
+  pintarPaginacion(totalPaginas);
 }
 
 async function eliminarPublicacionAdmin(pubId){
@@ -658,6 +774,20 @@ async function cargarListaChatsUsuario(){
   const inicial = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
   filtroMarketplaceActual = inicial;
   pintarCartelera(inicial);
+  if(inicial){
+    const elegido=(window.SIILCK_GAMES||[]).find(g=>String(g.query).toLowerCase()===inicial);
+    const input=document.getElementById('header-global-search');
+    if(input && elegido) input.value=elegido.nombre;
+    setTimeout(scrollAlGridCuentas, 80);
+  }
+  const paginacion=document.getElementById('paginacion-mercado');
+  if(paginacion){
+    paginacion.addEventListener('click', e=>{
+      const b=e.target.closest('[data-page]');
+      if(!b) return;
+      irAPaginaMercado(b.dataset.page);
+    });
+  }
   const box = document.getElementById('buscador-autocomplete');
   if(box){
     box.addEventListener('click', e=>{
