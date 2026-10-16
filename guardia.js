@@ -13,7 +13,7 @@
 
   function rutaLibre() {
     var p = ruta();
-    return p === '/mantenimiento' || p === '/login' || p === '/login.html' || p === '/verificar-correo' || p === '/verificar-correo.html' || p === '/api/mantenimiento';
+    return p === '/mantenimiento' || p === '/login' || p === '/login.html' || p === '/verificar-correo' || p === '/verificar-correo.html' || p === '/recuperar' || p === '/recuperar.html' || p === '/api/mantenimiento';
   }
 
   function sinVerificarCorreo() {
@@ -78,7 +78,7 @@
 
   function aplicar() {
     if (!configLista || !authListo) return;
-    if (user && user.emailVerified === false && !sinVerificarCorreo()) {
+    if (user && !sinVerificarCorreo() && (user.emailVerified === false || (perfil && perfil.verificadoForzado === false))) {
       location.replace('/verificar-correo' + (user.email ? ('?email=' + encodeURIComponent(user.email)) : ''));
       return;
     }

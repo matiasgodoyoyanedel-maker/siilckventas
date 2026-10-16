@@ -36,7 +36,7 @@
           <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" class="w-full neo-input rounded-xl px-4 py-3 pr-12 text-white">
           <button type="button" id="ojo-login" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-yellow-400 px-1" style="touch-action:none" aria-label="Ver contraseña"><i class="fas fa-eye"></i></button>
         </div>
-        <button type="button" onclick="recuperarClave()" class="mt-2 text-[11px] font-bold text-yellow-400 hover:underline">¿Olvidaste tu contraseña?</button>
+        <a href="/recuperar" class="mt-2 inline-block text-[11px] font-bold text-yellow-400 hover:underline">¿Olvidaste tu contraseña?</a>
       </div>
 
       <button onclick="iniciarSesionEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg shadow-yellow-500/20 transition">Entrar al Sistema</button>
@@ -75,13 +75,25 @@
       </div>
     </div>
 
-    <div id="box-verificar" class="hidden space-y-4 text-xs relative z-10">
-      <p class="text-sm font-black text-white text-center">Verifica tu correo para poder ingresar</p>
-      <p id="verificar-email" class="text-center text-yellow-300 font-bold break-all"></p>
-      <p class="text-[11px] text-zinc-400 text-center">Te enviamos un enlace. Ábrelo y volverás directo al sitio.</p>
-      <button type="button" onclick="reenviarVerificacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider">Reenviar correo</button>
-      <button type="button" onclick="yaVerifique()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-3 rounded-xl uppercase tracking-wider">Ya verifiqué</button>
-      <button type="button" onclick="cerrarSesionAqui()" class="w-full text-zinc-400 font-bold py-2">Cerrar sesión</button>
+    <div id="box-verificar" class="hidden space-y-4 text-xs relative z-10 text-center">
+      <div class="text-5xl">📧</div>
+      <h1 class="text-2xl font-bold text-white">Verifica tu correo para poder ingresar</h1>
+      <p id="verificar-google" class="hidden text-yellow-400 text-sm">Te registraste con Google, te enviamos un correo de verificacion</p>
+      <p class="text-zinc-400 text-sm">Te enviamos un codigo/link de verificacion a:</p>
+      <p id="verificar-email" class="text-white font-bold break-all"></p>
+      <p class="text-xs text-zinc-500">No podras iniciar sesion hasta que verifiques tu correo. Revisa bandeja de entrada y SPAM. Cuando verifiques te mandamos directo al sitio automaticamente.</p>
+      <button type="button" onclick="reenviarVerificacion()" class="w-full bg-yellow-400 text-black py-3 rounded-full font-bold">Reenviar correo de verificacion</button>
+      <a href="/login" class="block w-full bg-zinc-800 py-3 rounded-full text-sm mt-1">Volver al login</a>
+    </div>
+
+    <div id="box-recuperar" class="hidden space-y-4 text-xs relative z-10">
+      <p class="text-zinc-400 text-sm">Te enviamos un correo real con link para recuperar.</p>
+      <div id="recuperar-form" class="space-y-2">
+        <input type="email" id="recuperar-email" placeholder="Tu correo" class="w-full neo-input rounded-xl px-4 py-3 text-white">
+        <button type="button" onclick="enviarRecuperacion()" class="w-full bg-white text-black py-3 rounded-full font-bold">Enviar link real</button>
+      </div>
+      <p id="recuperar-listo" class="hidden text-green-400 text-sm">✅ Listo, si el correo existe te enviamos el correo real de recuperacion. Revisa tu correo y spam.</p>
+      <a href="/login" class="block text-center text-sm text-zinc-400 underline">Volver al login</a>
     </div>
 
     <div id="box-reset" class="hidden space-y-4 text-xs relative z-10">
@@ -143,6 +155,7 @@ function alternarModoRegistro(esRegistro){
   document.getElementById('box-registro').classList.toggle('hidden',!esRegistro);
   document.getElementById('box-verificar').classList.add('hidden');
   document.getElementById('box-reset').classList.add('hidden');
+  document.getElementById('box-recuperar').classList.add('hidden');
   document.getElementById('form-main-title').innerText = esRegistro? "Registro de Cuenta" : "Iniciar Sesión";
 }
 
@@ -177,12 +190,26 @@ function enMuro(){
   const q = new URLSearchParams(location.search);
   return location.pathname.indexOf('verificar-correo') >= 0 || q.get('vista') === 'verificar';
 }
+function enRecuperar(){
+  const q = new URLSearchParams(location.search);
+  return location.pathname.indexOf('recuperar') >= 0 || q.get('vista') === 'recuperar';
+}
 function esResetLink(){
   const q = new URLSearchParams(location.search);
   return q.get('mode') === 'resetPassword' && !!q.get('oobCode');
 }
 function opcionesCorreo(){
-  return { url: location.origin + '/verificar-correo', handleCodeInApp: false };
+  return { url: location.origin + '/verificar-correo?listo=1', handleCodeInApp: false };
+}
+function marcarLinkAbierto(){
+  const q = new URLSearchParams(location.search);
+  if(q.get('listo') === '1') sessionStorage.setItem('sv_correo_listo', '1');
+  return sessionStorage.getItem('sv_correo_listo') === '1';
+}
+function puedePasarMuro(user, linkOk){
+  if(!user || !user.emailVerified) return false;
+  if(esGoogle(user) && !linkOk) return false;
+  return true;
 }
 function esCelular(){
   const ua = navigator.userAgent || '';
@@ -225,30 +252,67 @@ engancharOjito(document.getElementById('ojo-login'), document.getElementById('lo
 engancharOjito(document.getElementById('ojo-reg'), document.getElementById('reg-password'));
 engancharOjito(document.getElementById('ojo-reset'), document.getElementById('reset-password'));
 
-async function asegurarPerfil(user){
-  const r = db.collection('perfiles').doc(user.uid);
-  const d = await r.get();
-  if(d.exists) return;
+function esGoogle(user){
+  return (user.providerData || []).some((p) => p.providerId === 'google.com');
+}
+function primeraVez(user){
+  const meta = user.metadata || {};
+  return !!meta.creationTime && meta.creationTime === meta.lastSignInTime;
+}
+async function crearPerfil(user, extra){
   const baseName = (user.displayName || 'Gamer').replace(/[^a-zA-Z]/g, '');
   const username = (baseName + Math.floor(100 + Math.random() * 900)).toLowerCase();
-  await r.set({
+  await db.collection('perfiles').doc(user.uid).set(Object.assign({
     uid: user.uid,
     username: username,
+    email: user.email || '',
     logo: '👑',
     esVendedorVip: false,
     postuladoFormulario: false,
     creadoEn: firebase.firestore.FieldValue.serverTimestamp()
-  });
+  }, extra || {}));
 }
-
-async function entrarSiVerificado(user){
+async function enviarVerificacion(user){
+  try{
+    await user.sendEmailVerification(opcionesCorreo());
+    return '';
+  }catch(e){
+    return (e && e.message) ? e.message : 'No se pudo enviar el correo.';
+  }
+}
+async function resolverIngreso(user){
   if(!user) return;
   try{ await user.reload(); }catch(e){}
+  const ref = db.collection('perfiles').doc(user.uid);
+  const snap = await ref.get();
+  const data = snap.exists ? (snap.data() || {}) : null;
+  const google = esGoogle(user);
+  const nuevoGoogle = google && (!snap.exists || (primeraVez(user) && data.verificadoForzado !== true));
+  if(nuevoGoogle){
+    if(!snap.exists) await crearPerfil(user, { verificadoForzado: false });
+    else await ref.set({ verificadoForzado: false, email: user.email || '' }, { merge: true });
+    const fallo = await enviarVerificacion(user);
+    if(fallo) sessionStorage.setItem('sv_verif_error', fallo);
+    const email = user.email || '';
+    await auth.signOut();
+    irA('/verificar-correo?email=' + encodeURIComponent(email) + '&from=google');
+    return;
+  }
   if(!user.emailVerified){
-    const marca = 'sv_verif_' + user.uid;
-    if(!sessionStorage.getItem(marca)){
-      sessionStorage.setItem(marca, '1');
-      try{ await user.sendEmailVerification(opcionesCorreo()); }catch(e){}
+    const fallo = await enviarVerificacion(user);
+    if(fallo) sessionStorage.setItem('sv_verif_error', fallo);
+    const email = user.email || '';
+    await auth.signOut();
+    irAVerificar(email);
+    return;
+  }
+  if(data && data.verificadoForzado === false){
+    const linkOk = marcarLinkAbierto();
+    if(puedePasarMuro(user, linkOk)){
+      await ref.set({ verificadoForzado: true }, { merge: true });
+      sessionStorage.removeItem('sv_correo_listo');
+      irA(obtenerRedirect());
+      return;
     }
     irAVerificar(user.email || '');
     return;
@@ -264,7 +328,7 @@ async function iniciarSesionEmail(){
     recordarDestino();
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const cred = await auth.signInWithEmailAndPassword(e,p);
-    await entrarSiVerificado(cred.user);
+    await resolverIngreso(cred.user);
   }catch(err){ accionEnCurso = false; mostrarError(err.message); }
 }
 
@@ -293,13 +357,16 @@ async function registrarUsuarioEmail(){
     await db.collection('perfiles').doc(cred.user.uid).set({
       uid: cred.user.uid,
       username: username.toLowerCase(),
+      email: e,
       logo: "👑",
       esVendedorVip: false,
       postuladoFormulario: false,
+      verificadoForzado: false,
       creadoEn: firebase.firestore.FieldValue.serverTimestamp()
     });
-    try{ await cred.user.sendEmailVerification(opcionesCorreo()); }
-    catch(envio){ mostrarError("Cuenta creada. No se pudo enviar el correo: " + (envio.message || '')); }
+    const fallo = await enviarVerificacion(cred.user);
+    if(fallo) sessionStorage.setItem('sv_verif_error', fallo);
+    await auth.signOut();
     irAVerificar(cred.user.email || e);
   }catch(err){ accionEnCurso = false; mostrarError(err.message); }
 }
@@ -310,14 +377,14 @@ async function loginConGoogle(){
     recordarDestino();
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
     if(esCelular()){
       await auth.signInWithRedirect(provider);
       return;
     }
     try{
       const result = await auth.signInWithPopup(provider);
-      await asegurarPerfil(result.user);
-      await entrarSiVerificado(result.user);
+      await resolverIngreso(result.user);
     }catch(err){
       if(err && err.code === 'auth/popup-blocked'){
         await auth.signInWithRedirect(provider);
@@ -333,13 +400,17 @@ async function loginConGoogle(){
   }catch(err){ accionEnCurso = false; mostrarError(err.message); }
 }
 
-async function recuperarClave(){
-  const e = document.getElementById('login-email').value.trim();
-  if(!e){ mostrarError('Escribe tu correo para recuperar la contraseña.'); return; }
+async function enviarRecuperacion(){
+  const e = document.getElementById('recuperar-email').value.trim();
+  if(!e){ mostrarError('Escribe tu correo.'); return; }
   try{
     await auth.sendPasswordResetEmail(e, { url: location.origin + '/login', handleCodeInApp: false });
-    mostrarOk('Te enviamos un enlace de Firebase para recuperar tu contraseña.');
-  }catch(err){ mostrarError(err.message); }
+    mostrarError('');
+    document.getElementById('recuperar-form').classList.add('hidden');
+    document.getElementById('recuperar-listo').classList.remove('hidden');
+  }catch(err){
+    mostrarError((err && err.message ? err.message : 'No se pudo enviar') + '. Revisa Firebase Console > Auth > Templates que este habilitado.');
+  }
 }
 
 async function confirmarNuevaClave(){
@@ -359,39 +430,81 @@ function pintarMuro(email){
   document.getElementById('box-login').classList.add('hidden');
   document.getElementById('box-registro').classList.add('hidden');
   document.getElementById('box-reset').classList.add('hidden');
+  document.getElementById('box-recuperar').classList.add('hidden');
   document.getElementById('box-verificar').classList.remove('hidden');
   document.getElementById('form-main-title').innerText = 'Verifica tu correo';
   const nodo = document.getElementById('verificar-email');
   if(email) nodo.textContent = email;
+  const q = new URLSearchParams(location.search);
+  document.getElementById('verificar-google').classList.toggle('hidden', q.get('from') !== 'google');
+  const aviso = sessionStorage.getItem('sv_verif_error');
+  if(aviso){
+    mostrarError('Error: ' + aviso + '. Revisa Firebase Console > Auth > Templates que este habilitado.');
+    sessionStorage.removeItem('sv_verif_error');
+  }
+}
+function pintarRecuperar(){
+  document.getElementById('box-login').classList.add('hidden');
+  document.getElementById('box-registro').classList.add('hidden');
+  document.getElementById('box-verificar').classList.add('hidden');
+  document.getElementById('box-reset').classList.add('hidden');
+  document.getElementById('box-recuperar').classList.remove('hidden');
+  document.getElementById('form-main-title').innerText = 'Recuperar contraseña';
+  document.title = 'Recuperar contraseña - SiilckVentas';
 }
 
+let revisando = false;
 async function revisarVerificacion(avisar){
-  const u = auth.currentUser;
-  const q = new URLSearchParams(location.search);
-  if(q.get('mode') === 'verifyEmail' && q.get('oobCode')){
-    try{ await auth.applyActionCode(q.get('oobCode')); }catch(e){}
+  if(revisando || saliendo) return;
+  revisando = true;
+  try{
+    const u = auth.currentUser;
+    const q = new URLSearchParams(location.search);
+    let codigoAplicado = false;
+    if(q.get('mode') === 'verifyEmail' && q.get('oobCode')){
+      try{ await auth.applyActionCode(q.get('oobCode')); codigoAplicado = true; }catch(e){}
+    }
+    const linkOk = marcarLinkAbierto() || codigoAplicado;
+    if(!u){
+      pintarMuro(q.get('email') || '');
+      if(linkOk) mostrarOk('Enlace abierto. Vuelve a entrar con el mismo correo para terminar.');
+      if(avisar) mostrarError('Para reenviar, vuelve a intentar registrarte con el mismo correo ' + (q.get('email') || '') + '. Te mandaremos el codigo de nuevo.');
+      return;
+    }
+    try{ await u.reload(); }catch(e){}
+    if(puedePasarMuro(u, linkOk)){
+      try{ await db.collection('perfiles').doc(u.uid).set({ verificadoForzado: true }, { merge: true }); }catch(e){}
+      sessionStorage.removeItem('sv_correo_listo');
+      irA(obtenerRedirect());
+      return;
+    }
+    pintarMuro(u.email || q.get('email') || '');
+    if(avisar) mostrarError('Todavía no aparece como verificado. Abre el enlace del correo.');
+  }finally{
+    revisando = false;
   }
-  if(!u){
-    pintarMuro(q.get('email') || '');
-    if(avisar) mostrarError('Inicia sesión con ese correo después de abrir el enlace.');
-    return;
-  }
-  try{ await u.reload(); }catch(e){}
-  if(u.emailVerified){
-    irA(obtenerRedirect());
-    return;
-  }
-  pintarMuro(u.email || q.get('email') || '');
-  if(avisar) mostrarError('Todavía no aparece como verificado. Abre el enlace del correo.');
 }
 
 async function reenviarVerificacion(){
   const u = auth.currentUser;
-  if(!u){ mostrarError('Inicia sesión para reenviar el correo.'); return; }
+  const q = new URLSearchParams(location.search);
+  const email = (u && u.email) || q.get('email') || '';
+  if(!u){
+    const msg = 'Para reenviar, vuelve a intentar registrarte con el mismo correo ' + email + '. Te mandaremos el codigo de nuevo.';
+    mostrarError(msg);
+    window.alert(msg);
+    return;
+  }
   try{
     await u.sendEmailVerification(opcionesCorreo());
-    mostrarOk('Te reenviamos el correo de verificación.');
-  }catch(err){ mostrarError(err.message); }
+    const msg = 'Correo de verificacion reenviado a ' + u.email;
+    mostrarOk(msg);
+    window.alert(msg);
+  }catch(err){
+    const msg = 'Error: ' + (err && err.message ? err.message : 'no se pudo enviar') + '. Revisa Firebase Console > Auth > Templates que este habilitado.';
+    mostrarError(msg);
+    window.alert(msg);
+  }
 }
 function yaVerifique(){ revisarVerificacion(true); }
 async function cerrarSesionAqui(){
@@ -401,6 +514,8 @@ async function cerrarSesionAqui(){
 
 if(enMuro()){
   pintarMuro(new URLSearchParams(location.search).get('email') || '');
+}else if(enRecuperar()){
+  pintarRecuperar();
 }else if(esResetLink()){
   document.getElementById('box-login').classList.add('hidden');
   document.getElementById('box-registro').classList.add('hidden');
@@ -413,9 +528,9 @@ if(enMuro()){
 let redirectListo = false;
 let falloRedirect = false;
 let usuarioActual;
-function evaluarSesionLogin(){
+async function evaluarSesionLogin(){
   if(!redirectListo || usuarioActual === undefined || saliendo || accionEnCurso) return;
-  if(esResetLink()) return;
+  if(esResetLink() || enRecuperar()) return;
   if(enMuro()){
     revisarVerificacion(false);
     return;
@@ -423,7 +538,13 @@ function evaluarSesionLogin(){
   if(!usuarioActual) return;
   const pagina = location.pathname;
   if(pagina.indexOf('login') < 0) return;
-  if(usuarioActual.emailVerified === false){
+  let flag;
+  try{
+    const snap = await db.collection('perfiles').doc(usuarioActual.uid).get();
+    flag = snap.exists ? snap.data().verificadoForzado : undefined;
+  }catch(e){ flag = undefined; }
+  if(saliendo || accionEnCurso) return;
+  if(usuarioActual.emailVerified === false || flag === false){
     irAVerificar(usuarioActual.email || '');
     return;
   }
@@ -434,8 +555,7 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 .then(() => auth.getRedirectResult())
 .then(async (res) => {
   if(res && res.user){
-    await asegurarPerfil(res.user);
-    await entrarSiVerificado(res.user);
+    await resolverIngreso(res.user);
   }
 })
 .catch((err) => {
@@ -451,6 +571,9 @@ auth.onAuthStateChanged((u) => {
 document.addEventListener('visibilitychange', () => {
   if(document.visibilityState === 'visible' && enMuro() && !saliendo) revisarVerificacion(false);
 });
+setInterval(() => {
+  if(enMuro() && !saliendo) revisarVerificacion(false);
+}, 3000);
 </script>
 <script src="/guardia.js"></script>
 </body>
