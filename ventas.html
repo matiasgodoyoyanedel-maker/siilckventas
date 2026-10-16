@@ -223,6 +223,7 @@
       <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
     </div>
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
+    <div id="modal-oferta-banner" class="hidden bg-yellow-500/10 border border-yellow-500/40 rounded-xl p-3 text-xs font-bold text-yellow-300"></div>
     <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
       <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
       <div class="space-y-2 text-xs">
@@ -253,12 +254,32 @@ function precioVisible(n){
   if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
   return '$' + Number(n || 0).toLocaleString('es-CL');
 }
+function ofertaDe(precio, producto){
+  if(!window.getOferta) return null;
+  return getOferta(precio, producto);
+}
+function htmlPrecioOferta(precio, producto, claseAhora){
+  const oferta = ofertaDe(precio, producto);
+  if(!oferta) return `<span class="text-yellow-400 font-extrabold text-xs">${precioVisible(precio)}</span>`;
+  return `<span class="text-right leading-tight"><span class="block text-[10px] text-zinc-400 line-through">Precio ref. ${precioVisible(oferta.antes)}</span><span class="${claseAhora}">${precioVisible(oferta.ahora)}</span></span>`;
+}
+function htmlBadgeOferta(producto){
+  const oferta = ofertaDe(producto && producto.precio, producto);
+  if(!oferta) return '';
+  return `<span class="absolute top-3 left-3 z-10 bg-rose-600 text-white text-[10px] font-black px-2 py-1 rounded-full animate-pulse">-${oferta.descuento}% OFERTA</span>`;
+}
+let ofertaPublicacionActual = null;
 document.addEventListener('siilck-settings', () => {
   if(globalPublicacionesCache && globalPublicacionesCache.length){
     renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
   }
   const modal = document.getElementById('modal-pub-detalles');
   if(modal && !modal.classList.contains('hidden')) actualizarPrecioTotalModal();
+});
+document.addEventListener('siilck-oferta-ready', () => {
+  if(globalPublicacionesCache && globalPublicacionesCache.length){
+    renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+  }
 });
 
 function initCanvas(){
@@ -611,6 +632,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
 
     h+=`<div class="${cardClass}" onclick="abrirModalPub('${p.id}')">
+      ${htmlBadgeOferta(p)}
       ${ribbon}
       ${imgHtml}
       <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
@@ -620,7 +642,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
           <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
           <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre || 'Vendedor'}</span>
         </div>
-        <span class="text-yellow-400 font-extrabold text-xs">${precioVisible(p.precio)}</span>
+        ${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}
       </div>
     </div>`;
   });
@@ -639,6 +661,7 @@ async function eliminarPublicacionAdmin(pubId){
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
   precioBasePublicacionActual = parseInt(p.precio) || 0;
+  ofertaPublicacionActual = { ofertaActiva: p.ofertaActiva === true, ofertaDescuento: Number(p.ofertaDescuento) || 0 };
   stockPublicacionActual = p.stock == null ? 1 : Number(p.stock);
   vendedorActualUidCache = p.vendedorUid;
   publicacionActualIdCache = id;
@@ -662,6 +685,15 @@ function actualizarPrecioTotalModal(){
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
   document.getElementById('modal-pub-precio-total').innerText = precioVisible(precioBasePublicacionActual + costoGarantia);
+  const banner = document.getElementById('modal-oferta-banner');
+  if(banner){
+    const oferta = ofertaDe(precioBasePublicacionActual, ofertaPublicacionActual);
+    if(!oferta){ banner.classList.add('hidden'); banner.textContent = ''; }
+    else {
+      banner.classList.remove('hidden');
+      banner.textContent = `🔥 ¡OFERTA ACTIVA! Te ahorras ${precioVisible(oferta.ahorro)} (-${oferta.descuento}%)`;
+    }
+  }
 }
 
 async function pagarProductoConProveedor(ruta, btnId){
@@ -718,6 +750,8 @@ async function agregarAlCarritoDesdeModal(){
     cantidadSeleccionada: 1,
     garantiaCosto: costoGarantia,
     garantiaLabel: garantiaLabel,
+    ofertaActiva: !!(ofertaPublicacionActual && ofertaPublicacionActual.ofertaActiva),
+    ofertaDescuento: ofertaPublicacionActual ? (Number(ofertaPublicacionActual.ofertaDescuento) || 0) : 0,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
   });
   document.getElementById('modal-pub-detalles').classList.add('hidden');
@@ -777,7 +811,7 @@ async function abrirPerfilVendedorPorUid(uid){
   globalPublicacionesCache.forEach(p => {
     const stockNum = p.stock == null || p.stock === '' ? 1 : Number(p.stock);
     if(p.vendedorUid !== uid || p.vendida || stockNum <= 0) return;
-    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><span class="text-yellow-400 font-extrabold text-xs">${precioVisible(p.precio)}</span></div>`;
+    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')">${htmlBadgeOferta(p)}<div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4>${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
   });
   document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }
@@ -827,6 +861,11 @@ async function cargarListaChatsUsuario(){
 })();
 </script>
 <script type="module" src="/lib/settings.js"></script>
+<script type="module">
+import { getOferta } from '/lib/oferta.js';
+window.getOferta = getOferta;
+document.dispatchEvent(new Event('siilck-oferta-ready'));
+</script>
 <script src="/guardia.js"></script>
 </body>
 </html>

@@ -82,10 +82,18 @@ function precioVisible(n){
   if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
   return '$' + Number(n || 0).toLocaleString('es-CL');
 }
+function htmlPrecioCarrito(item){
+  const oferta = window.getOferta ? getOferta(item.precio, item) : null;
+  if(!oferta) return `<span class="text-[10px] text-yellow-400 font-bold">${precioVisible(item.precio)} c/u</span>`;
+  return `<span class="block text-[10px] text-zinc-400 line-through">Precio ref. ${precioVisible(oferta.antes)}</span><span class="text-[10px] text-yellow-400 font-bold">${precioVisible(oferta.ahora)} c/u</span>`;
+}
 let carritoUidActual = null;
 let carritoItemsActuales = null;
 let carritoRenderToken = 0;
 document.addEventListener('siilck-settings', () => {
+  if(carritoUidActual && carritoItemsActuales) renderizarCarrito(carritoItemsActuales, carritoUidActual);
+});
+document.addEventListener('siilck-oferta-ready', () => {
   if(carritoUidActual && carritoItemsActuales) renderizarCarrito(carritoItemsActuales, carritoUidActual);
 });
 
@@ -153,7 +161,7 @@ async function renderizarCarrito(items, uid){
         <div>
           <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
           ${garantiaTxt}
-          <span class="text-[10px] text-yellow-400 font-bold">${precioVisible(item.precio)} c/u</span>
+          ${htmlPrecioCarrito(item)}
           ${qtyBox}
         </div>
       </div>
@@ -351,6 +359,11 @@ function escucharEntregasAutomaticas(uid){
 }
 </script>
 <script type="module" src="/lib/settings.js"></script>
+<script type="module">
+import { getOferta } from '/lib/oferta.js';
+window.getOferta = getOferta;
+document.dispatchEvent(new Event('siilck-oferta-ready'));
+</script>
 <script src="/guardia.js"></script>
 </body>
 </html>

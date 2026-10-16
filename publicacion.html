@@ -71,6 +71,25 @@
         <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
         <p class="text-xs text-zinc-300" id="pub-foto-label"><i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5"></i> Toca para subir foto</p>
       </div>
+      <div class="bg-black/40 border border-yellow-400/20 rounded-xl p-4 mt-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" id="activarOferta" class="w-5 h-5 accent-yellow-400" onchange="document.getElementById('selectorDescuento').classList.toggle('hidden', !this.checked)" />
+          <span class="text-white font-bold text-sm">🔥 ¿Activar OFERTA llamativa? (Recomendado, vendes más)</span>
+        </label>
+        <p class="text-[11px] text-gray-400 mt-1 ml-8">Muestra tu cuenta como OFERTA: ej: Antes $17.900 tachado -> Ahora $16.000</p>
+        <div id="selectorDescuento" class="hidden mt-3 ml-8">
+          <label class="text-xs text-gray-300">Elige % de oferta a mostrar:</label>
+          <select id="descuentoPorcentaje" class="mt-1 w-full bg-zinc-900 border border-zinc-700 text-white rounded-lg p-2 text-sm">
+            <option value="5">5% OFF - Sutil</option>
+            <option value="6">6% OFF</option>
+            <option value="7">7% OFF</option>
+            <option value="8">8% OFF - Recomendado</option>
+            <option value="9">9% OFF</option>
+            <option value="10">10% OFF - Muy llamativo</option>
+          </select>
+          <p class="text-[10px] text-gray-500 mt-1">Es solo visual para destacar. Se cobra el precio que tú pongas.</p>
+        </div>
+      </div>
       <button id="btn-publicar" onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider disabled:opacity-60">Publicar en Marketplace</button>
     </div>
   </div>
@@ -155,7 +174,11 @@ async function crearPublicacionMarketplace(){
     if(ya){mostrarAlertaToast("Ya publicada","Tu publicación ya ha sido publicada.");return;}
     const vipActivo=esDueno || !!(uData.esVendedorVip && (uData.tipoVip==='basico' || uData.tipoVip==='pro' || uData.tipoVip==='dueno'));
     const tipoVip=esDueno?'dueno':(vipActivo ? (uData.tipoVip||'basico') : 'ninguno');
-    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true});
+    const ofertaBox=document.getElementById('activarOferta');
+    const ofertaActiva=!!(ofertaBox && ofertaBox.checked);
+    const ofertaElegida=parseInt(document.getElementById('descuentoPorcentaje').value,10);
+    const ofertaDescuento=ofertaActiva ? (ofertaElegida>=5 && ofertaElegida<=10 ? ofertaElegida : 5) : 0;
+    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,ofertaActiva,ofertaDescuento});
     await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
     publicada=true;
     mostrarToast(esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!");setTimeout(()=>{window.location.href='index.html'},1200);
