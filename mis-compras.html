@@ -111,7 +111,7 @@ auth.onAuthStateChanged(async(user)=>{
     const res=await fetch('/api/compra?datos=1&order_id='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+token}});
     const data=await res.json();
     if(!res.ok){ estado.textContent=data.error||'No se pudieron mostrar los datos.'; return; }
-    const idTx=data.flowOrder||data.flowTransactionId||data.transactionId||data.id||id;
+    const idTx=data.flowOrder||data.mpPaymentId||data.flowTransactionId||data.transactionId||data.id||id;
     const txtTx=document.getElementById('txt-transaccion');
     txtTx.textContent=idTx;
     document.getElementById('box-transaccion').classList.remove('hidden');

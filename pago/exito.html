@@ -26,7 +26,7 @@
       <p class="text-[11px] text-zinc-400">Guarda este ID. Si tienes dudas, envíame este ID por WhatsApp y te ayudo.</p>
       <button type="button" id="btn-copiar-transaccion" class="text-xs bg-yellow-500/20 text-yellow-200 px-3 py-1.5 rounded-lg font-bold">Copiar ID Transacción</button>
     </div>
-    <p id="detalle" class="text-sm text-zinc-300">Flow ya recibió el cobro. Estamos cerrando la orden.</p>
+    <p id="detalle" class="text-sm text-zinc-300">Estamos confirmando el cobro y cerrando la orden.</p>
     <a id="btn-datos" href="/carrito.html" class="hidden w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-4 rounded-2xl text-sm uppercase tracking-wide">Ver datos de tu cuenta</a>
     <a href="/index.html" class="block text-xs text-zinc-400 hover:text-white">Volver al inicio</a>
   </div>
@@ -48,7 +48,7 @@ document.getElementById('btn-copiar-transaccion').addEventListener('click', asyn
   catch(e){}
 });
 function mostrarTransaccion(data){
-  const idTx=(data&&(data.flowOrder||data.flowTransactionId||data.transactionId||data.commerceOrder||data.id))||orderId;
+  const idTx=(data&&(data.flowOrder||data.mpPaymentId||data.flowTransactionId||data.transactionId||data.commerceOrder||data.id))||orderId;
   if(!idTx) return;
   txtTransaccion.textContent=idTx;
   boxTransaccion.classList.remove('hidden');
@@ -101,7 +101,7 @@ auth.onAuthStateChanged(async(user)=>{
     await new Promise(r=>setTimeout(r,2000));
   }
   titulo.textContent='¡Tu pago ha sido realizado con éxito!';
-  detalle.textContent='Flow confirmó el cobro. Si los datos tardan unos segundos, ábrelos desde el botón.';
+  detalle.textContent='El cobro quedó registrado. Si los datos tardan unos segundos, ábrelos desde el botón.';
   boton.classList.remove('hidden');
   boton.textContent='Ver datos de tu cuenta';
   boton.href=orderId?('/mis-compras/'+encodeURIComponent(orderId)):'/carrito.html';

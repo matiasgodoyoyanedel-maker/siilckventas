@@ -234,7 +234,8 @@
       <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Total</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span></div>
       <div class="flex flex-wrap justify-end gap-2">
         <button onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
-        <button id="btn-pagar-producto" onclick="pagarProductoConFlow()" class="bg-emerald-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-emerald-400 transition"><i class="fas fa-shopping-bag mr-1"></i> Pagar</button>
+        <button id="btn-pagar-producto" onclick="pagarProductoConFlow()" class="bg-emerald-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-emerald-400 transition"><i class="fas fa-shopping-bag mr-1"></i> Pagar con Flow</button>
+        <button id="btn-pagar-producto-mp" onclick="pagarProductoConMercadoPago()" class="text-white font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow transition" style="background:#009ee3"><i class="fas fa-credit-card mr-1"></i> Mercado Pago</button>
       </div>
     </div>
   </div>
@@ -651,19 +652,19 @@ function actualizarPrecioTotalModal(){
   document.getElementById('modal-pub-precio-total').innerText = `$${(precioBasePublicacionActual + costoGarantia).toLocaleString('es-CL')} CLP`;
 }
 
-async function pagarProductoConFlow(){
+async function pagarProductoConProveedor(ruta, btnId){
   if(!auth.currentUser){ window.location.href = 'login.html'; return; }
   const listing = { id: publicacionActualIdCache };
   const user = auth.currentUser;
   if(!listing.id) return;
-  const btn = document.getElementById('btn-pagar-producto');
+  const btn = document.getElementById(btnId);
   const etiqueta = btn ? btn.innerHTML : '';
   if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Conectando...'; }
   try {
     let idToken = '';
     try { idToken = await user.getIdToken(true); }
     catch(e){ idToken = await user.getIdToken(); }
-    const res = await fetch('/api/flow/create', {
+    const res = await fetch(ruta, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + idToken },
       body: JSON.stringify({ listingId: listing.id, email: user.email })
@@ -675,6 +676,14 @@ async function pagarProductoConFlow(){
     alert(err.message);
   }
   if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
+}
+
+async function pagarProductoConFlow(){
+  return pagarProductoConProveedor('/api/flow/create', 'btn-pagar-producto');
+}
+
+async function pagarProductoConMercadoPago(){
+  return pagarProductoConProveedor('/api/mp/create', 'btn-pagar-producto-mp');
 }
 
 async function agregarAlCarritoDesdeModal(){
