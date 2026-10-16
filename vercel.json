@@ -12,6 +12,9 @@
     { "source": "/pago/error", "destination": "/pago/error.html" },
     { "source": "/mis-compras/:id", "destination": "/mis-compras.html" }
   ],
+  "routes": [
+    { "src": "^/google78561bbab4dd18b7\\.html$", "dest": "/api/google-verify" }
+  ],
   "crons": [
     { "path": "/api/limpiar-vendidas", "schedule": "0 5 * * *" }
   ]
