@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
   body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
@@ -41,7 +42,7 @@
     <div class="space-y-4 text-xs">
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80 Full Skins" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option>Free Fire</option><option>Fortnite</option><option>Valorant</option><option>Roblox</option><option>Steam Key</option><option>League of Legends</option><option>GTA V</option><option>Minecraft</option><option>Genshin Impact</option><option>Call of Duty</option></select></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"></select></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       </div>
       <div class="grid grid-cols-3 gap-2">
@@ -122,6 +123,11 @@ auth.onAuthStateChanged(async(u)=>{
   }catch(e){console.log(e);}
 });
 
+(function(){
+  const sel=document.getElementById('pub-juego');
+  if(!sel || !window.SIILCK_GAMES) return;
+  sel.innerHTML=window.SIILCK_GAMES.map(g=>'<option value="'+window.siilckEsc(g.nombre)+'">'+window.siilckEsc(g.nombre)+'</option>').join('');
+})();
 function manejarSeleccionFoto(input){if(input.files && input.files[0]){const reader=new FileReader();reader.onload=function(e){fotoBase64Seleccionada=e.target.result;document.getElementById('pub-foto-label').innerText="Imagen cargada ✅"};reader.readAsDataURL(input.files[0]);}}
 async function crearPublicacionMarketplace(){
   if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
