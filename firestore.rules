@@ -178,6 +178,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Credenciales copiadas al crear la orden. El comprador solo las lee si el pago ya está marcado.
+    match /compras_privadas/{ordenId} {
+      allow read: if isOwner() || (
+        signedIn()
+        && resource.data.compradorUid == request.auth.uid
+        && resource.data.pagado == true
+      );
+      allow write: if false;
+    }
+
     // --- Foro ---
     match /foros/{foroId} {
       allow read: if true;

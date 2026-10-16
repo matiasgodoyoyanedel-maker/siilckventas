@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" data-sv-theme="aurora">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datos de tu cuenta - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/tema.css">
+<script src="/tema.js"></script>
+<style>
+  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  h1,h2{font-family:'Outfit',sans-serif}
+  .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07)}
+</style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 flex justify-center">
+  <div class="max-w-lg w-full space-y-4">
+    <a href="/index.html" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Inicio</a>
+    <div class="web-panel rounded-3xl p-6 space-y-2 border border-yellow-500/30">
+      <h1 class="text-xl font-black text-white">Datos de tu cuenta</h1>
+      <p id="estado" class="text-xs text-zinc-400">Cargando la compra…</p>
+    </div>
+    <div id="lista" class="space-y-3"></div>
+  </div>
+<script>
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"[REDACTED].firebaseapp.com",projectId:"[REDACTED]",storageBucket:"[REDACTED].firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+function orderId(){
+  const q=new URLSearchParams(location.search);
+  const directo=q.get('order_id')||q.get('id');
+  if(directo) return directo;
+  const partes=location.pathname.split('/').filter(Boolean);
+  const i=partes.indexOf('mis-compras');
+  return i>=0&&partes[i+1]?decodeURIComponent(partes[i+1]):'';
+}
+const id=orderId();
+const estado=document.getElementById('estado');
+const lista=document.getElementById('lista');
+
+function fila(etiqueta, valor){
+  const box=document.createElement('div');
+  box.className='flex items-center justify-between gap-3 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2';
+  const texto=document.createElement('div');
+  const k=document.createElement('p');
+  k.className='text-[10px] uppercase text-zinc-500 font-bold';
+  k.textContent=etiqueta;
+  const v=document.createElement('p');
+  v.className='text-sm text-yellow-400 font-bold break-all';
+  v.textContent=valor||'No indicado';
+  texto.appendChild(k); texto.appendChild(v);
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='shrink-0 bg-zinc-800 text-white text-[10px] font-bold px-3 py-2 rounded-lg';
+  btn.textContent='Copiar';
+  btn.addEventListener('click', async()=>{
+    try{ await navigator.clipboard.writeText(valor||''); btn.textContent='Copiado'; }
+    catch(e){ btn.textContent='Selecciona el texto'; }
+  });
+  box.appendChild(texto); box.appendChild(btn);
+  return box;
+}
+
+function pintar(cuentas){
+  lista.textContent='';
+  if(!cuentas.length){
+    estado.textContent='El pago está confirmado, pero esta orden no tiene datos de cuenta cargados por el vendedor.';
+    return;
+  }
+  estado.textContent='Solo tú puedes ver esto. El anuncio público no muestra la clave.';
+  cuentas.forEach(cuenta=>{
+    const card=document.createElement('article');
+    card.className='web-panel rounded-3xl p-5 space-y-3 border border-emerald-500/30';
+    const h=document.createElement('h2');
+    h.className='text-sm font-black text-white';
+    h.textContent=cuenta.titulo||'Cuenta';
+    card.appendChild(h);
+    const meta=[cuenta.juego, cuenta.nivel, cuenta.region].filter(Boolean).join(' · ');
+    const nota=document.createElement('p');
+    nota.className='text-[11px] text-zinc-400';
+    nota.textContent=meta ? ('Publicación vendida · '+meta) : 'Estos son los datos de esta publicación.';
+    card.appendChild(nota);
+    card.appendChild(fila('Correo / usuario', cuenta.email));
+    card.appendChild(fila('Clave', cuenta.clave));
+    card.appendChild(fila('Teléfono', cuenta.telefono));
+    card.appendChild(fila('Recuperación', cuenta.recuperacion));
+    lista.appendChild(card);
+  });
+}
+
+auth.onAuthStateChanged(async(user)=>{
+  if(!id){ estado.textContent='Falta el número de la compra.'; return; }
+  if(!user){
+    localStorage.setItem('redirect_after_login', location.pathname+location.search);
+    location.href='/login.html';
+    return;
+  }
+  try{
+    const token=await user.getIdToken();
+    const res=await fetch('/api/compra?datos=1&order_id='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+token}});
+    const data=await res.json();
+    if(!res.ok){ estado.textContent=data.error||'No se pudieron mostrar los datos.'; return; }
+    pintar(data.cuentas||[]);
+  }catch(e){
+    estado.textContent='No se pudieron cargar los datos. Reintenta en unos segundos.';
+  }
+});
+</script>
+</body>
+</html>

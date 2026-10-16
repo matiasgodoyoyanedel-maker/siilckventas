@@ -450,7 +450,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const juego = (p.juego || '').toLowerCase();
     const region = (p.region || '').toLowerCase();
     const stockNum = p.stock == null ? 1 : Number(p.stock);
-    if(stockNum <= 0) return;
+    if(p.vendida || stockNum <= 0) return;
     if(filtro && window.siilckCoincidePublicacion){
       if(!window.siilckCoincidePublicacion(filtro, p)) return;
     }else if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
