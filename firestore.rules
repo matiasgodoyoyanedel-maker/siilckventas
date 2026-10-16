@@ -188,35 +188,6 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Una calificación por compra. No se edita ni se borra.
-    match /reviews/{orderId} {
-      function orden() {
-        return get(/databases/$(database)/documents/ordenes/$(orderId)).data;
-      }
-
-      allow read: if isOwner() || (
-        signedIn() && (
-          resource.data.buyer_id == request.auth.uid ||
-          resource.data.seller_id == request.auth.uid
-        )
-      );
-
-      allow create: if signedIn()
-        && request.auth.uid == request.resource.data.buyer_id
-        && request.resource.data.order_id == orderId
-        && request.resource.data.rating is int
-        && request.resource.data.rating >= 1
-        && request.resource.data.rating <= 5
-        && request.resource.data.comment is string
-        && request.resource.data.comment.size() > 0
-        && request.resource.data.comment.size() <= 800
-        && exists(/databases/$(database)/documents/ordenes/$(orderId))
-        && (orden().compradorUid == request.auth.uid || orden().buyer_id == request.auth.uid)
-        && (orden().paid == true || orden().pagado == true || orden().estado == 'entregado' || orden().status == 'paid');
-
-      allow update, delete: if false;
-    }
-
     // --- Foro ---
     match /foros/{foroId} {
       allow read: if true;

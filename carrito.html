@@ -59,10 +59,12 @@ const auth=firebase.auth(),db=firebase.firestore();
 let totalFinalGlobal = 0;
 let emailGlobal = 'cliente@siiilckventas.com';
 
-let carritoListo=false;
-function iniciarCarrito(u){
-  if(!u || carritoListo) return;
-  carritoListo=true;
+auth.onAuthStateChanged(async(u)=>{
+  if(!u){
+    alert("Debes iniciar sesión para ver tu carrito.");
+    window.location.href="login.html";
+    return;
+  }
   emailGlobal = u.email || 'cliente@siiilckventas.com';
   cargarCarritoEnVivo(u.uid);
   escucharEntregasAutomaticas(u.uid);
@@ -70,17 +72,6 @@ function iniciarCarrito(u){
   if(new URLSearchParams(window.location.search).get('ok') === '1'){
     activarPasesVipTrasPago(u.uid);
   }
-}
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
-auth.onAuthStateChanged(async(u)=>{
-  if(u){ iniciarCarrito(u); return; }
-  setTimeout(()=>{
-    if(carritoListo) return;
-    if(auth.currentUser){ iniciarCarrito(auth.currentUser); return; }
-    localStorage.setItem('redirect_after_login','carrito.html');
-    alert("Debes iniciar sesión para ver tu carrito.");
-    window.location.href="login.html";
-  },1600);
 });
 
 function cargarCarritoEnVivo(uid){

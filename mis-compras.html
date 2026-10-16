@@ -23,7 +23,6 @@
       <p id="estado" class="text-xs text-zinc-400">Cargando la compra…</p>
     </div>
     <div id="lista" class="space-y-3"></div>
-    <div id="calificacion" class="web-panel rounded-3xl p-5 space-y-3 border border-yellow-500/30 hidden"></div>
   </div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"[REDACTED].firebaseapp.com",projectId:"[REDACTED]",storageBucket:"[REDACTED].firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
@@ -85,112 +84,30 @@ function pintar(cuentas){
     nota.className='text-[11px] text-zinc-400';
     nota.textContent=meta ? ('Publicación vendida · '+meta) : 'Estos son los datos de esta publicación.';
     card.appendChild(nota);
-    card.appendChild(fila('Usuario', cuenta.usuario || cuenta.email));
-    card.appendChild(fila('Correo asociado', cuenta.email));
+    card.appendChild(fila('Correo / usuario', cuenta.email));
     card.appendChild(fila('Clave', cuenta.clave));
     card.appendChild(fila('Teléfono', cuenta.telefono));
     card.appendChild(fila('Recuperación', cuenta.recuperacion));
-    if(cuenta.instrucciones) card.appendChild(fila('Instrucciones', cuenta.instrucciones));
     lista.appendChild(card);
   });
 }
 
-function pintarCalificacion(review){
-  const box=document.getElementById('calificacion');
-  if(!box) return;
-  box.classList.remove('hidden');
-  box.textContent='';
-  const titulo=document.createElement('h2');
-  titulo.className='text-sm font-black text-white';
-  titulo.textContent='Calificación de esta compra';
-  box.appendChild(titulo);
-  if(review){
-    const fija=document.createElement('p');
-    fija.className='text-sm text-yellow-400 font-bold';
-    fija.textContent='Ya calificaste con '+review.rating+' estrellas';
-    const comentario=document.createElement('p');
-    comentario.className='text-sm text-zinc-200';
-    comentario.textContent='Tu comentario: '+(review.comment||'');
-    const aviso=document.createElement('p');
-    aviso.className='text-[11px] text-zinc-400';
-    aviso.textContent='Esta calificación es definitiva y no se puede modificar';
-    box.appendChild(fija); box.appendChild(comentario); box.appendChild(aviso);
+auth.onAuthStateChanged(async(user)=>{
+  if(!id){ estado.textContent='Falta el número de la compra.'; return; }
+  if(!user){
+    localStorage.setItem('redirect_after_login', location.pathname+location.search);
+    location.href='/login.html';
     return;
   }
-  let elegida=0;
-  const estrellas=document.createElement('div');
-  estrellas.className='flex gap-2';
-  for(let n=1;n<=5;n++){
-    const b=document.createElement('button');
-    b.type='button';
-    b.className='text-2xl text-zinc-600';
-    b.textContent='★';
-    b.setAttribute('aria-label', n+' estrellas');
-    b.addEventListener('click', ()=>{
-      elegida=n;
-      [...estrellas.children].forEach((el,i)=>{ el.className='text-2xl '+(i<n?'text-yellow-400':'text-zinc-600'); });
-    });
-    estrellas.appendChild(b);
-  }
-  const input=document.createElement('textarea');
-  input.rows=3;
-  input.placeholder='Cuéntale al vendedor cómo te fue';
-  input.className='w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white';
-  const enviar=document.createElement('button');
-  enviar.type='button';
-  enviar.className='w-full bg-yellow-500 text-zinc-950 font-black py-3 rounded-xl text-xs uppercase';
-  enviar.textContent='Enviar Calificación';
-  const aviso=document.createElement('p');
-  aviso.className='text-[11px] text-rose-300 hidden';
-  enviar.addEventListener('click', async()=>{
-    aviso.classList.add('hidden');
-    if(!elegida){ aviso.textContent='Elige de 1 a 5 estrellas.'; aviso.classList.remove('hidden'); return; }
-    if(!input.value.trim()){ aviso.textContent='Escribe un comentario.'; aviso.classList.remove('hidden'); return; }
-    enviar.disabled=true;
-    try{
-      const token=await auth.currentUser.getIdToken(true);
-      const res=await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({order_id:id,rating:elegida,comment:input.value.trim()})});
-      const data=await res.json();
-      if(!res.ok){ aviso.textContent=data.error||'No se pudo enviar.'; aviso.classList.remove('hidden'); enviar.disabled=false; return; }
-      pintarCalificacion(data.review);
-    }catch(e){
-      aviso.textContent='No se pudo enviar la calificación.';
-      aviso.classList.remove('hidden');
-      enviar.disabled=false;
-    }
-  });
-  box.appendChild(estrellas); box.appendChild(input); box.appendChild(enviar); box.appendChild(aviso);
-}
-async function cargarCompra(user){
   try{
     const token=await user.getIdToken(true);
     const res=await fetch('/api/compra?datos=1&order_id='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+token}});
     const data=await res.json();
     if(!res.ok){ estado.textContent=data.error||'No se pudieron mostrar los datos.'; return; }
     pintar(data.cuentas||[]);
-    const rev=await fetch('/api/reviews?order_id='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+token}});
-    const revData=await rev.json();
-    if(rev.ok) pintarCalificacion(revData.review||null);
   }catch(e){
     estado.textContent='No se pudieron cargar los datos. Reintenta en unos segundos.';
   }
-}
-let compraLista=false;
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
-auth.onAuthStateChanged(async(user)=>{
-  if(!id){ estado.textContent='Falta el número de la compra.'; return; }
-  if(user){
-    if(compraLista) return;
-    compraLista=true;
-    cargarCompra(user);
-    return;
-  }
-  setTimeout(()=>{
-    if(compraLista) return;
-    if(auth.currentUser){ compraLista=true; cargarCompra(auth.currentUser); return; }
-    localStorage.setItem('redirect_after_login', location.pathname+location.search);
-    location.href='/login.html';
-  },1600);
 });
 </script>
 </body>
