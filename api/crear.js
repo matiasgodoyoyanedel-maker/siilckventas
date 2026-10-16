@@ -1,3 +1,4 @@
+import { urlSitioDesdeRequest } from '../lib/logis/env.js';
 import { crearPagoDesdeCarrito } from '../lib/logis/pagos.js';
 
 function cors(res) {
@@ -23,7 +24,8 @@ export default async function handler(req, res) {
       email: body.email,
       idToken,
       amount: body.amount,
-      tipoVipPase: body.tipoVipPase
+      tipoVipPase: body.tipoVipPase,
+      siteUrl: urlSitioDesdeRequest(req)
     });
     if (!resultado.ok) return res.status(400).json(resultado);
     return res.status(200).json({

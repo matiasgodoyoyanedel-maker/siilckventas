@@ -12,11 +12,20 @@ export default async function handler(req, res) {
 
   try {
     const token = extraerTokenFlow(req);
+    console.log(JSON.stringify({ evento: 'flow_webhook_recibido', metodo: req.method, tieneToken: !!token }));
     if (!token) return res.status(200).send('OK');
-    await confirmarWebhook(token);
+    const resultado = await confirmarWebhook(token);
+    console.log(JSON.stringify({
+      evento: 'flow_webhook_resultado',
+      ok: !!resultado?.ok,
+      commerceOrder: resultado?.commerceOrder || '',
+      status: resultado?.status ?? '',
+      pendiente: !!resultado?.pendiente,
+      entregas: resultado?.entregas ?? ''
+    }));
     return res.status(200).send('OK');
   } catch (e) {
-    console.error('confirm webhook', e);
+    console.error(JSON.stringify({ evento: 'flow_webhook_error', error: e.message }));
     return res.status(200).send('OK');
   }
 }

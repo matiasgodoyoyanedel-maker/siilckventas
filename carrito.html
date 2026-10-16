@@ -273,17 +273,13 @@ async function pagarConFlow(){
 async function intentarConfirmarRetornoFlow(){
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
-  const ok = params.get('ok');
-  if(ok === '1' || token){
+  if(token){
+    window.location.replace('/api/retorno?token=' + encodeURIComponent(token));
+    return;
+  }
+  if(params.get('ok') === '1'){
     const box = document.getElementById('box-entrega-auto');
     if(box) box.classList.remove('hidden');
-  }
-  if(!token) return;
-  const body = 'token=' + encodeURIComponent(token);
-  try {
-    await fetch('/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
-  } catch(e) {
-    try { await fetch('/siilckventas/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }); } catch(err) {}
   }
 }
 
