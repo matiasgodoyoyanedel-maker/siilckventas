@@ -200,7 +200,7 @@
     </div>
     <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="abrirPerfilVendedorDesdeModal()">
-        <div id="modal-vendedor-logo" class="flex items-center justify-center w-12 h-12 rounded-full overflow-hidden bg-gray-100 shrink-0 aspect-square"><i class="fas fa-user text-zinc-500"></i></div>
+        <div id="modal-vendedor-logo" class="w-12 h-12 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0"><i class="fas fa-user"></i></div>
         <div><span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span></div>
       </div>
       <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
@@ -473,7 +473,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
     }
 
     const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" alt="" class="w-full h-full object-cover object-center">` : `<i class="fas fa-user text-xs"></i>`;
+    const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
     const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
     const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
     const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
@@ -514,7 +514,7 @@ async function abrirModalPub(id){
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor";
   document.getElementById('modal-vendedor-rango').innerText = etiquetaRangoVip(p.tipoVip, p.esVip);
   const logoBox = document.getElementById('modal-vendedor-logo');
-  logoBox.innerHTML = p.vendedorLogo ? `<img src="${p.vendedorLogo}" alt="" class="w-full h-full object-cover object-center hover:scale-110 transition-transform duration-300 ease-in-out">` : `<i class="fas fa-user text-zinc-500"></i>`;
+  logoBox.innerHTML = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
   if(p.foto){ imgEl.src = p.foto; fotoBox.classList.remove('hidden'); } else { fotoBox.classList.add('hidden'); }
@@ -628,16 +628,6 @@ async function cargarListaChatsUsuario(){
   const params = new URLSearchParams(window.location.search);
   const inicial = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
   filtroMarketplaceActual = inicial;
-  const pubInicial = params.get('pub') || params.get('producto') || '';
-  if(pubInicial){
-    let intentosPub = 0;
-    const abrirSiLlego = () => {
-      intentosPub += 1;
-      if((globalPublicacionesCache || []).some(p => p.id === pubInicial)){ abrirModalPub(pubInicial); return; }
-      if(intentosPub < 15) setTimeout(abrirSiLlego, 400);
-    };
-    setTimeout(abrirSiLlego, 500);
-  }
   pintarCartelera(inicial);
   const box = document.getElementById('buscador-autocomplete');
   if(box){
