@@ -1,5 +1,10 @@
 {
   "cleanUrls": true,
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "index.html"
+    }
+  },
   "rewrites": [
     { "source": "/pago/exito", "destination": "/pago/exito.html" },
     { "source": "/pago/error", "destination": "/pago/error.html" },

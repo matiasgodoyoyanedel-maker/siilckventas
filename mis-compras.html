@@ -100,7 +100,7 @@ auth.onAuthStateChanged(async(user)=>{
     return;
   }
   try{
-    const token=await user.getIdToken();
+    const token=await user.getIdToken(true);
     const res=await fetch('/api/compra?datos=1&order_id='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+token}});
     const data=await res.json();
     if(!res.ok){ estado.textContent=data.error||'No se pudieron mostrar los datos.'; return; }

@@ -50,7 +50,7 @@ function mostrarExito(data){
 
 async function consultar(user){
   if(!orderId||!user) return null;
-  const token=await user.getIdToken();
+  const token=await user.getIdToken(true);
   const res=await fetch('/api/compra?order_id='+encodeURIComponent(orderId),{headers:{Authorization:'Bearer '+token}});
   if(!res.ok) return null;
   return res.json();

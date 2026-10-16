@@ -70,7 +70,7 @@
         <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
         <p class="text-xs text-zinc-300" id="pub-foto-label"><i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5"></i> Toca para subir foto</p>
       </div>
-      <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider">Publicar en Marketplace</button>
+      <button id="btn-publicar" onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider disabled:opacity-60">Publicar en Marketplace</button>
     </div>
   </div>
 </main>
@@ -129,9 +129,17 @@ auth.onAuthStateChanged(async(u)=>{
   sel.innerHTML=window.SIILCK_GAMES.map(g=>'<option value="'+window.siilckEsc(g.nombre)+'">'+window.siilckEsc(g.nombre)+'</option>').join('');
 })();
 function manejarSeleccionFoto(input){if(input.files && input.files[0]){const reader=new FileReader();reader.onload=function(e){fotoBase64Seleccionada=e.target.result;document.getElementById('pub-foto-label').innerText="Imagen cargada ✅"};reader.readAsDataURL(input.files[0]);}}
+let publicacionEnCurso=false;
+function clavePublicacion(titulo,juego,precio){return (String(titulo||'').trim()+'|'+String(juego||'')+'|'+Number(precio||0)).toLowerCase();}
+function publicacionSigueDisponible(p){if(!p||p.vendida)return false;const s=p.stock;if(s==null||s==='')return true;return Number(s)>0;}
 async function crearPublicacionMarketplace(){
-  if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
+  const btn=document.getElementById('btn-publicar');
+  if(publicacionEnCurso){mostrarAlertaToast("Ya publicada","Tu publicación ya ha sido publicada.");return;}
+  publicacionEnCurso=true;
+  if(btn){btn.disabled=true;btn.innerText="Publicando...";}
+  let publicada=false;
   try{
+    if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
     const esDueno=esCuentaOwner(auth.currentUser.uid);
     const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
     const privEmail=document.getElementById('f-priv-email').value.trim();const privPass=document.getElementById('f-priv-pass').value.trim();const privTel=document.getElementById('f-priv-tel').value.trim();const privRecup=document.getElementById('f-priv-recup').value.trim();const autorizo=document.getElementById('f-autorizo-datos').checked;
@@ -140,12 +148,23 @@ async function crearPublicacionMarketplace(){
     if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
     if(!esDueno &&!uData.cuentaVendedorActiva){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
+    const previas=await db.collection('publicaciones').where('vendedorUid','==',auth.currentUser.uid).get();
+    const misma=clavePublicacion(titulo,juego,precio);
+    const ya=previas.docs.some(d=>{const p=d.data();return publicacionSigueDisponible(p)&&clavePublicacion(p.titulo,p.juego,p.precio)===misma;});
+    if(ya){mostrarAlertaToast("Ya publicada","Tu publicación ya ha sido publicada.");return;}
     const vipActivo=esDueno || !!(uData.esVendedorVip && (uData.tipoVip==='basico' || uData.tipoVip==='pro' || uData.tipoVip==='dueno'));
     const tipoVip=esDueno?'dueno':(vipActivo ? (uData.tipoVip||'basico') : 'ninguno');
     const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true});
     await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
+    publicada=true;
     mostrarToast(esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!");setTimeout(()=>{window.location.href='index.html'},1200);
   }catch(err){console.error(err);mostrarAlertaToast("Error",err.message);}
+  finally{
+    if(!publicada){
+      publicacionEnCurso=false;
+      if(btn){btn.disabled=false;btn.innerText="Publicar en Marketplace";}
+    }
+  }
 }
 </script>
 </body>
