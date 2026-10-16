@@ -13,7 +13,11 @@
 
   function rutaLibre() {
     var p = ruta();
-    return p === '/mantenimiento' || p === '/login' || p === '/api/mantenimiento';
+    return p === '/mantenimiento' || p === '/login' || p === '/login.html' || p === '/verificar-correo' || p === '/verificar-correo.html' || p === '/api/mantenimiento';
+  }
+
+  function sinVerificarCorreo() {
+    return rutaLibre();
   }
 
   function esDueno(uid, data) {
@@ -74,6 +78,10 @@
 
   function aplicar() {
     if (!configLista || !authListo) return;
+    if (user && user.emailVerified === false && !sinVerificarCorreo()) {
+      location.replace('/verificar-correo' + (user.email ? ('?email=' + encodeURIComponent(user.email)) : ''));
+      return;
+    }
     var owner = user && esDueno(user.uid, perfil);
     if (modo && !owner && !rutaLibre()) {
       location.replace('/mantenimiento');
@@ -86,6 +94,14 @@
     }
     quitarBloqueo();
     if (user && perfil && perfil.avisoVendedorPendiente && (perfil.is_seller || perfil.cuentaVendedorActiva)) mostrarVendedor();
+  }
+
+  function vigilarCorreo() {
+    if (!window.firebase || !firebase.apps || !firebase.apps.length || !firebase.auth) return;
+    firebase.auth().onAuthStateChanged(function (u) {
+      if (!u || u.emailVerified !== false || sinVerificarCorreo()) return;
+      location.replace('/verificar-correo' + (u.email ? ('?email=' + encodeURIComponent(u.email)) : ''));
+    });
   }
 
   function arrancar() {
@@ -116,6 +132,6 @@
     });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar);
-  else arrancar();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { vigilarCorreo(); arrancar(); });
+  else { vigilarCorreo(); arrancar(); }
 })();

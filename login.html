@@ -30,7 +30,14 @@
 
     <div id="box-login" class="space-y-4 text-xs relative z-10">
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Correo Electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
-      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contraseña</label><input type="password" id="login-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-4 py-3 text-white"></div>
+      <div>
+        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1.5">Contraseña</label>
+        <div class="relative">
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" class="w-full neo-input rounded-xl px-4 py-3 pr-12 text-white">
+          <button type="button" id="ojo-login" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-yellow-400 px-1" style="touch-action:none" aria-label="Ver contraseña"><i class="fas fa-eye"></i></button>
+        </div>
+        <button type="button" onclick="recuperarClave()" class="mt-2 text-[11px] font-bold text-yellow-400 hover:underline">¿Olvidaste tu contraseña?</button>
+      </div>
 
       <button onclick="iniciarSesionEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg shadow-yellow-500/20 transition">Entrar al Sistema</button>
       <button onclick="loginConGoogle()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-3 rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2.5"><i class="fab fa-google text-yellow-400 text-sm"></i> Continuar con Google</button>
@@ -47,7 +54,13 @@
         <span class="text-[9px] text-zinc-500 mt-0.5 block">Único en la plataforma. Sin espacios ni números.</span>
       </div>
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Correo Electrónico *</label><input type="email" id="reg-email" placeholder="correo@ejemplo.com" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
-      <div><label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Contraseña *</label><input type="password" id="reg-password" placeholder="••••••••" class="w-full neo-input rounded-xl px-3.5 py-2.5 text-white"></div>
+      <div>
+        <label class="block text-[10px] uppercase font-bold tracking-wider text-yellow-400 mb-1">Contraseña *</label>
+        <div class="relative">
+          <input type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password" class="w-full neo-input rounded-xl px-3.5 py-2.5 pr-12 text-white">
+          <button type="button" id="ojo-reg" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-yellow-400 px-1" style="touch-action:none" aria-label="Ver contraseña"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
 
       <div class="flex items-start gap-2.5 pt-1">
         <input type="checkbox" id="reg-terminos" class="mt-0.5 rounded accent-yellow-500 cursor-pointer">
@@ -55,12 +68,32 @@
       </div>
 
       <button onclick="registrarUsuarioEmail()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition mt-1">Crear Cuenta</button>
+      <button onclick="loginConGoogle()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-3 rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2.5"><i class="fab fa-google text-yellow-400 text-sm"></i> Continuar con Google</button>
 
       <div class="text-center pt-2">
         <p class="text-zinc-400 text-[11px]">¿Ya tienes cuenta? <button onclick="alternarModoRegistro(false)" class="text-yellow-400 font-bold hover:underline">Inicia Sesión</button></p>
       </div>
     </div>
 
+    <div id="box-verificar" class="hidden space-y-4 text-xs relative z-10">
+      <p class="text-sm font-black text-white text-center">Verifica tu correo para poder ingresar</p>
+      <p id="verificar-email" class="text-center text-yellow-300 font-bold break-all"></p>
+      <p class="text-[11px] text-zinc-400 text-center">Te enviamos un enlace. Ábrelo y volverás directo al sitio.</p>
+      <button type="button" onclick="reenviarVerificacion()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider">Reenviar correo</button>
+      <button type="button" onclick="yaVerifique()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold py-3 rounded-xl uppercase tracking-wider">Ya verifiqué</button>
+      <button type="button" onclick="cerrarSesionAqui()" class="w-full text-zinc-400 font-bold py-2">Cerrar sesión</button>
+    </div>
+
+    <div id="box-reset" class="hidden space-y-4 text-xs relative z-10">
+      <p class="text-[11px] text-zinc-300 text-center">Elige una contraseña nueva. Este enlace es el de Firebase.</p>
+      <div class="relative">
+        <input type="password" id="reset-password" placeholder="Nueva contraseña" autocomplete="new-password" class="w-full neo-input rounded-xl px-4 py-3 pr-12 text-white">
+        <button type="button" id="ojo-reset" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-yellow-400 px-1" style="touch-action:none" aria-label="Ver contraseña"><i class="fas fa-eye"></i></button>
+      </div>
+      <button type="button" onclick="confirmarNuevaClave()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider">Guardar contraseña</button>
+    </div>
+
+    <div id="login-ok-msg" class="text-center text-emerald-400 font-bold text-[11px] relative z-10"></div>
     <div id="login-error-msg" class="text-center text-rose-400 font-bold text-[11px] relative z-10"></div>
 
     <div class="text-center pt-4 border-t border-zinc-800 relative z-10">
@@ -89,37 +122,150 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 .then(()=>{console.log("✅ Login en modo LOCAL - sesión persistente")})
 .catch(e=>console.error(e));
 
-function mostrarError(m){document.getElementById('login-error-msg').innerText=m;}
+function mostrarError(m){
+  const nodo = document.getElementById('login-error-msg');
+  if(nodo) nodo.innerText = m || '';
+  if(m){
+    const ok = document.getElementById('login-ok-msg');
+    if(ok) ok.innerText = '';
+  }
+}
+function mostrarOk(m){
+  const ok = document.getElementById('login-ok-msg');
+  if(ok) ok.innerText = m || '';
+  if(m) mostrarError('');
+}
 
 function alternarModoRegistro(esRegistro){
   mostrarError("");
+  mostrarOk("");
   document.getElementById('box-login').classList.toggle('hidden', esRegistro);
   document.getElementById('box-registro').classList.toggle('hidden',!esRegistro);
+  document.getElementById('box-verificar').classList.add('hidden');
+  document.getElementById('box-reset').classList.add('hidden');
   document.getElementById('form-main-title').innerText = esRegistro? "Registro de Cuenta" : "Iniciar Sesión";
 }
 
 function destinoNext(){
   const next = new URLSearchParams(location.search).get('next') || '';
   if(next.charAt(0) !== '/' || next.charAt(1) === '/' || next.indexOf('\\') >= 0 || next.indexOf('://') >= 0) return '';
+  if(next.indexOf('/login') === 0 || next.indexOf('/verificar-correo') === 0) return '';
   return next;
 }
-function obtenerRedirect(){
+let destinoResuelto = '';
+function recordarDestino(){
   const next = destinoNext();
-  const r = localStorage.getItem('redirect_after_login');
-  if(r) localStorage.removeItem('redirect_after_login');
-  if(next) return next;
-  if(r) return r;
-  return "index.html";
+  const guardado = localStorage.getItem('redirect_after_login') || '';
+  const previo = localStorage.getItem('auth_next') || '';
+  const dest = next || guardado || previo || 'index.html';
+  localStorage.setItem('auth_next', dest);
+  if(next) localStorage.setItem('redirect_after_login', next);
+}
+function obtenerRedirect(){
+  if(destinoResuelto) return destinoResuelto;
+  const next = destinoNext();
+  const authNext = localStorage.getItem('auth_next') || '';
+  const r = localStorage.getItem('redirect_after_login') || '';
+  localStorage.removeItem('auth_next');
+  localStorage.removeItem('redirect_after_login');
+  const elegido = next || (authNext.indexOf('/verificar-correo') === 0 ? '' : authNext) || r || 'index.html';
+  destinoResuelto = elegido;
+  return destinoResuelto;
+}
+
+function enMuro(){
+  const q = new URLSearchParams(location.search);
+  return location.pathname.indexOf('verificar-correo') >= 0 || q.get('vista') === 'verificar';
+}
+function esResetLink(){
+  const q = new URLSearchParams(location.search);
+  return q.get('mode') === 'resetPassword' && !!q.get('oobCode');
+}
+function opcionesCorreo(){
+  return { url: location.origin + '/verificar-correo', handleCodeInApp: false };
+}
+function esCelular(){
+  const ua = navigator.userAgent || '';
+  if(/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return true;
+  return navigator.maxTouchPoints > 1 && Math.min(screen.width, screen.height) < 900;
+}
+let saliendo = false;
+let accionEnCurso = false;
+function irA(url){
+  if(saliendo) return;
+  saliendo = true;
+  location.replace(url);
+}
+function irAVerificar(email){
+  recordarDestino();
+  const correo = email ? ('?email=' + encodeURIComponent(email)) : '';
+  irA('/verificar-correo' + correo);
+}
+
+function engancharOjito(btn, input){
+  if(!btn || !input) return;
+  const icono = btn.querySelector('i');
+  const mostrar = (ev) => {
+    if(ev && ev.cancelable) ev.preventDefault();
+    input.type = 'text';
+    if(icono) icono.className = 'fas fa-eye-slash';
+    if(ev && btn.setPointerCapture){ try{ btn.setPointerCapture(ev.pointerId); }catch(e){} }
+  };
+  const ocultar = () => {
+    input.type = 'password';
+    if(icono) icono.className = 'fas fa-eye';
+  };
+  btn.addEventListener('pointerdown', mostrar);
+  btn.addEventListener('pointerup', ocultar);
+  btn.addEventListener('pointercancel', ocultar);
+  btn.addEventListener('pointerleave', ocultar);
+  btn.addEventListener('contextmenu', (ev) => ev.preventDefault());
+}
+engancharOjito(document.getElementById('ojo-login'), document.getElementById('login-password'));
+engancharOjito(document.getElementById('ojo-reg'), document.getElementById('reg-password'));
+engancharOjito(document.getElementById('ojo-reset'), document.getElementById('reset-password'));
+
+async function asegurarPerfil(user){
+  const r = db.collection('perfiles').doc(user.uid);
+  const d = await r.get();
+  if(d.exists) return;
+  const baseName = (user.displayName || 'Gamer').replace(/[^a-zA-Z]/g, '');
+  const username = (baseName + Math.floor(100 + Math.random() * 900)).toLowerCase();
+  await r.set({
+    uid: user.uid,
+    username: username,
+    logo: '👑',
+    esVendedorVip: false,
+    postuladoFormulario: false,
+    creadoEn: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+async function entrarSiVerificado(user){
+  if(!user) return;
+  try{ await user.reload(); }catch(e){}
+  if(!user.emailVerified){
+    const marca = 'sv_verif_' + user.uid;
+    if(!sessionStorage.getItem(marca)){
+      sessionStorage.setItem(marca, '1');
+      try{ await user.sendEmailVerification(opcionesCorreo()); }catch(e){}
+    }
+    irAVerificar(user.email || '');
+    return;
+  }
+  irA(obtenerRedirect());
 }
 
 async function iniciarSesionEmail(){
   const e=document.getElementById('login-email').value.trim(), p=document.getElementById('login-password').value;
   if(!e||!p){mostrarError("Completa todos los campos.");return;}
+  accionEnCurso = true;
   try{
+    recordarDestino();
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-    await auth.signInWithEmailAndPassword(e,p);
-    window.location.replace(obtenerRedirect());
-  }catch(err){mostrarError(err.message);}
+    const cred = await auth.signInWithEmailAndPassword(e,p);
+    await entrarSiVerificado(cred.user);
+  }catch(err){ accionEnCurso = false; mostrarError(err.message); }
 }
 
 async function registrarUsuarioEmail(){
@@ -132,13 +278,16 @@ async function registrarUsuarioEmail(){
   if(/\d/.test(username)){mostrarError("El nombre de usuario no puede contener números.");return;}
   if(!term){mostrarError("Debes aceptar los términos y condiciones.");return;}
 
+  accionEnCurso = true;
   try{
     const userQuery = await db.collection('perfiles').where('username', '==', username.toLowerCase()).get();
     if(!userQuery.empty){
+      accionEnCurso = false;
       mostrarError("Este nombre de usuario ya está en uso. Elige otro.");
       return;
     }
 
+    recordarDestino();
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const cred = await auth.createUserWithEmailAndPassword(e,p);
     await db.collection('perfiles').doc(cred.user.uid).set({
@@ -149,43 +298,158 @@ async function registrarUsuarioEmail(){
       postuladoFormulario: false,
       creadoEn: firebase.firestore.FieldValue.serverTimestamp()
     });
-
-    window.location.replace(obtenerRedirect());
-  }catch(err){mostrarError(err.message);}
+    try{ await cred.user.sendEmailVerification(opcionesCorreo()); }
+    catch(envio){ mostrarError("Cuenta creada. No se pudo enviar el correo: " + (envio.message || '')); }
+    irAVerificar(cred.user.email || e);
+  }catch(err){ accionEnCurso = false; mostrarError(err.message); }
 }
 
 async function loginConGoogle(){
+  accionEnCurso = true;
   try{
+    recordarDestino();
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-    const provider=new firebase.auth.GoogleAuthProvider();
-    const result=await auth.signInWithPopup(provider);
-    const user=result.user;
-
-    const r=db.collection('perfiles').doc(user.uid);
-    const d=await r.get();
-    if(!d.exists){
-      const baseName = (user.displayName || "Gamer").replace(/[^a-zA-Z]/g, "");
-      const username = (baseName + Math.floor(100+Math.random()*900)).toLowerCase();
-      await r.set({
-        uid: user.uid,
-        username: username,
-        logo: "👑",
-        esVendedorVip: false,
-        postuladoFormulario: false,
-        creadoEn: firebase.firestore.FieldValue.serverTimestamp()
-      });
+    const provider = new firebase.auth.GoogleAuthProvider();
+    if(esCelular()){
+      await auth.signInWithRedirect(provider);
+      return;
     }
-    window.location.replace(obtenerRedirect());
-  }catch(err){mostrarError(err.message);}
+    try{
+      const result = await auth.signInWithPopup(provider);
+      await asegurarPerfil(result.user);
+      await entrarSiVerificado(result.user);
+    }catch(err){
+      if(err && err.code === 'auth/popup-blocked'){
+        await auth.signInWithRedirect(provider);
+        return;
+      }
+      if(err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')){
+        accionEnCurso = false;
+        return;
+      }
+      accionEnCurso = false;
+      mostrarError(err.message);
+    }
+  }catch(err){ accionEnCurso = false; mostrarError(err.message); }
 }
 
-auth.onAuthStateChanged(u=>{
-  if(u){
-    const currentPage = window.location.pathname;
-    if(currentPage.includes('login.html')){
-      setTimeout(()=>{ window.location.replace(obtenerRedirect()); }, 500);
-    }
+async function recuperarClave(){
+  const e = document.getElementById('login-email').value.trim();
+  if(!e){ mostrarError('Escribe tu correo para recuperar la contraseña.'); return; }
+  try{
+    await auth.sendPasswordResetEmail(e, { url: location.origin + '/login', handleCodeInApp: false });
+    mostrarOk('Te enviamos un enlace de Firebase para recuperar tu contraseña.');
+  }catch(err){ mostrarError(err.message); }
+}
+
+async function confirmarNuevaClave(){
+  const q = new URLSearchParams(location.search);
+  const clave = document.getElementById('reset-password').value;
+  if(!clave || clave.length < 6){ mostrarError('La contraseña debe tener al menos 6 caracteres.'); return; }
+  try{
+    await auth.confirmPasswordReset(q.get('oobCode'), clave);
+    mostrarOk('Contraseña actualizada. Ya puedes entrar.');
+    document.getElementById('box-reset').classList.add('hidden');
+    document.getElementById('box-login').classList.remove('hidden');
+    document.getElementById('form-main-title').innerText = 'Iniciar Sesión';
+  }catch(err){ mostrarError(err.message); }
+}
+
+function pintarMuro(email){
+  document.getElementById('box-login').classList.add('hidden');
+  document.getElementById('box-registro').classList.add('hidden');
+  document.getElementById('box-reset').classList.add('hidden');
+  document.getElementById('box-verificar').classList.remove('hidden');
+  document.getElementById('form-main-title').innerText = 'Verifica tu correo';
+  const nodo = document.getElementById('verificar-email');
+  if(email) nodo.textContent = email;
+}
+
+async function revisarVerificacion(avisar){
+  const u = auth.currentUser;
+  const q = new URLSearchParams(location.search);
+  if(q.get('mode') === 'verifyEmail' && q.get('oobCode')){
+    try{ await auth.applyActionCode(q.get('oobCode')); }catch(e){}
   }
+  if(!u){
+    pintarMuro(q.get('email') || '');
+    if(avisar) mostrarError('Inicia sesión con ese correo después de abrir el enlace.');
+    return;
+  }
+  try{ await u.reload(); }catch(e){}
+  if(u.emailVerified){
+    irA(obtenerRedirect());
+    return;
+  }
+  pintarMuro(u.email || q.get('email') || '');
+  if(avisar) mostrarError('Todavía no aparece como verificado. Abre el enlace del correo.');
+}
+
+async function reenviarVerificacion(){
+  const u = auth.currentUser;
+  if(!u){ mostrarError('Inicia sesión para reenviar el correo.'); return; }
+  try{
+    await u.sendEmailVerification(opcionesCorreo());
+    mostrarOk('Te reenviamos el correo de verificación.');
+  }catch(err){ mostrarError(err.message); }
+}
+function yaVerifique(){ revisarVerificacion(true); }
+async function cerrarSesionAqui(){
+  try{ await auth.signOut(); }catch(e){}
+  location.replace('/login');
+}
+
+if(enMuro()){
+  pintarMuro(new URLSearchParams(location.search).get('email') || '');
+}else if(esResetLink()){
+  document.getElementById('box-login').classList.add('hidden');
+  document.getElementById('box-registro').classList.add('hidden');
+  document.getElementById('box-reset').classList.remove('hidden');
+  document.getElementById('form-main-title').innerText = 'Nueva contraseña';
+}else if(destinoNext()){
+  recordarDestino();
+}
+
+let redirectListo = false;
+let falloRedirect = false;
+let usuarioActual;
+function evaluarSesionLogin(){
+  if(!redirectListo || usuarioActual === undefined || saliendo || accionEnCurso) return;
+  if(esResetLink()) return;
+  if(enMuro()){
+    revisarVerificacion(false);
+    return;
+  }
+  if(!usuarioActual) return;
+  const pagina = location.pathname;
+  if(pagina.indexOf('login') < 0) return;
+  if(usuarioActual.emailVerified === false){
+    irAVerificar(usuarioActual.email || '');
+    return;
+  }
+  irA(obtenerRedirect());
+}
+
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+.then(() => auth.getRedirectResult())
+.then(async (res) => {
+  if(res && res.user){
+    await asegurarPerfil(res.user);
+    await entrarSiVerificado(res.user);
+  }
+})
+.catch((err) => {
+  falloRedirect = true;
+  if(err && err.code && err.code !== 'auth/no-auth-event') mostrarError(err.message);
+})
+.finally(() => { redirectListo = true; if(!falloRedirect) evaluarSesionLogin(); });
+
+auth.onAuthStateChanged((u) => {
+  usuarioActual = u || null;
+  evaluarSesionLogin();
+});
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible' && enMuro() && !saliendo) revisarVerificacion(false);
 });
 </script>
 <script src="/guardia.js"></script>
