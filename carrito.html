@@ -82,10 +82,31 @@ function precioVisible(n){
   if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
   return '$' + Number(n || 0).toLocaleString('es-CL');
 }
+function precioACobrar(item){
+  if(!item || item.tipoItem === 'pase_vip') return Number(item && item.precio) || 0;
+  const tieneBase = item.precioBase != null && item.precioBase !== '';
+  const base = tieneBase ? Number(item.precioBase) : (Number(item.precio) || 0);
+  const garantia = tieneBase ? Number(item.garantiaCosto || item.garantia || 0) : 0;
+  const oferta = window.getOferta ? getOferta(base, item) : null;
+  if(oferta && oferta.ahora >= 1) return oferta.ahora + garantia;
+  if(Number(item.precio) > 0) return Number(item.precio);
+  return base + garantia;
+}
+function htmlPrecioCarrito(item){
+  const tieneBase = item && item.precioBase != null && item.precioBase !== '';
+  const base = tieneBase ? Number(item.precioBase) : (Number(item.precio) || 0);
+  const garantia = tieneBase ? Number(item.garantiaCosto || item.garantia || 0) : 0;
+  const oferta = window.getOferta ? getOferta(base, item) : null;
+  if(!oferta) return `<span class="text-[10px] text-yellow-400 font-bold">${precioVisible(item.precio)} c/u</span>`;
+  return `<span class="block text-[11px] text-zinc-300 line-through">${precioVisible(oferta.antes)}</span><span class="text-[10px] text-yellow-400 font-bold">${precioVisible(oferta.ahora + garantia)} c/u</span>`;
+}
 let carritoUidActual = null;
 let carritoItemsActuales = null;
 let carritoRenderToken = 0;
 document.addEventListener('siilck-settings', () => {
+  if(carritoUidActual && carritoItemsActuales) renderizarCarrito(carritoItemsActuales, carritoUidActual);
+});
+document.addEventListener('siilck-oferta-ready', () => {
   if(carritoUidActual && carritoItemsActuales) renderizarCarrito(carritoItemsActuales, carritoUidActual);
 });
 
@@ -129,7 +150,7 @@ async function renderizarCarrito(items, uid){
     const esPase = item.tipoItem === 'pase_vip';
     const cantidad = item.cantidadSeleccionada || 1;
     const stockDisponible = esPase ? 1 : (item.stock || item.unidades || 1);
-    const totalItem = (item.precio || 0) * cantidad;
+    const totalItem = precioACobrar(item) * cantidad;
     if(esPase) subtotalPases += totalItem;
     else subtotalCuentas += totalItem;
 
@@ -153,7 +174,7 @@ async function renderizarCarrito(items, uid){
         <div>
           <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
           ${garantiaTxt}
-          <span class="text-[10px] text-yellow-400 font-bold">${precioVisible(item.precio)} c/u</span>
+          ${htmlPrecioCarrito(item)}
           ${qtyBox}
         </div>
       </div>
@@ -351,6 +372,11 @@ function escucharEntregasAutomaticas(uid){
 }
 </script>
 <script type="module" src="/lib/settings.js"></script>
+<script type="module">
+import { getOferta } from '/lib/oferta.js';
+window.getOferta = getOferta;
+document.dispatchEvent(new Event('siilck-oferta-ready'));
+</script>
 <script src="/guardia.js"></script>
 </body>
 </html>
