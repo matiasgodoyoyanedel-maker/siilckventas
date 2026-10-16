@@ -98,9 +98,17 @@ function alternarModoRegistro(esRegistro){
   document.getElementById('form-main-title').innerText = esRegistro? "Registro de Cuenta" : "Iniciar Sesión";
 }
 
+function destinoNext(){
+  const next = new URLSearchParams(location.search).get('next') || '';
+  if(next.charAt(0) !== '/' || next.charAt(1) === '/' || next.indexOf('\\') >= 0 || next.indexOf('://') >= 0) return '';
+  return next;
+}
 function obtenerRedirect(){
+  const next = destinoNext();
   const r = localStorage.getItem('redirect_after_login');
-  if(r){ localStorage.removeItem('redirect_after_login'); return r; }
+  if(r) localStorage.removeItem('redirect_after_login');
+  if(next) return next;
+  if(r) return r;
   return "index.html";
 }
 
