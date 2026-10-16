@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="lib/PostulacionDetalleModal.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
   body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
@@ -206,24 +207,43 @@ auth.onAuthStateChanged(async(u)=>{
   cargarPostulacionesAdmin();
 });
 
+const postulacionesCache = {};
+function escPost(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 async function cargarPostulacionesAdmin(){
   const box = document.getElementById('lista-postulaciones-admin');
   const snap = await db.collection('postulaciones_vendedores').where('estado', '==', 'pendiente_revision').get();
   let h = "";
   snap.forEach(doc => {
     const d = doc.data();
+    postulacionesCache[doc.id] = Object.assign({ id: doc.id }, d);
     h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 space-y-2 text-xs">
-      <div class="flex justify-between items-center"><strong class="text-white">${d.nombre}</strong> <span class="text-yellow-400">RUT: ${d.rut}</span></div>
-      <p class="text-zinc-300">Contacto: ${d.contacto} • País: ${d.pais}</p>
-      <p class="text-zinc-400">Motivo: ${d.motivo}</p>
-      <div class="flex gap-2 pt-2">
-        <button onclick="aprobarPostulacion('${doc.id}', '${d.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl uppercase">✅ Aprobar</button>
-        <button onclick="rechazarPostulacion('${doc.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl uppercase">❌ Rechazar</button>
+      <div class="flex justify-between items-center gap-2"><strong class="text-white">${escPost(d.nombre)}</strong> <span class="text-yellow-400">RUT: ${escPost(d.rut)}</span></div>
+      <p class="text-zinc-300">Contacto: ${escPost(d.contacto)} • País: ${escPost(d.pais)}</p>
+      <p class="text-zinc-400">Motivo: ${escPost(d.motivo)}</p>
+      <div class="flex flex-wrap gap-2 pt-2">
+        <button type="button" data-post="${escPost(doc.id)}" class="btn-ver-postulacion bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-4 py-2 rounded-xl uppercase">Ver detallado</button>
+        <button onclick="aprobarPostulacion('${escPost(doc.id)}', '${escPost(d.uid)}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl uppercase">✅ Aprobar</button>
+        <button onclick="rechazarPostulacion('${escPost(doc.id)}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl uppercase">❌ Rechazar</button>
       </div>
     </div>`;
   });
   box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes.</p>`;
 }
+function verDetallePostulacion(postId){
+  const p = postulacionesCache[postId];
+  if(!p || !window.PostulacionDetalleModal) return;
+  PostulacionDetalleModal.abrir(p, {
+    onAprobar: function(){ aprobarPostulacion(p.id, p.uid); PostulacionDetalleModal.cerrar(); },
+    onRechazar: function(){ rechazarPostulacion(p.id); PostulacionDetalleModal.cerrar(); }
+  });
+}
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.btn-ver-postulacion');
+  if(!btn) return;
+  verDetallePostulacion(btn.getAttribute('data-post'));
+});
 
 async function publicarNuevoVendedor(uid){
   try{

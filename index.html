@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
   body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
@@ -25,8 +26,18 @@
  .animate-glow-gold{animation:pulseGlow 2s infinite}
 .siilck-lobby-final{width:100%;display:flex;justify-content:center;padding:0;background:transparent}
 .siilck-welcome-card{background:linear-gradient(180deg,#2a2a2e 0%,#1f1f23 100%);border:1.5px solid rgba(255,193,7,.5);border-radius:24px;padding:36px 18px 28px;text-align:center;max-width:1120px;width:100%;box-shadow:0 0 50px rgba(255,193,7,.18), inset 0 1px 0 rgba(255,255,255,.06)}
-.welcome-icon{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:20px;display:grid;place-items:center;font-size:32px;box-shadow:0 8px 24px rgba(255,193,7,.5);animation:float 3s ease-in-out infinite}
-.welcome-badge{display:inline-block;background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.35);color:#FFD740;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin-bottom:14px}
+.welcome-top-left{display:flex;align-items:center;gap:12px;justify-content:flex-start;text-align:left;width:100%;margin-bottom:12px;flex-wrap:wrap}
+.welcome-icon{width:56px;height:56px;margin:0;flex:0 0 auto;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:16px;display:grid;place-items:center;font-size:26px;box-shadow:0 8px 24px rgba(255,193,7,.5);animation:float 3s ease-in-out infinite}
+.welcome-badge{display:inline-block;background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.35);color:#FFD740;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin:0}
+.sv-live-counter{width:100%;text-align:left;color:#f4f4f5;font-size:12px;font-weight:800;margin:0 0 14px;letter-spacing:.2px}
+.sv-live-counter b{color:#FFD740}
+.sv-search-wrap{position:relative;max-width:520px;margin:0 auto 18px;text-align:left}
+.sv-search-wrap input{width:100%;background:#111;border:1px solid rgba(255,193,7,.35);border-radius:14px;padding:12px 14px;color:#fff;font-size:13px;outline:none}
+.sv-ac{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:#141416;border:1px solid rgba(255,193,7,.35);border-radius:14px;overflow:hidden;z-index:20;text-align:left}
+.sv-ac.open{display:block}
+.sv-ac button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.sv-ac button:hover{background:rgba(255,193,7,.12)}
+.sv-ac-empty{margin:0;padding:10px 14px;color:#a1a1aa;font-size:12px}
 .siilck-welcome-card h1{color:#FFF8E1;font-size:32px;font-weight:900;margin:0 0 8px}
 .welcome-sub{color:#b8b8b8;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:600px}
 .section-label{color:#FFD740;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
@@ -35,17 +46,20 @@
 .game-showcase{position:relative;margin:0 auto;overflow:hidden;border-radius:16px;background:rgba(0,0,0,.2);padding:8px 0 14px;border:1px solid rgba(255,193,7,.15)}
 .game-track{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:10px 50px;scrollbar-width:none}
 .game-track::-webkit-scrollbar{display:none}
-.game-card{min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:#111;border:1px solid rgba(255,193,7,.25);text-decoration:none;transition:all.35s cubic-bezier(.2,.8,.2,1)}
+.game-card{position:relative;min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:#111;border:1px solid rgba(255,193,7,.25);text-decoration:none;transition:all.35s cubic-bezier(.2,.8,.2,1)}
+.g-verified{position:absolute;top:8px;left:8px;z-index:5;background:#16a34a;color:#fff;font-size:9px;font-weight:900;letter-spacing:.4px;padding:3px 7px;border-radius:999px}
+.game-skel{min-width:285px;flex:0 0 285px;height:206px;border-radius:16px;background:linear-gradient(90deg,#161616 25%,#2c2c2c 50%,#161616 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
 .game-card:hover{transform:translateY(-6px) scale(1.02);border-color:#FFD740;box-shadow:0 12px 30px rgba(255,193,7,.3)}
 .game-card.stream{border-color:rgba(255,255,255,.15)}
 .img-wrap{height:150px;position:relative;overflow:hidden;background:#0a0a0a}
 .img-wrap img.real{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.15);transition:all.6s cubic-bezier(.2,.8,.2,1)}
-.game-card:hover img.real{opacity:1;transform:scale(1)}
-.fade{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%, rgba(255,215,0,.45), rgba(0,0,0,.85) 75%);transition:all.4s;z-index:1}
-.game-card:hover .fade{opacity:.4}
+.game-card:hover img.real{opacity:1;transform:scale(1.08)}
+.fade{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%, rgba(255,215,0,.45), rgba(0,0,0,.85) 75%);transition:opacity .35s ease;z-index:1}
+.game-card:hover .fade{opacity:0}
 .name{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2}
 .name b{color:#fff;font-size:20px;font-weight:900;text-shadow:0 2px 10px #000}
-.name i{color:#FFD740;font-size:11px;font-style:normal;font-weight:700;margin-top:2px}
+.name i{color:#FFD740;font-size:11px;font-style:normal;font-weight:700;margin-top:2px;transition:opacity .35s ease,transform .35s ease}
+.game-card:hover .name i{opacity:0;transform:translateY(10px)}
 .g-label{background:#0a0a0a;padding:11px 13px;text-align:left;border-top:1px solid rgba(255,193,7,.15)}
 .g-label b{color:#fff;display:block;font-size:11px;letter-spacing:.4px}
 .g-label span{color:#8a8a8a;font-size:10px;display:block;margin-top:2px}
@@ -58,7 +72,9 @@
 .auto-bar{height:3px;background:rgba(255,255,255,.1);border-radius:10px;margin:12px 50px 0;overflow:hidden}
 .auto-progress{height:100%;width:0%;background:linear-gradient(90deg,#FFD740,#FFB300);border-radius:10px;transition:width.1s linear}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 12px}.game-card{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+#perfil,#chats,#tiques,#seccion-vip{scroll-margin-top:88px}
+@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 12px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
@@ -111,30 +127,27 @@
 
   <div class="siilck-lobby-final">
     <div class="siilck-welcome-card">
-      <div class="welcome-icon">🛍️</div>
-      <div class="welcome-badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
+      <div id="sv-live-counter" class="sv-live-counter">🔴 <b id="sv-cuentas-n">…</b> cuentas disponibles • <b id="sv-vendidas-n">…</b> vendidas hoy</div>
+      <div class="welcome-top-left">
+        <div class="welcome-icon">🛍️</div>
+        <div class="welcome-badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
+      </div>
       <h1>Bienvenido a SiilckVentas</h1>
       <p class="welcome-sub">Explora miles de cuentas verificadas con protección Escrow garantizada al 100%.</p>
+      <div class="sv-search-wrap">
+        <input id="lobby-search" type="search" placeholder="Buscar juego o streaming..." autocomplete="off" aria-label="Buscar juego o streaming">
+        <div id="lobby-search-list" class="sv-ac"></div>
+      </div>
 
       <div class="section-label">🎮 JUEGOS POPULARES</div>
       <div class="game-showcase" id="gameShowcase1">
         <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack1', -1)" aria-label="Juego anterior">‹</button>
         <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack1', 1)" aria-label="Juego siguiente">›</button>
         <div class="game-track" id="gameTrack1">
-          <a href="ventas.html?juego=valorant" class="game-card"><div class="img-wrap"><img class="real" alt="Valorant" src="img/games/valorant.jpg" onerror="this.src='https://placehold.co/400x220/0f0f0f/FFD700?text=VALORANT'"><div class="fade"></div><div class="name"><b>VALORANT</b><i>RADIANT</i></div></div><div class="g-label"><b>VALORANT</b><span>DIAMANTE • SKINS</span></div></a>
-          <a href="ventas.html?juego=free fire" class="game-card"><div class="img-wrap"><img class="real" alt="Free Fire" src="img/games/freefire.jpg" onerror="this.src='https://placehold.co/400x220/4a3000/FFD700?text=FREE+FIRE'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(255,80,0,.5), transparent 70%)"></div><div class="name"><b>FREE FIRE</b><i>NIVEL 72</i></div></div><div class="g-label"><b>FREE FIRE</b><span>ELITE • EVOS</span></div></a>
-          <a href="ventas.html?juego=fortnite" class="game-card"><div class="img-wrap"><img class="real" alt="Fortnite" src="img/games/fortnite.jpg" onerror="this.src='https://placehold.co/400x220/2a3a00/FFD700?text=FORTNITE'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(150,0,255,.5), transparent 70%)"></div><div class="name"><b>FORTNITE</b><i>120+ SKINS</i></div></div><div class="g-label"><b>FORTNITE</b><span>RARAS • V-BUCKS</span></div></a>
-          <a href="ventas.html?juego=league" class="game-card"><div class="img-wrap"><img class="real" alt="League of Legends" src="img/games/lol.jpg" onerror="this.src='https://placehold.co/400x220/2a1a00/FFD700?text=LOL'"><div class="fade"></div><div class="name"><b>LOL</b><i>CHALLENGER</i></div></div><div class="g-label"><b>LEAGUE OF LEGENDS</b><span>ALL CHAMPS</span></div></a>
-          <a href="ventas.html?juego=call of duty" class="game-card"><div class="img-wrap"><img class="real" alt="Call of Duty" src="img/games/cod.jpg" onerror="this.src='https://placehold.co/400x220/1a2a1a/FFD700?text=COD'"><div class="fade"></div><div class="name"><b>COD / WARZONE</b><i>DAMASCUS</i></div></div><div class="g-label"><b>CALL OF DUTY</b><span>BUNDLES</span></div></a>
-          <a href="ventas.html?juego=steam" class="game-card"><div class="img-wrap"><img class="real" alt="Steam" src="img/games/steam.jpg" onerror="this.src='https://placehold.co/400x220/0a1a2a/FFD700?text=STEAM'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(0,150,255,.5), transparent 70%)"></div><div class="name"><b>STEAM</b><i>LIBRARY</i></div></div><div class="g-label"><b>STEAM</b><span>JUEGOS + WALLET</span></div></a>
-          <a href="ventas.html?juego=cs2" class="game-card"><div class="img-wrap"><img class="real" alt="CS2" src="img/games/cs2.jpg" onerror="this.src='https://placehold.co/400x220/1a1a1a/FFD700?text=CS2'"><div class="fade"></div><div class="name"><b>CS2</b><i>CASES</i></div></div><div class="g-label"><b>CS2 / CASES</b><span>KNIVES • SKINS</span></div></a>
-          <a href="ventas.html?juego=roblox" class="game-card"><div class="img-wrap"><img class="real" alt="Roblox" src="img/games/roblox.jpg" onerror="this.src='https://placehold.co/400x220/1a1a2a/FFD700?text=ROBLOX'"><div class="fade"></div><div class="name"><b>ROBLOX</b><i>LIMITEDS</i></div></div><div class="g-label"><b>ROBLOX</b><span>ROBUX • LIMITEDS</span></div></a>
-          <a href="ventas.html?juego=minecraft" class="game-card"><div class="img-wrap"><img class="real" alt="Minecraft" src="img/games/minecraft.jpg" onerror="this.src='https://placehold.co/400x220/1a3a1a/FFD700?text=MINECRAFT'"><div class="fade"></div><div class="name"><b>MINECRAFT</b><i>JAVA • BEDROCK</i></div></div><div class="g-label"><b>MINECRAFT</b><span>CAPES • RANKED</span></div></a>
-          <a href="ventas.html?juego=brawl" class="game-card"><div class="img-wrap"><img class="real" alt="Brawl Stars" src="img/games/brawlstars.jpg" onerror="this.src='https://placehold.co/400x220/3a1a00/FFD700?text=BRAWL+STARS'"><div class="fade"></div><div class="name"><b>BRAWL STARS</b><i>50K TROFEOS</i></div></div><div class="g-label"><b>BRAWL STARS</b><span>MAX • BRAWLERS</span></div></a>
-          <a href="ventas.html?juego=clash" class="game-card"><div class="img-wrap"><img class="real" alt="Clash Royale" src="img/games/clash.jpg" onerror="this.src='https://placehold.co/400x220/1a2a4a/FFD700?text=CLASH+ROYALE'"><div class="fade"></div><div class="name"><b>CLASH ROYALE</b><i>6000 COPAS</i></div></div><div class="g-label"><b>CLASH ROYALE</b><span>MAX • LEGENDARIAS</span></div></a>
-          <a href="ventas.html?juego=pubg" class="game-card"><div class="img-wrap"><img class="real" alt="PUBG" src="img/games/pubg.jpg" onerror="this.src='https://placehold.co/400x220/2a2a00/FFD700?text=PUBG'"><div class="fade"></div><div class="name"><b>PUBG</b><i>CONQUEROR</i></div></div><div class="g-label"><b>PUBG MOBILE</b><span>MYTHIC • SKINS</span></div></a>
-          <a href="ventas.html?juego=genshin" class="game-card"><div class="img-wrap"><img class="real" alt="Genshin Impact" src="img/games/genshin.jpg" onerror="this.src='https://placehold.co/400x220/1a2a3a/FFD700?text=GENSHIN'"><div class="fade"></div><div class="name"><b>GENSHIN</b><i>AR 55</i></div></div><div class="g-label"><b>GENSHIN IMPACT</b><span>5 STARS • AR 55</span></div></a>
-          <a href="ventas.html?juego=gta" class="game-card"><div class="img-wrap"><img class="real" alt="GTA V" src="img/games/gtav.jpg" onerror="this.src='https://placehold.co/400x220/1a1a3a/FFD700?text=GTA+V'"><div class="fade"></div><div class="name"><b>GTA V</b><i>MILLONES</i></div></div><div class="g-label"><b>GTA V</b><span>ONLINE • DINERO</span></div></a>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
         </div>
         <div class="g-dots" id="gDots1"></div>
         <div class="auto-bar"><div class="auto-progress" id="autoProgress1"></div></div>
@@ -145,14 +158,10 @@
         <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack2', -1)" aria-label="Servicio anterior">‹</button>
         <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack2', 1)" aria-label="Servicio siguiente">›</button>
         <div class="game-track" id="gameTrack2">
-          <a href="ventas.html?juego=netflix" class="game-card stream"><div class="img-wrap"><img class="real" alt="Netflix" src="img/games/netflix.jpg" onerror="this.src='https://placehold.co/400x220/E50914/FFFFFF?text=NETFLIX'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(229,9,20,.5), transparent 70%)"></div><div class="name"><b>NETFLIX</b><i>4K • PREMIUM</i></div></div><div class="g-label"><b>NETFLIX</b><span>4K UHD • 5 PERFILES</span></div></a>
-          <a href="ventas.html?juego=hbo" class="game-card stream"><div class="img-wrap"><img class="real" alt="HBO Max" src="img/games/hbo.jpg" onerror="this.src='https://placehold.co/400x220/1a0033/FFFFFF?text=HBO+MAX'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(90,0,255,.5), transparent 70%)"></div><div class="name"><b>HBO MAX</b><i>MAX • 4K</i></div></div><div class="g-label"><b>HBO MAX</b><span>PREMIUM • 4K</span></div></a>
-          <a href="ventas.html?juego=disney" class="game-card stream"><div class="img-wrap"><img class="real" alt="Disney+" src="img/games/disney.jpg" onerror="this.src='https://placehold.co/400x220/0063E5/FFFFFF?text=DISNEY+'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(0,99,229,.5), transparent 70%)"></div><div class="name"><b>DISNEY+</b><i>STAR+</i></div></div><div class="g-label"><b>DISNEY+ PREMIUM</b><span>STAR+ • 4K</span></div></a>
-          <a href="ventas.html?juego=prime" class="game-card stream"><div class="img-wrap"><img class="real" alt="Prime Video" src="img/games/prime.jpg" onerror="this.src='https://placehold.co/400x220/00A8E1/FFFFFF?text=PRIME+VIDEO'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(0,168,225,.5), transparent 70%)"></div><div class="name"><b>PRIME VIDEO</b><i>4K</i></div></div><div class="g-label"><b>PRIME VIDEO</b><span>4K • PREMIUM</span></div></a>
-          <a href="ventas.html?juego=spotify" class="game-card stream"><div class="img-wrap"><img class="real" alt="Spotify" src="img/games/spotify.jpg" onerror="this.src='https://placehold.co/400x220/1DB954/000000?text=SPOTIFY'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(29,185,84,.5), transparent 70%)"></div><div class="name"><b>SPOTIFY</b><i>FAMILY</i></div></div><div class="g-label"><b>SPOTIFY PREMIUM</b><span>FAMILY • 1 AÑO</span></div></a>
-          <a href="ventas.html?juego=youtube" class="game-card stream"><div class="img-wrap"><img class="real" alt="YouTube Premium" src="img/games/youtube.jpg" onerror="this.src='https://placehold.co/400x220/FF0000/FFFFFF?text=YOUTUBE+PREMIUM'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(255,0,0,.5), transparent 70%)"></div><div class="name"><b>YOUTUBE PREMIUM</b><i>12 MESES</i></div></div><div class="g-label"><b>YOUTUBE PREMIUM</b><span>SIN ANUNCIOS</span></div></a>
-          <a href="ventas.html?juego=crunchyroll" class="game-card stream"><div class="img-wrap"><img class="real" alt="Crunchyroll" src="img/games/crunchy.jpg" onerror="this.src='https://placehold.co/400x220/F47521/FFFFFF?text=CRUNCHYROLL'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(244,117,33,.5), transparent 70%)"></div><div class="name"><b>CRUNCHYROLL</b><i>MEGA FAN</i></div></div><div class="g-label"><b>CRUNCHYROLL</b><span>MEGA FAN • 4K</span></div></a>
-          <a href="ventas.html?juego=xbox" class="game-card stream"><div class="img-wrap"><img class="real" alt="Xbox Game Pass" src="img/games/xbox.jpg" onerror="this.src='https://placehold.co/400x220/107C10/FFFFFF?text=XBOX+GAME+PASS'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(16,124,16,.5), transparent 70%)"></div><div class="name"><b>GAME PASS</b><i>ULTIMATE</i></div></div><div class="g-label"><b>XBOX GAME PASS</b><span>ULTIMATE • 12M</span></div></a>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
         </div>
         <div class="g-dots" id="gDots2"></div>
         <div class="auto-bar"><div class="auto-progress" id="autoProgress2"></div></div>
@@ -238,7 +247,7 @@
     </div>
   </div>
 
-  <div id="seccion-mis-tickets" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
+  <div id="tiques" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
       <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
         <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider"><i class="fas fa-ticket-alt mr-1.5"></i> Crear Reporte / Ticket de Soporte</h3>
@@ -265,7 +274,7 @@
     </div>
   </div>
 
-  <div id="seccion-mis-chats" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
+  <div id="chats" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
       <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
         <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
@@ -275,7 +284,7 @@
     </div>
   </div>
 
-  <div id="seccion-perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page text-left">
+  <div id="perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4 w-full">
       <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
         <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer</span>
@@ -448,9 +457,25 @@ async function manejarRetornoPagoVip(u){
   }
   mostrarToast('✅ Pase VIP activado. Gracias por tu compra con Flow.');
 }
+function anclaDeSeccion(s){
+  return {vip:'seccion-vip',perfil:'perfil','mis-chats':'chats','mis-tickets':'tiques'}[s] || ('seccion-'+s);
+}
+function scrollAAncla(el){
+  if(!el) return;
+  const header = document.querySelector('header');
+  const offset = Math.max(80, header ? header.offsetHeight : 80) + 8;
+  const y = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({top:Math.max(0, y), behavior:'smooth'});
+}
 function cambiarSeccion(s){
-  ['vip','perfil','mis-chats','mis-tickets'].forEach(x=>{const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');});
-  if(s!=='inicio'){const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');}
+  ['seccion-vip','perfil','chats','tiques'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hidden');});
+  if(s!=='inicio'){
+    const target=document.getElementById(anclaDeSeccion(s));
+    if(target){
+      target.classList.remove('hidden');
+      requestAnimationFrame(()=>requestAnimationFrame(()=>scrollAAncla(target)));
+    }
+  }
   if(s==='mis-chats') cargarListaChatsUsuario();
   if(s==='mis-tickets') cargarMisTicketsUsuario();
 }
@@ -561,6 +586,59 @@ function scrollGames(id, dir){
   go((track._cur||0)+dir);
   start();
 }
+function fmtNum(n){return Number(n||0).toLocaleString('es-CL');}
+async function cargarContadorVivo(){
+  const cEl=document.getElementById('sv-cuentas-n');
+  const vEl=document.getElementById('sv-vendidas-n');
+  try{
+    const pubs=await db.collection('publicaciones').get();
+    let n=0;
+    pubs.forEach(d=>{const s=d.data().stock; if(s==null || Number(s)>0) n++;});
+    if(cEl) cEl.textContent=fmtNum(n);
+  }catch(e){ if(cEl) cEl.textContent='0'; }
+  try{
+    const acts=await db.collection('recentActivity').where('type','==','purchase').get();
+    const start=new Date(); start.setHours(0,0,0,0);
+    let v=0;
+    acts.forEach(d=>{
+      const t=d.data().createdAt;
+      const date=t&&t.toDate?t.toDate():null;
+      if(date && date>=start) v++;
+    });
+    if(vEl) vEl.textContent=fmtNum(v);
+  }catch(e){ if(vEl) vEl.textContent='0'; }
+}
+function lobbyAutocomplete(v){
+  const box=document.getElementById('lobby-search-list');
+  if(!box || !window.siilckBuscarJuegos) return;
+  const q=String(v||'').trim();
+  if(!q){ box.innerHTML=''; box.classList.remove('open'); return; }
+  const list=window.siilckBuscarJuegos(q);
+  if(!list.length){ box.innerHTML='<p class="sv-ac-empty">Sin coincidencias</p>'; box.classList.add('open'); return; }
+  box.innerHTML=list.map(g=>'<button type="button" data-q="'+window.siilckEsc(g.query)+'">'+window.siilckEsc(g.nombre)+'</button>').join('');
+  box.classList.add('open');
+}
+(function(){
+  const input=document.getElementById('lobby-search');
+  const box=document.getElementById('lobby-search-list');
+  if(input){
+    input.addEventListener('input', ()=>lobbyAutocomplete(input.value));
+    input.addEventListener('focus', ()=>lobbyAutocomplete(input.value));
+  }
+  if(box){
+    box.addEventListener('click', e=>{
+      const b=e.target.closest('button');
+      if(!b) return;
+      window.location.href='ventas.html?juego='+encodeURIComponent(b.dataset.q||'');
+    });
+  }
+  document.addEventListener('click', e=>{
+    if(!box || !input) return;
+    if(e.target===input || box.contains(e.target)) return;
+    box.classList.remove('open');
+  });
+  cargarContadorVivo();
+})();
 (function(){
   function initShowcase(trackId, dotsId, progId){
     const track=document.getElementById(trackId);
@@ -568,6 +646,7 @@ function scrollGames(id, dir){
     const progress=document.getElementById(progId);
     if(!track || !dotsBox || !progress) return;
     const cards=track.querySelectorAll('.game-card');
+    if(!cards.length) return;
     let cur=0, timer, progTimer, prog=0;
     const DURATION=2500;
     track._cur=0;
@@ -611,8 +690,17 @@ function scrollGames(id, dir){
     window['stop_'+trackId]=stop;
     start();
   }
-  initShowcase('gameTrack1','gDots1','autoProgress1');
-  setTimeout(()=>initShowcase('gameTrack2','gDots2','autoProgress2'),400);
+  function pintarTrack(trackId, categoria){
+    const track=document.getElementById(trackId);
+    if(!track || !window.SIILCK_GAMES || !window.siilckCardHtml) return;
+    track.innerHTML=window.SIILCK_GAMES.filter(g=>g.categoria===categoria).map(window.siilckCardHtml).join('');
+  }
+  setTimeout(()=>{
+    pintarTrack('gameTrack1','juego');
+    pintarTrack('gameTrack2','stream');
+    initShowcase('gameTrack1','gDots1','autoProgress1');
+    initShowcase('gameTrack2','gDots2','autoProgress2');
+  }, 280);
 })();
 </script>
 </body>

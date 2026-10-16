@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
   body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
@@ -28,6 +29,16 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
   .radio-warranty{accent-color:#eab308}
+  #cartelera-juegos{max-height:70vh;overflow-y:auto;padding-right:2px}
+  .sv-cat-label{color:#FFD740;font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;margin:8px 2px 2px}
+  .sv-cat-on{border-color:#eab308 !important;background:rgba(234,179,8,.12) !important}
+  .sv-ac{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:#141416;border:1px solid rgba(234,179,8,.4);border-radius:14px;overflow:hidden;z-index:40}
+  .sv-ac.open{display:block}
+  .sv-ac button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}
+  .sv-ac button:hover{background:rgba(234,179,8,.12)}
+  .sv-skel-row{height:44px;border-radius:16px;background:linear-gradient(90deg,#161616 25%,#2c2c2c 50%,#161616 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
+  @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  #seccion-mis-chats,#seccion-mercado{scroll-margin-top:88px}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -64,8 +75,9 @@
     </div>
     
     <div class="flex-grow max-w-lg relative order-last sm:order-none w-full sm:w-auto">
-      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition">
+      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Netflix..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition" autocomplete="off">
       <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-yellow-400 text-xs"></i>
+      <div id="buscador-autocomplete" class="sv-ac"></div>
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0">
@@ -87,19 +99,11 @@
           <h3 class="text-xs font-black text-yellow-400 uppercase tracking-wider"><i class="fas fa-film mr-1.5"></i> Cartelera de Juegos</h3>
           <span class="text-[9px] bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded border border-zinc-800">Activa</span>
         </div>
-        <div class="flex flex-col gap-2">
-          <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-fire text-yellow-400"></i> Free Fire</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Valorant')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-shield-alt text-rose-400"></i> Valorant</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Roblox')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-cube text-emerald-400"></i> Roblox</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Steam Key')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fab fa-steam text-indigo-400"></i> Steam Key</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('League of Legends')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-bolt text-amber-400"></i> LoL / Riot</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('GTA V')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-car text-orange-400"></i> GTA V</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Minecraft')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-hammer text-emerald-500"></i> Minecraft</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Genshin Impact')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-star text-purple-400"></i> Genshin Impact</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Call of Duty')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-crosshairs text-sky-400"></i> Call of Duty</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Clash Royale')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-chess-rook text-amber-500"></i> Clash Royale</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('FIFA / FC')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-futbol text-emerald-400"></i> FIFA / EA FC</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+        <div id="cartelera-juegos" class="flex flex-col gap-2">
+          <div class="sv-skel-row"></div>
+          <div class="sv-skel-row"></div>
+          <div class="sv-skel-row"></div>
+          <div class="sv-skel-row"></div>
         </div>
       </div>
     </div>
@@ -218,7 +222,7 @@
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,stockPublicacionActual=1,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,stockPublicacionActual=1,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null,filtroMarketplaceActual=null;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 const OWNER_UID_ALT="w4JA6UUF7WeC6UJweKAKdWYMHf73";
 function esAdminDueño(uid){ return uid===OWNER_UID || uid===OWNER_UID_ALT; }
@@ -302,15 +306,69 @@ function cambiarSeccion(s){
   ['mercado','mis-chats','chat-activo','perfil-vendedor'].forEach(x=>{
     const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');
   });
-  const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
+  const target=document.getElementById(`seccion-${s}`);
+  if(target){
+    target.classList.remove('hidden');
+    const header=document.querySelector('header');
+    const offset=Math.max(80, header ? header.offsetHeight : 80)+8;
+    const y=target.getBoundingClientRect().top+window.scrollY-offset;
+    window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
+  }
   if(s==='mis-chats') cargarListaChatsUsuario();
 }
 
 function ejecutarBusquedaEnVivo(v){
-  renderizarGridPublicaciones(globalPublicacionesCache, v.trim().toLowerCase());
+  filtroMarketplaceActual=v.trim().toLowerCase();
+  renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual);
+  pintarSugerencias(v);
+  marcarCatalogoActivo(filtroMarketplaceActual);
 }
 function filtrarPorJuegoRapido(juego){
-  renderizarGridPublicaciones(globalPublicacionesCache, juego.toLowerCase());
+  filtroMarketplaceActual=String(juego||'').toLowerCase();
+  const input=document.getElementById('header-global-search');
+  const elegido=(window.SIILCK_GAMES||[]).find(g=>String(g.query).toLowerCase()===filtroMarketplaceActual);
+  if(input) input.value=elegido?elegido.nombre:'';
+  const box=document.getElementById('buscador-autocomplete');
+  if(box) box.classList.remove('open');
+  renderizarGridPublicaciones(globalPublicacionesCache, String(juego||'').toLowerCase());
+  marcarCatalogoActivo(juego);
+  const mercado=document.getElementById('seccion-mercado');
+  if(mercado){
+    const header=document.querySelector('header');
+    const offset=Math.max(80, header ? header.offsetHeight : 80)+8;
+    const y=mercado.getBoundingClientRect().top+window.scrollY-offset;
+    window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
+  }
+}
+function marcarCatalogoActivo(juego){
+  document.querySelectorAll('#cartelera-juegos [data-query]').forEach(btn=>{
+    btn.classList.toggle('sv-cat-on', btn.dataset.query.toLowerCase()===String(juego||'').toLowerCase());
+  });
+}
+function pintarSugerencias(v){
+  const box=document.getElementById('buscador-autocomplete');
+  if(!box || !window.siilckBuscarJuegos) return;
+  const q=String(v||'').trim();
+  if(!q){ box.classList.remove('open'); box.innerHTML=''; return; }
+  const list=window.siilckBuscarJuegos(q);
+  if(!list.length){ box.classList.remove('open'); return; }
+  box.innerHTML=list.map(g=>'<button type="button" data-query="'+window.siilckEsc(g.query)+'">'+window.siilckEsc(g.nombre)+'</button>').join('');
+  box.classList.add('open');
+}
+function pintarCartelera(activo){
+  const box=document.getElementById('cartelera-juegos');
+  if(!box || !window.SIILCK_GAMES) return;
+  const esc=window.siilckEsc;
+  function grupo(titulo, items){
+    return '<p class="sv-cat-label">'+esc(titulo)+'</p>'+items.map(g=>'<button type="button" data-query="'+esc(g.query)+'" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="'+esc(g.icon)+' '+esc(g.iconColor)+'"></i> '+esc(g.nombre)+'</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>').join('');
+  }
+  const juegos=window.SIILCK_GAMES.filter(g=>g.categoria==='juego');
+  const streams=window.SIILCK_GAMES.filter(g=>g.categoria==='stream');
+  box.innerHTML=grupo('Juegos', juegos)+grupo('Streaming', streams);
+  box.querySelectorAll('[data-query]').forEach(btn=>{
+    btn.addEventListener('click', ()=>filtrarPorJuegoRapido(btn.dataset.query));
+  });
+  if(activo) marcarCatalogoActivo(activo);
 }
 
 auth.onAuthStateChanged(async(u)=>{
@@ -376,9 +434,12 @@ function cargarPublicacionesEnVivo(){
       const fb = b.fecha && b.fecha.toDate ? b.fecha.toDate().getTime() : 0;
       return fb - fa;
     });
-    const params = new URLSearchParams(window.location.search);
-    const juegoUrl = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
-    renderizarGridPublicaciones(globalPublicacionesCache, juegoUrl);
+    if(filtroMarketplaceActual===null){
+      const params = new URLSearchParams(window.location.search);
+      filtroMarketplaceActual = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
+      marcarCatalogoActivo(filtroMarketplaceActual);
+    }
+    renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
   });
 }
 
@@ -390,7 +451,9 @@ function renderizarGridPublicaciones(ps, filtro=""){
     const region = (p.region || '').toLowerCase();
     const stockNum = p.stock == null ? 1 : Number(p.stock);
     if(stockNum <= 0) return;
-    if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
+    if(filtro && window.siilckCoincidePublicacion){
+      if(!window.siilckCoincidePublicacion(filtro, p)) return;
+    }else if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
     
     const tipoVip = p.tipoVip || 'ninguno';
     let cardClass = "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition relative";
@@ -561,6 +624,26 @@ async function cargarListaChatsUsuario(){
   });
   document.getElementById('lista-chats-usuario').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats activos.</p>`;
 }
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const inicial = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
+  filtroMarketplaceActual = inicial;
+  pintarCartelera(inicial);
+  const box = document.getElementById('buscador-autocomplete');
+  if(box){
+    box.addEventListener('click', e=>{
+      const b = e.target.closest('button');
+      if(!b) return;
+      filtrarPorJuegoRapido(b.dataset.query || '');
+    });
+  }
+  document.addEventListener('click', e=>{
+    const input = document.getElementById('header-global-search');
+    if(!box || !input) return;
+    if(e.target===input || box.contains(e.target)) return;
+    box.classList.remove('open');
+  });
+})();
 </script>
 </body>
 </html>
