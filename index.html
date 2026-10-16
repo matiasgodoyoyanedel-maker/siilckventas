@@ -202,55 +202,6 @@
     </a>
   </div>
 
-  <div id="seccion-vip" class="hidden space-y-6 w-full animate-page text-left">
-    <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
-      <h2 class="text-xl font-black text-white font-heading">Elige tu Pase VIP Vendedor</h2>
-      <button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Cerrar</button>
-    </div>
-    <p class="text-xs text-zinc-300 leading-relaxed">El <strong class="text-yellow-400">Pase Básico</strong> ya no es solo una insignia: impulsa tus cuentas al tope, muestra rango real a los compradores y te da marco dorado. El Pro suma más potencia, no reemplaza lo que el B ya hace.</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-      <div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between overflow-hidden">
-        <span class="pase-ribbon">Más elegido</span>
-        <div class="space-y-4 text-center">
-          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase B · Aprendiz Estelar</span>
-          <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
-          <p class="text-[11px] text-zinc-300 leading-relaxed">Enciende tu vitrina. El Pase B te pone en primera fila del marketplace para que tus cuentas se vean, se confíen y se vendan más rápido.</p>
-          <div id="precio-vip-basico" class="text-3xl font-black text-yellow-400">Cargando precio…</div>
-          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
-            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil, foro y fichas.</li>
-            <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li>
-            <li><i class="fas fa-bolt text-yellow-400 mr-2"></i> <strong>Impulso diario:</strong> sube 1 anuncio al tope cada 24 horas.</li>
-            <li><i class="fas fa-star text-yellow-400 mr-2"></i> Cinta <strong>DESTACADO</strong> y estela dorada en tus publicaciones.</li>
-            <li><i class="fas fa-id-badge text-yellow-400 mr-2"></i> Rango visible <strong>⭐ VIP Básico</strong> (ya no aparece solo “Verificado”).</li>
-            <li><i class="fas fa-gem text-yellow-400 mr-2"></i> Marco dorado de vendedor VIP en marketplace.</li>
-            <li><i class="fas fa-sort-amount-up text-yellow-400 mr-2"></i> Prioridad media en el ranking frente a cuentas sin pase.</li>
-          </ul>
-        </div>
-        <button type="button" id="btn-pagar-vip-basico" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('basico'))" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
-        <button type="button" id="btn-pagar-vip-basico-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('basico'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
-        <p id="hint-vip-basico" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
-      </div>
-      <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
-        <div class="space-y-4 text-center">
-          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase Pro · Máximo alcance</span>
-          <h3 class="text-2xl font-black text-white">VIP PRO</h3>
-          <p class="text-[11px] text-zinc-300 leading-relaxed">Para vendedores que quieren dominar el ranking: más descuento, impulso más frecuente y el sello rojo que nadie ignora.</p>
-          <div id="precio-vip-pro" class="text-3xl font-black text-rose-500">Cargando precio…</div>
-          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
-            <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li>
-            <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li>
-            <li><i class="fas fa-bolt text-rose-500 mr-2"></i> Impulso acelerado cada <strong>8 horas</strong> (más rápido que el Pase B).</li>
-            <li><i class="fas fa-fire text-rose-500 mr-2"></i> Prioridad máxima sobre Básico y cuentas sin pase.</li>
-            <li><i class="fas fa-crown text-rose-500 mr-2"></i> Marco rojo Pro + estela animada premium.</li>
-          </ul>
-        </div>
-        <button type="button" id="btn-pagar-vip-pro" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('pro'))" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
-        <button type="button" id="btn-pagar-vip-pro-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('pro'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
-        <p id="hint-vip-pro" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
-      </div>
-    </div>
-  </div>
-
   <div id="tiques" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
       <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
@@ -308,6 +259,57 @@
 
 </section>
 </main>
+
+<div id="vip-overlay" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]" onclick="cambiarSeccion('inicio')"></div>
+<aside id="seccion-vip" class="fixed top-0 right-0 h-full w-[92%] max-w-[420px] bg-zinc-950 border-l border-zinc-800 z-[100] translate-x-full transition-transform duration-300 ease-in-out" aria-hidden="true">
+  <button type="button" onclick="cambiarSeccion('inicio')" class="absolute top-4 right-4 bg-zinc-800 text-white p-2 rounded-full z-10" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+  <div class="h-full overflow-y-auto p-6 pt-14 space-y-4 text-left">
+    <h2 class="text-xl font-black text-white font-heading">Elige tu Pase VIP Vendedor</h2>
+    <p class="text-xs text-zinc-300 leading-relaxed">El <strong class="text-yellow-400">Pase Básico</strong> ya no es solo una insignia: impulsa tus cuentas al tope, muestra rango real a los compradores y te da marco dorado. El Pro suma más potencia, no reemplaza lo que el B ya hace.</p>
+    <div class="grid grid-cols-1 gap-6">
+<div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between overflow-hidden">
+        <span class="pase-ribbon">Más elegido</span>
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase B · Aprendiz Estelar</span>
+          <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
+          <p class="text-[11px] text-zinc-300 leading-relaxed">Enciende tu vitrina. El Pase B te pone en primera fila del marketplace para que tus cuentas se vean, se confíen y se vendan más rápido.</p>
+          <div id="precio-vip-basico" class="text-3xl font-black text-yellow-400">Cargando precio…</div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil, foro y fichas.</li>
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li>
+            <li><i class="fas fa-bolt text-yellow-400 mr-2"></i> <strong>Impulso diario:</strong> sube 1 anuncio al tope cada 24 horas.</li>
+            <li><i class="fas fa-star text-yellow-400 mr-2"></i> Cinta <strong>DESTACADO</strong> y estela dorada en tus publicaciones.</li>
+            <li><i class="fas fa-id-badge text-yellow-400 mr-2"></i> Rango visible <strong>⭐ VIP Básico</strong> (ya no aparece solo “Verificado”).</li>
+            <li><i class="fas fa-gem text-yellow-400 mr-2"></i> Marco dorado de vendedor VIP en marketplace.</li>
+            <li><i class="fas fa-sort-amount-up text-yellow-400 mr-2"></i> Prioridad media en el ranking frente a cuentas sin pase.</li>
+          </ul>
+        </div>
+        <button type="button" id="btn-pagar-vip-basico" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('basico'))" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <button type="button" id="btn-pagar-vip-basico-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('basico'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
+        <p id="hint-vip-basico" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
+      </div>
+      <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase Pro · Máximo alcance</span>
+          <h3 class="text-2xl font-black text-white">VIP PRO</h3>
+          <p class="text-[11px] text-zinc-300 leading-relaxed">Para vendedores que quieren dominar el ranking: más descuento, impulso más frecuente y el sello rojo que nadie ignora.</p>
+          <div id="precio-vip-pro" class="text-3xl font-black text-rose-500">Cargando precio…</div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li>
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li>
+            <li><i class="fas fa-bolt text-rose-500 mr-2"></i> Impulso acelerado cada <strong>8 horas</strong> (más rápido que el Pase B).</li>
+            <li><i class="fas fa-fire text-rose-500 mr-2"></i> Prioridad máxima sobre Básico y cuentas sin pase.</li>
+            <li><i class="fas fa-crown text-rose-500 mr-2"></i> Marco rojo Pro + estela animada premium.</li>
+          </ul>
+        </div>
+        <button type="button" id="btn-pagar-vip-pro" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('pro'))" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <button type="button" id="btn-pagar-vip-pro-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('pro'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
+        <p id="hint-vip-pro" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
 
 <script>
 const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,authCheckHecho=false;
@@ -515,8 +517,36 @@ function scrollAAncla(el){
   const y = el.getBoundingClientRect().top + window.scrollY - offset;
   window.scrollTo({top:Math.max(0, y), behavior:'smooth'});
 }
+function cerrarVip(){
+  const drawer = document.getElementById('seccion-vip');
+  const overlay = document.getElementById('vip-overlay');
+  if(drawer){
+    drawer.classList.add('translate-x-full');
+    drawer.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+  setTimeout(() => {
+    if(drawer && drawer.classList.contains('translate-x-full') && overlay) overlay.classList.add('hidden');
+  }, 300);
+}
+function abrirVip(){
+  const drawer = document.getElementById('seccion-vip');
+  const overlay = document.getElementById('vip-overlay');
+  if(overlay) overlay.classList.remove('hidden');
+  if(drawer){
+    drawer.setAttribute('aria-hidden', 'false');
+    drawer.classList.add('translate-x-full');
+    requestAnimationFrame(() => requestAnimationFrame(() => drawer.classList.remove('translate-x-full')));
+  }
+  document.body.style.overflow = 'hidden';
+}
 function cambiarSeccion(s){
-  ['seccion-vip','perfil','chats','tiques'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hidden');});
+  ['perfil','chats','tiques'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hidden');});
+  if(s === 'vip'){
+    abrirVip();
+    return;
+  }
+  cerrarVip();
   if(s!=='inicio'){
     const target=document.getElementById(anclaDeSeccion(s));
     if(target){

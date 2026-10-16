@@ -13,7 +13,7 @@
 
   function rutaLibre() {
     var p = ruta();
-    return p === '/mantenimiento' || p === '/login' || p === '/login.html' || p === '/verificar-correo' || p === '/verificar-correo.html' || p === '/recuperar' || p === '/recuperar.html' || p === '/api/mantenimiento';
+    return p === '/mantenimiento' || p === '/login' || p === '/login.html' || p === '/verificar-correo' || p === '/verificar-correo.html' || p === '/recuperar' || p === '/recuperar.html' || p === '/recuperar-contrasena' || p === '/recuperar-contrasena.html' || p === '/api/mantenimiento';
   }
 
   function sinVerificarCorreo() {
