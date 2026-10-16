@@ -4,5 +4,8 @@
     { "source": "/pago/exito", "destination": "/pago/exito.html" },
     { "source": "/pago/error", "destination": "/pago/error.html" },
     { "source": "/mis-compras/:id", "destination": "/mis-compras.html" }
+  ],
+  "crons": [
+    { "path": "/api/limpiar-vendidas", "schedule": "0 * * * *" }
   ]
 }

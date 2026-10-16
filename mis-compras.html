@@ -79,6 +79,11 @@ function pintar(cuentas){
     h.className='text-sm font-black text-white';
     h.textContent=cuenta.titulo||'Cuenta';
     card.appendChild(h);
+    const meta=[cuenta.juego, cuenta.nivel, cuenta.region].filter(Boolean).join(' · ');
+    const nota=document.createElement('p');
+    nota.className='text-[11px] text-zinc-400';
+    nota.textContent=meta ? ('Publicación vendida · '+meta) : 'Estos son los datos de esta publicación.';
+    card.appendChild(nota);
     card.appendChild(fila('Correo / usuario', cuenta.email));
     card.appendChild(fila('Clave', cuenta.clave));
     card.appendChild(fila('Teléfono', cuenta.telefono));
