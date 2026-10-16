@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel de Administración - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -81,8 +82,8 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
         <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
-          <h4 class="font-bold text-white uppercase text-[11px]">🛠️ Modo Mantención Estricto</h4>
-          <button id="btn-toggle-mantenimiento" onclick="toggleMantenimientoGlobal()" class="w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition">Cargando estado...</button>
+          <h4 class="font-bold text-white uppercase text-[11px]">Modo Mantenimiento ON/OFF</h4>
+          <button id="btn-toggle-mantenimiento" type="button" role="switch" aria-checked="false" onclick="toggleMantenimientoGlobal()" class="w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition">Cargando estado...</button>
         </div>
 
         <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">
@@ -285,12 +286,14 @@ async function cargarUsuariosAdmin(){
     const d = doc.data();
     const uid = doc.id;
     const username = d.username || "Sin nombre";
-    const esVendedor = d.cuentaVendedorActiva ? `<span class="text-emerald-400 font-bold">Vendedor Activo</span>` : `<span class="text-zinc-400">Usuario normal</span>`;
-    const estadoBloqueo = d.bloqueado ? `<span class="text-rose-500 font-bold">Bloqueado</span>` : `<span class="text-emerald-400 font-bold">Activo</span>`;
-    const btnBloquearTxt = d.bloqueado ? "Desbloquear" : "Bloquear";
-    const btnBloquearCls = d.bloqueado ? "bg-emerald-600 hover:bg-emerald-500" : "bg-rose-600 hover:bg-rose-500";
-    const btnRolTxt = d.cuentaVendedorActiva ? "Quitar Vendedor" : "Hacer Vendedor";
-    const btnRolCls = d.cuentaVendedorActiva ? "bg-amber-600 hover:bg-amber-500" : "bg-indigo-600 hover:bg-indigo-500";
+    const esVend = !!(d.cuentaVendedorActiva || d.is_seller);
+    const estaBloq = !!(d.bloqueado || d.is_blocked);
+    const esVendedor = esVend ? `<span class="text-emerald-400 font-bold">Vendedor Activo</span>` : `<span class="text-zinc-400">Usuario normal</span>`;
+    const estadoBloqueo = estaBloq ? `<span class="text-rose-500 font-bold">Bloqueado</span>` : `<span class="text-emerald-400 font-bold">Activo</span>`;
+    const btnBloquearTxt = estaBloq ? "Desbloquear" : "Bloquear";
+    const btnBloquearCls = estaBloq ? "bg-emerald-600 hover:bg-emerald-500" : "bg-rose-600 hover:bg-rose-500";
+    const btnRolTxt = esVend ? "Quitar Vendedor" : "Hacer Vendedor";
+    const btnRolCls = esVend ? "bg-amber-600 hover:bg-amber-500" : "bg-indigo-600 hover:bg-indigo-500";
 
     h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div>
@@ -298,8 +301,8 @@ async function cargarUsuariosAdmin(){
         <p class="text-[10px] text-zinc-400">UID: ${uid} • Estado: ${estadoBloqueo} • Rol: ${esVendedor}</p>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="toggleRolVendedor('${uid}', ${!!d.cuentaVendedorActiva})" class="${btnRolCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnRolTxt}</button>
-        <button onclick="toggleBloquearUsuario('${uid}', ${!!d.bloqueado})" class="${btnBloquearCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnBloquearTxt}</button>
+        <button onclick="toggleRolVendedor('${uid}', ${esVend})" class="${btnRolCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnRolTxt}</button>
+        <button onclick="toggleBloquearUsuario('${uid}', ${estaBloq})" class="${btnBloquearCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnBloquearTxt}</button>
       </div>
     </div>`;
   });
@@ -308,20 +311,33 @@ async function cargarUsuariosAdmin(){
 
 async function toggleRolVendedor(uid, estadoActual){
   const nuevoEstado = !estadoActual;
-  await db.collection('perfiles').doc(uid).update({
-    cuentaVendedorActiva: nuevoEstado,
-    role: nuevoEstado ? 'seller' : 'user'
-  });
-  if(nuevoEstado) await publicarNuevoVendedor(uid);
-  mostrarToast(nuevoEstado ? "⭐ Rol de vendedor otorgado." : "⚠️ Rol de vendedor retirado (perdió insignias).");
-  cargarUsuariosAdmin();
+  try{
+    await db.collection('perfiles').doc(uid).update({
+      cuentaVendedorActiva: nuevoEstado,
+      is_seller: nuevoEstado,
+      role: nuevoEstado ? 'seller' : 'user',
+      avisoVendedorPendiente: nuevoEstado
+    });
+    if(nuevoEstado) await publicarNuevoVendedor(uid);
+    mostrarToast(nuevoEstado ? "⭐ Rol de vendedor otorgado." : "⚠️ Rol de vendedor retirado (perdió insignias).");
+    cargarUsuariosAdmin();
+  }catch(e){
+    mostrarToast("No se pudo actualizar el vendedor: " + (e && e.message ? e.message : e));
+  }
 }
 
 async function toggleBloquearUsuario(uid, estadoActual){
   const nuevoEstado = !estadoActual;
-  await db.collection('perfiles').doc(uid).update({bloqueado: nuevoEstado});
-  mostrarToast(nuevoEstado ? "🔒 Usuario bloqueado." : "🔓 Usuario desbloqueado.");
-  cargarUsuariosAdmin();
+  try{
+    await db.collection('perfiles').doc(uid).update({
+      bloqueado: nuevoEstado,
+      is_blocked: nuevoEstado
+    });
+    mostrarToast(nuevoEstado ? "🔒 Usuario bloqueado." : "🔓 Usuario desbloqueado.");
+    cargarUsuariosAdmin();
+  }catch(e){
+    mostrarToast("No se pudo actualizar el bloqueo: " + (e && e.message ? e.message : e));
+  }
 }
 
 let configGlobalCache = {};
@@ -332,12 +348,16 @@ async function cargarConfiguracionAdmin(){
     document.getElementById('admin-input-aviso').value = configGlobalCache.avisoMantenimiento || "";
     
     const btnMaint = document.getElementById('btn-toggle-mantenimiento');
-    if(configGlobalCache.mantenimientoActivo){
-      btnMaint.innerText = "Desactivar Mantención (Activa)";
-      btnMaint.className = "w-full bg-rose-600 text-white font-bold py-2.5 rounded-xl uppercase transition";
-    }else{
-      btnMaint.innerText = "Activar Mantención";
-      btnMaint.className = "w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition";
+    const modoOn = !!(configGlobalCache.maintenance_mode || configGlobalCache.mantenimientoActivo);
+    if(btnMaint){
+      btnMaint.setAttribute('aria-checked', modoOn ? 'true' : 'false');
+      if(modoOn){
+        btnMaint.innerText = "Modo Mantenimiento ON";
+        btnMaint.className = "w-full bg-rose-600 text-white font-bold py-2.5 rounded-xl uppercase transition";
+      }else{
+        btnMaint.innerText = "Modo Mantenimiento OFF";
+        btnMaint.className = "w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition";
+      }
     }
 
     const btnAviso = document.getElementById('btn-toggle-aviso');
@@ -360,6 +380,14 @@ async function cargarConfiguracionAdmin(){
     const temaTxt = document.getElementById('tematica-actual-txt');
     if(temaTxt) temaTxt.innerText = "Temática activa: " + tema;
     if(window.SiilckTema) SiilckTema.apply(tema);
+  }else{
+    configGlobalCache = {};
+    const btnMaint = document.getElementById('btn-toggle-mantenimiento');
+    if(btnMaint){
+      btnMaint.innerText = "Modo Mantenimiento OFF";
+      btnMaint.setAttribute('aria-checked', 'false');
+      btnMaint.className = "w-full bg-zinc-800 text-white font-bold py-2.5 rounded-xl uppercase transition";
+    }
   }
 }
 
@@ -372,10 +400,22 @@ function elegirTematicaAdmin(nombre){
 }
 
 async function toggleMantenimientoGlobal(){
-  configGlobalCache.mantenimientoActivo = !configGlobalCache.mantenimientoActivo;
-  await db.collection('configuracion').doc('global').set(configGlobalCache, {merge: true});
-  cargarConfiguracionAdmin();
-  mostrarToast("🛠️ Estado de mantención actualizado.");
+  const ahora = !(configGlobalCache.maintenance_mode || configGlobalCache.mantenimientoActivo);
+  configGlobalCache.mantenimientoActivo = ahora;
+  configGlobalCache.maintenance_mode = ahora;
+  try{
+    await db.collection('configuracion').doc('global').set({
+      mantenimientoActivo: ahora,
+      maintenance_mode: ahora
+    }, {merge: true});
+    try{
+      await db.collection('settings').doc('site').set({ maintenance_mode: ahora }, {merge: true});
+    }catch(e){ console.log(e); }
+    cargarConfiguracionAdmin();
+    mostrarToast(ahora ? "🛠️ Modo Mantenimiento ON" : "🛠️ Modo Mantenimiento OFF");
+  }catch(e){
+    mostrarToast("No se pudo guardar el mantenimiento: " + (e && e.message ? e.message : e));
+  }
 }
 
 async function toggleAvisoGlobal(){
@@ -406,5 +446,6 @@ async function guardarConfiguracionGlobalAdmin(){
 
 function cerrarSesionAdmin(){auth.signOut().then(()=>{window.location.href="index.html";})}
 </script>
+<script src="/guardia.js"></script>
 </body>
 </html>

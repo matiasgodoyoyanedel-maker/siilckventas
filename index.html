@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SiilckVentas - Marketplace & Escrow Global</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,6 +31,9 @@
 .welcome-badge{display:inline-block;background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.35);color:#FFD740;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin:0 auto 14px}
 .sv-live-counter{width:100%;text-align:center;color:#f4f4f5;font-size:12px;font-weight:800;margin:0 0 14px;letter-spacing:.2px}
 .sv-live-counter b{color:#FFD740}
+.sv-trust-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;text-align:center;color:#f4f4f5;font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 14px}
+.sv-trust-dot{width:9px;height:9px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.75);animation:svTrustPulse 1.4s infinite;flex:none}
+@keyframes svTrustPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.75)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
 .sv-search-wrap{position:relative;max-width:520px;margin:0 auto 18px;text-align:left}
 .sv-search-wrap input{width:100%;background:#111;border:1px solid rgba(255,193,7,.35);border-radius:14px;padding:12px 14px;color:#fff;font-size:13px;outline:none}
 .sv-ac{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:#141416;border:1px solid rgba(255,193,7,.35);border-radius:14px;overflow:hidden;z-index:20;text-align:left}
@@ -126,7 +130,7 @@
 
   <div class="siilck-lobby-final">
     <div class="siilck-welcome-card">
-      <div id="sv-live-counter" class="sv-live-counter">🔴 <b id="sv-cuentas-n">…</b> cuentas disponibles • <b id="sv-vendidas-n">…</b> vendidas hoy</div>
+      <div class="sv-trust-bar"><span class="sv-trust-dot" aria-hidden="true"></span><span>🔒 ESCROW PROTEGIDO • ⚡ ENTREGA INMEDIATA • ✅ VERIFICADAS A MANO</span></div>
       <div class="welcome-icon">🛍️</div>
       <h1>Bienvenido a SiilckVentas</h1>
       <div class="welcome-badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
@@ -719,5 +723,6 @@ function lobbyAutocomplete(v){
   }, 280);
 })();
 </script>
+<script src="/guardia.js"></script>
 </body>
 </html>
