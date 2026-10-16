@@ -6,6 +6,6 @@
     { "source": "/mis-compras/:id", "destination": "/mis-compras.html" }
   ],
   "crons": [
-    { "path": "/api/limpiar-vendidas", "schedule": "0 * * * *" }
+    { "path": "/api/limpiar-vendidas", "schedule": "0 5 * * *" }
   ]
 }
