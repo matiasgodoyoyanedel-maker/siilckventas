@@ -216,7 +216,10 @@
     </div>
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
       <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Total</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span></div>
-      <button onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
+      <div class="flex flex-wrap justify-end gap-2">
+        <button onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
+        <button id="btn-pagar-producto" onclick="pagarProductoConFlow()" class="bg-emerald-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-emerald-400 transition"><i class="fas fa-shopping-bag mr-1"></i> Pagar</button>
+      </div>
     </div>
   </div>
 </div>
@@ -529,6 +532,32 @@ function actualizarPrecioTotalModal(){
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
   document.getElementById('modal-pub-precio-total').innerText = `$${(precioBasePublicacionActual + costoGarantia).toLocaleString('es-CL')} CLP`;
+}
+
+async function pagarProductoConFlow(){
+  if(!auth.currentUser){ window.location.href = 'login.html'; return; }
+  const listing = { id: publicacionActualIdCache };
+  const user = auth.currentUser;
+  if(!listing.id) return;
+  const btn = document.getElementById('btn-pagar-producto');
+  const etiqueta = btn ? btn.innerHTML : '';
+  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Conectando...'; }
+  try {
+    let idToken = '';
+    try { idToken = await user.getIdToken(true); }
+    catch(e){ idToken = await user.getIdToken(); }
+    const res = await fetch('/api/flow/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + idToken },
+      body: JSON.stringify({ listingId: listing.id, email: user.email })
+    });
+    const json = await res.json();
+    if (!res.ok) { alert(json.error); return; }
+    window.location.href = json.url;
+  } catch(err){
+    alert(err.message);
+  }
+  if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
 }
 
 async function agregarAlCarritoDesdeModal(){
