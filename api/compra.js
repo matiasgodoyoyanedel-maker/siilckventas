@@ -1,6 +1,7 @@
 import { getDb } from '../lib/logis/db.js';
 import { verificarTokenSesion } from '../lib/logis/sesion.js';
 import { estaPagada, puedeVerDatosCuenta } from '../lib/logis/entrega.js';
+import { confirmarPagoMercadoPago } from '../lib/logis/mercadopago.js';
 import { confirmarWebhook } from '../lib/logis/pagos.js';
 
 function cors(res) {
@@ -47,13 +48,22 @@ export default async function handler(req, res) {
       return res.status(403).json({ ok: false, error: 'Esta compra no pertenece a tu cuenta.' });
     }
 
-    if (!estaPagada(orden) && orden.flowToken) {
+    if (!estaPagada(orden) && orden.flowToken && orden.metodoPago !== 'mercadopago') {
       try {
         await confirmarWebhook(orden.flowToken);
         snap = await ref.get();
         orden = snap.exists ? (snap.data() || {}) : orden;
       } catch (e) {
         console.error(JSON.stringify({ evento: 'compra_reconfirma_error', commerceOrder: orderId, error: e.message }));
+      }
+    }
+    if (!estaPagada(orden) && (orden.metodoPago === 'mercadopago' || orden.mpPreferenceId)) {
+      try {
+        await confirmarPagoMercadoPago({ commerceOrder: orderId, paymentId: orden.mpPaymentId || '' });
+        snap = await ref.get();
+        orden = snap.exists ? (snap.data() || {}) : orden;
+      } catch (e) {
+        console.error(JSON.stringify({ evento: 'compra_reconfirma_mp_error', commerceOrder: orderId, error: e.message }));
       }
     }
 
@@ -68,6 +78,7 @@ export default async function handler(req, res) {
       transactionId: orden.transactionId || orderId,
       flowOrder: orden.flowOrder || '',
       flowTransactionId: orden.flowTransactionId || orden.flowOrder || orderId,
+      mpPaymentId: orden.mpPaymentId || '',
       estado: orden.estado || orden.status || '',
       tieneCuentas: false
     };

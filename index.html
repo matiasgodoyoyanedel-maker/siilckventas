@@ -226,6 +226,7 @@
           </ul>
         </div>
         <button type="button" id="btn-pagar-vip-basico" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('basico'))" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <button type="button" id="btn-pagar-vip-basico-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('basico'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
         <p id="hint-vip-basico" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
       </div>
       <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
@@ -243,6 +244,7 @@
           </ul>
         </div>
         <button type="button" id="btn-pagar-vip-pro" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('pro'))" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <button type="button" id="btn-pagar-vip-pro-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('pro'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
         <p id="hint-vip-pro" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
       </div>
     </div>
@@ -372,10 +374,11 @@ function escucharPreciosPaseVip(){
     pintarBotonVip('pro', 0);
   });
 }
-async function postCrearPago(payload){
+async function postCrearPago(payload, ruta){
   const headers = { 'Content-Type': 'application/json' };
   if(payload && payload.idToken) headers.Authorization = 'Bearer ' + payload.idToken;
-  const res = await fetch('/api/flow/create', {
+  const destino = ruta || '/api/flow/create';
+  const res = await fetch(destino, {
     method: 'POST',
     headers,
     body: JSON.stringify(payload)
@@ -386,23 +389,23 @@ async function postCrearPago(payload){
     json.okHttp = res.ok;
     return json;
   } catch(e) {
-    throw new Error((text || '').slice(0, 80) || 'Flow no devolvió JSON');
+    throw new Error((text || '').slice(0, 80) || (destino.indexOf('/api/mp/') === 0 ? 'Mercado Pago no devolvió JSON' : 'Flow no devolvió JSON'));
   }
 }
-async function comprarPaseVipConFlow(tipo){
+async function comprarPaseVip(tipo, ruta, nombre, btnId){
   if(!auth.currentUser){
     localStorage.setItem('redirect_after_login', window.location.pathname);
     window.location.href = 'login.html';
     return;
   }
   const precio = tipo === 'pro' ? preciosPaseVip.pro : preciosPaseVip.basico;
-  const btn = document.getElementById(tipo === 'pro' ? 'btn-pagar-vip-pro' : 'btn-pagar-vip-basico');
+  const btn = document.getElementById(btnId);
   if(!(precio > 0)){
     mostrarAlertaToast('Precio VIP', 'El administrador aún no configuró el precio del pase en Firestore.');
     return;
   }
   const etiqueta = btn ? btn.innerHTML : '';
-  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con Flow...'; }
+  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con ' + nombre + '...'; }
   try {
     const pedir = async () => {
       let idToken = '';
@@ -412,7 +415,7 @@ async function comprarPaseVipConFlow(tipo){
         email: auth.currentUser.email,
         idToken,
         tipoVipPase: tipo
-      });
+      }, ruta);
     };
     let data = await pedir();
     const errSesion = String((data && (data.code || data.error)) || '').toLowerCase();
@@ -421,7 +424,7 @@ async function comprarPaseVipConFlow(tipo){
       data = await pedir();
     }
     if(data && data.okHttp === false){
-      mostrarAlertaToast('Error Flow', data.error || 'No se pudo crear el pago.');
+      mostrarAlertaToast('Error ' + nombre, data.error || 'No se pudo crear el pago.');
       if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
       return;
     }
@@ -429,11 +432,19 @@ async function comprarPaseVipConFlow(tipo){
       window.location.href = data.url;
       return;
     }
-    mostrarAlertaToast('Error Flow', data && (data.error || JSON.stringify(data)) || 'No se pudo crear el pago.');
+    mostrarAlertaToast('Error ' + nombre, data && (data.error || JSON.stringify(data)) || 'No se pudo crear el pago.');
   } catch(err){
     mostrarAlertaToast('Error', err.message);
   }
   if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
+}
+async function comprarPaseVipConFlow(tipo){
+  const btnId = tipo === 'pro' ? 'btn-pagar-vip-pro' : 'btn-pagar-vip-basico';
+  return comprarPaseVip(tipo, '/api/flow/create', 'Flow', btnId);
+}
+async function comprarPaseVipConMercadoPago(tipo){
+  const btnId = tipo === 'pro' ? 'btn-pagar-vip-pro-mp' : 'btn-pagar-vip-basico-mp';
+  return comprarPaseVip(tipo, '/api/mp/create', 'Mercado Pago', btnId);
 }
 async function manejarRetornoPagoVip(u){
   const params = new URLSearchParams(window.location.search);

@@ -43,6 +43,7 @@
   <div class="flex flex-col sm:flex-row gap-3">
     <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
     <button id="btn-pagar-flow" onclick="pagarConFlow()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</button>
+    <button id="btn-pagar-mp" onclick="pagarConMercadoPago()" class="flex-1 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50" style="background:#009ee3"><i class="fas fa-credit-card mr-1.5"></i> Pagar con Mercado Pago</button>
   </div>
 
   <div id="box-entrega-auto" class="hidden web-panel rounded-3xl p-6 space-y-3 border border-emerald-500/40">
@@ -238,20 +239,21 @@ async function payloadPagoFlow(){
   if(cuentas.length === 1 && itemsCarritoGlobal.length === 1) body.listingId = cuentas[0].publicacionId;
   return { idToken, body };
 }
-async function pedirPagoFlow(){
+async function pedirPago(ruta){
   const payload = await payloadPagoFlow();
-  const res = await fetch('/api/flow/create', {
+  const res = await fetch(ruta, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
     body: JSON.stringify(payload.body)
   });
   const text = await res.text();
   try { return JSON.parse(text); }
-  catch(e) { throw new Error((text || '').slice(0, 80) || 'Flow no devolvió JSON'); }
+  catch(e) { throw new Error((text || '').slice(0, 80) || 'El pago no devolvió JSON'); }
 }
 
-async function pagarConFlow(){
-  const btn = document.getElementById('btn-pagar-flow');
+async function pagarConProveedor(ruta, btnId, nombre, etiqueta){
+  const btn = document.getElementById(btnId);
+  const otro = document.getElementById(btnId === 'btn-pagar-flow' ? 'btn-pagar-mp' : 'btn-pagar-flow');
   if(totalFinalGlobal <= 0){
     alert('Tu carrito está vacío');
     return;
@@ -260,28 +262,39 @@ async function pagarConFlow(){
     window.location.href = 'login.html';
     return;
   }
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con Flow...';
-  btn.disabled = true;
+  if(btn){
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con ' + nombre + '...';
+    btn.disabled = true;
+  }
+  if(otro) otro.disabled = true;
 
   try {
-    let data = await pedirPagoFlow();
+    let data = await pedirPago(ruta);
     if(respuestaEsSesion(data) && auth.currentUser){
       await auth.currentUser.reload().catch(()=>{});
-      data = await pedirPagoFlow();
+      data = await pedirPago(ruta);
     }
 
     if(data.url){
       window.location.href = data.url;
     } else {
       alert(data.error || 'No se pudo crear el pago');
-      btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
-      btn.disabled = false;
+      if(btn){ btn.innerHTML = etiqueta; btn.disabled = false; }
+      if(otro) otro.disabled = false;
     }
   } catch(err){
     alert('Error: ' + err.message);
-    btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
-    btn.disabled = false;
+    if(btn){ btn.innerHTML = etiqueta; btn.disabled = false; }
+    if(otro) otro.disabled = false;
   }
+}
+
+async function pagarConFlow(){
+  return pagarConProveedor('/api/flow/create', 'btn-pagar-flow', 'Flow', '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow');
+}
+
+async function pagarConMercadoPago(){
+  return pagarConProveedor('/api/mp/create', 'btn-pagar-mp', 'Mercado Pago', '<i class="fas fa-credit-card mr-1.5"></i> Pagar con Mercado Pago');
 }
 
 async function intentarConfirmarRetornoFlow(){
