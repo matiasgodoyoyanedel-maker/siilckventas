@@ -405,7 +405,12 @@ async function enviarRecuperacion(){
   const e = document.getElementById('recuperar-email').value.trim();
   if(!e){ mostrarError('Escribe tu correo.'); return; }
   try{
-    await auth.sendPasswordResetEmail(e, { url: location.origin + '/login', handleCodeInApp: false });
+    try {
+      await auth.sendPasswordResetEmail(e, { url: location.origin + '/login', handleCodeInApp: false });
+    } catch (errUrl) {
+      if (!errUrl || errUrl.code !== 'auth/unauthorized-continue-uri') throw errUrl;
+      await auth.sendPasswordResetEmail(e);
+    }
     mostrarError('');
     document.getElementById('recuperar-form').classList.add('hidden');
     document.getElementById('recuperar-listo').classList.remove('hidden');
