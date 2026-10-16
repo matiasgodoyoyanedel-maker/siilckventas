@@ -23,6 +23,36 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(234,179,8,0.4)}50%{box-shadow:0 0 40px rgba(234,179,8,0.8)}}
  .animate-glow-gold{animation:pulseGlow 2s infinite}
+.siilck-lobby-final{width:100%;display:flex;justify-content:center;padding:0;background:transparent}
+.siilck-welcome-card{background:linear-gradient(180deg,#2a2a2e 0%,#1f1f23 100%);border:1.5px solid rgba(255,193,7,.5);border-radius:24px;padding:36px 18px 28px;text-align:center;max-width:1120px;width:100%;box-shadow:0 0 50px rgba(255,193,7,.18), inset 0 1px 0 rgba(255,255,255,.06)}
+.welcome-icon{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:20px;display:grid;place-items:center;font-size:32px;box-shadow:0 8px 24px rgba(255,193,7,.5);animation:float 3s ease-in-out infinite}
+.welcome-badge{display:inline-block;background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.35);color:#FFD740;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin-bottom:14px}
+.siilck-welcome-card h1{color:#FFF8E1;font-size:32px;font-weight:900;margin:0 0 8px}
+.welcome-sub{color:#b8b8b8;font-size:14px;line-height:1.5;margin:0 auto 22px;max-width:600px}
+.welcome-btn{background:linear-gradient(180deg,#FFD740,#FFC107);color:#111;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;display:inline-flex;box-shadow:0 8px 22px rgba(255,193,7,.45);margin-top:20px;transition:transform.2s}
+.welcome-btn:hover{transform:translateY(-2px) scale(1.02)}
+.game-showcase{position:relative;margin:0 auto;overflow:hidden;border-radius:16px;background:rgba(0,0,0,.2);padding:10px 0 16px;border:1px solid rgba(255,193,7,.15)}
+.game-track{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:10px 50px;scrollbar-width:none}
+.game-track::-webkit-scrollbar{display:none}
+.game-card{min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:#111;border:1px solid rgba(255,193,7,.25);text-decoration:none;transition:all.35s cubic-bezier(.2,.8,.2,1)}
+.game-card:hover{transform:translateY(-6px) scale(1.02);border-color:#FFD740;box-shadow:0 12px 30px rgba(255,193,7,.3)}
+.game-img{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.game-img b{color:#fff;font-size:22px;font-weight:900;letter-spacing:1px;z-index:2;text-shadow:0 2px 10px rgba(0,0,0,.8);margin-top:6px}
+.game-img i{color:#FFD740;font-size:11px;font-style:normal;font-weight:700;letter-spacing:.5px;z-index:2;opacity:.9}
+.game-icon{font-size:32px;z-index:2;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
+.g-label{background:#0a0a0a;padding:11px 13px;text-align:left;border-top:1px solid rgba(255,193,7,.15)}
+.g-label b{color:#fff;display:block;font-size:12px;letter-spacing:.4px}
+.g-label span{color:#8a8a8a;font-size:10px;display:block;margin-top:2px}
+.g-arrow{position:absolute;top:42%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:#FFC107;color:#111;font-size:28px;font-weight:900;cursor:pointer;z-index:10;box-shadow:0 4px 18px rgba(255,193,7,.5);transition:all.2s}
+.g-arrow:hover{transform:translateY(-50%) scale(1.1);box-shadow:0 6px 24px rgba(255,193,7,.7)}
+.g-arrow.left{left:6px}.g-arrow.right{right:6px}
+.g-dots{display:flex;justify-content:center;gap:8px;margin-top:12px}
+.g-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all.3s}
+.g-dots span.active{background:#FFC107;width:24px;border-radius:10px;box-shadow:0 0 10px rgba(255,193,7,.6)}
+.auto-bar{height:3px;background:rgba(255,255,255,.1);border-radius:10px;margin:12px 50px 0;overflow:hidden}
+.auto-progress{height:100%;width:0%;background:linear-gradient(90deg,#FFD740,#FFB300);border-radius:10px;transition:width.1s linear}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.game-track{padding:10px 12px}.game-card{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
@@ -70,23 +100,56 @@
   </div>
 </header>
 
-<main class="flex-grow max-w-4xl w-full mx-auto px-4 py-12 flex flex-col items-center justify-center">
+<main class="flex-grow max-w-6xl w-full mx-auto px-4 py-12 flex flex-col items-center justify-center">
 <section id="view-dashboard" class="w-full space-y-8 animate-page text-center">
 
-  <div class="web-panel border border-yellow-500/30 rounded-3xl p-10 space-y-6 shadow-2xl relative overflow-hidden">
-    <div class="absolute -top-12 -right-12 w-36 h-36 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
-    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-xl shadow-yellow-500/30 mx-auto animate-bounce">
-      <i class="fas fa-store text-3xl"></i>
-    </div>
-    <div class="space-y-3">
-      <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Marketplace & Escrow · Organizador independiente</span>
-      <h1 class="text-3xl md:text-4xl font-black font-heading text-white">Bienvenido a SiilckVentas</h1>
-      <p class="text-xs text-zinc-300 max-w-md mx-auto leading-relaxed">Explora miles de cuentas verificadas de Free Fire, Fortnite, Valorant y más con protección Escrow garantizada al 100%.</p>
-    </div>
-    <div class="pt-2">
-      <a href="ventas.html" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-8 py-4 rounded-2xl text-sm uppercase tracking-wider shadow-2xl shadow-yellow-500/40 transition transform hover:scale-105">
-        <i class="fas fa-store-alt text-lg"></i> Ir a Marketplace
-      </a>
+  <div class="siilck-lobby-final">
+    <div class="siilck-welcome-card">
+      <div class="welcome-icon">🛍️</div>
+      <div class="welcome-badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
+      <h1>Bienvenido a SiilckVentas</h1>
+      <p class="welcome-sub">Explora miles de cuentas verificadas de Free Fire, Fortnite, Valorant y más con protección Escrow garantizada al 100%.</p>
+
+      <div class="game-showcase" id="gameShowcase">
+        <button type="button" class="g-arrow left" id="gPrev" aria-label="Juego anterior">‹</button>
+        <button type="button" class="g-arrow right" id="gNext" aria-label="Juego siguiente">›</button>
+        <div class="game-track" id="gameTrack">
+          <a href="ventas.html?juego=valorant" class="game-card">
+            <div class="game-img" style="background: radial-gradient(circle at 30% 20%, #3a2a00, #0f0f0f 60%), linear-gradient(135deg,#1a1a1a,#000);">
+              <span class="game-icon">🎯</span><b>VALORANT</b><i>RADIANT • FULL SKINS</i>
+            </div>
+            <div class="g-label"><b>VALORANT ACCOUNT</b><span>DIAMANTE • 45 SKINS • ENTREGA AUTO</span></div>
+          </a>
+          <a href="ventas.html?juego=free fire" class="game-card">
+            <div class="game-img" style="background: radial-gradient(circle at 70% 30%, #4a3000, #0f0f0f 60%), linear-gradient(135deg,#1f1f1f,#000);">
+              <span class="game-icon">🔥</span><b>FREE FIRE</b><i>NIVEL 72 • 90+ SKINS</i>
+            </div>
+            <div class="g-label"><b>FREE FIRE ACCOUNT</b><span>ELITE • EVOS MAX • DIAMANTES</span></div>
+          </a>
+          <a href="ventas.html?juego=fortnite" class="game-card">
+            <div class="game-img" style="background: radial-gradient(circle at 50% 10%, #2a3a00, #0f0f0f 60%), linear-gradient(135deg,#1a1f0a,#000);">
+              <span class="game-icon">⚡</span><b>FORTNITE</b><i>120+ SKINS • RARAS</i>
+            </div>
+            <div class="g-label"><b>FORTNITE ACCOUNT</b><span>SKINS RARAS • V-BUCKS • FULL</span></div>
+          </a>
+          <a href="ventas.html?juego=league" class="game-card">
+            <div class="game-img" style="background: radial-gradient(circle at 20% 80%, #2a1a00, #0f0f0f 60%), linear-gradient(135deg,#1a1500,#000);">
+              <span class="game-icon">👑</span><b>LEAGUE OF LEGENDS</b><i>CHALLENGER • ALL CHAMPS</i>
+            </div>
+            <div class="g-label"><b>LOL ACCOUNT</b><span>CHALLENGER • SKINS MITICAS</span></div>
+          </a>
+          <a href="ventas.html?juego=call of duty" class="game-card">
+            <div class="game-img" style="background: radial-gradient(circle at 80% 80%, #1a2a1a, #0f0f0f 60%), linear-gradient(135deg,#0f1a0f,#000);">
+              <span class="game-icon">🎖️</span><b>CALL OF DUTY</b><i>DAMASCUS • BUNDLES</i>
+            </div>
+            <div class="g-label"><b>COD ACCOUNT</b><span>DAMASCUS • BUNDLES • WARZONE</span></div>
+          </a>
+        </div>
+        <div class="g-dots" id="gDots"></div>
+        <div class="auto-bar"><div class="auto-progress" id="autoProgress"></div></div>
+      </div>
+
+      <a href="ventas.html" class="welcome-btn">🏪 IR A MARKETPLACE</a>
     </div>
   </div>
 
@@ -478,6 +541,57 @@ auth.onAuthStateChanged(async(u)=>{
 escucharPreciosPaseVip();
 
 function cerrarSesion(){auth.signOut().then(()=>{window.location.href='login.html';})}
+
+(function(){
+  const track=document.getElementById('gameTrack');
+  if(!track) return;
+  const cards=track.querySelectorAll('.game-card');
+  const dotsBox=document.getElementById('gDots');
+  const progress=document.getElementById('autoProgress');
+  let cur=0, timer, progTimer, prog=0;
+  const DURATION=3000;
+  cards.forEach((_,i)=>{const d=document.createElement('span');if(i===0)d.classList.add('active');d.onclick=()=>goTo(i);dotsBox.appendChild(d)});
+  const dots=dotsBox.querySelectorAll('span');
+  function centrar(i){
+    const card=cards[i];
+    if(!card) return;
+    const left=card.offsetLeft-(track.clientWidth-card.clientWidth)/2;
+    track.scrollTo({left:Math.max(0,left),behavior:'smooth'});
+  }
+  function goTo(n){
+    cur=(n+cards.length)%cards.length;
+    dots.forEach(d=>d.classList.remove('active'));
+    dots[cur].classList.add('active');
+    centrar(cur);
+    resetProgress();
+  }
+  function resetProgress(){
+    prog=0;
+    progress.style.width='0%';
+    clearInterval(progTimer);
+    progTimer=setInterval(()=>{
+      prog+=(100/(DURATION/50));
+      if(prog>=100) prog=100;
+      progress.style.width=prog+'%';
+    },50);
+  }
+  function next(){goTo(cur+1)}
+  function start(){resetProgress();clearInterval(timer);timer=setInterval(next,DURATION)}
+  function stop(){clearInterval(timer);clearInterval(progTimer)}
+  document.getElementById('gPrev').onclick=()=>{goTo(cur-1);stop();start()};
+  document.getElementById('gNext').onclick=()=>{goTo(cur+1);stop();start()};
+  track.addEventListener('mouseenter',stop);
+  track.addEventListener('mouseleave',start);
+  track.addEventListener('touchstart',stop,{passive:true});
+  track.addEventListener('touchend',()=>{setTimeout(start,1000)},{passive:true});
+  let sx=0;
+  track.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  track.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx;
+    if(Math.abs(dx)>50){if(dx<0)goTo(cur+1);else goTo(cur-1);stop();start()}
+  });
+  start();
+})();
 </script>
 </body>
 </html>

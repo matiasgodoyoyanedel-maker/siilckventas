@@ -376,7 +376,9 @@ function cargarPublicacionesEnVivo(){
       const fb = b.fecha && b.fecha.toDate ? b.fecha.toDate().getTime() : 0;
       return fb - fa;
     });
-    renderizarGridPublicaciones(globalPublicacionesCache);
+    const params = new URLSearchParams(window.location.search);
+    const juegoUrl = (params.get('juego') || params.get('game') || '').toLowerCase();
+    renderizarGridPublicaciones(globalPublicacionesCache, juegoUrl);
   });
 }
 
