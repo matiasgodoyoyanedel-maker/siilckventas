@@ -39,8 +39,8 @@ function mostrarExito(data){
   titulo.textContent=monto?('¡Tu pago de '+monto+' ha sido realizado con éxito!'):'¡Tu pago ha sido realizado con éxito!';
   detalle.textContent=data&&data.tieneCuentas?'Ya puedes ver el correo, la clave y los datos que cargó el vendedor.':'El pase quedó registrado. Si compraste una cuenta, ábrela desde el botón.';
   boton.classList.remove('hidden');
-  if(data&&data.tieneCuentas&&orderId){
-    boton.textContent='Ver datos de tu cuenta';
+  if(orderId){
+    boton.textContent='PINCHA AQUÍ PARA VER TU CUENTA';
     boton.href='/mis-compras/'+encodeURIComponent(orderId);
   }else{
     boton.textContent='Volver al inicio';
@@ -56,20 +56,11 @@ async function consultar(user){
   return res.json();
 }
 
-auth.onAuthStateChanged(async(user)=>{
-  if(!orderId){
-    mostrarExito(null);
-    return;
-  }
-  if(!user){
-    titulo.textContent='¡Tu pago ha sido realizado con éxito!';
-    detalle.textContent='Inicia sesión con la misma cuenta para ver los datos de la compra.';
-    boton.classList.remove('hidden');
-    boton.textContent='Iniciar sesión';
-    boton.href='/login.html';
-    localStorage.setItem('redirect_after_login','/pago/exito?order_id='+encodeURIComponent(orderId));
-    return;
-  }
+let exitoListo=false;
+async function mostrarPago(user){
+  if(exitoListo) return;
+  exitoListo=true;
+  if(!orderId){ mostrarExito(null); return; }
   for(let i=0;i<8;i++){
     try{
       const data=await consultar(user);
@@ -80,8 +71,23 @@ auth.onAuthStateChanged(async(user)=>{
   titulo.textContent='¡Tu pago ha sido realizado con éxito!';
   detalle.textContent='Flow confirmó el cobro. Si los datos tardan unos segundos, ábrelos desde el botón.';
   boton.classList.remove('hidden');
-  boton.textContent='Ver datos de tu cuenta';
-  boton.href=orderId?('/mis-compras/'+encodeURIComponent(orderId)):'/carrito.html';
+  boton.textContent='PINCHA AQUÍ PARA VER TU CUENTA';
+  boton.href='/mis-compras/'+encodeURIComponent(orderId);
+}
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+auth.onAuthStateChanged(async(user)=>{
+  if(user){ mostrarPago(user); return; }
+  setTimeout(()=>{
+    if(exitoListo) return;
+    if(auth.currentUser){ mostrarPago(auth.currentUser); return; }
+    if(!orderId){ mostrarExito(null); return; }
+    titulo.textContent='¡Tu pago ha sido realizado con éxito!';
+    detalle.textContent='Inicia sesión con la misma cuenta para ver los datos de la compra.';
+    boton.classList.remove('hidden');
+    boton.textContent='PINCHA AQUÍ PARA VER TU CUENTA';
+    boton.href='/login.html';
+    localStorage.setItem('redirect_after_login','/pago/exito?order_id='+encodeURIComponent(orderId));
+  },1600);
 });
 </script>
 </body>

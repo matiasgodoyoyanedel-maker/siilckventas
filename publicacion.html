@@ -54,9 +54,11 @@
       <div class="space-y-3 p-4 rounded-2xl bg-zinc-900/60 border border-yellow-500/20">
         <h4 class="text-[11px] font-black uppercase text-yellow-400"><i class="fas fa-lock mr-1"></i> Datos privados - Entrega automática *</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Email real *</label><input type="email" id="f-priv-email" placeholder="cuenta.real@gmail.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
-          <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Contraseña actual *</label><input type="text" id="f-priv-pass" placeholder="Contraseña real" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Usuario de la cuenta *</label><input type="text" id="f-priv-usuario" placeholder="usuario del juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Clave de la cuenta *</label><input type="text" id="f-priv-pass" placeholder="Contraseña real" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
         </div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Correo asociado *</label><input type="email" id="f-priv-email" placeholder="cuenta.real@gmail.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Instrucciones de entrega *</label><textarea id="f-priv-inst" rows="2" placeholder="Cómo entrar, códigos o pasos" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Teléfono / 2FA</label><input type="text" id="f-priv-tel" placeholder="+56 9..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
           <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Correo recupero / ID *</label><input type="text" id="f-priv-recup" placeholder="correo o ID" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
@@ -142,9 +144,9 @@ async function crearPublicacionMarketplace(){
     if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
     const esDueno=esCuentaOwner(auth.currentUser.uid);
     const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
-    const privEmail=document.getElementById('f-priv-email').value.trim();const privPass=document.getElementById('f-priv-pass').value.trim();const privTel=document.getElementById('f-priv-tel').value.trim();const privRecup=document.getElementById('f-priv-recup').value.trim();const autorizo=document.getElementById('f-autorizo-datos').checked;
+    const privUsuario=document.getElementById('f-priv-usuario').value.trim();const privEmail=document.getElementById('f-priv-email').value.trim();const privPass=document.getElementById('f-priv-pass').value.trim();const privTel=document.getElementById('f-priv-tel').value.trim();const privRecup=document.getElementById('f-priv-recup').value.trim();const privInst=document.getElementById('f-priv-inst').value.trim();const autorizo=document.getElementById('f-autorizo-datos').checked;
     if(!titulo||!precio||!nivel||!region||!descripcion){mostrarAlertaToast("Campos Incompletos","Llena todo");return;}
-    if(!privEmail||!privPass||!privRecup){mostrarAlertaToast("Datos Privados","Llena recuadro amarillo");return;}
+    if(!privUsuario||!privEmail||!privPass||!privRecup||!privInst){mostrarAlertaToast("Datos Privados","Llena usuario, correo, clave, recupero e instrucciones");return;}
     if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
     if(!esDueno &&!uData.cuentaVendedorActiva){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
@@ -155,7 +157,7 @@ async function crearPublicacionMarketplace(){
     const vipActivo=esDueno || !!(uData.esVendedorVip && (uData.tipoVip==='basico' || uData.tipoVip==='pro' || uData.tipoVip==='dueno'));
     const tipoVip=esDueno?'dueno':(vipActivo ? (uData.tipoVip||'basico') : 'ninguno');
     const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true});
-    await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,user_enc:simpleEnc(privUsuario),email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),inst_enc:simpleEnc(privInst),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
     publicada=true;
     mostrarToast(esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!");setTimeout(()=>{window.location.href='index.html'},1200);
   }catch(err){console.error(err);mostrarAlertaToast("Error",err.message);}
