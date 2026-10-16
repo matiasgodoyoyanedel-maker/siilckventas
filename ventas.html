@@ -377,7 +377,7 @@ function cargarPublicacionesEnVivo(){
       return fb - fa;
     });
     const params = new URLSearchParams(window.location.search);
-    const juegoUrl = (params.get('juego') || params.get('game') || '').toLowerCase();
+    const juegoUrl = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
     renderizarGridPublicaciones(globalPublicacionesCache, juegoUrl);
   });
 }

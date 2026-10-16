@@ -28,31 +28,37 @@
 .welcome-icon{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:20px;display:grid;place-items:center;font-size:32px;box-shadow:0 8px 24px rgba(255,193,7,.5);animation:float 3s ease-in-out infinite}
 .welcome-badge{display:inline-block;background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.35);color:#FFD740;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin-bottom:14px}
 .siilck-welcome-card h1{color:#FFF8E1;font-size:32px;font-weight:900;margin:0 0 8px}
-.welcome-sub{color:#b8b8b8;font-size:14px;line-height:1.5;margin:0 auto 22px;max-width:600px}
-.welcome-btn{background:linear-gradient(180deg,#FFD740,#FFC107);color:#111;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;display:inline-flex;box-shadow:0 8px 22px rgba(255,193,7,.45);margin-top:20px;transition:transform.2s}
+.welcome-sub{color:#b8b8b8;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:600px}
+.section-label{color:#FFD740;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
+.welcome-btn{background:linear-gradient(180deg,#FFD740,#FFC107);color:#111;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;display:inline-flex;box-shadow:0 8px 22px rgba(255,193,7,.45);margin-top:22px;transition:transform.2s}
 .welcome-btn:hover{transform:translateY(-2px) scale(1.02)}
-.game-showcase{position:relative;margin:0 auto;overflow:hidden;border-radius:16px;background:rgba(0,0,0,.2);padding:10px 0 16px;border:1px solid rgba(255,193,7,.15)}
+.game-showcase{position:relative;margin:0 auto;overflow:hidden;border-radius:16px;background:rgba(0,0,0,.2);padding:8px 0 14px;border:1px solid rgba(255,193,7,.15)}
 .game-track{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:10px 50px;scrollbar-width:none}
 .game-track::-webkit-scrollbar{display:none}
 .game-card{min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:#111;border:1px solid rgba(255,193,7,.25);text-decoration:none;transition:all.35s cubic-bezier(.2,.8,.2,1)}
 .game-card:hover{transform:translateY(-6px) scale(1.02);border-color:#FFD740;box-shadow:0 12px 30px rgba(255,193,7,.3)}
-.game-img{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.game-img b{color:#fff;font-size:22px;font-weight:900;letter-spacing:1px;z-index:2;text-shadow:0 2px 10px rgba(0,0,0,.8);margin-top:6px}
-.game-img i{color:#FFD740;font-size:11px;font-style:normal;font-weight:700;letter-spacing:.5px;z-index:2;opacity:.9}
-.game-icon{font-size:32px;z-index:2;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
+.game-card.stream{border-color:rgba(255,255,255,.15)}
+.img-wrap{height:150px;position:relative;overflow:hidden;background:#0a0a0a}
+.img-wrap img.real{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.15);transition:all.6s cubic-bezier(.2,.8,.2,1)}
+.game-card:hover img.real{opacity:1;transform:scale(1)}
+.fade{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%, rgba(255,215,0,.45), rgba(0,0,0,.85) 75%);transition:all.4s;z-index:1}
+.game-card:hover .fade{opacity:.4}
+.name{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2}
+.name b{color:#fff;font-size:20px;font-weight:900;text-shadow:0 2px 10px #000}
+.name i{color:#FFD740;font-size:11px;font-style:normal;font-weight:700;margin-top:2px}
 .g-label{background:#0a0a0a;padding:11px 13px;text-align:left;border-top:1px solid rgba(255,193,7,.15)}
-.g-label b{color:#fff;display:block;font-size:12px;letter-spacing:.4px}
+.g-label b{color:#fff;display:block;font-size:11px;letter-spacing:.4px}
 .g-label span{color:#8a8a8a;font-size:10px;display:block;margin-top:2px}
 .g-arrow{position:absolute;top:42%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:#FFC107;color:#111;font-size:28px;font-weight:900;cursor:pointer;z-index:10;box-shadow:0 4px 18px rgba(255,193,7,.5);transition:all.2s}
 .g-arrow:hover{transform:translateY(-50%) scale(1.1);box-shadow:0 6px 24px rgba(255,193,7,.7)}
 .g-arrow.left{left:6px}.g-arrow.right{right:6px}
-.g-dots{display:flex;justify-content:center;gap:8px;margin-top:12px}
+.g-dots{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:12px}
 .g-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all.3s}
 .g-dots span.active{background:#FFC107;width:24px;border-radius:10px;box-shadow:0 0 10px rgba(255,193,7,.6)}
 .auto-bar{height:3px;background:rgba(255,255,255,.1);border-radius:10px;margin:12px 50px 0;overflow:hidden}
 .auto-progress{height:100%;width:0%;background:linear-gradient(90deg,#FFD740,#FFB300);border-radius:10px;transition:width.1s linear}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.game-track{padding:10px 12px}.game-card{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}}
+@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 12px}.game-card{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
@@ -108,45 +114,48 @@
       <div class="welcome-icon">🛍️</div>
       <div class="welcome-badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
       <h1>Bienvenido a SiilckVentas</h1>
-      <p class="welcome-sub">Explora miles de cuentas verificadas de Free Fire, Fortnite, Valorant y más con protección Escrow garantizada al 100%.</p>
+      <p class="welcome-sub">Explora miles de cuentas verificadas con protección Escrow garantizada al 100%.</p>
 
-      <div class="game-showcase" id="gameShowcase">
-        <button type="button" class="g-arrow left" id="gPrev" aria-label="Juego anterior">‹</button>
-        <button type="button" class="g-arrow right" id="gNext" aria-label="Juego siguiente">›</button>
-        <div class="game-track" id="gameTrack">
-          <a href="ventas.html?juego=valorant" class="game-card">
-            <div class="game-img" style="background: radial-gradient(circle at 30% 20%, #3a2a00, #0f0f0f 60%), linear-gradient(135deg,#1a1a1a,#000);">
-              <span class="game-icon">🎯</span><b>VALORANT</b><i>RADIANT • FULL SKINS</i>
-            </div>
-            <div class="g-label"><b>VALORANT ACCOUNT</b><span>DIAMANTE • 45 SKINS • ENTREGA AUTO</span></div>
-          </a>
-          <a href="ventas.html?juego=free fire" class="game-card">
-            <div class="game-img" style="background: radial-gradient(circle at 70% 30%, #4a3000, #0f0f0f 60%), linear-gradient(135deg,#1f1f1f,#000);">
-              <span class="game-icon">🔥</span><b>FREE FIRE</b><i>NIVEL 72 • 90+ SKINS</i>
-            </div>
-            <div class="g-label"><b>FREE FIRE ACCOUNT</b><span>ELITE • EVOS MAX • DIAMANTES</span></div>
-          </a>
-          <a href="ventas.html?juego=fortnite" class="game-card">
-            <div class="game-img" style="background: radial-gradient(circle at 50% 10%, #2a3a00, #0f0f0f 60%), linear-gradient(135deg,#1a1f0a,#000);">
-              <span class="game-icon">⚡</span><b>FORTNITE</b><i>120+ SKINS • RARAS</i>
-            </div>
-            <div class="g-label"><b>FORTNITE ACCOUNT</b><span>SKINS RARAS • V-BUCKS • FULL</span></div>
-          </a>
-          <a href="ventas.html?juego=league" class="game-card">
-            <div class="game-img" style="background: radial-gradient(circle at 20% 80%, #2a1a00, #0f0f0f 60%), linear-gradient(135deg,#1a1500,#000);">
-              <span class="game-icon">👑</span><b>LEAGUE OF LEGENDS</b><i>CHALLENGER • ALL CHAMPS</i>
-            </div>
-            <div class="g-label"><b>LOL ACCOUNT</b><span>CHALLENGER • SKINS MITICAS</span></div>
-          </a>
-          <a href="ventas.html?juego=call of duty" class="game-card">
-            <div class="game-img" style="background: radial-gradient(circle at 80% 80%, #1a2a1a, #0f0f0f 60%), linear-gradient(135deg,#0f1a0f,#000);">
-              <span class="game-icon">🎖️</span><b>CALL OF DUTY</b><i>DAMASCUS • BUNDLES</i>
-            </div>
-            <div class="g-label"><b>COD ACCOUNT</b><span>DAMASCUS • BUNDLES • WARZONE</span></div>
-          </a>
+      <div class="section-label">🎮 JUEGOS POPULARES</div>
+      <div class="game-showcase" id="gameShowcase1">
+        <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack1', -1)" aria-label="Juego anterior">‹</button>
+        <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack1', 1)" aria-label="Juego siguiente">›</button>
+        <div class="game-track" id="gameTrack1">
+          <a href="ventas.html?juego=valorant" class="game-card"><div class="img-wrap"><img class="real" alt="Valorant" src="img/games/valorant.jpg" onerror="this.src='https://placehold.co/400x220/0f0f0f/FFD700?text=VALORANT'"><div class="fade"></div><div class="name"><b>VALORANT</b><i>RADIANT</i></div></div><div class="g-label"><b>VALORANT</b><span>DIAMANTE • SKINS</span></div></a>
+          <a href="ventas.html?juego=free fire" class="game-card"><div class="img-wrap"><img class="real" alt="Free Fire" src="img/games/freefire.jpg" onerror="this.src='https://placehold.co/400x220/4a3000/FFD700?text=FREE+FIRE'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(255,80,0,.5), transparent 70%)"></div><div class="name"><b>FREE FIRE</b><i>NIVEL 72</i></div></div><div class="g-label"><b>FREE FIRE</b><span>ELITE • EVOS</span></div></a>
+          <a href="ventas.html?juego=fortnite" class="game-card"><div class="img-wrap"><img class="real" alt="Fortnite" src="img/games/fortnite.jpg" onerror="this.src='https://placehold.co/400x220/2a3a00/FFD700?text=FORTNITE'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(150,0,255,.5), transparent 70%)"></div><div class="name"><b>FORTNITE</b><i>120+ SKINS</i></div></div><div class="g-label"><b>FORTNITE</b><span>RARAS • V-BUCKS</span></div></a>
+          <a href="ventas.html?juego=league" class="game-card"><div class="img-wrap"><img class="real" alt="League of Legends" src="img/games/lol.jpg" onerror="this.src='https://placehold.co/400x220/2a1a00/FFD700?text=LOL'"><div class="fade"></div><div class="name"><b>LOL</b><i>CHALLENGER</i></div></div><div class="g-label"><b>LEAGUE OF LEGENDS</b><span>ALL CHAMPS</span></div></a>
+          <a href="ventas.html?juego=call of duty" class="game-card"><div class="img-wrap"><img class="real" alt="Call of Duty" src="img/games/cod.jpg" onerror="this.src='https://placehold.co/400x220/1a2a1a/FFD700?text=COD'"><div class="fade"></div><div class="name"><b>COD / WARZONE</b><i>DAMASCUS</i></div></div><div class="g-label"><b>CALL OF DUTY</b><span>BUNDLES</span></div></a>
+          <a href="ventas.html?juego=steam" class="game-card"><div class="img-wrap"><img class="real" alt="Steam" src="img/games/steam.jpg" onerror="this.src='https://placehold.co/400x220/0a1a2a/FFD700?text=STEAM'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(0,150,255,.5), transparent 70%)"></div><div class="name"><b>STEAM</b><i>LIBRARY</i></div></div><div class="g-label"><b>STEAM</b><span>JUEGOS + WALLET</span></div></a>
+          <a href="ventas.html?juego=cs2" class="game-card"><div class="img-wrap"><img class="real" alt="CS2" src="img/games/cs2.jpg" onerror="this.src='https://placehold.co/400x220/1a1a1a/FFD700?text=CS2'"><div class="fade"></div><div class="name"><b>CS2</b><i>CASES</i></div></div><div class="g-label"><b>CS2 / CASES</b><span>KNIVES • SKINS</span></div></a>
+          <a href="ventas.html?juego=roblox" class="game-card"><div class="img-wrap"><img class="real" alt="Roblox" src="img/games/roblox.jpg" onerror="this.src='https://placehold.co/400x220/1a1a2a/FFD700?text=ROBLOX'"><div class="fade"></div><div class="name"><b>ROBLOX</b><i>LIMITEDS</i></div></div><div class="g-label"><b>ROBLOX</b><span>ROBUX • LIMITEDS</span></div></a>
+          <a href="ventas.html?juego=minecraft" class="game-card"><div class="img-wrap"><img class="real" alt="Minecraft" src="img/games/minecraft.jpg" onerror="this.src='https://placehold.co/400x220/1a3a1a/FFD700?text=MINECRAFT'"><div class="fade"></div><div class="name"><b>MINECRAFT</b><i>JAVA • BEDROCK</i></div></div><div class="g-label"><b>MINECRAFT</b><span>CAPES • RANKED</span></div></a>
+          <a href="ventas.html?juego=brawl" class="game-card"><div class="img-wrap"><img class="real" alt="Brawl Stars" src="img/games/brawlstars.jpg" onerror="this.src='https://placehold.co/400x220/3a1a00/FFD700?text=BRAWL+STARS'"><div class="fade"></div><div class="name"><b>BRAWL STARS</b><i>50K TROFEOS</i></div></div><div class="g-label"><b>BRAWL STARS</b><span>MAX • BRAWLERS</span></div></a>
+          <a href="ventas.html?juego=clash" class="game-card"><div class="img-wrap"><img class="real" alt="Clash Royale" src="img/games/clash.jpg" onerror="this.src='https://placehold.co/400x220/1a2a4a/FFD700?text=CLASH+ROYALE'"><div class="fade"></div><div class="name"><b>CLASH ROYALE</b><i>6000 COPAS</i></div></div><div class="g-label"><b>CLASH ROYALE</b><span>MAX • LEGENDARIAS</span></div></a>
+          <a href="ventas.html?juego=pubg" class="game-card"><div class="img-wrap"><img class="real" alt="PUBG" src="img/games/pubg.jpg" onerror="this.src='https://placehold.co/400x220/2a2a00/FFD700?text=PUBG'"><div class="fade"></div><div class="name"><b>PUBG</b><i>CONQUEROR</i></div></div><div class="g-label"><b>PUBG MOBILE</b><span>MYTHIC • SKINS</span></div></a>
+          <a href="ventas.html?juego=genshin" class="game-card"><div class="img-wrap"><img class="real" alt="Genshin Impact" src="img/games/genshin.jpg" onerror="this.src='https://placehold.co/400x220/1a2a3a/FFD700?text=GENSHIN'"><div class="fade"></div><div class="name"><b>GENSHIN</b><i>AR 55</i></div></div><div class="g-label"><b>GENSHIN IMPACT</b><span>5 STARS • AR 55</span></div></a>
+          <a href="ventas.html?juego=gta" class="game-card"><div class="img-wrap"><img class="real" alt="GTA V" src="img/games/gtav.jpg" onerror="this.src='https://placehold.co/400x220/1a1a3a/FFD700?text=GTA+V'"><div class="fade"></div><div class="name"><b>GTA V</b><i>MILLONES</i></div></div><div class="g-label"><b>GTA V</b><span>ONLINE • DINERO</span></div></a>
         </div>
-        <div class="g-dots" id="gDots"></div>
-        <div class="auto-bar"><div class="auto-progress" id="autoProgress"></div></div>
+        <div class="g-dots" id="gDots1"></div>
+        <div class="auto-bar"><div class="auto-progress" id="autoProgress1"></div></div>
+      </div>
+
+      <div class="section-label" style="margin-top:22px">📺 STREAMING & SERVICIOS</div>
+      <div class="game-showcase" id="gameShowcase2">
+        <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack2', -1)" aria-label="Servicio anterior">‹</button>
+        <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack2', 1)" aria-label="Servicio siguiente">›</button>
+        <div class="game-track" id="gameTrack2">
+          <a href="ventas.html?juego=netflix" class="game-card stream"><div class="img-wrap"><img class="real" alt="Netflix" src="img/games/netflix.jpg" onerror="this.src='https://placehold.co/400x220/E50914/FFFFFF?text=NETFLIX'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(229,9,20,.5), transparent 70%)"></div><div class="name"><b>NETFLIX</b><i>4K • PREMIUM</i></div></div><div class="g-label"><b>NETFLIX</b><span>4K UHD • 5 PERFILES</span></div></a>
+          <a href="ventas.html?juego=hbo" class="game-card stream"><div class="img-wrap"><img class="real" alt="HBO Max" src="img/games/hbo.jpg" onerror="this.src='https://placehold.co/400x220/1a0033/FFFFFF?text=HBO+MAX'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(90,0,255,.5), transparent 70%)"></div><div class="name"><b>HBO MAX</b><i>MAX • 4K</i></div></div><div class="g-label"><b>HBO MAX</b><span>PREMIUM • 4K</span></div></a>
+          <a href="ventas.html?juego=disney" class="game-card stream"><div class="img-wrap"><img class="real" alt="Disney+" src="img/games/disney.jpg" onerror="this.src='https://placehold.co/400x220/0063E5/FFFFFF?text=DISNEY+'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(0,99,229,.5), transparent 70%)"></div><div class="name"><b>DISNEY+</b><i>STAR+</i></div></div><div class="g-label"><b>DISNEY+ PREMIUM</b><span>STAR+ • 4K</span></div></a>
+          <a href="ventas.html?juego=prime" class="game-card stream"><div class="img-wrap"><img class="real" alt="Prime Video" src="img/games/prime.jpg" onerror="this.src='https://placehold.co/400x220/00A8E1/FFFFFF?text=PRIME+VIDEO'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(0,168,225,.5), transparent 70%)"></div><div class="name"><b>PRIME VIDEO</b><i>4K</i></div></div><div class="g-label"><b>PRIME VIDEO</b><span>4K • PREMIUM</span></div></a>
+          <a href="ventas.html?juego=spotify" class="game-card stream"><div class="img-wrap"><img class="real" alt="Spotify" src="img/games/spotify.jpg" onerror="this.src='https://placehold.co/400x220/1DB954/000000?text=SPOTIFY'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(29,185,84,.5), transparent 70%)"></div><div class="name"><b>SPOTIFY</b><i>FAMILY</i></div></div><div class="g-label"><b>SPOTIFY PREMIUM</b><span>FAMILY • 1 AÑO</span></div></a>
+          <a href="ventas.html?juego=youtube" class="game-card stream"><div class="img-wrap"><img class="real" alt="YouTube Premium" src="img/games/youtube.jpg" onerror="this.src='https://placehold.co/400x220/FF0000/FFFFFF?text=YOUTUBE+PREMIUM'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(255,0,0,.5), transparent 70%)"></div><div class="name"><b>YOUTUBE PREMIUM</b><i>12 MESES</i></div></div><div class="g-label"><b>YOUTUBE PREMIUM</b><span>SIN ANUNCIOS</span></div></a>
+          <a href="ventas.html?juego=crunchyroll" class="game-card stream"><div class="img-wrap"><img class="real" alt="Crunchyroll" src="img/games/crunchy.jpg" onerror="this.src='https://placehold.co/400x220/F47521/FFFFFF?text=CRUNCHYROLL'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(244,117,33,.5), transparent 70%)"></div><div class="name"><b>CRUNCHYROLL</b><i>MEGA FAN</i></div></div><div class="g-label"><b>CRUNCHYROLL</b><span>MEGA FAN • 4K</span></div></a>
+          <a href="ventas.html?juego=xbox" class="game-card stream"><div class="img-wrap"><img class="real" alt="Xbox Game Pass" src="img/games/xbox.jpg" onerror="this.src='https://placehold.co/400x220/107C10/FFFFFF?text=XBOX+GAME+PASS'"><div class="fade" style="background:radial-gradient(circle at 50% 0%, rgba(16,124,16,.5), transparent 70%)"></div><div class="name"><b>GAME PASS</b><i>ULTIMATE</i></div></div><div class="g-label"><b>XBOX GAME PASS</b><span>ULTIMATE • 12M</span></div></a>
+        </div>
+        <div class="g-dots" id="gDots2"></div>
+        <div class="auto-bar"><div class="auto-progress" id="autoProgress2"></div></div>
       </div>
 
       <a href="ventas.html" class="welcome-btn">🏪 IR A MARKETPLACE</a>
@@ -542,55 +551,68 @@ escucharPreciosPaseVip();
 
 function cerrarSesion(){auth.signOut().then(()=>{window.location.href='login.html';})}
 
-(function(){
-  const track=document.getElementById('gameTrack');
-  if(!track) return;
-  const cards=track.querySelectorAll('.game-card');
-  const dotsBox=document.getElementById('gDots');
-  const progress=document.getElementById('autoProgress');
-  let cur=0, timer, progTimer, prog=0;
-  const DURATION=3000;
-  cards.forEach((_,i)=>{const d=document.createElement('span');if(i===0)d.classList.add('active');d.onclick=()=>goTo(i);dotsBox.appendChild(d)});
-  const dots=dotsBox.querySelectorAll('span');
-  function centrar(i){
-    const card=cards[i];
-    if(!card) return;
-    const left=card.offsetLeft-(track.clientWidth-card.clientWidth)/2;
-    track.scrollTo({left:Math.max(0,left),behavior:'smooth'});
-  }
-  function goTo(n){
-    cur=(n+cards.length)%cards.length;
-    dots.forEach(d=>d.classList.remove('active'));
-    dots[cur].classList.add('active');
-    centrar(cur);
-    resetProgress();
-  }
-  function resetProgress(){
-    prog=0;
-    progress.style.width='0%';
-    clearInterval(progTimer);
-    progTimer=setInterval(()=>{
-      prog+=(100/(DURATION/50));
-      if(prog>=100) prog=100;
-      progress.style.width=prog+'%';
-    },50);
-  }
-  function next(){goTo(cur+1)}
-  function start(){resetProgress();clearInterval(timer);timer=setInterval(next,DURATION)}
-  function stop(){clearInterval(timer);clearInterval(progTimer)}
-  document.getElementById('gPrev').onclick=()=>{goTo(cur-1);stop();start()};
-  document.getElementById('gNext').onclick=()=>{goTo(cur+1);stop();start()};
-  track.addEventListener('mouseenter',stop);
-  track.addEventListener('mouseleave',start);
-  track.addEventListener('touchstart',stop,{passive:true});
-  track.addEventListener('touchend',()=>{setTimeout(start,1000)},{passive:true});
-  let sx=0;
-  track.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
-  track.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-sx;
-    if(Math.abs(dx)>50){if(dx<0)goTo(cur+1);else goTo(cur-1);stop();start()}
-  });
+function scrollGames(id, dir){
+  const go=window['go_'+id];
+  const start=window['start_'+id];
+  const stop=window['stop_'+id];
+  const track=document.getElementById(id);
+  if(!track || typeof go!=='function') return;
+  stop();
+  go((track._cur||0)+dir);
   start();
+}
+(function(){
+  function initShowcase(trackId, dotsId, progId){
+    const track=document.getElementById(trackId);
+    const dotsBox=document.getElementById(dotsId);
+    const progress=document.getElementById(progId);
+    if(!track || !dotsBox || !progress) return;
+    const cards=track.querySelectorAll('.game-card');
+    let cur=0, timer, progTimer, prog=0;
+    const DURATION=2500;
+    track._cur=0;
+    cards.forEach((_,i)=>{const d=document.createElement('span');if(i===0)d.classList.add('active');d.onclick=()=>{goTo(i);stop();start()};dotsBox.appendChild(d)});
+    const dots=dotsBox.querySelectorAll('span');
+    function goTo(n){
+      cur=(n+cards.length)%cards.length;
+      track._cur=cur;
+      dots.forEach(d=>d.classList.remove('active'));
+      if(dots[cur]) dots[cur].classList.add('active');
+      const card=cards[cur];
+      if(card){
+        const left=card.offsetLeft-(track.clientWidth-card.clientWidth)/2;
+        track.scrollTo({left:Math.max(0,left),behavior:'smooth'});
+      }
+      resetProgress();
+    }
+    function resetProgress(){
+      prog=0;
+      progress.style.width='0%';
+      clearInterval(progTimer);
+      progTimer=setInterval(()=>{
+        prog+=100/(DURATION/50);
+        if(prog>100) prog=100;
+        progress.style.width=prog+'%';
+      },50);
+    }
+    function start(){resetProgress();clearInterval(timer);timer=setInterval(()=>goTo(cur+1),DURATION)}
+    function stop(){clearInterval(timer);clearInterval(progTimer)}
+    track.addEventListener('mouseenter',stop);
+    track.addEventListener('mouseleave',start);
+    let sx=0;
+    track.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;stop()},{passive:true});
+    track.addEventListener('touchend',e=>{
+      const dx=e.changedTouches[0].clientX-sx;
+      if(Math.abs(dx)>50) goTo(dx<0?cur+1:cur-1);
+      setTimeout(start,1000);
+    },{passive:true});
+    window['go_'+trackId]=goTo;
+    window['start_'+trackId]=start;
+    window['stop_'+trackId]=stop;
+    start();
+  }
+  initShowcase('gameTrack1','gDots1','autoProgress1');
+  setTimeout(()=>initShowcase('gameTrack2','gDots2','autoProgress2'),400);
 })();
 </script>
 </body>
