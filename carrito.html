@@ -16,7 +16,8 @@
 </head>
 <body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
-<div class="max-w-3xl w-full space-y-6">
+  <div class="max-w-3xl w-full space-y-6">
+  <div class="flex justify-end"><div id="sv-locale-slot"></div></div>
   <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 text-center space-y-2">
     <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-xl font-black mx-auto shadow-lg"><i class="fas fa-shopping-cart"></i></div>
     <h2 class="text-xl font-black text-white">Bienvenido a VelosterCarrito</h2>
@@ -77,6 +78,17 @@ auth.onAuthStateChanged(async(u)=>{
   }
 });
 
+function precioVisible(n){
+  if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
+  return '$' + Number(n || 0).toLocaleString('es-CL');
+}
+let carritoUidActual = null;
+let carritoItemsActuales = null;
+let carritoRenderToken = 0;
+document.addEventListener('siilck-settings', () => {
+  if(carritoUidActual && carritoItemsActuales) renderizarCarrito(carritoItemsActuales, carritoUidActual);
+});
+
 function cargarCarritoEnVivo(uid){
   db.collection('carritos').doc(uid).collection('items').onSnapshot(snapshot => {
     let items = [];
@@ -88,6 +100,9 @@ function cargarCarritoEnVivo(uid){
 }
 
 async function renderizarCarrito(items, uid){
+  const token = ++carritoRenderToken;
+  carritoUidActual = uid;
+  carritoItemsActuales = items;
   const listEl = document.getElementById('carrito-items-list');
   const desgloseBox = document.getElementById('carrito-desglose-box');
   itemsCarritoGlobal = items || [];
@@ -100,6 +115,7 @@ async function renderizarCarrito(items, uid){
   }
 
   const userDoc = await db.collection('perfiles').doc(uid).get();
+  if(token !== carritoRenderToken) return;
   const userData = userDoc.exists ? userDoc.data() : {};
   const ahora = new Date().getTime();
   const expira = userData.vipExpira ? userData.vipExpira.toDate().getTime() : 0;
@@ -120,7 +136,7 @@ async function renderizarCarrito(items, uid){
     const thumb = esPase
       ? `<div class="w-12 h-12 rounded-xl ${item.tipoVipPase==='pro' ? 'bg-rose-600 text-white' : 'bg-yellow-500 text-zinc-950'} flex items-center justify-center text-lg shrink-0"><i class="fas fa-crown"></i></div>`
       : `<div class="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden border border-zinc-800 shrink-0"><img src="${item.foto || ''}" class="w-full h-full object-cover"></div>`;
-    const garantiaTxt = item.garantiaLabel ? `<span class="block text-[10px] text-zinc-400">${item.garantiaLabel}${item.garantiaCosto ? ' (+$'+parseInt(item.garantiaCosto).toLocaleString('es-CL')+' CLP)' : ''}</span>` : '';
+    const garantiaTxt = item.garantiaLabel ? `<span class="block text-[10px] text-zinc-400">${item.garantiaLabel}${item.garantiaCosto ? ' (+'+precioVisible(item.garantiaCosto)+')' : ''}</span>` : '';
     const qtyBox = esPase
       ? `<span class="text-[10px] text-zinc-500">Pase 30 días · mismo pago Flow que las cuentas</span>`
       : `<div class="flex items-center gap-2 mt-1">
@@ -137,7 +153,7 @@ async function renderizarCarrito(items, uid){
         <div>
           <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
           ${garantiaTxt}
-          <span class="text-[10px] text-yellow-400 font-bold">$${parseInt(item.precio||0).toLocaleString('es-CL')} CLP c/u</span>
+          <span class="text-[10px] text-yellow-400 font-bold">${precioVisible(item.precio)} c/u</span>
           ${qtyBox}
         </div>
       </div>
@@ -154,11 +170,11 @@ async function renderizarCarrito(items, uid){
     if(tipoVip === 'pro'){
       descuento = Math.round(subtotalCuentas * 0.10);
       document.getElementById('row-descuento-vip').classList.remove('hidden');
-      document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Pro 10%)`;
+      document.getElementById('txt-descuento').innerText = '-' + precioVisible(descuento) + ' (VIP Pro 10%)';
     }else{
       descuento = Math.round(subtotalCuentas * 0.05);
       document.getElementById('row-descuento-vip').classList.remove('hidden');
-      document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Básico 5%)`;
+      document.getElementById('txt-descuento').innerText = '-' + precioVisible(descuento) + ' (VIP Básico 5%)';
     }
     if(subtotalCuentas === 0) document.getElementById('row-descuento-vip').classList.add('hidden');
   }else{
@@ -168,9 +184,9 @@ async function renderizarCarrito(items, uid){
   const totalFinal = (subtotal + iva) - descuento;
   totalFinalGlobal = totalFinal;
 
-  document.getElementById('txt-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')} CLP`;
-  document.getElementById('txt-iva').innerText = `$${iva.toLocaleString('es-CL')} CLP`;
-  document.getElementById('txt-total-final').innerText = `$${totalFinal.toLocaleString('es-CL')} CLP`;
+  document.getElementById('txt-subtotal').innerText = precioVisible(subtotal);
+  document.getElementById('txt-iva').innerText = precioVisible(iva);
+  document.getElementById('txt-total-final').innerText = precioVisible(totalFinal);
   desgloseBox.classList.remove('hidden');
 }
 
@@ -334,6 +350,7 @@ function escucharEntregasAutomaticas(uid){
   });
 }
 </script>
+<script type="module" src="/lib/settings.js"></script>
 <script src="/guardia.js"></script>
 </body>
 </html>
