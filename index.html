@@ -357,8 +357,8 @@ function pintarBotonVip(tipo, neto){
 function escucharPreciosPaseVip(){
   db.collection('configuracion').doc('global').onSnapshot(doc => {
     const d = doc.exists ? doc.data() : {};
-    const basico = Math.round(Number(d.precioPaseVipBasico || d.precioVipBasico || 0)) || 2990;
-    const pro = Math.round(Number(d.precioPaseVipPro || d.precioVipPro || 0)) || 5090;
+    const basico = Math.round(Number(d.precioPaseVipBasico || d.precioVipBasico || 0));
+    const pro = Math.round(Number(d.precioPaseVipPro || d.precioVipPro || 0));
     preciosPaseVip.basico = basico;
     preciosPaseVip.pro = pro;
     pintarBotonVip('basico', basico);
@@ -371,14 +371,16 @@ function escucharPreciosPaseVip(){
 async function postCrearPago(payload){
   const headers = { 'Content-Type': 'application/json' };
   if(payload && payload.idToken) headers.Authorization = 'Bearer ' + payload.idToken;
-  const res = await fetch('/api/crear', {
+  const res = await fetch('/api/flow/create', {
     method: 'POST',
     headers,
     body: JSON.stringify(payload)
   });
   const text = await res.text();
   try {
-    return JSON.parse(text);
+    const json = JSON.parse(text);
+    json.okHttp = res.ok;
+    return json;
   } catch(e) {
     throw new Error((text || '').slice(0, 80) || 'Flow no devolvió JSON');
   }
@@ -402,12 +404,9 @@ async function comprarPaseVipConFlow(tipo){
       let idToken = '';
       try { idToken = await auth.currentUser.getIdToken(true); }
       catch(e){ idToken = await auth.currentUser.getIdToken(); }
-      const montos = totalVipConIva(precio);
       return postCrearPago({
-        uid: auth.currentUser.uid,
         email: auth.currentUser.email,
         idToken,
-        amount: montos.total,
         tipoVipPase: tipo
       });
     };
@@ -417,8 +416,13 @@ async function comprarPaseVipConFlow(tipo){
       await auth.currentUser.reload().catch(()=>{});
       data = await pedir();
     }
-    if(data && data.flowUrl){
-      window.location.href = data.flowUrl;
+    if(data && data.okHttp === false){
+      mostrarAlertaToast('Error Flow', data.error || 'No se pudo crear el pago.');
+      if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
+      return;
+    }
+    if(data && data.url){
+      window.location.href = data.url;
       return;
     }
     mostrarAlertaToast('Error Flow', data && (data.error || JSON.stringify(data)) || 'No se pudo crear el pago.');

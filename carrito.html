@@ -57,6 +57,7 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 
 let totalFinalGlobal = 0;
+let itemsCarritoGlobal = [];
 let emailGlobal = 'cliente@siiilckventas.com';
 
 auth.onAuthStateChanged(async(u)=>{
@@ -87,6 +88,7 @@ function cargarCarritoEnVivo(uid){
 async function renderizarCarrito(items, uid){
   const listEl = document.getElementById('carrito-items-list');
   const desgloseBox = document.getElementById('carrito-desglose-box');
+  itemsCarritoGlobal = items || [];
   
   if(items.length === 0){
     listEl.innerHTML = `<p class="text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
@@ -230,19 +232,17 @@ async function tokenDePago(){
 }
 async function payloadPagoFlow(){
   const idToken = await tokenDePago();
-  return {
-    uid: auth.currentUser.uid,
-    email: auth.currentUser.email || emailGlobal,
-    idToken,
-    amount: totalFinalGlobal
-  };
+  const cuentas = itemsCarritoGlobal.filter(item => item.tipoItem !== 'pase_vip' && item.publicacionId);
+  const body = { email: auth.currentUser.email || emailGlobal };
+  if(cuentas.length === 1 && itemsCarritoGlobal.length === 1) body.listingId = cuentas[0].publicacionId;
+  return { idToken, body };
 }
 async function pedirPagoFlow(){
   const payload = await payloadPagoFlow();
-  const res = await fetch('/api/crear', {
+  const res = await fetch('/api/flow/create', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload.body)
   });
   const text = await res.text();
   try { return JSON.parse(text); }
@@ -269,10 +269,10 @@ async function pagarConFlow(){
       data = await pedirPagoFlow();
     }
 
-    if(data.flowUrl){
-      window.location.href = data.flowUrl;
+    if(data.url){
+      window.location.href = data.url;
     } else {
-      alert('Error Flow: ' + (data.error || JSON.stringify(data)));
+      alert(data.error || 'No se pudo crear el pago');
       btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
       btn.disabled = false;
     }

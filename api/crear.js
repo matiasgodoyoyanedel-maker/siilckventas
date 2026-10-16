@@ -23,14 +23,16 @@ export default async function handler(req, res) {
       uid: body.uid,
       email: body.email,
       idToken,
-      amount: body.amount,
       tipoVipPase: body.tipoVipPase,
+      listingId: body.listingId || body.listing_id || '',
       siteUrl: urlSitioDesdeRequest(req)
     });
     if (!resultado.ok) return res.status(400).json(resultado);
     return res.status(200).json({
+      url: resultado.url,
       flowUrl: resultado.flowUrl,
       commerceOrder: resultado.commerceOrder,
+      amount: resultado.amount,
       total: resultado.total
     });
   } catch (e) {
