@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Publicar Cuenta - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -118,7 +119,7 @@ auth.onAuthStateChanged(async(u)=>{
         await db.collection('perfiles').doc(u.uid).update({cuentaVendedorActiva:false,esBetaAntiguo:true});
         mostrarAlertaToast("Beta Expirada","Cuenta desactivada");setTimeout(()=>{window.location.href='index.html'},2500);return;
       }
-      if(!currentUserData.cuentaVendedorActiva){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
+      if(!currentUserData.cuentaVendedorActiva && !currentUserData.is_seller){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
     }else{ if(esCuentaOwner(u.uid)) return; }
   }catch(e){console.log(e);}
 });
@@ -147,7 +148,7 @@ async function crearPublicacionMarketplace(){
     if(!privEmail||!privPass||!privRecup){mostrarAlertaToast("Datos Privados","Llena recuadro amarillo");return;}
     if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
-    if(!esDueno &&!uData.cuentaVendedorActiva){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
+    if(!esDueno && !uData.cuentaVendedorActiva && !uData.is_seller){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
     const previas=await db.collection('publicaciones').where('vendedorUid','==',auth.currentUser.uid).get();
     const misma=clavePublicacion(titulo,juego,precio);
     const ya=previas.docs.some(d=>{const p=d.data();return publicacionSigueDisponible(p)&&clavePublicacion(p.titulo,p.juego,p.precio)===misma;});
@@ -167,5 +168,6 @@ async function crearPublicacionMarketplace(){
   }
 }
 </script>
+<script src="/guardia.js"></script>
 </body>
 </html>

@@ -10,7 +10,8 @@
     { "source": "/google78561bbab4dd18b7", "destination": "/api/google-verify" },
     { "source": "/pago/exito", "destination": "/pago/exito.html" },
     { "source": "/pago/error", "destination": "/pago/error.html" },
-    { "source": "/mis-compras/:id", "destination": "/mis-compras.html" }
+    { "source": "/mis-compras/:id", "destination": "/mis-compras.html" },
+    { "source": "/mantenimiento", "destination": "/api/mantenimiento" }
   ],
   "proxy": {
     "entrypoint": "middleware.js",

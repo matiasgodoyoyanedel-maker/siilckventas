@@ -19,7 +19,7 @@ service cloud.firestore {
     }
 
     function perfilPrivilegedKeys() {
-      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'vipExpira', 'isVip', 'plan'];
+      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'is_blocked', 'vipExpira', 'isVip', 'plan'];
     }
 
     // --- Perfiles ---
@@ -32,7 +32,8 @@ service cloud.firestore {
         isSelf(userId) &&
         (!('esVendedorVip' in request.resource.data) || request.resource.data.esVendedorVip == false) &&
         (!('isVip' in request.resource.data) || request.resource.data.isVip == false) &&
-        (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false)
+        (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false) &&
+        (!('is_blocked' in request.resource.data) || request.resource.data.is_blocked == false)
       );
 
       allow update: if isOwner() || (
@@ -149,6 +150,11 @@ service cloud.firestore {
     }
 
     match /config/{docId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /settings/{docId} {
       allow read: if true;
       allow write: if isOwner();
     }
