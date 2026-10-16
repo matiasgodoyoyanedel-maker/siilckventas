@@ -11,6 +11,7 @@
     { "source": "/pago/exito", "destination": "/pago/exito.html" },
     { "source": "/pago/error", "destination": "/pago/error.html" },
     { "source": "/mis-compras/:id", "destination": "/mis-compras.html" },
+    { "source": "/verificar-correo", "destination": "/login.html" },
     { "source": "/mantenimiento", "destination": "/api/mantenimiento" }
   ],
   "proxy": {

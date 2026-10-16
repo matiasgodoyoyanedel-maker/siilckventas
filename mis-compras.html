@@ -130,7 +130,8 @@ function fechaCl(ms){
 }
 function nombreMetodo(m){ return m === 'mercadopago' ? 'Mercado Pago' : 'Flow'; }
 function abrirDatosCuenta(item){
-  document.getElementById('modal-cuenta-titulo').textContent = item.nombre || 'Datos de mi cuenta';
+  const tituloCuenta = item.juego ? (item.juego + ' · ' + (item.nombre || 'Datos de mi cuenta')) : (item.nombre || 'Datos de mi cuenta');
+  document.getElementById('modal-cuenta-titulo').textContent = tituloCuenta;
   document.getElementById('modal-usuario').textContent = item.account_user || 'No indicado';
   document.getElementById('modal-clave').textContent = item.account_pass || 'No indicado';
   document.getElementById('modal-correo').textContent = item.account_email || 'No indicado';
@@ -162,10 +163,19 @@ function pintarOrden(orden){
   (orden.items || []).forEach((item) => {
     const filaItem = document.createElement('div');
     filaItem.className = 'flex items-center justify-between gap-3 bg-black rounded-2xl px-3 py-3';
+    const texto = document.createElement('div');
+    texto.className = 'min-w-0';
     const nombre = document.createElement('p');
     nombre.className = 'text-sm text-white font-bold';
     nombre.textContent = item.nombre || 'Producto';
-    filaItem.appendChild(nombre);
+    texto.appendChild(nombre);
+    if(item.juego){
+      const juego = document.createElement('p');
+      juego.className = 'text-[11px] font-black text-yellow-400';
+      juego.textContent = item.juego;
+      texto.appendChild(juego);
+    }
+    filaItem.appendChild(texto);
     if(item.tipo === 'cuenta'){
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -195,7 +205,15 @@ async function pintarLista(user){
     txt.textContent = 'No se pudieron cargar tus compras. Reintenta en unos segundos.';
   }
 }
+function exigirCorreoVerificado(user){
+  if(user && user.emailVerified === false){
+    location.replace('/verificar-correo?email=' + encodeURIComponent(user.email || ''));
+    return false;
+  }
+  return true;
+}
 auth.onAuthStateChanged(async(user)=>{
+  if(!exigirCorreoVerificado(user)) return;
   if(!id){
     document.body.className = 'min-h-screen bg-black text-white p-4 sm:p-8';
     document.getElementById('vista-detalle').classList.add('hidden');
