@@ -77,6 +77,16 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.firestore();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+function origenPublico(){
+  const h=String(location.hostname||'');
+  if(/\.vercel\.app$/i.test(h) && !/^siilckventas\.vercel\.app$/i.test(h)) return 'https://www.siiilckventas.com';
+  return String(location.origin||'https://www.siiilckventas.com').replace(/\/$/,'');
+}
+function urlCuentaPublica(id){
+  const limpio=String(id||'').trim();
+  if(!limpio || limpio==='[id]' || limpio.indexOf('[')>=0 || limpio.indexOf(']')>=0) return '';
+  return origenPublico()+'/cuenta/'+encodeURIComponent(limpio);
+}
 function idCuenta(){
   const q=new URLSearchParams(location.search);
   const directo=q.get('id')||q.get('cuenta');
@@ -356,7 +366,13 @@ async function pintarFicha(p){
 async function cargarFichaPorServidor(){
   const res=await fetch('/api/ficha?id='+encodeURIComponent(pubId));
   const json=await res.json().catch(()=>null);
-  if(!res.ok || !json || !json.ok || !json.publicacion) throw new Error((json && json.error) || 'No se pudo cargar la ficha.');
+  if(!json || !json.ok || !json.publicacion){
+    const msg=(json && json.error)||'';
+    if(msg==='Falta el enlace de la cuenta.') throw new Error(msg);
+    document.getElementById('estado').textContent='Cuenta no encontrada';
+    fichaLista=true;
+    return;
+  }
   const p=json.publicacion;
   p._vendedor=json.vendedor||null;
   p._reputacion=json.reputacion||null;
@@ -369,7 +385,8 @@ document.querySelectorAll('input[name="garantia-ficha"]').forEach((el)=>el.addEv
 document.addEventListener('siilck-settings', pintarTotal);
 document.addEventListener('siilck-oferta-ready', pintarTotal);
 document.getElementById('btn-copiar').addEventListener('click', async ()=>{
-  const url=location.origin+'/cuenta/'+encodeURIComponent(pubId);
+  const url=(typeof urlCuentaPublica==='function'?urlCuentaPublica(pubId): (location.origin+'/cuenta/'+encodeURIComponent(pubId)));
+  if(!url) return;
   try{ await navigator.clipboard.writeText(url); document.getElementById('btn-copiar').textContent='Enlace copiado'; }
   catch(e){ document.getElementById('btn-copiar').textContent=url; }
 });
@@ -430,7 +447,7 @@ else {
   db.collection('publicaciones').doc(pubId).get().then((doc)=>{
     clearTimeout(respaldo);
     fichaLista=true;
-    if(!doc.exists){ document.getElementById('estado').textContent='Esta cuenta ya no está publicada.'; return; }
+    if(!doc.exists){ document.getElementById('estado').textContent='Cuenta no encontrada'; return; }
     const p=doc.data()||{};
     const stock=p.stock==null?1:Number(p.stock);
     pintarFicha({ id:doc.id, ...p });

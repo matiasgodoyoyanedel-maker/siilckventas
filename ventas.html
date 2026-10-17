@@ -245,7 +245,6 @@
               <div class="min-w-0"><span class="block font-bold text-white text-xs truncate" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span><span id="modal-vendedor-reputacion" class="block text-[10px] text-amber-300 font-bold leading-tight"></span></div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <a id="enlace-ficha-cuenta" href="/vendedor" onclick="cerrarModalEIrFicha(event)" class="text-[11px] font-bold text-yellow-300 underline">Ficha</a>
               <button type="button" onclick="copiarEnlaceFicha()" class="text-[11px] font-bold text-zinc-300 underline">Copiar enlace</button>
               <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
             </div>
@@ -927,23 +926,20 @@ function abrirVendedorDeQuery(){
   vendedorQueryAbierto = true;
   abrirPerfilVendedorPorUid(uid);
 }
-function cerrarModalEIrFicha(e){
-  const uid = vendedorActualUidCache;
-  const modal = document.getElementById('modal-pub-detalles');
-  if(modal) modal.classList.add('hidden');
-  if(!uid){
-    if(e) e.preventDefault();
-    return;
-  }
-  const destino = '/vendedor/' + encodeURIComponent(uid);
-  const enlace = document.getElementById('enlace-ficha-cuenta');
-  if(enlace) enlace.href = destino;
+function origenPublico(){
+  const h = String(location.hostname || '');
+  if(/\.vercel\.app$/i.test(h) && !/^siilckventas\.vercel\.app$/i.test(h)) return 'https://www.siiilckventas.com';
+  return String(location.origin || 'https://www.siiilckventas.com').replace(/\/$/, '');
+}
+function urlCuentaPublica(id){
+  const limpio = String(id || '').trim();
+  if(!limpio || limpio === '[id]' || limpio.indexOf('[') >= 0 || limpio.indexOf(']') >= 0) return '';
+  return origenPublico() + '/cuenta/' + encodeURIComponent(limpio);
 }
 function copiarEnlaceFicha(){
-  const id = publicacionActualIdCache;
-  if(!id) return;
-  const url = location.origin + '/cuenta/' + encodeURIComponent(id);
-  navigator.clipboard.writeText(url).then(() => mostrarToast('Enlace de la ficha copiado')).catch(() => mostrarAlertaToast('Enlace', url));
+  const url = urlCuentaPublica(publicacionActualIdCache);
+  if(!url) return;
+  navigator.clipboard.writeText(url).then(() => mostrarToast('Enlace de la cuenta copiado')).catch(() => mostrarAlertaToast('Enlace', url));
 }
 
 function renderizarGridPublicaciones(ps, filtro=""){
@@ -1007,7 +1003,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
       ${imgHtml}
       <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
-      <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="cuenta.html?id=${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ficha</a></div>
+      <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="/cuenta/${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
         <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
           ${logoVendedorHtml}
@@ -1037,8 +1033,6 @@ async function abrirModalPub(id){
   stockPublicacionActual = p.stock == null ? 1 : Number(p.stock);
   vendedorActualUidCache = uidVendedor(p);
   publicacionActualIdCache = id;
-  const ficha = document.getElementById('enlace-ficha-cuenta');
-  if(ficha) ficha.href = '/vendedor/' + encodeURIComponent(vendedorActualUidCache || '');
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
   document.getElementById('modal-vendedor-nombre').innerText = nombreRealVendedor(vendedorActualUidCache);

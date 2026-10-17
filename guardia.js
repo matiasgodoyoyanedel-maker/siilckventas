@@ -76,9 +76,21 @@
     };
   }
 
+  function esGoogle(u) {
+    return !!(u && (u.providerData || []).some(function (p) { return p.providerId === 'google.com'; }));
+  }
+
+  function correoListo(u, data) {
+    if (!u) return true;
+    if (u.emailVerified === false) return false;
+    if (esGoogle(u)) return true;
+    if (data && data.verificadoForzado === false) return false;
+    return true;
+  }
+
   function aplicar() {
     if (!configLista || !authListo) return;
-    if (user && !sinVerificarCorreo() && (user.emailVerified === false || (perfil && perfil.verificadoForzado === false))) {
+    if (user && !sinVerificarCorreo() && !correoListo(user, perfil)) {
       location.replace('/verificar-correo' + (user.email ? ('?email=' + encodeURIComponent(user.email)) : ''));
       return;
     }

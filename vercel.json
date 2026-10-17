@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "index.html"
+      "includeFiles": "{index.html,cuenta.html}"
     }
   },
   "rewrites": [
@@ -11,7 +11,8 @@
     { "source": "/pago/exito", "destination": "/pago/exito.html" },
     { "source": "/pago/error", "destination": "/pago/error.html" },
     { "source": "/mis-compras/:id", "destination": "/mis-compras.html" },
-    { "source": "/cuenta/:id", "destination": "/cuenta.html?id=:id" },
+    { "source": "/cuenta/:id", "destination": "/api/cuenta-pagina?id=:id" },
+    { "source": "/cuenta/:id/", "destination": "/api/cuenta-pagina?id=:id" },
     { "source": "/vendedor/:uid", "destination": "/vendedor.html?uid=:uid" },
     { "source": "/verificar-correo", "destination": "/login.html" },
     { "source": "/mantenimiento", "destination": "/api/mantenimiento" }
