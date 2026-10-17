@@ -245,7 +245,7 @@
               <div class="min-w-0"><span class="block font-bold text-white text-xs truncate" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span><span id="modal-vendedor-reputacion" class="block text-[10px] text-amber-300 font-bold leading-tight"></span></div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <a id="enlace-ficha-cuenta" href="cuenta.html" class="text-[11px] font-bold text-yellow-300 underline">Ficha</a>
+              <a id="enlace-ficha-cuenta" href="/vendedor" onclick="cerrarModalEIrFicha(event)" class="text-[11px] font-bold text-yellow-300 underline">Ficha</a>
               <button type="button" onclick="copiarEnlaceFicha()" class="text-[11px] font-bold text-zinc-300 underline">Copiar enlace</button>
               <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
             </div>
@@ -324,7 +324,7 @@ function nombreRealVendedor(uid){
   return (nombre && String(nombre).trim()) || 'Vendedor';
 }
 function uidVendedor(p){
-  return (p && (p.vendedorUid || p.ownerId || p.userId)) || '';
+  return (p && (p.vendedorUid || p.sellerUid || p.sellerId || p.seller_id || p.ownerId || p.userId)) || '';
 }
 function inicialVendedor(uid){
   const p = perfilVendedorListo(uid) || {};
@@ -456,11 +456,13 @@ function htmlReputacion(uid, pub){
   const rep = datosReputacion(uid, pub);
   const total = Number(rep.totalResenas) || 0;
   const prom = Number(rep.promedio) || 0;
-  const ventas = Number(rep.ventasCompletadas) || 0;
+  const perfilVivo = (typeof perfilVendedorListo === 'function' ? perfilVendedorListo(uid) : null) || {};
+  const ventas = (rep.salesCount != null && rep.salesCount !== '') ? (Number(rep.salesCount) || 0) : ((perfilVivo.salesCount != null && perfilVivo.salesCount !== '') ? (Number(perfilVivo.salesCount) || 0) : 0);
   const llenas = total ? Math.round(Math.max(0, Math.min(5, prom))) : 0;
   const stars = total ? ('★'.repeat(llenas) + '☆'.repeat(5 - llenas) + ' ' + prom.toFixed(1)) : 'Nuevo';
   const resenasTxt = total ? (' · ' + total + (total === 1 ? ' reseña' : ' reseñas')) : '';
-  return `<span class="block text-[10px] text-amber-300 font-bold leading-tight">${stars}${resenasTxt} · ${ventas} ventas</span>`;
+  const ventasTxt = ventas === 1 ? 'venta' : 'ventas';
+  return `<span class="block text-[10px] text-amber-300 font-bold leading-tight">${stars}${resenasTxt} · ${ventas} ${ventasTxt}</span>`;
 }
 function htmlListaResenas(lista){
   if(!lista || !lista.length) return '<p class="text-[11px] text-zinc-500 text-center">Todavía no tiene reseñas.</p>';
@@ -925,6 +927,18 @@ function abrirVendedorDeQuery(){
   vendedorQueryAbierto = true;
   abrirPerfilVendedorPorUid(uid);
 }
+function cerrarModalEIrFicha(e){
+  const uid = vendedorActualUidCache;
+  const modal = document.getElementById('modal-pub-detalles');
+  if(modal) modal.classList.add('hidden');
+  if(!uid){
+    if(e) e.preventDefault();
+    return;
+  }
+  const destino = '/vendedor/' + encodeURIComponent(uid);
+  const enlace = document.getElementById('enlace-ficha-cuenta');
+  if(enlace) enlace.href = destino;
+}
 function copiarEnlaceFicha(){
   const id = publicacionActualIdCache;
   if(!id) return;
@@ -1024,7 +1038,7 @@ async function abrirModalPub(id){
   vendedorActualUidCache = uidVendedor(p);
   publicacionActualIdCache = id;
   const ficha = document.getElementById('enlace-ficha-cuenta');
-  if(ficha) ficha.href = 'cuenta.html?id=' + encodeURIComponent(id);
+  if(ficha) ficha.href = '/vendedor/' + encodeURIComponent(vendedorActualUidCache || '');
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
   document.getElementById('modal-vendedor-nombre').innerText = nombreRealVendedor(vendedorActualUidCache);

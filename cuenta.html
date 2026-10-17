@@ -140,13 +140,23 @@ function pintarResenasFicha(rep){
     box.appendChild(fila);
   });
 }
+async function salesPorApi(uid){
+  if(!uid) return null;
+  try{
+    const res=await fetch('/api/vendedor?uid='+encodeURIComponent(uid));
+    const json=await res.json();
+    if(res.ok && json && json.ok && json.vendedor && json.vendedor.salesCount != null) return Number(json.vendedor.salesCount)||0;
+  }catch(e){}
+  return null;
+}
 function textoRep(rep){
   const total=Number(rep && rep.totalResenas)||0;
   const prom=Number(rep && rep.promedio)||0;
-  const ventas=Number(rep && rep.ventasCompletadas)||0;
-  if(!total) return 'Nuevo · '+ventas+' ventas';
+  const ventas=rep && rep.salesCount != null ? (Number(rep.salesCount)||0) : 0;
+  const etiqueta=ventas===1?'venta':'ventas';
+  if(!total) return 'Nuevo · '+ventas+' '+etiqueta;
   const llenas=Math.round(Math.max(0, Math.min(5, prom)));
-  return '★'.repeat(llenas)+'☆'.repeat(5-llenas)+' '+prom.toFixed(1)+' ('+total+') · '+ventas+' ventas';
+  return '★'.repeat(llenas)+'☆'.repeat(5-llenas)+' '+prom.toFixed(1)+' ('+total+') · '+ventas+' '+etiqueta;
 }
 function chip(texto){
   const s=document.createElement('span');
@@ -229,7 +239,7 @@ async function pintarVendedorVivo(p){
   }else{
     logo.textContent=inicial;
   }
-  document.getElementById('link-vendedor').href='ventas.html?vendedor='+encodeURIComponent(uid);
+  document.getElementById('link-vendedor').href='/vendedor/'+encodeURIComponent(uid);
 }
 async function guardarLineaCarrito(){
   const user=auth.currentUser;
@@ -306,10 +316,39 @@ async function pintarFicha(p){
   try{
     const rep=await db.collection('reputacion').doc(uidVendedor(p)||p.vendedorUid||'x').get();
     const viva=rep.exists?rep.data():{};
-    const elegida=Number(viva && viva.totalResenas)>0 ? viva : (Number(local.totalResenas)>0 ? local : (viva||local));
+    const elegida=Number(viva && viva.totalResenas)>0 ? { ...viva } : (Number(local.totalResenas)>0 ? { ...local } : { ...(viva||{}), ...(local||{}) });
+    if(local && local.salesCount != null) elegida.salesCount=local.salesCount;
+    if(elegida.salesCount == null){
+      const uidRep=uidVendedor(p);
+      try{
+        const users=await db.collection('users').doc(uidRep||'x').get();
+        if(users.exists && users.data() && users.data().salesCount != null) elegida.salesCount=Number(users.data().salesCount)||0;
+      }catch(e){}
+      if(elegida.salesCount == null){
+        try{
+          const perfil=await db.collection('perfiles').doc(uidRep||'x').get();
+          if(perfil.exists && perfil.data() && perfil.data().salesCount != null) elegida.salesCount=Number(perfil.data().salesCount)||0;
+        }catch(e){}
+      }
+      if(elegida.salesCount == null){
+        const porApi=await salesPorApi(uidRep);
+        if(porApi != null) elegida.salesCount=porApi;
+      }
+    }
     document.getElementById('reputacion').textContent=textoRep(elegida);
     pintarResenasFicha(local.resenas && local.resenas.length ? local : elegida);
   }catch(e){
+    if(local.salesCount == null){
+      const uidRep=uidVendedor(p);
+      try{
+        const perfil=await db.collection('perfiles').doc(uidRep||'x').get();
+        if(perfil.exists && perfil.data() && perfil.data().salesCount != null) local.salesCount=Number(perfil.data().salesCount)||0;
+      }catch(e){}
+      if(local.salesCount == null){
+        const porApi=await salesPorApi(uidRep);
+        if(porApi != null) local.salesCount=porApi;
+      }
+    }
     document.getElementById('reputacion').textContent=textoRep(local);
     pintarResenasFicha(local);
   }

@@ -1,5 +1,6 @@
 import { getDb } from '../lib/logis/db.js';
 import { copiarMapaEnPublicaciones, leerMapaReputacion } from '../lib/logis/ficha.js';
+import { mapaVentasReales } from '../lib/logis/ventas-reales.js';
 
 function cors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +19,16 @@ export default async function handler(req, res) {
     if (cache.data && Date.now() - cache.en < TTL_MS) return res.status(200).json(cache.data);
     const db = getDb();
     const data = await leerMapaReputacion(db);
+    try {
+      const ventas = await mapaVentasReales(db);
+      const uids = new Set([...Object.keys(data.vendedores || {}), ...Object.keys(ventas)]);
+      uids.forEach((uid) => {
+        const previo = data.vendedores[uid] || { promedio: 0, totalResenas: 0, ventasCompletadas: 0, resenas: [] };
+        data.vendedores[uid] = { ...previo, salesCount: ventas[uid] || 0 };
+      });
+    } catch (e) {
+      console.error(JSON.stringify({ evento: 'ventas_reales_error', error: e.message }));
+    }
     cache = { en: Date.now(), data };
     try {
       await copiarMapaEnPublicaciones(db, data.vendedores);

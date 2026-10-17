@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es" data-sv-theme="aurora">
+<head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendedor - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/tema.css">
+<script src="/tema.js"></script>
+<style>
+  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  h1,h2{font-family:'Outfit',sans-serif}
+  .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07)}
+</style>
+</head>
+<body class="min-h-screen">
+  <div class="w-full max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-4">
+    <div class="flex items-center justify-between gap-3">
+      <a href="/ventas" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
+      <div id="sv-locale-slot"></div>
+    </div>
+    <p id="estado" class="text-sm text-zinc-400">Cargando el vendedor…</p>
+    <article id="perfil" class="hidden w-full web-panel rounded-3xl border border-yellow-500/30 p-5 sm:p-8 space-y-6">
+      <div class="flex flex-col items-center text-center gap-3">
+        <div id="avatar" class="w-24 h-24 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center text-3xl font-black overflow-hidden shrink-0">V</div>
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <h1 id="nombre" class="text-2xl font-black text-white">Vendedor</h1>
+            <span id="vip" class="hidden bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-3 py-1 rounded-full"></span>
+          </div>
+          <p id="rating" class="text-sm text-amber-300 font-bold"></p>
+          <p id="ventas" class="text-xs text-zinc-300"></p>
+          <p id="miembro" class="text-[11px] text-zinc-500"></p>
+        </div>
+        <div id="resenas" class="w-full text-left space-y-2"></div>
+      </div>
+      <div class="w-full border-t border-zinc-800 pt-4">
+        <h2 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4">Cuentas a la venta</h2>
+        <div id="cuentas" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+      </div>
+    </article>
+  </div>
+<script>
+function uidVendedor(){
+  const q=new URLSearchParams(location.search);
+  const directo=q.get('uid')||q.get('id')||q.get('vendedor');
+  if(directo) return directo;
+  const partes=location.pathname.split('/').filter(Boolean);
+  const i=partes.indexOf('vendedor');
+  return i>=0 && partes[i+1] ? decodeURIComponent(partes[i+1]) : '';
+}
+const uid=uidVendedor();
+function texto(nodo, valor){ if(nodo) nodo.textContent=valor; }
+function estrellas(promedio, total){
+  const n=Number(total)>0 ? Math.max(0, Math.min(5, Number(promedio)||0)) : 0;
+  const llenas=Math.round(n);
+  if(!Number(total)) return 'Sin reseñas';
+  return '★'.repeat(llenas)+'☆'.repeat(5-llenas)+' '+n.toFixed(1)+' · '+total+' reseña'+(total===1?'':'s');
+}
+function etiquetaVip(v){
+  const tipo=v && v.tipoVip;
+  if(tipo==='pro' || tipo==='dueno') return 'VIP Pro';
+  if(tipo==='basico' || v.esVendedorVip || v.esVip) return 'VIP';
+  return '';
+}
+function fechaMiembro(ms){
+  const n=Number(ms)||0;
+  if(!n) return '';
+  return 'Miembro desde '+new Date(n).toLocaleDateString('es-CL', { month:'long', year:'numeric' });
+}
+function precio(n){
+  if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
+  return '$'+Number(n||0).toLocaleString('es-CL');
+}
+function pintar(data){
+  const v=data.vendedor||{};
+  const nombre=String(v.displayName||v.username||'').trim()||'Vendedor';
+  document.title=nombre+' - SiilckVentas';
+  texto(document.getElementById('estado'), '');
+  document.getElementById('perfil').classList.remove('hidden');
+  texto(document.getElementById('nombre'), nombre);
+  const avatar=document.getElementById('avatar');
+  const inicial=(nombre.charAt(0)||'V').toUpperCase();
+  avatar.textContent='';
+  avatar.className='w-24 h-24 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center text-3xl font-black overflow-hidden shrink-0';
+  if(/^(https?:|data:image\/)/.test(v.avatar||'')){
+    const img=document.createElement('img');
+    img.src=v.avatar;
+    img.alt='';
+    img.className='w-full h-full object-cover';
+    img.onerror=()=>{ avatar.textContent=inicial; };
+    avatar.appendChild(img);
+  }else avatar.textContent=inicial;
+  const vip=etiquetaVip(v);
+  const vipEl=document.getElementById('vip');
+  vipEl.classList.toggle('hidden', !vip);
+  texto(vipEl, vip);
+  texto(document.getElementById('rating'), estrellas(v.promedio, v.totalResenas));
+  const ventas=Number(v.salesCount)||0;
+  texto(document.getElementById('ventas'), ventas+' venta'+(ventas===1?'':'s'));
+  texto(document.getElementById('miembro'), fechaMiembro(v.miembroDesde));
+  const resenas=document.getElementById('resenas');
+  resenas.textContent='';
+  (v.resenas||[]).forEach((r)=>{
+    const n=Math.max(1, Math.min(5, Math.round(Number(r.estrellas)||0)));
+    const fila=document.createElement('div');
+    fila.className='bg-zinc-950 border border-zinc-800 rounded-xl p-3';
+    const estrellasEl=document.createElement('p');
+    estrellasEl.className='text-[11px] text-amber-300 font-bold';
+    estrellasEl.textContent='★'.repeat(n)+'☆'.repeat(5-n);
+    const comentario=document.createElement('p');
+    comentario.className='text-xs text-zinc-300';
+    comentario.textContent=r.comentario||'';
+    fila.appendChild(estrellasEl);
+    fila.appendChild(comentario);
+    resenas.appendChild(fila);
+  });
+  const grid=document.getElementById('cuentas');
+  grid.textContent='';
+  const lista=data.publicaciones||[];
+  if(!lista.length){
+    const vacio=document.createElement('p');
+    vacio.className='text-xs text-zinc-500 col-span-full text-center py-6';
+    vacio.textContent='No hay cuentas a la venta.';
+    grid.appendChild(vacio);
+    return;
+  }
+  lista.forEach((p)=>{
+    const a=document.createElement('a');
+    a.href='/cuenta/'+encodeURIComponent(p.id);
+    a.className='web-panel border border-zinc-800 rounded-2xl p-3 space-y-2 text-left block';
+    if(p.foto){
+      const img=document.createElement('img');
+      img.src=p.foto;
+      img.alt='';
+      img.className='w-full h-28 object-cover rounded-xl bg-black';
+      a.appendChild(img);
+    }
+    const titulo=document.createElement('h3');
+    titulo.className='font-bold text-white text-xs';
+    titulo.textContent=p.titulo||'Cuenta';
+    const valor=document.createElement('p');
+    valor.className='text-yellow-400 font-extrabold text-sm';
+    valor.textContent=precio(p.precioFinal||p.precio);
+    a.appendChild(titulo);
+    a.appendChild(valor);
+    grid.appendChild(a);
+  });
+}
+async function cargar(){
+  if(!uid){
+    texto(document.getElementById('estado'), 'Falta el enlace del vendedor.');
+    return;
+  }
+  try{
+    const res=await fetch('/api/vendedor?uid='+encodeURIComponent(uid));
+    const json=await res.json();
+    if(!res.ok || !json || !json.ok) throw new Error((json&&json.error)||'');
+    pintar(json);
+  }catch(e){
+    texto(document.getElementById('estado'), 'No se pudo cargar el vendedor.');
+  }
+}
+cargar();
+</script>
+<script type="module" src="/lib/settings.js"></script>
+</body>
+</html>
