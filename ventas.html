@@ -83,6 +83,10 @@
 
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
+<div id="toast-ya-carrito" class="hidden fixed bottom-6 right-6 z-[260] bg-zinc-900 border border-yellow-500/50 text-white rounded-2xl shadow-2xl px-4 py-3 items-center gap-3 max-w-xs">
+  <span class="text-sm font-bold">Producto ya se encuentra en el carrito</span>
+  <button type="button" onclick="cerrarToastYaCarrito()" class="text-yellow-300 font-black px-2" aria-label="Cerrar">X</button>
+</div>
 
 <header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
@@ -255,7 +259,7 @@
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
       <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Total</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span></div>
       <div class="flex flex-wrap justify-end gap-2">
-        <button onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
+        <button id="btn-agregar-carrito-modal" onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
         <button id="btn-pagar-producto" onclick="pagarProductoConFlow()" class="bg-emerald-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-emerald-400 transition"><i class="fas fa-shopping-bag mr-1"></i> Pagar con Flow</button>
         <button id="btn-pagar-producto-mp" onclick="pagarProductoConMercadoPago()" class="text-white font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow transition" style="background:#009ee3"><i class="fas fa-credit-card mr-1"></i> Mercado Pago</button>
       </div>
@@ -286,7 +290,7 @@ function htmlPrecioOferta(precio, producto, claseAhora){
 function htmlBadgeOferta(producto){
   const oferta = ofertaDe(producto && producto.precio, producto);
   if(!oferta) return '';
-  return `<span class="absolute top-3 left-3 z-10 bg-rose-600 text-white text-[10px] font-black px-2 py-1 rounded-full animate-pulse">-${oferta.descuento}% OFERTA</span>`;
+  return `<span class="absolute bottom-2 left-2 z-10 bg-red-600 text-white font-black px-3 py-1 rounded-lg">-${oferta.descuento}% OFERTA</span>`;
 }
 let ofertaPublicacionActual = null;
 let filtrosExtra = { nivel:'', region:'', min:'', max:'', orden:'destacados' };
@@ -294,6 +298,138 @@ let reputacionCache = {};
 let reputacionEscucha = false;
 let cuentaQueryAbierta = false;
 let vendedorQueryAbierto = false;
+const perfilesVendedorCache = {};
+const idsEnCarrito = new Set();
+let timerToastCarrito = null;
+function escHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function perfilVendedorListo(uid){
+  const p = perfilesVendedorCache[uid];
+  if (!p || p.__pendiente) return null;
+  return p;
+}
+function nombreRealVendedor(uid){
+  const p = perfilVendedorListo(uid);
+  const nombre = p && (p.displayName || p.username);
+  return (nombre && String(nombre).trim()) || 'Vendedor';
+}
+function uidVendedor(p){
+  return (p && (p.vendedorUid || p.ownerId || p.userId)) || '';
+}
+function inicialVendedor(uid){
+  const p = perfilVendedorListo(uid) || {};
+  const nombre = p.displayName || p.username || 'V';
+  return String(nombre).trim().charAt(0).toUpperCase() || 'V';
+}
+function avatarRoto(img){
+  const box = img && img.parentElement;
+  if (!box) return;
+  const inicial = img.getAttribute('data-inicial') || 'V';
+  const size = img.getAttribute('data-size') || 'text-[10px]';
+  img.remove();
+  box.classList.add('text-zinc-950', 'font-black', size);
+  box.textContent = inicial;
+}
+function urlAvatar(p){
+  const candidato = (p && (p.avatar_url || p.foto)) || '';
+  return /^(https?:|data:image\/)/.test(candidato) ? candidato : '';
+}
+function htmlAvatarVivo(uid, marco){
+  const inicial = escHtml(inicialVendedor(uid));
+  const p = perfilVendedorListo(uid) || {};
+  const avatar = urlAvatar(p);
+  const marcoCls = marco || '';
+  if (/^(https?:|data:image\/)/.test(avatar)) {
+    return `<div class="w-6 h-6 rounded-full bg-yellow-500 ${marcoCls} flex items-center justify-center overflow-hidden shrink-0"><img src="${escHtml(avatar)}" alt="" data-inicial="${inicial}" data-size="text-[10px]" class="w-full h-full object-cover" onerror="avatarRoto(this)"></div>`;
+  }
+  return `<div class="w-6 h-6 rounded-full bg-yellow-500 text-zinc-950 ${marcoCls} flex items-center justify-center font-black text-[10px] shrink-0">${inicial}</div>`;
+}
+function pintarCajaAvatar(el, uid, sizeClass){
+  if (!el) return;
+  const inicial = inicialVendedor(uid);
+  const p = perfilVendedorListo(uid) || {};
+  const avatar = urlAvatar(p);
+  el.textContent = '';
+  el.classList.add('bg-yellow-500', 'text-zinc-950');
+  if (/^(https?:|data:image\/)/.test(avatar)) {
+    const img = document.createElement('img');
+    img.src = avatar;
+    img.alt = '';
+    img.className = 'w-full h-full object-cover';
+    img.setAttribute('data-inicial', inicial);
+    img.setAttribute('data-size', sizeClass || 'text-lg');
+    img.onerror = function(){ avatarRoto(img); };
+    el.appendChild(img);
+    return;
+  }
+  el.classList.add('font-black', sizeClass || 'text-lg');
+  el.textContent = inicial;
+}
+function refrescarVendedorModal(){
+  const modal = document.getElementById('modal-pub-detalles');
+  if (!modal || modal.classList.contains('hidden') || !vendedorActualUidCache) return;
+  const nombreEl = document.getElementById('modal-vendedor-nombre');
+  if (nombreEl) nombreEl.innerText = nombreRealVendedor(vendedorActualUidCache);
+  const logoBox = document.getElementById('modal-vendedor-logo');
+  if (logoBox) {
+    logoBox.className = 'w-12 h-12 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black overflow-hidden shrink-0';
+    pintarCajaAvatar(logoBox, vendedorActualUidCache, 'text-lg');
+  }
+}
+function pedirPerfilesVendedores(uids){
+  const faltan = [...new Set((uids || []).filter(Boolean))].filter(id => perfilesVendedorCache[id] === undefined);
+  if (!faltan.length) return;
+  faltan.forEach(id => { perfilesVendedorCache[id] = { __pendiente: true }; });
+  Promise.all(faltan.map(async uid => {
+    try {
+      const doc = await db.collection('perfiles').doc(uid).get();
+      perfilesVendedorCache[uid] = doc.exists ? (doc.data() || {}) : {};
+    } catch (e) {
+      perfilesVendedorCache[uid] = {};
+    }
+  })).then(() => {
+    if (globalPublicacionesCache.length) renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+    refrescarVendedorModal();
+  });
+}
+function mostrarToastYaCarrito(){
+  const t = document.getElementById('toast-ya-carrito');
+  if (!t) return;
+  t.classList.remove('hidden');
+  t.classList.add('flex');
+  clearTimeout(timerToastCarrito);
+  timerToastCarrito = setTimeout(cerrarToastYaCarrito, 3000);
+}
+function cerrarToastYaCarrito(){
+  const t = document.getElementById('toast-ya-carrito');
+  if (!t) return;
+  t.classList.add('hidden');
+  t.classList.remove('flex');
+  clearTimeout(timerToastCarrito);
+}
+function pintarBotonCarritoModal(){
+  const btn = document.getElementById('btn-agregar-carrito-modal');
+  if (!btn) return;
+  const dentro = idsEnCarrito.has(publicacionActualIdCache);
+  btn.disabled = dentro;
+  if (dentro) {
+    btn.className = 'bg-zinc-600 text-zinc-300 font-extrabold px-6 py-3 rounded-xl text-xs uppercase cursor-not-allowed';
+    btn.innerHTML = 'En carrito';
+  } else {
+    btn.className = 'bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition';
+    btn.innerHTML = '<i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito';
+  }
+}
+async function refrescarIdsCarrito(){
+  idsEnCarrito.clear();
+  if (!auth.currentUser) return;
+  const q = await db.collection('carritos').doc(auth.currentUser.uid).collection('items').get();
+  q.forEach(d => {
+    const data = d.data() || {};
+    if (data.publicacionId && data.tipoItem !== 'pase_vip') idsEnCarrito.add(data.publicacionId);
+  });
+}
 function htmlReputacion(uid){
   const rep = reputacionCache[uid] || {};
   const total = Number(rep.totalResenas) || 0;
@@ -730,32 +866,33 @@ function renderizarGridPublicaciones(ps, filtro=""){
     if(tipoVip === 'pro' || tipoVip === 'dueno'){
       cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-pro-glow relative";
       badgeVip = `<span class="text-[9px] bg-rose-600 text-white font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-crown"></i> VIP Pro</span>`;
-      ribbon = `<span class="pase-ribbon" style="background:linear-gradient(90deg,#ef4444,#f97316);color:#fff">Destacado Pro</span>`;
+      ribbon = `<span class="pase-ribbon absolute top-2 left-2 z-20 !top-2 !left-2 !z-20" style="background:linear-gradient(90deg,#ef4444,#f97316);color:#fff">Destacado Pro</span>`;
       marcoAvatar = 'marco-vip-pro';
     }else if(tipoVip === 'basico' || p.esVip){
       cardClass = "web-panel rounded-2xl cursor-pointer p-4 space-y-3 transition card-vip-basico-glow relative";
       badgeVip = `<span class="text-[9px] bg-yellow-500 text-zinc-950 font-black px-2.5 py-0.5 rounded-full shadow"><i class="fas fa-star"></i> VIP Básico</span>`;
-      ribbon = `<span class="pase-ribbon">Destacado</span>`;
+      ribbon = `<span class="pase-ribbon absolute top-2 left-2 z-20 !top-2 !left-2 !z-20">Destacado</span>`;
       marcoAvatar = 'marco-vip-basico';
     }
 
-    const imgHtml = p.foto ? `<div class="w-full h-44 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-44 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
+    const fotoInterior = p.foto ? `<img src="${escHtml(p.foto)}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
+    const imgHtml = `<div class="relative w-full h-44 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">${fotoInterior}${htmlBadgeOferta(p)}</div>`;
+    const uidVend = uidVendedor(p);
+    const logoVendedorHtml = htmlAvatarVivo(uidVend, marcoAvatar);
     const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
     const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
     const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
 
     h+=`<div class="${cardClass}" onclick="abrirModalPub('${p.id}')">
-      ${htmlBadgeOferta(p)}
       ${ribbon}
       ${imgHtml}
       <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
       <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="cuenta.html?id=${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ficha</a></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
-        <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
-          <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0">${logoVendedorHtml}</div>
-          <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${p.vendedorNombre || 'Vendedor'}</span>${htmlReputacion(p.vendedorUid)}</span>
+        <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
+          ${logoVendedorHtml}
+          <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlReputacion(uidVend)}</span>
         </div>
         ${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}
       </div>
@@ -763,6 +900,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
   });
   g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles.</p>`;
   pintarPaginacion(totalPaginas);
+  pedirPerfilesVendedores(paginaItems.map(uidVendedor));
 }
 
 async function eliminarPublicacionAdmin(pubId){
@@ -778,16 +916,19 @@ async function abrirModalPub(id){
   precioBasePublicacionActual = parseInt(p.precio) || 0;
   ofertaPublicacionActual = { ofertaActiva: p.ofertaActiva === true, ofertaDescuento: Number(p.ofertaDescuento) || 0 };
   stockPublicacionActual = p.stock == null ? 1 : Number(p.stock);
-  vendedorActualUidCache = p.vendedorUid;
+  vendedorActualUidCache = uidVendedor(p);
   publicacionActualIdCache = id;
   const ficha = document.getElementById('enlace-ficha-cuenta');
   if(ficha) ficha.href = 'cuenta.html?id=' + encodeURIComponent(id);
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
-  document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor";
+  document.getElementById('modal-vendedor-nombre').innerText = nombreRealVendedor(vendedorActualUidCache);
   document.getElementById('modal-vendedor-rango').innerText = etiquetaRangoVip(p.tipoVip, p.esVip);
   const logoBox = document.getElementById('modal-vendedor-logo');
-  logoBox.innerHTML = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
+  logoBox.className = 'w-12 h-12 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black overflow-hidden shrink-0';
+  pintarCajaAvatar(logoBox, vendedorActualUidCache, 'text-lg');
+  pedirPerfilesVendedores([vendedorActualUidCache]);
+  refrescarIdsCarrito().then(pintarBotonCarritoModal);
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
   if(p.foto){ imgEl.src = p.foto; fotoBox.classList.remove('hidden'); } else { fotoBox.classList.add('hidden'); }
@@ -880,9 +1021,32 @@ async function sincronizarGarantiaAntesDePagar(){
   else { for(const doc of q.docs) await doc.ref.set(payload, { merge: true }); }
 }
 
+let agregandoModal = false;
 async function agregarAlCarritoDesdeModal(){
   if(!auth.currentUser){ window.location.href = 'login.html'; return; }
+  if(idsEnCarrito.has(publicacionActualIdCache) || agregandoModal){
+    idsEnCarrito.add(publicacionActualIdCache);
+    pintarBotonCarritoModal();
+    mostrarToastYaCarrito();
+    return;
+  }
+  agregandoModal = true;
+  idsEnCarrito.add(publicacionActualIdCache);
+  pintarBotonCarritoModal();
+  try {
   const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
+  const previos = await carritoRef.where('publicacionId', '==', publicacionActualIdCache).get();
+  const yaEsta = previos.docs.some(d => (d.data() || {}).tipoItem !== 'pase_vip');
+  if(yaEsta){
+    mostrarToastYaCarrito();
+    return;
+  }
+  if(Number(stockPublicacionActual) < 1){
+    idsEnCarrito.delete(publicacionActualIdCache);
+    pintarBotonCarritoModal();
+    mostrarAlertaToast('Sin stock', 'Esta cuenta no tiene unidades disponibles.');
+    return;
+  }
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
   const garantiaLabel = garantiaRadio && garantiaRadio.getAttribute('data-label') ? garantiaRadio.getAttribute('data-label') : 'Garantía 10 días';
@@ -905,8 +1069,17 @@ async function agregarAlCarritoDesdeModal(){
     ofertaDescuento: ofertaPublicacionActual ? (Number(ofertaPublicacionActual.ofertaDescuento) || 0) : 0,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
   });
+  idsEnCarrito.add(publicacionActualIdCache);
+  pintarBotonCarritoModal();
   document.getElementById('modal-pub-detalles').classList.add('hidden');
   mostrarToast("🛒 ¡Agregado al carrito!");
+  } catch (err) {
+    idsEnCarrito.delete(publicacionActualIdCache);
+    pintarBotonCarritoModal();
+    mostrarAlertaToast('Carrito', err && err.message ? err.message : 'No se pudo agregar.');
+  } finally {
+    agregandoModal = false;
+  }
 }
 
 function abrirPerfilVendedorDesdeModal(){
@@ -951,9 +1124,16 @@ async function enviarMensajeChatP2P(){
 async function abrirPerfilVendedorPorUid(uid){
   cambiarSeccion('perfil-vendedor');
   const pDoc = await db.collection('perfiles').doc(uid).get();
-  let nombre = "Vendedor", logo = "";
+  let nombre = "Vendedor";
   let rangoPerfil = 'Vendedor Verificado';
-  if(pDoc.exists){ const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || ""; rangoPerfil = etiquetaRangoVip(d.tipoVip, d.esVendedorVip); }
+  if(pDoc.exists){
+    const d = pDoc.data() || {};
+    perfilesVendedorCache[uid] = d;
+    nombre = String(d.displayName || d.username || 'Vendedor').trim() || 'Vendedor';
+    rangoPerfil = etiquetaRangoVip(d.tipoVip, d.esVendedorVip);
+  } else if (perfilesVendedorCache[uid] === undefined) {
+    perfilesVendedorCache[uid] = {};
+  }
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
   const repEl = document.getElementById('vendedor-perfil-reputacion');
   if(repEl) repEl.innerHTML = htmlReputacion(uid);
@@ -973,12 +1153,14 @@ async function abrirPerfilVendedorPorUid(uid){
   }
   const rangoEl = document.getElementById('vendedor-perfil-rango');
   if(rangoEl) rangoEl.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${rangoPerfil}`;
-  document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-3xl">👑</span>`;
+  const logoPerfil = document.getElementById('vendedor-perfil-logo-box');
+  logoPerfil.className = 'w-24 h-24 rounded-full bg-yellow-500 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-zinc-950 overflow-hidden shadow-2xl shrink-0';
+  pintarCajaAvatar(logoPerfil, uid, 'text-3xl');
   let h = "";
   globalPublicacionesCache.forEach(p => {
     const stockNum = p.stock == null || p.stock === '' ? 1 : Number(p.stock);
     if(p.vendedorUid !== uid || p.vendida || stockNum <= 0) return;
-    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')">${htmlBadgeOferta(p)}<div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4>${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
+    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')"><div class="relative w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${escHtml(p.foto || '')}" class="w-full h-full object-cover">${htmlBadgeOferta(p)}</div><h4 class="font-bold text-white text-xs line-clamp-1">${escHtml(p.titulo)}</h4><p class="text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVendedor(p)))}</p>${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
   });
   document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }

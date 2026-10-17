@@ -18,16 +18,16 @@
   .radio-warranty{accent-color:#eab308}
 </style>
 </head>
-<body class="min-h-screen p-4 sm:p-8">
-  <div class="max-w-3xl mx-auto space-y-4">
+<body class="min-h-screen">
+  <div class="w-full max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-4">
     <div class="flex items-center justify-between gap-3">
       <a href="/ventas" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
       <div id="sv-locale-slot"></div>
     </div>
     <p id="estado" class="text-sm text-zinc-400">Cargando la ficha…</p>
-    <article id="ficha" class="hidden web-panel rounded-3xl overflow-hidden border border-yellow-500/30">
-      <div id="foto-box" class="hidden w-full h-72 bg-zinc-900"><img id="foto" alt="" class="w-full h-full object-cover"></div>
-      <div class="p-5 sm:p-6 space-y-4">
+    <article id="ficha" class="hidden w-full web-panel rounded-3xl border border-yellow-500/30">
+      <div id="foto-box" class="hidden w-full"><img id="foto" alt="" class="w-full h-auto aspect-[16/9] object-contain bg-black rounded-2xl"></div>
+      <div class="w-full p-5 sm:p-6 space-y-4">
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h1 id="titulo" class="text-2xl font-black text-white"></h1>
@@ -38,7 +38,7 @@
         <div id="oferta" class="hidden bg-yellow-500/10 border border-yellow-500/40 rounded-xl p-3 text-xs font-bold text-yellow-300"></div>
         <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <a id="link-vendedor" href="/ventas" class="flex items-center gap-3 min-w-0">
-            <div id="logo" class="w-12 h-12 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0"><i class="fas fa-user"></i></div>
+            <div id="logo" class="w-12 h-12 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black text-lg overflow-hidden shrink-0">V</div>
             <div class="min-w-0">
               <span id="vendedor" class="block font-bold text-white text-sm truncate"></span>
               <span id="reputacion" class="block text-[11px] text-amber-300"></span>
@@ -46,7 +46,7 @@
           </a>
           <button type="button" id="btn-chat" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shrink-0"><i class="fas fa-comment-dots"></i> Chatear</button>
         </div>
-        <p id="descripcion" class="text-sm text-zinc-300 leading-relaxed"></p>
+        <p id="descripcion" class="w-full text-sm text-zinc-300 leading-relaxed"></p>
         <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
           <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
           <div class="space-y-2 text-xs">
@@ -66,6 +66,10 @@
       </div>
     </article>
   </div>
+<div id="toast-ya-carrito" class="hidden fixed bottom-6 right-6 z-[260] bg-zinc-900 border border-yellow-500/50 text-white rounded-2xl shadow-2xl px-4 py-3 items-center gap-3 max-w-xs">
+  <span class="text-sm font-bold">Producto ya se encuentra en el carrito</span>
+  <button type="button" onclick="cerrarToastYaCarrito()" class="text-yellow-300 font-black px-2" aria-label="Cerrar">X</button>
+</div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"[REDACTED].firebaseapp.com",projectId:"[REDACTED]",storageBucket:"[REDACTED].firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -82,6 +86,9 @@ function idCuenta(){
 }
 const pubId=idCuenta();
 let publicacion=null;
+let yaEnCarrito=false;
+let agregandoFicha=false;
+let timerToastCarrito=null;
 function precioVisible(n){
   if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
   return '$'+Number(n||0).toLocaleString('es-CL');
@@ -130,6 +137,73 @@ function exigirLogin(){
   localStorage.setItem('redirect_after_login', location.pathname+location.search);
   location.href='/login.html';
   return false;
+}
+function mostrarToastYaCarrito(){
+  const t=document.getElementById('toast-ya-carrito');
+  if(!t) return;
+  t.classList.remove('hidden');
+  t.classList.add('flex');
+  clearTimeout(timerToastCarrito);
+  timerToastCarrito=setTimeout(cerrarToastYaCarrito, 3000);
+}
+function cerrarToastYaCarrito(){
+  const t=document.getElementById('toast-ya-carrito');
+  if(!t) return;
+  t.classList.add('hidden');
+  t.classList.remove('flex');
+  clearTimeout(timerToastCarrito);
+}
+function pintarBotonCarritoFicha(){
+  const btn=document.getElementById('btn-carrito');
+  if(!btn) return;
+  btn.disabled=yaEnCarrito;
+  if(yaEnCarrito){
+    btn.className='bg-zinc-600 text-zinc-300 font-extrabold px-5 py-3 rounded-xl text-xs uppercase cursor-not-allowed';
+    btn.innerHTML='En carrito';
+  }else{
+    btn.className='bg-yellow-500 text-zinc-950 font-extrabold px-5 py-3 rounded-xl text-xs uppercase';
+    btn.innerHTML='<i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito';
+  }
+}
+async function marcarSiEstaEnCarrito(){
+  const user=auth.currentUser;
+  if(!user || !pubId){ yaEnCarrito=false; pintarBotonCarritoFicha(); return; }
+  try{
+    const q=await db.collection('carritos').doc(user.uid).collection('items').where('publicacionId','==',pubId).get();
+    yaEnCarrito=q.docs.some(d => (d.data()||{}).tipoItem !== 'pase_vip');
+  }catch(e){}
+  pintarBotonCarritoFicha();
+}
+function uidVendedor(p){
+  return (p && (p.vendedorUid || p.ownerId || p.userId)) || '';
+}
+async function pintarVendedorVivo(p){
+  const uid=uidVendedor(p);
+  let data={};
+  try{
+    if(uid){
+      const doc=await db.collection('perfiles').doc(uid).get();
+      data=doc.exists ? (doc.data()||{}) : {};
+    }
+  }catch(e){}
+  const nombre=String(data.displayName || data.username || '').trim() || 'Vendedor';
+  document.getElementById('vendedor').textContent=nombre;
+  const logo=document.getElementById('logo');
+  const inicial=(nombre.charAt(0)||'V').toUpperCase();
+  const avatar=/^(https?:|data:image\/)/.test(data.avatar_url||'') ? data.avatar_url : (/^(https?:|data:image\/)/.test(data.foto||'') ? data.foto : '');
+  logo.className='w-12 h-12 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black text-lg overflow-hidden shrink-0';
+  logo.textContent='';
+  if(/^(https?:|data:image\/)/.test(avatar)){
+    const img=document.createElement('img');
+    img.src=avatar;
+    img.alt='';
+    img.className='w-full h-full object-cover';
+    img.onerror=()=>{ logo.textContent=inicial; };
+    logo.appendChild(img);
+  }else{
+    logo.textContent=inicial;
+  }
+  document.getElementById('link-vendedor').href='ventas.html?vendedor='+encodeURIComponent(uid);
 }
 async function guardarLineaCarrito(){
   const user=auth.currentUser;
@@ -189,7 +263,7 @@ async function pintarFicha(p){
   document.getElementById('ficha').classList.remove('hidden');
   document.getElementById('titulo').textContent=p.titulo||'Cuenta';
   document.getElementById('descripcion').textContent=p.descripcion||'Sin descripción.';
-  document.getElementById('vendedor').textContent=p.vendedorNombre||'Vendedor';
+  pintarVendedorVivo(p);
   const tags=document.getElementById('tags');
   tags.textContent='';
   tags.appendChild(chip(p.juego||'Juego'));
@@ -200,17 +274,8 @@ async function pintarFicha(p){
   const foto=document.getElementById('foto');
   const fotoBox=document.getElementById('foto-box');
   if(p.foto){ foto.src=p.foto; fotoBox.classList.remove('hidden'); }
-  const logo=document.getElementById('logo');
-  if(p.vendedorLogo && /^(https?:|data:image\/)/.test(p.vendedorLogo)){
-    logo.textContent='';
-    const img=document.createElement('img');
-    img.src=p.vendedorLogo;
-    img.alt='';
-    img.className='w-full h-full object-cover';
-    logo.appendChild(img);
-  }
-  document.getElementById('link-vendedor').href='ventas.html?vendedor='+encodeURIComponent(p.vendedorUid||'');
   pintarTotal();
+  marcarSiEstaEnCarrito();
   try{
     const rep=await db.collection('reputacion').doc(p.vendedorUid||'x').get();
     document.getElementById('reputacion').textContent=textoRep(rep.exists?rep.data():{});
@@ -228,9 +293,35 @@ document.getElementById('btn-copiar').addEventListener('click', async ()=>{
 });
 document.getElementById('btn-carrito').addEventListener('click', async ()=>{
   if(!exigirLogin()) return;
-  await guardarLineaCarrito();
-  location.href='carrito.html';
+  if(yaEnCarrito || agregandoFicha){
+    mostrarToastYaCarrito();
+    return;
+  }
+  agregandoFicha=true;
+  try{
+    await marcarSiEstaEnCarrito();
+    if(yaEnCarrito){
+      mostrarToastYaCarrito();
+      return;
+    }
+    const stock=publicacion && (publicacion.stock==null ? 1 : Number(publicacion.stock));
+    if(!(stock>=1)){
+      alert('Esta cuenta no tiene unidades disponibles.');
+      return;
+    }
+    await guardarLineaCarrito();
+    yaEnCarrito=true;
+    pintarBotonCarritoFicha();
+    location.href='carrito.html';
+  }catch(err){
+    yaEnCarrito=false;
+    pintarBotonCarritoFicha();
+    alert((err && err.message) || 'No se pudo agregar al carrito.');
+  }finally{
+    agregandoFicha=false;
+  }
 });
+auth.onAuthStateChanged(()=>{ marcarSiEstaEnCarrito(); });
 document.getElementById('btn-flow').addEventListener('click', ()=>pagar('/api/flow/create', document.getElementById('btn-flow')));
 document.getElementById('btn-mp').addEventListener('click', ()=>pagar('/api/mp/create', document.getElementById('btn-mp')));
 document.getElementById('btn-chat').addEventListener('click', async ()=>{
