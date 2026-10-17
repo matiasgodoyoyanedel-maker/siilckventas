@@ -194,6 +194,41 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // --- Reputación, saldo, reseñas y reclamos ---
+    match /reputacion/{vendedorUid} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /resenas/{ordenId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /saldos/{uid} {
+      allow read: if isOwner() || isSelf(uid);
+      allow write: if isOwner();
+    }
+
+    match /movimientos_saldo/{movId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.vendedorUid == request.auth.uid);
+      allow write: if isOwner();
+    }
+
+    match /retiros/{retiroId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.vendedorUid == request.auth.uid);
+      allow create: if false;
+      allow update, delete: if isOwner();
+    }
+
+    match /reclamos/{ordenId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if isOwner();
+    }
+
     // --- Foro ---
     match /foros/{foroId} {
       allow read: if true;

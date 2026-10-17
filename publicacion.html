@@ -51,6 +51,7 @@
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       </div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Rango (opcional)</label><input type="text" id="pub-rango" placeholder="Ej: Diamante, Inmortal, Heroico" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía / Descripción *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
       <div class="space-y-3 p-4 rounded-2xl bg-zinc-900/60 border border-yellow-500/20">
         <h4 class="text-[11px] font-black uppercase text-yellow-400"><i class="fas fa-lock mr-1"></i> Datos privados - Entrega automática *</h4>
@@ -170,7 +171,7 @@ async function crearPublicacionMarketplace(){
   try{
     if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
     const esDueno=esCuentaOwner(auth.currentUser.uid);
-    const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
+    const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const rango=(document.getElementById('pub-rango').value||'').trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
     const privEmail=document.getElementById('f-priv-email').value.trim();const privPass=document.getElementById('f-priv-pass').value.trim();const privTel=document.getElementById('f-priv-tel').value.trim();const privRecup=document.getElementById('f-priv-recup').value.trim();const autorizo=document.getElementById('f-autorizo-datos').checked;
     if(!titulo||!precio||!nivel||!region||!descripcion){mostrarAlertaToast("Campos Incompletos","Llena todo");return;}
     if(!privEmail||!privPass||!privRecup){mostrarAlertaToast("Datos Privados","Llena recuadro amarillo");return;}
@@ -189,7 +190,7 @@ async function crearPublicacionMarketplace(){
     const porcentajesOferta=[5,8,10,15,20];
     const ofertaDescuento=ofertaActiva ? (porcentajesOferta.indexOf(ofertaElegida)>=0 ? ofertaElegida : 8) : 0;
     const precioFinal=ofertaActiva ? Math.round((precio * (1 - ofertaDescuento / 100)) / 100) * 100 : precio;
-    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,ofertaActiva,ofertaDescuento,precioFinal});
+    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,rango,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,entregaInmediata:true,ofertaActiva,ofertaDescuento,precioFinal});
     await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
     publicada=true;
     mostrarToast(ofertaActiva ? ("🚀 Publicado. Con "+ofertaDescuento+"% se cobra $"+precioFinal.toLocaleString('es-CL')) : (esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!"));setTimeout(()=>{window.location.href='index.html'},1200);

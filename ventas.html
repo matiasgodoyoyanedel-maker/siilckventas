@@ -54,6 +54,8 @@
   .sv-skel-row{height:44px;border-radius:16px;background:linear-gradient(90deg,#161616 25%,#2c2c2c 50%,#161616 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
   @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
   #seccion-mis-chats,#seccion-mercado{scroll-margin-top:88px}
+  #filtros-extra input,#filtros-extra select{background:#18181b;border:1px solid #3f3f46;color:#fff;border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700;min-width:0}
+  main{padding-bottom:7rem}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -137,12 +139,24 @@
             <div id="btn-activar-cuenta-vendedor-container" class="hidden">
               <button onclick="abrirModalActivarVendedor()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5 animate-bounce"><i class="fas fa-check-circle"></i> Activa tu Cuenta</button>
             </div>
+            <a href="saldo.html" class="bg-zinc-800 hover:bg-zinc-700 text-emerald-300 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-wallet"></i> Mi saldo</a>
             <a href="publicacion.html" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</a>
           </div>
         </div>
         <div id="aviso-pase-basico" class="hidden web-panel border border-yellow-500/30 rounded-2xl p-4 text-xs text-zinc-300 flex items-center gap-3">
           <span class="w-9 h-9 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0"><i class="fas fa-bolt"></i></span>
           <p><strong class="text-yellow-400">Pase Básico activo.</strong> En tus anuncios aparece el botón <strong>Impulsar</strong>: súbelos al tope del marketplace una vez cada 24 horas, con cinta Destacado y rango ⭐ VIP Básico visible para compradores.</p>
+        </div>
+        <div id="filtros-extra" class="web-panel rounded-2xl p-3 border border-zinc-800 grid grid-cols-2 md:grid-cols-5 gap-2">
+          <input id="filtro-nivel" type="search" placeholder="Nivel o rango" aria-label="Filtrar por nivel o rango">
+          <select id="filtro-region" aria-label="Filtrar por región"><option value="">Todas las regiones</option></select>
+          <input id="filtro-precio-min" type="number" min="0" placeholder="Precio mín" aria-label="Precio mínimo">
+          <input id="filtro-precio-max" type="number" min="0" placeholder="Precio máx" aria-label="Precio máximo">
+          <select id="filtro-orden" aria-label="Ordenar cuentas">
+            <option value="destacados">Destacados</option>
+            <option value="barato">Más barato</option>
+            <option value="nuevo">Más nuevo</option>
+          </select>
         </div>
         <div id="market-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
         <nav id="paginacion-mercado" aria-label="Paginación de cuentas"></nav>
@@ -192,6 +206,8 @@
               <h3 id="vendedor-perfil-nombre" class="text-2xl font-black text-white">--</h3>
               <span id="vendedor-perfil-rango" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-3 py-1 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
             </div>
+            <p id="vendedor-perfil-reputacion" class="text-xs text-amber-300"></p>
+            <div id="vendedor-perfil-resenas" class="w-full text-left space-y-2"></div>
           </div>
           <div class="w-full border-t border-zinc-800 pt-4">
             <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4 text-left">Cuentas disponibles</h4>
@@ -220,7 +236,11 @@
         <div id="modal-vendedor-logo" class="w-12 h-12 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0"><i class="fas fa-user"></i></div>
         <div><span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span></div>
       </div>
-      <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
+      <div class="flex items-center gap-2">
+        <a id="enlace-ficha-cuenta" href="cuenta.html" class="text-[11px] font-bold text-yellow-300 underline">Ficha</a>
+        <button type="button" onclick="copiarEnlaceFicha()" class="text-[11px] font-bold text-zinc-300 underline">Copiar enlace</button>
+        <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
+      </div>
     </div>
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
     <div id="modal-oferta-banner" class="hidden bg-yellow-500/10 border border-yellow-500/40 rounded-xl p-3 text-xs font-bold text-yellow-300"></div>
@@ -269,6 +289,65 @@ function htmlBadgeOferta(producto){
   return `<span class="absolute top-3 left-3 z-10 bg-rose-600 text-white text-[10px] font-black px-2 py-1 rounded-full animate-pulse">-${oferta.descuento}% OFERTA</span>`;
 }
 let ofertaPublicacionActual = null;
+let filtrosExtra = { nivel:'', region:'', min:'', max:'', orden:'destacados' };
+let reputacionCache = {};
+let reputacionEscucha = false;
+let cuentaQueryAbierta = false;
+let vendedorQueryAbierto = false;
+function htmlReputacion(uid){
+  const rep = reputacionCache[uid] || {};
+  const total = Number(rep.totalResenas) || 0;
+  const prom = Number(rep.promedio) || 0;
+  const ventas = Number(rep.ventasCompletadas) || 0;
+  const llenas = total ? Math.round(Math.max(0, Math.min(5, prom))) : 0;
+  const stars = total ? ('★'.repeat(llenas) + '☆'.repeat(5 - llenas) + ' ' + prom.toFixed(1)) : 'Nuevo';
+  return `<span class="block text-[10px] text-amber-300 font-bold leading-tight">${stars} · ${ventas} ventas</span>`;
+}
+function htmlEntregaInmediata(p){
+  if(p && p.entregaInmediata === false) return '<span></span>';
+  return '<span class="text-[9px] font-black uppercase tracking-wide text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full">Entrega inmediata</span>';
+}
+function leerFiltrosExtra(){
+  const nivel = document.getElementById('filtro-nivel');
+  const region = document.getElementById('filtro-region');
+  const min = document.getElementById('filtro-precio-min');
+  const max = document.getElementById('filtro-precio-max');
+  const orden = document.getElementById('filtro-orden');
+  filtrosExtra = {
+    nivel: nivel ? nivel.value : '',
+    region: region ? region.value : '',
+    min: min ? min.value : '',
+    max: max ? max.value : '',
+    orden: orden ? orden.value : 'destacados'
+  };
+}
+function syncOpcionesRegion(){
+  const sel = document.getElementById('filtro-region');
+  if(!sel) return;
+  const actual = filtrosExtra.region || sel.value;
+  const set = new Set();
+  (globalPublicacionesCache || []).forEach(p => { if(p.region) set.add(String(p.region).trim()); });
+  const lista = [...set].sort((a, b) => a.localeCompare(b, 'es'));
+  const firma = lista.join('|');
+  if(sel.dataset.firma === firma) return;
+  sel.dataset.firma = firma;
+  const esc = window.siilckEsc || (s => String(s).replace(/[&<>"']/g, ''));
+  sel.innerHTML = '<option value="">Todas las regiones</option>' + lista.map(r => '<option value="' + esc(r) + '">' + esc(r) + '</option>').join('');
+  if(actual) sel.value = actual;
+}
+function fechaPublicacionMs(p){
+  if(p && p.fecha && p.fecha.toDate) return p.fecha.toDate().getTime();
+  return 0;
+}
+function cargarReputacionEnVivo(){
+  if(reputacionEscucha) return;
+  reputacionEscucha = true;
+  db.collection('reputacion').onSnapshot(snap => {
+    reputacionCache = {};
+    snap.forEach(d => { reputacionCache[d.id] = d.data(); });
+    if(globalPublicacionesCache.length) renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+  }, () => {});
+}
 document.addEventListener('siilck-settings', () => {
   if(globalPublicacionesCache && globalPublicacionesCache.length){
     renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
@@ -542,6 +621,8 @@ auth.onAuthStateChanged(async(u)=>{
       }
     });
     cargarPublicacionesEnVivo();
+    const chatParam = new URLSearchParams(window.location.search).get('chat');
+    if(chatParam) abrirSalaChatActivo(chatParam);
   }else{
     currentUserData=null;
     cargarPublicacionesEnVivo();
@@ -567,6 +648,7 @@ async function guardarActivacionCuentaVendedor(){
 }
 
 function cargarPublicacionesEnVivo(){
+  cargarReputacionEnVivo();
   db.collection('publicaciones').orderBy('fecha', 'desc').onSnapshot(snapshot => {
     globalPublicacionesCache = [];
     snapshot.forEach(doc => { globalPublicacionesCache.push({id: doc.id, ...doc.data()}); });
@@ -585,7 +667,29 @@ function cargarPublicacionesEnVivo(){
     if(document.querySelector('#cartelera-juegos [data-query]')) actualizarContadoresCatalogo();
     else pintarCartelera(filtroMarketplaceActual||'');
     renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+    abrirCuentaDeQuery();
+    abrirVendedorDeQuery();
   });
+}
+function abrirCuentaDeQuery(){
+  if(cuentaQueryAbierta) return;
+  const id = new URLSearchParams(window.location.search).get('cuenta');
+  if(!id) return;
+  cuentaQueryAbierta = true;
+  abrirModalPub(id);
+}
+function abrirVendedorDeQuery(){
+  if(vendedorQueryAbierto) return;
+  const uid = new URLSearchParams(window.location.search).get('vendedor');
+  if(!uid) return;
+  vendedorQueryAbierto = true;
+  abrirPerfilVendedorPorUid(uid);
+}
+function copiarEnlaceFicha(){
+  const id = publicacionActualIdCache;
+  if(!id) return;
+  const url = location.origin + '/cuenta/' + encodeURIComponent(id);
+  navigator.clipboard.writeText(url).then(() => mostrarToast('Enlace de la ficha copiado')).catch(() => mostrarAlertaToast('Enlace', url));
 }
 
 function renderizarGridPublicaciones(ps, filtro=""){
@@ -600,8 +704,18 @@ function renderizarGridPublicaciones(ps, filtro=""){
     if(filtro && window.siilckCoincidePublicacion){
       if(!window.siilckCoincidePublicacion(filtro, p)) return;
     }else if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
+    if(window.pasaFiltrosPublicacion && window.precioListaPublicacion){
+      const precio = window.precioListaPublicacion(p, window.getOferta);
+      if(!window.pasaFiltrosPublicacion(p, { nivel: filtrosExtra.nivel, region: filtrosExtra.region, min: filtrosExtra.min, max: filtrosExtra.max, precio })) return;
+    }
     visibles.push(p);
   });
+  if(filtrosExtra.orden === 'barato' && window.precioListaPublicacion){
+    visibles.sort((a, b) => window.precioListaPublicacion(a, window.getOferta) - window.precioListaPublicacion(b, window.getOferta));
+  }else if(filtrosExtra.orden === 'nuevo'){
+    visibles.sort((a, b) => fechaPublicacionMs(b) - fechaPublicacionMs(a));
+  }
+  syncOpcionesRegion();
   const totalPaginas=Math.ceil(visibles.length / CUENTAS_POR_PAGINA);
   if(totalPaginas && paginaMarketplaceActual>totalPaginas) paginaMarketplaceActual=totalPaginas;
   if(paginaMarketplaceActual<1) paginaMarketplaceActual=1;
@@ -625,7 +739,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
       marcoAvatar = 'marco-vip-basico';
     }
 
-    const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
+    const imgHtml = p.foto ? `<div class="w-full h-44 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-44 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
     const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
     const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
     const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
@@ -637,10 +751,11 @@ function renderizarGridPublicaciones(ps, filtro=""){
       ${imgHtml}
       <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
+      <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="cuenta.html?id=${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ficha</a></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
-        <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
-          <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
-          <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre || 'Vendedor'}</span>
+        <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
+          <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0">${logoVendedorHtml}</div>
+          <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${p.vendedorNombre || 'Vendedor'}</span>${htmlReputacion(p.vendedorUid)}</span>
         </div>
         ${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}
       </div>
@@ -665,6 +780,8 @@ async function abrirModalPub(id){
   stockPublicacionActual = p.stock == null ? 1 : Number(p.stock);
   vendedorActualUidCache = p.vendedorUid;
   publicacionActualIdCache = id;
+  const ficha = document.getElementById('enlace-ficha-cuenta');
+  if(ficha) ficha.href = 'cuenta.html?id=' + encodeURIComponent(id);
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor";
@@ -709,6 +826,7 @@ async function pagarProductoConProveedor(ruta, btnId){
   const etiqueta = btn ? btn.innerHTML : '';
   if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Conectando...'; }
   try {
+    try { await sincronizarGarantiaAntesDePagar(); } catch(syncErr) {}
     let idToken = '';
     try { idToken = await user.getIdToken(true); }
     catch(e){ idToken = await user.getIdToken(); }
@@ -732,6 +850,34 @@ async function pagarProductoConFlow(){
 
 async function pagarProductoConMercadoPago(){
   return pagarProductoConProveedor('/api/mp/create', 'btn-pagar-producto-mp');
+}
+
+async function sincronizarGarantiaAntesDePagar(){
+  if(!auth.currentUser || !publicacionActualIdCache) return;
+  const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
+  const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const garantiaLabel = garantiaRadio && garantiaRadio.getAttribute('data-label') ? garantiaRadio.getAttribute('data-label') : 'Garantía 10 días';
+  const cobro = precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual);
+  const payload = {
+    tipoItem: 'cuenta',
+    publicacionId: publicacionActualIdCache,
+    titulo: document.getElementById('modal-pub-titulo').innerText,
+    precio: cobro + costoGarantia,
+    precioBase: precioBasePublicacionActual,
+    precioFinal: cobro,
+    garantia: costoGarantia,
+    garantiaCosto: costoGarantia,
+    garantiaLabel: garantiaLabel,
+    stock: stockPublicacionActual,
+    foto: document.getElementById('modal-pub-img').src || '',
+    cantidadSeleccionada: 1,
+    ofertaActiva: !!(ofertaPublicacionActual && ofertaPublicacionActual.ofertaActiva),
+    ofertaDescuento: ofertaPublicacionActual ? (Number(ofertaPublicacionActual.ofertaDescuento) || 0) : 0
+  };
+  const ref = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
+  const q = await ref.where('publicacionId', '==', publicacionActualIdCache).get();
+  if(q.empty) await ref.add({ ...payload, agregadoEn: firebase.firestore.FieldValue.serverTimestamp() });
+  else { for(const doc of q.docs) await doc.ref.set(payload, { merge: true }); }
 }
 
 async function agregarAlCarritoDesdeModal(){
@@ -809,6 +955,22 @@ async function abrirPerfilVendedorPorUid(uid){
   let rangoPerfil = 'Vendedor Verificado';
   if(pDoc.exists){ const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || ""; rangoPerfil = etiquetaRangoVip(d.tipoVip, d.esVendedorVip); }
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
+  const repEl = document.getElementById('vendedor-perfil-reputacion');
+  if(repEl) repEl.innerHTML = htmlReputacion(uid);
+  const resenasEl = document.getElementById('vendedor-perfil-resenas');
+  if(resenasEl){
+    resenasEl.innerHTML = '';
+    try{
+      const rs = await db.collection('resenas').where('vendedorUid', '==', uid).limit(8).get();
+      if(rs.empty) resenasEl.innerHTML = '<p class="text-[11px] text-zinc-500 text-center">Todavía no tiene reseñas.</p>';
+      rs.forEach(docRes => {
+        const r = docRes.data() || {};
+        const n = Math.max(1, Math.min(5, Math.round(Number(r.estrellas) || 0)));
+        const texto = String(r.comentario || '').replace(/[&<>]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]));
+        resenasEl.innerHTML += `<div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3"><p class="text-[11px] text-amber-300 font-bold">${'★'.repeat(n)}${'☆'.repeat(5-n)}</p><p class="text-xs text-zinc-300">${texto}</p></div>`;
+      });
+    }catch(e){}
+  }
   const rangoEl = document.getElementById('vendedor-perfil-rango');
   if(rangoEl) rangoEl.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${rangoPerfil}`;
   document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-3xl">👑</span>`;
@@ -857,6 +1019,12 @@ async function cargarListaChatsUsuario(){
       filtrarPorJuegoRapido(b.dataset.query || '');
     });
   }
+  ['filtro-nivel','filtro-region','filtro-precio-min','filtro-precio-max','filtro-orden'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{ leerFiltrosExtra(); paginaMarketplaceActual=1; renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual||''); });
+    el.addEventListener('change', ()=>{ leerFiltrosExtra(); paginaMarketplaceActual=1; renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual||''); });
+  });
   document.addEventListener('click', e=>{
     const input = document.getElementById('header-global-search');
     if(!box || !input) return;
@@ -868,7 +1036,10 @@ async function cargarListaChatsUsuario(){
 <script type="module" src="/lib/settings.js"></script>
 <script type="module">
 import { getOferta } from '/lib/oferta.js';
+import { pasaFiltros, precioLista } from '/lib/reputacion.js';
 window.getOferta = getOferta;
+window.pasaFiltrosPublicacion = pasaFiltros;
+window.precioListaPublicacion = precioLista;
 document.dispatchEvent(new Event('siilck-oferta-ready'));
 </script>
 <script src="/guardia.js"></script>
