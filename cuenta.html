@@ -42,6 +42,7 @@
             <div class="min-w-0">
               <span id="vendedor" class="block font-bold text-white text-sm truncate"></span>
               <span id="reputacion" class="block text-[11px] text-amber-300"></span>
+              <div id="resenas-ficha" class="space-y-1 pt-1"></div>
             </div>
           </a>
           <button type="button" id="btn-chat" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shrink-0"><i class="fas fa-comment-dots"></i> Chatear</button>
@@ -86,6 +87,7 @@ function idCuenta(){
 }
 const pubId=idCuenta();
 let publicacion=null;
+let fichaLista=false;
 let yaEnCarrito=false;
 let agregandoFicha=false;
 let timerToastCarrito=null;
@@ -117,6 +119,26 @@ function pintarTotal(){
     box.classList.remove('hidden');
     box.textContent='🔥 ¡OFERTA ACTIVA! Te ahorras '+precioVisible(oferta.ahorro)+' (-'+oferta.descuento+'%)';
   }
+}
+function reputacionDeFicha(p){
+  const extra=(p && p._reputacion) || {};
+  if(Number(extra.totalResenas)>0) return extra;
+  const total=Number(p && p.resenasTotal)||0;
+  if(total>0) return { promedio:Number(p.resenasPromedio)||0, totalResenas:total, ventasCompletadas:Number(extra.ventasCompletadas)||0, resenas:p.resenasRecientes||extra.resenas||[] };
+  return extra;
+}
+function pintarResenasFicha(rep){
+  const box=document.getElementById('resenas-ficha');
+  if(!box) return;
+  box.textContent='';
+  const lista=(rep && rep.resenas)||[];
+  lista.forEach((r)=>{
+    const n=Math.max(1, Math.min(5, Math.round(Number(r.estrellas)||0)));
+    const fila=document.createElement('p');
+    fila.className='text-[11px] text-zinc-300';
+    fila.textContent='★'.repeat(n)+'☆'.repeat(5-n)+' '+(r.comentario||'');
+    box.appendChild(fila);
+  });
 }
 function textoRep(rep){
   const total=Number(rep && rep.totalResenas)||0;
@@ -179,6 +201,7 @@ function uidVendedor(p){
 }
 async function pintarVendedorVivo(p){
   const uid=uidVendedor(p);
+  const embebido=(p && p._vendedor) || {};
   let data={};
   try{
     if(uid){
@@ -186,6 +209,9 @@ async function pintarVendedorVivo(p){
       data=doc.exists ? (doc.data()||{}) : {};
     }
   }catch(e){}
+  if(!String(data.displayName || data.username || '').trim()){
+    data={ ...embebido, ...data, displayName: data.displayName || embebido.displayName || '', username: data.username || embebido.username || '', avatar_url: data.avatar_url || embebido.avatar || embebido.avatar_url || '', foto: data.foto || embebido.foto || '' };
+  }
   const nombre=String(data.displayName || data.username || '').trim() || 'Vendedor';
   document.getElementById('vendedor').textContent=nombre;
   const logo=document.getElementById('logo');
@@ -276,12 +302,29 @@ async function pintarFicha(p){
   if(p.foto){ foto.src=p.foto; fotoBox.classList.remove('hidden'); }
   pintarTotal();
   marcarSiEstaEnCarrito();
+  const local=reputacionDeFicha(p);
   try{
-    const rep=await db.collection('reputacion').doc(p.vendedorUid||'x').get();
-    document.getElementById('reputacion').textContent=textoRep(rep.exists?rep.data():{});
+    const rep=await db.collection('reputacion').doc(uidVendedor(p)||p.vendedorUid||'x').get();
+    const viva=rep.exists?rep.data():{};
+    const elegida=Number(viva && viva.totalResenas)>0 ? viva : (Number(local.totalResenas)>0 ? local : (viva||local));
+    document.getElementById('reputacion').textContent=textoRep(elegida);
+    pintarResenasFicha(local.resenas && local.resenas.length ? local : elegida);
   }catch(e){
-    document.getElementById('reputacion').textContent='Nuevo · 0 ventas';
+    document.getElementById('reputacion').textContent=textoRep(local);
+    pintarResenasFicha(local);
   }
+}
+async function cargarFichaPorServidor(){
+  const res=await fetch('/api/ficha?id='+encodeURIComponent(pubId));
+  const json=await res.json().catch(()=>null);
+  if(!res.ok || !json || !json.ok || !json.publicacion) throw new Error((json && json.error) || 'No se pudo cargar la ficha.');
+  const p=json.publicacion;
+  p._vendedor=json.vendedor||null;
+  p._reputacion=json.reputacion||null;
+  fichaLista=true;
+  await pintarFicha(p);
+  const stock=p.stock==null?1:Number(p.stock);
+  if(p.vendida || stock<=0) document.getElementById('estado').textContent='Esta cuenta ya se vendió. La ficha queda visible como referencia.';
 }
 document.querySelectorAll('input[name="garantia-ficha"]').forEach((el)=>el.addEventListener('change', pintarTotal));
 document.addEventListener('siilck-settings', pintarTotal);
@@ -343,13 +386,23 @@ document.getElementById('btn-chat').addEventListener('click', async ()=>{
   location.href='ventas.html?chat='+encodeURIComponent(chatId);
 });
 if(!pubId) document.getElementById('estado').textContent='Falta el enlace de la cuenta.';
-else db.collection('publicaciones').doc(pubId).get().then((doc)=>{
-  if(!doc.exists){ document.getElementById('estado').textContent='Esta cuenta ya no está publicada.'; return; }
-  const p=doc.data()||{};
-  const stock=p.stock==null?1:Number(p.stock);
-  if(p.vendida || stock<=0) document.getElementById('estado').textContent='Esta cuenta ya se vendió. La ficha queda visible como referencia.';
-  pintarFicha({ id:doc.id, ...p });
-}).catch(()=>{ document.getElementById('estado').textContent='No se pudo cargar la ficha.'; });
+else {
+  const respaldo=setTimeout(()=>{ if(!fichaLista) cargarFichaPorServidor().catch(()=>{}); }, 2500);
+  db.collection('publicaciones').doc(pubId).get().then((doc)=>{
+    clearTimeout(respaldo);
+    fichaLista=true;
+    if(!doc.exists){ document.getElementById('estado').textContent='Esta cuenta ya no está publicada.'; return; }
+    const p=doc.data()||{};
+    const stock=p.stock==null?1:Number(p.stock);
+    pintarFicha({ id:doc.id, ...p });
+    if(p.vendida || stock<=0) document.getElementById('estado').textContent='Esta cuenta ya se vendió. La ficha queda visible como referencia.';
+  }).catch(()=>{
+    clearTimeout(respaldo);
+    cargarFichaPorServidor().catch(()=>{
+      if(!fichaLista) document.getElementById('estado').textContent='No se pudo cargar la ficha.';
+    });
+  });
+}
 </script>
 <script type="module" src="/lib/settings.js"></script>
 <script type="module">

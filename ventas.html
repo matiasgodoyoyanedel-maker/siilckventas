@@ -242,7 +242,7 @@
           <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3 cursor-pointer min-w-0" onclick="abrirPerfilVendedorDesdeModal()">
               <div id="modal-vendedor-logo" class="w-12 h-12 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0"><i class="fas fa-user"></i></div>
-              <div class="min-w-0"><span class="block font-bold text-white text-xs truncate" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span></div>
+              <div class="min-w-0"><span class="block font-bold text-white text-xs truncate" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span><span id="modal-vendedor-reputacion" class="block text-[10px] text-amber-300 font-bold leading-tight"></span></div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <a id="enlace-ficha-cuenta" href="cuenta.html" class="text-[11px] font-bold text-yellow-300 underline">Ficha</a>
@@ -306,6 +306,7 @@ let reputacionCache = {};
 let reputacionEscucha = false;
 let cuentaQueryAbierta = false;
 let vendedorQueryAbierto = false;
+let perfilVendedorAbiertoUid = '';
 const perfilesVendedorCache = {};
 const idsEnCarrito = new Set();
 let timerToastCarrito = null;
@@ -438,14 +439,100 @@ async function refrescarIdsCarrito(){
     if (data.publicacionId && data.tipoItem !== 'pase_vip') idsEnCarrito.add(data.publicacionId);
   });
 }
-function htmlReputacion(uid){
-  const rep = reputacionCache[uid] || {};
+function datosReputacion(uid, pub){
+  const viva = reputacionCache[uid] || {};
+  const pubTotal = Number(pub && pub.resenasTotal) || 0;
+  if(!(Number(viva.totalResenas) > 0) && pubTotal > 0){
+    return {
+      promedio: Number(pub.resenasPromedio) || 0,
+      totalResenas: pubTotal,
+      ventasCompletadas: Number(viva.ventasCompletadas) || 0,
+      resenas: (Array.isArray(pub.resenasRecientes) && pub.resenasRecientes.length) ? pub.resenasRecientes : (viva.resenas || [])
+    };
+  }
+  return viva;
+}
+function htmlReputacion(uid, pub){
+  const rep = datosReputacion(uid, pub);
   const total = Number(rep.totalResenas) || 0;
   const prom = Number(rep.promedio) || 0;
   const ventas = Number(rep.ventasCompletadas) || 0;
   const llenas = total ? Math.round(Math.max(0, Math.min(5, prom))) : 0;
   const stars = total ? ('★'.repeat(llenas) + '☆'.repeat(5 - llenas) + ' ' + prom.toFixed(1)) : 'Nuevo';
-  return `<span class="block text-[10px] text-amber-300 font-bold leading-tight">${stars} · ${ventas} ventas</span>`;
+  const resenasTxt = total ? (' · ' + total + (total === 1 ? ' reseña' : ' reseñas')) : '';
+  return `<span class="block text-[10px] text-amber-300 font-bold leading-tight">${stars}${resenasTxt} · ${ventas} ventas</span>`;
+}
+function htmlListaResenas(lista){
+  if(!lista || !lista.length) return '<p class="text-[11px] text-zinc-500 text-center">Todavía no tiene reseñas.</p>';
+  return lista.map(r => {
+    const n = Math.max(1, Math.min(5, Math.round(Number(r.estrellas) || 0)));
+    const texto = String(r.comentario || '').replace(/[&<>]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]));
+    return `<div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3"><p class="text-[11px] text-amber-300 font-bold">${'★'.repeat(n)}${'☆'.repeat(5-n)}</p><p class="text-xs text-zinc-300">${texto}</p></div>`;
+  }).join('');
+}
+function resenasEnCache(uid){
+  const rep = reputacionCache[uid] || {};
+  if(Array.isArray(rep.resenas) && rep.resenas.length) return rep.resenas;
+  const dePub = (globalPublicacionesCache || []).find(p => uidVendedor(p) === uid && Array.isArray(p.resenasRecientes) && p.resenasRecientes.length);
+  return dePub ? dePub.resenasRecientes : ((datosReputacion(uid, dePub).resenas) || []);
+}
+function sembrarReputacionDesdePublicaciones(lista){
+  (lista || []).forEach(p => {
+    const uid = uidVendedor(p);
+    const total = Number(p && p.resenasTotal) || 0;
+    if(!uid || total <= 0) return;
+    const actual = reputacionCache[uid] || {};
+    if(Number(actual.totalResenas) > 0){
+      if((!actual.resenas || !actual.resenas.length) && Array.isArray(p.resenasRecientes)) reputacionCache[uid] = { ...actual, resenas: p.resenasRecientes };
+      return;
+    }
+    reputacionCache[uid] = {
+      ...actual,
+      promedio: Number(p.resenasPromedio) || 0,
+      totalResenas: total,
+      ventasCompletadas: Number(actual.ventasCompletadas) || 0,
+      resenas: Array.isArray(p.resenasRecientes) ? p.resenasRecientes : (actual.resenas || [])
+    };
+  });
+}
+function refrescarReputacionSiPerfilAbierto(){
+  const sec = document.getElementById('seccion-perfil-vendedor');
+  if(!sec || sec.classList.contains('hidden') || !perfilVendedorAbiertoUid) return;
+  const uid = perfilVendedorAbiertoUid;
+  const repEl = document.getElementById('vendedor-perfil-reputacion');
+  if(repEl) repEl.innerHTML = htmlReputacion(uid);
+  const resenasEl = document.getElementById('vendedor-perfil-resenas');
+  if(resenasEl && (!(resenasEl.textContent || '').trim() || (resenasEl.textContent || '').indexOf('Todavía no tiene reseñas') >= 0)){
+    resenasEl.innerHTML = htmlListaResenas(resenasEnCache(uid));
+  }
+}
+function fusionarReputacionServidor(mapa){
+  Object.keys(mapa || {}).forEach(uid => {
+    const llega = mapa[uid] || {};
+    const actual = reputacionCache[uid] || {};
+    reputacionCache[uid] = {
+      ...actual,
+      ...llega,
+      ventasCompletadas: Number(llega.ventasCompletadas || actual.ventasCompletadas) || 0,
+      resenas: (llega.resenas && llega.resenas.length) ? llega.resenas : (actual.resenas || [])
+    };
+  });
+}
+async function cargarReputacionPorServidor(){
+  try{
+    const res = await fetch('/api/reputacion');
+    const json = await res.json();
+    if(!res.ok || !json || !json.ok || !json.vendedores) return;
+    fusionarReputacionServidor(json.vendedores);
+    if(globalPublicacionesCache.length) renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+    refrescarReputacionSiPerfilAbierto();
+    const modal = document.getElementById('modal-pub-detalles');
+    const repModal = document.getElementById('modal-vendedor-reputacion');
+    if(modal && !modal.classList.contains('hidden') && repModal && vendedorActualUidCache){
+      const pub = (globalPublicacionesCache || []).find(p => p.id === publicacionActualIdCache);
+      repModal.innerHTML = htmlReputacion(vendedorActualUidCache, pub);
+    }
+  }catch(e){}
 }
 function htmlEntregaInmediata(p){
   if(p && p.entregaInmediata === false) return '<span></span>';
@@ -487,10 +574,19 @@ function cargarReputacionEnVivo(){
   if(reputacionEscucha) return;
   reputacionEscucha = true;
   db.collection('reputacion').onSnapshot(snap => {
-    reputacionCache = {};
-    snap.forEach(d => { reputacionCache[d.id] = d.data(); });
+    snap.forEach(d => {
+      const llega = d.data() || {};
+      const actual = reputacionCache[d.id] || {};
+      reputacionCache[d.id] = {
+        ...actual,
+        ...llega,
+        resenas: (actual.resenas && actual.resenas.length) ? actual.resenas : (llega.resenas || [])
+      };
+    });
     if(globalPublicacionesCache.length) renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
-  }, () => {});
+    refrescarReputacionSiPerfilAbierto();
+  }, () => { cargarReputacionPorServidor(); });
+  cargarReputacionPorServidor();
 }
 document.addEventListener('siilck-settings', () => {
   if(globalPublicacionesCache && globalPublicacionesCache.length){
@@ -837,6 +933,7 @@ function copiarEnlaceFicha(){
 }
 
 function renderizarGridPublicaciones(ps, filtro=""){
+  sembrarReputacionDesdePublicaciones(ps);
   const g=document.getElementById('market-grid');
   const visibles=[];
   ps.forEach(p=>{
@@ -900,7 +997,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
         <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
           ${logoVendedorHtml}
-          <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlReputacion(uidVend)}</span>
+          <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlReputacion(uidVend, p)}</span>
         </div>
         ${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}
       </div>
@@ -932,6 +1029,8 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
   document.getElementById('modal-vendedor-nombre').innerText = nombreRealVendedor(vendedorActualUidCache);
   document.getElementById('modal-vendedor-rango').innerText = etiquetaRangoVip(p.tipoVip, p.esVip);
+  const repModal = document.getElementById('modal-vendedor-reputacion');
+  if(repModal) repModal.innerHTML = htmlReputacion(vendedorActualUidCache, p);
   const logoBox = document.getElementById('modal-vendedor-logo');
   logoBox.className = 'w-12 h-12 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black overflow-hidden shrink-0';
   pintarCajaAvatar(logoBox, vendedorActualUidCache, 'text-lg');
@@ -1130,6 +1229,7 @@ async function enviarMensajeChatP2P(){
 }
 
 async function abrirPerfilVendedorPorUid(uid){
+  perfilVendedorAbiertoUid = uid;
   cambiarSeccion('perfil-vendedor');
   const pDoc = await db.collection('perfiles').doc(uid).get();
   let nombre = "Vendedor";
@@ -1150,14 +1250,15 @@ async function abrirPerfilVendedorPorUid(uid){
     resenasEl.innerHTML = '';
     try{
       const rs = await db.collection('resenas').where('vendedorUid', '==', uid).limit(8).get();
-      if(rs.empty) resenasEl.innerHTML = '<p class="text-[11px] text-zinc-500 text-center">Todavía no tiene reseñas.</p>';
-      rs.forEach(docRes => {
-        const r = docRes.data() || {};
-        const n = Math.max(1, Math.min(5, Math.round(Number(r.estrellas) || 0)));
-        const texto = String(r.comentario || '').replace(/[&<>]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]));
-        resenasEl.innerHTML += `<div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3"><p class="text-[11px] text-amber-300 font-bold">${'★'.repeat(n)}${'☆'.repeat(5-n)}</p><p class="text-xs text-zinc-300">${texto}</p></div>`;
-      });
-    }catch(e){}
+      if(rs.empty) resenasEl.innerHTML = htmlListaResenas(resenasEnCache(uid));
+      else {
+        const lista = [];
+        rs.forEach(docRes => lista.push(docRes.data() || {}));
+        resenasEl.innerHTML = htmlListaResenas(lista);
+      }
+    }catch(e){
+      resenasEl.innerHTML = htmlListaResenas(resenasEnCache(uid));
+    }
   }
   const rangoEl = document.getElementById('vendedor-perfil-rango');
   if(rangoEl) rangoEl.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${rangoPerfil}`;
@@ -1168,7 +1269,7 @@ async function abrirPerfilVendedorPorUid(uid){
   globalPublicacionesCache.forEach(p => {
     const stockNum = p.stock == null || p.stock === '' ? 1 : Number(p.stock);
     if(p.vendedorUid !== uid || p.vendida || stockNum <= 0) return;
-    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')"><div class="relative w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${escHtml(p.foto || '')}" class="w-full h-full object-cover">${htmlBadgeOferta(p)}</div><h4 class="font-bold text-white text-xs line-clamp-1">${escHtml(p.titulo)}</h4><p class="text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVendedor(p)))}</p>${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
+    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')"><div class="relative w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${escHtml(p.foto || '')}" class="w-full h-full object-cover">${htmlBadgeOferta(p)}</div><h4 class="font-bold text-white text-xs line-clamp-1">${escHtml(p.titulo)}</h4><p class="text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVendedor(p)))}</p>${htmlReputacion(uid, p)}${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
   });
   document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }
