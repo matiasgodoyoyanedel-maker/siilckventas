@@ -1,0 +1,25 @@
+{
+  "cleanUrls": true,
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "index.html"
+    }
+  },
+  "rewrites": [
+    { "source": "/google78561bbab4dd18b7.html", "destination": "/api/google-verify" },
+    { "source": "/google78561bbab4dd18b7", "destination": "/api/google-verify" },
+    { "source": "/pago/exito", "destination": "/pago/exito.html" },
+    { "source": "/pago/error", "destination": "/pago/error.html" },
+    { "source": "/mis-compras/:id", "destination": "/mis-compras.html" },
+    { "source": "/cuenta/:id", "destination": "/cuenta.html" },
+    { "source": "/verificar-correo", "destination": "/login.html" },
+    { "source": "/mantenimiento", "destination": "/api/mantenimiento" }
+  ],
+  "proxy": {
+    "entrypoint": "middleware.js",
+    "matcher": ["/google78561bbab4dd18b7.html", "/google78561bbab4dd18b7"]
+  },
+  "crons": [
+    { "path": "/api/limpiar-vendidas", "schedule": "0 5 * * *" }
+  ]
+}

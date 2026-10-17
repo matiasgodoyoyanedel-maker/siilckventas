@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" data-sv-theme="aurora">
+<head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago realizado - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/tema.css">
+<script src="/tema.js"></script>
+<style>
+  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  h1,h2{font-family:'Outfit',sans-serif}
+  .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07);box-shadow:0 20px 50px rgba(0,0,0,.6)}
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="web-panel max-w-lg w-full rounded-3xl p-8 text-center space-y-5 border border-emerald-500/40">
+    <div class="w-16 h-16 rounded-2xl bg-emerald-500 text-zinc-950 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check"></i></div>
+    <h1 id="titulo" class="text-2xl font-black text-white">Confirmando tu pago…</h1>
+    <div id="box-transaccion" class="hidden text-left bg-yellow-500/10 border border-yellow-500/40 rounded-2xl p-4 space-y-1">
+      <p class="text-xs font-bold text-yellow-300">ID de Transacción:</p>
+      <p id="txt-transaccion" class="font-mono font-bold text-white text-lg break-all select-all"></p>
+      <p class="text-[11px] text-zinc-400">Guarda este ID. Si tienes dudas, envíame este ID por WhatsApp y te ayudo.</p>
+      <button type="button" id="btn-copiar-transaccion" class="text-xs bg-yellow-500/20 text-yellow-200 px-3 py-1.5 rounded-lg font-bold">Copiar ID Transacción</button>
+    </div>
+    <p id="detalle" class="text-sm text-zinc-300">Estamos confirmando el cobro y cerrando la orden.</p>
+    <a id="btn-datos" href="/carrito.html" class="hidden w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-4 rounded-2xl text-sm uppercase tracking-wide">Ver datos de tu cuenta</a>
+    <a href="/index.html" class="block text-xs text-zinc-400 hover:text-white">Volver al inicio</a>
+  </div>
+<script>
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"[REDACTED].firebaseapp.com",projectId:"[REDACTED]",storageBucket:"[REDACTED].firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+const paramsPago=new URLSearchParams(location.search);
+const orderId=paramsPago.get('order_id')||paramsPago.get('orderId')||'';
+const titulo=document.getElementById('titulo');
+const detalle=document.getElementById('detalle');
+const boton=document.getElementById('btn-datos');
+const boxTransaccion=document.getElementById('box-transaccion');
+const txtTransaccion=document.getElementById('txt-transaccion');
+document.getElementById('btn-copiar-transaccion').addEventListener('click', async()=>{
+  const valor=txtTransaccion.textContent||'';
+  try{ await navigator.clipboard.writeText(valor); }
+  catch(e){}
+});
+function mostrarTransaccion(data){
+  const idTx=(data&&(data.flowOrder||data.mpPaymentId||data.flowTransactionId||data.transactionId||data.commerceOrder||data.id))||orderId;
+  if(!idTx) return;
+  txtTransaccion.textContent=idTx;
+  boxTransaccion.classList.remove('hidden');
+}
+
+function pesos(n){return '$'+Number(n||0).toLocaleString('es-CL');}
+function mostrarExito(data){
+  mostrarTransaccion(data);
+  const monto=data&&data.total?pesos(data.total):'';
+  titulo.textContent=monto?('¡Tu pago de '+monto+' ha sido realizado con éxito!'):'¡Tu pago ha sido realizado con éxito!';
+  detalle.textContent=data&&data.tieneCuentas?'Ya puedes ver el correo, la clave y los datos que cargó el vendedor.':'El pase quedó registrado. Si compraste una cuenta, ábrela desde el botón.';
+  boton.classList.remove('hidden');
+  if(data&&data.tieneCuentas&&orderId){
+    boton.textContent='Ver datos de tu cuenta';
+    boton.href='/mis-compras/'+encodeURIComponent(orderId);
+  }else{
+    boton.textContent='Volver al inicio';
+    boton.href='/index.html';
+  }
+}
+
+async function consultar(user){
+  if(!orderId||!user) return null;
+  const token=await user.getIdToken(true);
+  const res=await fetch('/api/compra?order_id='+encodeURIComponent(orderId),{headers:{Authorization:'Bearer '+token}});
+  if(!res.ok) return null;
+  return res.json();
+}
+
+auth.onAuthStateChanged(async(user)=>{
+  mostrarTransaccion(null);
+  if(!orderId){
+    mostrarExito(null);
+    return;
+  }
+  if(!user){
+    titulo.textContent='¡Tu pago ha sido realizado con éxito!';
+    detalle.textContent='Inicia sesión con la misma cuenta para ver los datos de la compra.';
+    boton.classList.remove('hidden');
+    boton.textContent='Iniciar sesión';
+    boton.href='/login.html';
+    localStorage.setItem('redirect_after_login','/pago/exito?order_id='+encodeURIComponent(orderId));
+    return;
+  }
+  for(let i=0;i<8;i++){
+    try{
+      const data=await consultar(user);
+      if(data&&data.paid){ mostrarExito(data); return; }
+    }catch(e){}
+    await new Promise(r=>setTimeout(r,2000));
+  }
+  titulo.textContent='¡Tu pago ha sido realizado con éxito!';
+  detalle.textContent='El cobro quedó registrado. Si los datos tardan unos segundos, ábrelos desde el botón.';
+  boton.classList.remove('hidden');
+  boton.textContent='Ver datos de tu cuenta';
+  boton.href=orderId?('/mis-compras/'+encodeURIComponent(orderId)):'/carrito.html';
+});
+</script>
+<script src="/guardia.js"></script>
+</body>
+</html>

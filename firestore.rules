@@ -19,7 +19,7 @@ service cloud.firestore {
     }
 
     function perfilPrivilegedKeys() {
-      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'vipExpira'];
+      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'is_blocked', 'vipExpira', 'isVip', 'plan'];
     }
 
     // --- Perfiles ---
@@ -31,7 +31,9 @@ service cloud.firestore {
       allow create: if isOwner() || (
         isSelf(userId) &&
         (!('esVendedorVip' in request.resource.data) || request.resource.data.esVendedorVip == false) &&
-        (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false)
+        (!('isVip' in request.resource.data) || request.resource.data.isVip == false) &&
+        (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false) &&
+        (!('is_blocked' in request.resource.data) || request.resource.data.is_blocked == false)
       );
 
       allow update: if isOwner() || (
@@ -141,9 +143,89 @@ service cloud.firestore {
       allow update, delete: if isOwner();
     }
 
-    // --- Configuración global (tema, mantención, avisos) ---
+    // --- Configuración global (tema, mantención, avisos, WhatsApp) ---
     match /configuracion/{docId} {
       allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /recentActivity/{actId} {
+      allow read: if true;
+      allow create: if isOwner();
+      allow update, delete: if isOwner();
+    }
+
+    // --- Órdenes, ventas y entregas automáticas (escribe el servidor / Admin SDK) ---
+    match /ordenes/{ordenId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /ventas/{ventaId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /entregas/{entregaId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
+      allow write: if false;
+    }
+
+    // Credenciales copiadas al crear la orden. El comprador solo las lee si el pago ya está marcado.
+    match /compras_privadas/{ordenId} {
+      allow read: if isOwner() || (
+        signedIn()
+        && resource.data.compradorUid == request.auth.uid
+        && resource.data.pagado == true
+      );
+      allow write: if false;
+    }
+
+    // --- Reputación, saldo, reseñas y reclamos ---
+    match /reputacion/{vendedorUid} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /resenas/{ordenId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /saldos/{uid} {
+      allow read: if isOwner() || isSelf(uid);
+      allow write: if isOwner();
+    }
+
+    match /movimientos_saldo/{movId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.vendedorUid == request.auth.uid);
+      allow write: if isOwner();
+    }
+
+    match /retiros/{retiroId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.vendedorUid == request.auth.uid);
+      allow create: if false;
+      allow update, delete: if isOwner();
+    }
+
+    match /reclamos/{ordenId} {
+      allow read: if isOwner()
+        || (signedIn() && resource.data.compradorUid == request.auth.uid);
       allow write: if isOwner();
     }
 

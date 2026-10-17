@@ -1,0 +1,11 @@
+{
+  "name": "siilckventas",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test lib/logis/*.test.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" data-sv-theme="aurora">
+<head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago no confirmado - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/tema.css">
+<script src="/tema.js"></script>
+<style>
+  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  h1{font-family:'Outfit',sans-serif}
+  .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07)}
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="web-panel max-w-lg w-full rounded-3xl p-8 text-center space-y-5 border border-rose-500/40">
+    <div class="w-16 h-16 rounded-2xl bg-rose-500 text-white flex items-center justify-center text-3xl mx-auto"><i class="fas fa-times"></i></div>
+    <h1 class="text-2xl font-black text-white">El pago no quedó confirmado</h1>
+    <p class="text-sm text-zinc-300">Flow no marcó esta compra como pagada. Si el dinero sí salió de tu cuenta, espera un minuto y vuelve a abrir el carrito: la entrega se completa cuando Flow avisa el cobro.</p>
+    <div class="flex flex-col gap-3">
+      <a href="/carrito.html" class="w-full bg-yellow-500 text-zinc-950 font-black py-4 rounded-2xl text-sm uppercase">Volver al carrito</a>
+      <a id="reintentar" href="/index.html" class="text-xs text-zinc-400 hover:text-white">Volver al inicio</a>
+    </div>
+  </div>
+<script>
+const orderId=new URLSearchParams(location.search).get('order_id')||'';
+if(orderId){
+  const link=document.getElementById('reintentar');
+  link.href='/pago/exito?order_id='+encodeURIComponent(orderId);
+  link.textContent='Ya me cobraron, revisar de nuevo';
+}
+</script>
+</body>
+</html>

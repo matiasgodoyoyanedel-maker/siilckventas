@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SiilckVentas - Marketplace & Escrow Global</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4,.font-heading{font-family:'Outfit',sans-serif}
  .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
  .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
  .vip-card-box{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #eab308;box-shadow:0 0 25px rgba(234,179,8,0.2)}
  .vip-card-box-pro{background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:2px solid #ef4444;box-shadow:0 0 25px rgba(239,68,68,0.2)}
@@ -23,6 +25,59 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(234,179,8,0.4)}50%{box-shadow:0 0 40px rgba(234,179,8,0.8)}}
  .animate-glow-gold{animation:pulseGlow 2s infinite}
+.siilck-lobby-final{width:100%;display:flex;justify-content:center;padding:0;background:transparent}
+.siilck-welcome-card{background:linear-gradient(180deg,#2a2a2e 0%,#1f1f23 100%);border:1.5px solid rgba(255,193,7,.5);border-radius:24px;padding:36px 18px 28px;text-align:center;max-width:1120px;width:100%;box-shadow:0 0 50px rgba(255,193,7,.18), inset 0 1px 0 rgba(255,255,255,.06)}
+.welcome-icon{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:20px;display:grid;place-items:center;font-size:32px;box-shadow:0 8px 24px rgba(255,193,7,.5);animation:float 3s ease-in-out infinite}
+.welcome-badge{display:inline-block;background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.35);color:#FFD740;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin:0 auto 14px}
+.sv-live-counter{width:100%;text-align:center;color:#f4f4f5;font-size:12px;font-weight:800;margin:0 0 14px;letter-spacing:.2px}
+.sv-live-counter b{color:#FFD740}
+.sv-trust-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;text-align:center;color:#f4f4f5;font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 14px}
+.sv-trust-dot{width:9px;height:9px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.75);animation:svTrustPulse 1.4s infinite;flex:none}
+@keyframes svTrustPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.75)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.sv-search-wrap{position:relative;max-width:520px;margin:0 auto 18px;text-align:left}
+.sv-search-wrap input{width:100%;background:#111;border:1px solid rgba(255,193,7,.35);border-radius:14px;padding:12px 14px;color:#fff;font-size:13px;outline:none}
+.sv-ac{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:#141416;border:1px solid rgba(255,193,7,.35);border-radius:14px;overflow:hidden;z-index:20;text-align:left}
+.sv-ac.open{display:block}
+.sv-ac button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.sv-ac button:hover{background:rgba(255,193,7,.12)}
+.sv-ac-empty{margin:0;padding:10px 14px;color:#a1a1aa;font-size:12px}
+.siilck-welcome-card h1{color:#FFF8E1;font-size:32px;font-weight:900;margin:0 0 10px}
+.welcome-sub{color:#b8b8b8;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:600px}
+.section-label{color:#FFD740;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
+.welcome-btn{background:linear-gradient(180deg,#FFD740,#FFC107);color:#111;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;display:inline-flex;box-shadow:0 8px 22px rgba(255,193,7,.45);margin-top:22px;transition:transform.2s}
+.welcome-btn:hover{transform:translateY(-2px) scale(1.02)}
+.game-showcase{position:relative;margin:0 auto;overflow:hidden;border-radius:16px;background:rgba(0,0,0,.2);padding:8px 0 14px;border:1px solid rgba(255,193,7,.15)}
+.game-track{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:10px 50px;scrollbar-width:none}
+.game-track::-webkit-scrollbar{display:none}
+.game-card{position:relative;min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:#111;border:1px solid rgba(255,193,7,.25);text-decoration:none;transition:all.35s cubic-bezier(.2,.8,.2,1)}
+.g-verified{position:absolute;top:8px;left:8px;z-index:5;background:#16a34a;color:#fff;font-size:9px;font-weight:900;letter-spacing:.4px;padding:3px 7px;border-radius:999px}
+.game-skel{min-width:285px;flex:0 0 285px;height:206px;border-radius:16px;background:linear-gradient(90deg,#161616 25%,#2c2c2c 50%,#161616 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
+.game-card:hover{transform:translateY(-6px) scale(1.02);border-color:#FFD740;box-shadow:0 12px 30px rgba(255,193,7,.3)}
+.game-card.stream{border-color:rgba(255,255,255,.15)}
+.img-wrap{height:150px;position:relative;overflow:hidden;background:#0a0a0a}
+.img-wrap img.real{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;transform:scale(1.02);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.game-card:hover img.real{transform:scale(1.08)}
+.fade{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.22) 0%, rgba(0,0,0,.72) 100%);transition:opacity .35s ease;z-index:1}
+.game-card:hover .fade{opacity:.45}
+.name{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2}
+.name b{color:#fff;font-size:20px;font-weight:900;text-shadow:0 2px 10px #000}
+.name i{color:#FFD740;font-size:11px;font-style:normal;font-weight:700;margin-top:2px;transition:opacity .35s ease,transform .35s ease}
+.game-card:hover .name i{opacity:0;transform:translateY(10px)}
+.g-label{background:#0a0a0a;padding:11px 13px;text-align:left;border-top:1px solid rgba(255,193,7,.15)}
+.g-label b{color:#fff;display:block;font-size:11px;letter-spacing:.4px}
+.g-label span{color:#8a8a8a;font-size:10px;display:block;margin-top:2px}
+.g-arrow{position:absolute;top:42%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:#FFC107;color:#111;font-size:28px;font-weight:900;cursor:pointer;z-index:10;box-shadow:0 4px 18px rgba(255,193,7,.5);transition:all.2s}
+.g-arrow:hover{transform:translateY(-50%) scale(1.1);box-shadow:0 6px 24px rgba(255,193,7,.7)}
+.g-arrow.left{left:6px}.g-arrow.right{right:6px}
+.g-dots{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+.g-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all.3s}
+.g-dots span.active{background:#FFC107;width:24px;border-radius:10px;box-shadow:0 0 10px rgba(255,193,7,.6)}
+.auto-bar{height:3px;background:rgba(255,255,255,.1);border-radius:10px;margin:12px 50px 0;overflow:hidden}
+.auto-progress{height:100%;width:0%;background:linear-gradient(90deg,#FFD740,#FFB300);border-radius:10px;transition:width.1s linear}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+#perfil,#chats,#tiques,#seccion-vip{scroll-margin-top:88px}
+@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 12px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
@@ -47,8 +102,9 @@
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
       <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer"><i class="fas fa-shopping-cart text-sm"></i></a>
       <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P"><i class="fas fa-comments text-sm"></i><span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span></button>
+      <div id="sv-locale-slot"></div>
       <div id="auth-nav-area" class="flex items-center space-x-2">
-        <button onclick="window.location.href='login.html'" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> Login / Registro</button>
+        <button onclick="window.location.href='login.html'" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login / Registro</span></button>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
           <span id="nav-user-email" class="text-xs font-bold text-yellow-400 max-w-[100px] truncate bg-zinc-900 px-3 py-2 rounded-xl border border-zinc-800">--</span>
           <button onclick="cerrarSesion()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
@@ -62,6 +118,8 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('perfil'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-user-circle text-yellow-400 text-sm w-4"></i> Mi Perfil Gamer</button>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados</button>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-ticket-alt text-rose-400 text-sm w-4"></i> Mis Tickets & Soporte</button>
+          <a href="/mis-compras" onclick="return irAMisCompras(event)" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-shopping-bag text-yellow-400 text-sm w-4"></i> Mis compras</a>
+          <a href="/saldo" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-wallet text-emerald-400 text-sm w-4"></i> Mi saldo</a>
           <a href="foro.html" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-comments text-indigo-400 text-sm w-4"></i> Ir al Foro Completo</a>
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30"><i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel</button>
         </div>
@@ -70,101 +128,83 @@
   </div>
 </header>
 
-<main class="flex-grow max-w-4xl w-full mx-auto px-4 py-12 flex flex-col items-center justify-center">
+<main class="flex-grow max-w-6xl w-full mx-auto px-4 py-12 flex flex-col items-center justify-center">
 <section id="view-dashboard" class="w-full space-y-8 animate-page text-center">
 
-  <div class="web-panel border border-yellow-500/30 rounded-3xl p-10 space-y-6 shadow-2xl relative overflow-hidden">
-    <div class="absolute -top-12 -right-12 w-36 h-36 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
-    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-xl shadow-yellow-500/30 mx-auto animate-bounce">
-      <i class="fas fa-store text-3xl"></i>
-    </div>
-    <div class="space-y-3">
-      <span class="inline-block bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest">Marketplace & Escrow Global</span>
-      <h1 class="text-3xl md:text-4xl font-black font-heading text-white">Bienvenido a SiilckVentas</h1>
-      <p class="text-xs text-zinc-300 max-w-md mx-auto leading-relaxed">Explora miles de cuentas verificadas de Free Fire, Fortnite, Valorant y más con protección Escrow garantizada al 100%.</p>
-    </div>
-    <div class="pt-2">
-      <a href="ventas.html" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-8 py-4 rounded-2xl text-sm uppercase tracking-wider shadow-2xl shadow-yellow-500/40 transition transform hover:scale-105">
-        <i class="fas fa-store-alt text-lg"></i> Ir a Marketplace
-      </a>
+  <div class="siilck-lobby-final">
+    <div class="siilck-welcome-card">
+      <div class="sv-trust-bar"><span class="sv-trust-dot" aria-hidden="true"></span><span data-i18n="trust">🔒 ESCROW PROTEGIDO • ⚡ ENTREGA INMEDIATA • ✅ VERIFICADAS A MANO</span></div>
+      <div class="welcome-icon">🛍️</div>
+      <h1 data-i18n="welcome">Bienvenido a SiilckVentas</h1>
+      <div class="welcome-badge" data-i18n="badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
+      <p class="welcome-sub" data-i18n="subtitle">Explora miles de cuentas verificadas con protección Escrow garantizada al 100%.</p>
+      <div class="sv-search-wrap">
+        <input id="lobby-search" type="search" data-i18n-placeholder="search" placeholder="Buscar juego o streaming..." autocomplete="off" aria-label="Buscar juego o streaming">
+        <div id="lobby-search-list" class="sv-ac"></div>
+      </div>
+
+      <div class="section-label" data-i18n="popularGames">🎮 JUEGOS POPULARES</div>
+      <div class="game-showcase" id="gameShowcase1">
+        <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack1', -1)" aria-label="Juego anterior">‹</button>
+        <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack1', 1)" aria-label="Juego siguiente">›</button>
+        <div class="game-track" id="gameTrack1">
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+        </div>
+        <div class="g-dots" id="gDots1"></div>
+        <div class="auto-bar"><div class="auto-progress" id="autoProgress1"></div></div>
+      </div>
+
+      <div class="section-label" style="margin-top:22px" data-i18n="streaming">📺 STREAMING & SERVICIOS</div>
+      <div class="game-showcase" id="gameShowcase2">
+        <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack2', -1)" aria-label="Servicio anterior">‹</button>
+        <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack2', 1)" aria-label="Servicio siguiente">›</button>
+        <div class="game-track" id="gameTrack2">
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+        </div>
+        <div class="g-dots" id="gDots2"></div>
+        <div class="auto-bar"><div class="auto-progress" id="autoProgress2"></div></div>
+      </div>
+
+      <a href="ventas.html" class="welcome-btn" data-i18n="marketplace">🏪 IR A MARKETPLACE</a>
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
     <button onclick="cambiarSeccion('vip')" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-yellow-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold"><i class="fas fa-crown"></i></div>
-      <h3 class="font-bold text-white text-sm">Pases VIP</h3>
-      <p class="text-[11px] text-zinc-400">Activa el Pase Básico para impulsar anuncios, marco dorado y descuentos en el carrito.</p>
+      <h3 class="font-bold text-white text-sm" data-i18n="vipTitle">Pases VIP</h3>
+      <p class="text-[11px] text-zinc-400" data-i18n="vipText">Activa el Pase Básico para impulsar anuncios, marco dorado y descuentos en el carrito.</p>
     </button>
     <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-rose-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold"><i class="fas fa-ticket-alt"></i></div>
-      <h3 class="font-bold text-white text-sm">Soporte & Tickets</h3>
-      <p class="text-[11px] text-zinc-400">¿Dudas o reportes? Abre un ticket con la administración.</p>
+      <h3 class="font-bold text-white text-sm" data-i18n="supportTitle">Soporte & Tickets</h3>
+      <p class="text-[11px] text-zinc-400" data-i18n="supportText">¿Dudas o reportes? Abre un ticket con la administración.</p>
     </button>
     <a href="foro.html" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-indigo-500/50 text-left space-y-2 transition group block">
       <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold"><i class="fas fa-comments"></i></div>
-      <h3 class="font-bold text-white text-sm">Foro Gamer</h3>
-      <p class="text-[11px] text-zinc-400">Comenta y comparte con la comunidad de jugadores.</p>
+      <h3 class="font-bold text-white text-sm" data-i18n="forumTitle">Foro Gamer</h3>
+      <p class="text-[11px] text-zinc-400" data-i18n="forumText">Comenta y comparte con la comunidad de jugadores.</p>
     </a>
   </div>
 
   <div class="trabaja-banner rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left">
     <div class="space-y-2.5">
-      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Reclutamiento Oficial</span>
-      <h2 class="text-xl md:text-2xl font-black text-white font-heading">¿Quieres trabajar con nosotros?</h2>
-      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Postula aquí y un administrador revisará tu caso para ver si eres apto. Empieza a vender sin límites con protección Escrow.</p>
+      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest" data-i18n="jobsBadge">Reclutamiento Oficial</span>
+      <h2 class="text-xl md:text-2xl font-black text-white font-heading" data-i18n="jobsTitle">¿Quieres trabajar con nosotros?</h2>
+      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed" data-i18n="jobsText">Postula aquí y un administrador revisará tu caso para ver si eres apto. Empieza a vender sin límites con protección Escrow.</p>
     </div>
     <a href="formulario.html" class="shrink-0 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-yellow-500/30 transition transform hover:scale-105 flex items-center gap-2">
-      Click Aquí <i class="fas fa-arrow-right"></i>
+      <span data-i18n="jobsCta">Click Aquí</span> <i class="fas fa-arrow-right"></i>
     </a>
   </div>
 
-  <div id="seccion-vip" class="hidden space-y-6 w-full animate-page text-left">
-    <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
-      <h2 class="text-xl font-black text-white font-heading">Elige tu Pase VIP Vendedor</h2>
-      <button onclick="cambiarSeccion('inicio')" class="text-xs text-zinc-400 hover:text-white underline">Cerrar</button>
-    </div>
-    <p class="text-xs text-zinc-300 leading-relaxed">El <strong class="text-yellow-400">Pase Básico</strong> ya no es solo una insignia: impulsa tus cuentas al tope, muestra rango real a los compradores y te da marco dorado. El Pro suma más potencia, no reemplaza lo que el B ya hace.</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-      <div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between overflow-hidden">
-        <span class="pase-ribbon">Más elegido</span>
-        <div class="space-y-4 text-center">
-          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase B · Aprendiz Estelar</span>
-          <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
-          <p class="text-[11px] text-zinc-300 leading-relaxed">Enciende tu vitrina. El Pase B te pone en primera fila del marketplace para que tus cuentas se vean, se confíen y se vendan más rápido.</p>
-          <div class="text-3xl font-black text-yellow-400">$2.990 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
-          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
-            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil, foro y fichas.</li>
-            <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li>
-            <li><i class="fas fa-bolt text-yellow-400 mr-2"></i> <strong>Impulso diario:</strong> sube 1 anuncio al tope cada 24 horas.</li>
-            <li><i class="fas fa-star text-yellow-400 mr-2"></i> Cinta <strong>DESTACADO</strong> y estela dorada en tus publicaciones.</li>
-            <li><i class="fas fa-id-badge text-yellow-400 mr-2"></i> Rango visible <strong>⭐ VIP Básico</strong> (ya no aparece solo “Verificado”).</li>
-            <li><i class="fas fa-gem text-yellow-400 mr-2"></i> Marco dorado de vendedor VIP en marketplace.</li>
-            <li><i class="fas fa-sort-amount-up text-yellow-400 mr-2"></i> Prioridad media en el ranking frente a cuentas sin pase.</li>
-          </ul>
-        </div>
-        <a href="https://www.flow.cl/btn.php?token=q1ef3a212b36ee6e5dd922f2c84fe905061a3b4c" target="_blank" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Activar Pase Básico ($2.990)</a>
-      </div>
-      <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
-        <div class="space-y-4 text-center">
-          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase Pro · Máximo alcance</span>
-          <h3 class="text-2xl font-black text-white">VIP PRO</h3>
-          <p class="text-[11px] text-zinc-300 leading-relaxed">Para vendedores que quieren dominar el ranking: más descuento, impulso más frecuente y el sello rojo que nadie ignora.</p>
-          <div class="text-3xl font-black text-rose-500">$5.090 <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span></div>
-          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
-            <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li>
-            <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li>
-            <li><i class="fas fa-bolt text-rose-500 mr-2"></i> Impulso acelerado cada <strong>8 horas</strong> (más rápido que el Pase B).</li>
-            <li><i class="fas fa-fire text-rose-500 mr-2"></i> Prioridad máxima sobre Básico y cuentas sin pase.</li>
-            <li><i class="fas fa-crown text-rose-500 mr-2"></i> Marco rojo Pro + estela animada premium.</li>
-          </ul>
-        </div>
-        <a href="https://www.flow.cl/btn.php?token=f7d0edc6529c997128062460fe3b5c7d3fb55024" target="_blank" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition">Activar Pase Pro ($5.090)</a>
-      </div>
-    </div>
-  </div>
-
-  <div id="seccion-mis-tickets" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
+  <div id="tiques" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
       <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
         <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider"><i class="fas fa-ticket-alt mr-1.5"></i> Crear Reporte / Ticket de Soporte</h3>
@@ -191,7 +231,7 @@
     </div>
   </div>
 
-  <div id="seccion-mis-chats" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
+  <div id="chats" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-zinc-800">
       <div class="border-b border-zinc-800 pb-3 flex justify-between items-center">
         <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-comments mr-1.5"></i> Mis Chats P2P Privados</h3>
@@ -201,7 +241,7 @@
     </div>
   </div>
 
-  <div id="seccion-perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page text-left">
+  <div id="perfil" class="hidden space-y-6 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4 w-full">
       <h3 class="text-xs font-bold text-white border-b border-zinc-800 pb-3 flex justify-between items-center">
         <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer</span>
@@ -222,6 +262,57 @@
 </section>
 </main>
 
+<div id="vip-overlay" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]" onclick="cambiarSeccion('inicio')"></div>
+<aside id="seccion-vip" class="fixed top-0 right-0 h-full w-[92%] max-w-[420px] bg-zinc-950 border-l border-zinc-800 z-[100] translate-x-full transition-transform duration-300 ease-in-out" aria-hidden="true">
+  <button type="button" onclick="cambiarSeccion('inicio')" class="absolute top-4 right-4 bg-zinc-800 text-white p-2 rounded-full z-10" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+  <div class="h-full overflow-y-auto p-6 pt-14 space-y-4 text-left">
+    <h2 class="text-xl font-black text-white font-heading">Elige tu Pase VIP Vendedor</h2>
+    <p class="text-xs text-zinc-300 leading-relaxed">El <strong class="text-yellow-400">Pase Básico</strong> ya no es solo una insignia: impulsa tus cuentas al tope, muestra rango real a los compradores y te da marco dorado. El Pro suma más potencia, no reemplaza lo que el B ya hace.</p>
+    <div class="grid grid-cols-1 gap-6">
+<div class="vip-card-box rounded-3xl p-8 space-y-5 relative flex flex-col justify-between overflow-hidden">
+        <span class="pase-ribbon">Más elegido</span>
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase B · Aprendiz Estelar</span>
+          <h3 class="text-2xl font-black text-white">VIP BÁSICO</h3>
+          <p class="text-[11px] text-zinc-300 leading-relaxed">Enciende tu vitrina. El Pase B te pone en primera fila del marketplace para que tus cuentas se vean, se confíen y se vendan más rápido.</p>
+          <div id="precio-vip-basico" class="text-3xl font-black text-yellow-400">Cargando precio…</div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> Insignia estelar <strong>amarilla</strong> en perfil, foro y fichas.</li>
+            <li><i class="fas fa-check text-yellow-400 mr-2"></i> <strong>5% de descuento</strong> automático en el carrito.</li>
+            <li><i class="fas fa-bolt text-yellow-400 mr-2"></i> <strong>Impulso diario:</strong> sube 1 anuncio al tope cada 24 horas.</li>
+            <li><i class="fas fa-star text-yellow-400 mr-2"></i> Cinta <strong>DESTACADO</strong> y estela dorada en tus publicaciones.</li>
+            <li><i class="fas fa-id-badge text-yellow-400 mr-2"></i> Rango visible <strong>⭐ VIP Básico</strong> (ya no aparece solo “Verificado”).</li>
+            <li><i class="fas fa-gem text-yellow-400 mr-2"></i> Marco dorado de vendedor VIP en marketplace.</li>
+            <li><i class="fas fa-sort-amount-up text-yellow-400 mr-2"></i> Prioridad media en el ranking frente a cuentas sin pase.</li>
+          </ul>
+        </div>
+        <button type="button" id="btn-pagar-vip-basico" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('basico'))" class="block w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <button type="button" id="btn-pagar-vip-basico-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('basico'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
+        <p id="hint-vip-basico" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
+      </div>
+      <div class="vip-card-box-pro rounded-3xl p-8 space-y-5 relative flex flex-col justify-between">
+        <div class="space-y-4 text-center">
+          <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-widest">Pase Pro · Máximo alcance</span>
+          <h3 class="text-2xl font-black text-white">VIP PRO</h3>
+          <p class="text-[11px] text-zinc-300 leading-relaxed">Para vendedores que quieren dominar el ranking: más descuento, impulso más frecuente y el sello rojo que nadie ignora.</p>
+          <div id="precio-vip-pro" class="text-3xl font-black text-rose-500">Cargando precio…</div>
+          <ul class="text-left text-xs text-zinc-300 space-y-2.5 bg-zinc-950/60 p-4 rounded-2xl border border-zinc-800">
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> Insignia exclusiva en <strong>rojo intenso</strong>.</li>
+            <li><i class="fas fa-check text-rose-500 mr-2"></i> <strong>10% de descuento</strong> automático en el carrito.</li>
+            <li><i class="fas fa-bolt text-rose-500 mr-2"></i> Impulso acelerado cada <strong>8 horas</strong> (más rápido que el Pase B).</li>
+            <li><i class="fas fa-fire text-rose-500 mr-2"></i> Prioridad máxima sobre Básico y cuentas sin pase.</li>
+            <li><i class="fas fa-crown text-rose-500 mr-2"></i> Marco rojo Pro + estela animada premium.</li>
+          </ul>
+        </div>
+        <button type="button" id="btn-pagar-vip-pro" onclick="verificarLoginAccion(()=>comprarPaseVipConFlow('pro'))" class="block w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50">Pagar con Flow</button>
+        <button type="button" id="btn-pagar-vip-pro-mp" onclick="verificarLoginAccion(()=>comprarPaseVipConMercadoPago('pro'))" class="block w-full text-white font-black py-3.5 rounded-xl uppercase tracking-wider text-center text-xs shadow-lg transition disabled:opacity-50" style="background:#009ee3">Pagar con Mercado Pago</button>
+        <p id="hint-vip-pro" class="text-center text-[10px] text-zinc-500">Incluye IVA 19%. Precio tomado de la configuración.</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+
 <script>
 const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,authCheckHecho=false;
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
@@ -237,6 +328,20 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(()=>{console.log(
 function mostrarAlertaToast(t,m){const c=document.getElementById('alert-toast-modal');document.getElementById('alert-toast-title').innerText=t;document.getElementById('alert-toast-msg').innerText=m;c.classList.remove('hidden');setTimeout(()=>{c.classList.add('hidden')},3500)}
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
 
+function irAMisCompras(event){
+  if(event) event.preventDefault();
+  const ir = (user) => {
+    if(!user){
+      localStorage.setItem('redirect_after_login', '/mis-compras');
+      window.location.href = '/login?next=/mis-compras';
+      return;
+    }
+    window.location.href = '/mis-compras';
+  };
+  if(auth.currentUser){ ir(auth.currentUser); return false; }
+  const stop = auth.onAuthStateChanged((user) => { stop(); ir(user); });
+  return false;
+}
 function verificarLoginAccion(callback){
   if(!auth.currentUser){ localStorage.setItem('redirect_after_login', window.location.pathname); window.location.href = 'login.html'; return; }
   callback();
@@ -245,9 +350,212 @@ function verificarAccionProtegida(event, url){
   if(!auth.currentUser){ if(event) event.preventDefault(); localStorage.setItem('redirect_after_login', url); window.location.href = 'login.html'; return false; }
   window.location.href = url;
 }
+let preciosPaseVip = { basico: 0, pro: 0 };
+
+function formatearClp(n){
+  return '$' + Number(n || 0).toLocaleString('es-CL');
+}
+function totalVipConIva(neto){
+  const subtotal = Math.round(Number(neto) || 0);
+  const iva = Math.round(subtotal * 0.19);
+  return { subtotal, iva, total: subtotal + iva };
+}
+function pintarBotonVip(tipo, neto){
+  const montos = totalVipConIva(neto);
+  const esPro = tipo === 'pro';
+  const precioEl = document.getElementById(esPro ? 'precio-vip-pro' : 'precio-vip-basico');
+  const btn = document.getElementById(esPro ? 'btn-pagar-vip-pro' : 'btn-pagar-vip-basico');
+  const hint = document.getElementById(esPro ? 'hint-vip-pro' : 'hint-vip-basico');
+  if(precioEl){
+    precioEl.innerHTML = `${formatearClp(neto)} <span class="text-xs text-zinc-400">CLP / 30 DÍAS</span>`;
+  }
+  if(btn){
+    btn.disabled = !(neto > 0);
+    btn.innerHTML = neto > 0
+      ? `<i class="fas fa-credit-card mr-1.5"></i> Pagar ${formatearClp(montos.total)} con Flow`
+      : 'Precio no configurado';
+  }
+  const btnMp = document.getElementById(esPro ? 'btn-pagar-vip-pro-mp' : 'btn-pagar-vip-basico-mp');
+  if(btnMp){
+    btnMp.disabled = !(neto > 0);
+    btnMp.innerHTML = neto > 0
+      ? `Pagar ${formatearClp(montos.total)} con Mercado Pago`
+      : 'Precio no configurado';
+  }
+  if(hint && neto > 0){
+    hint.innerText = `Neto ${formatearClp(neto)} + IVA 19% (${formatearClp(montos.iva)}) = ${formatearClp(montos.total)}`;
+  }
+}
+function escucharPreciosPaseVip(){
+  db.collection('configuracion').doc('global').onSnapshot(doc => {
+    const d = doc.exists ? doc.data() : {};
+    const basico = Math.round(Number(d.precioPaseVipBasico || d.precioVipBasico || 0));
+    const pro = Math.round(Number(d.precioPaseVipPro || d.precioVipPro || 0));
+    preciosPaseVip.basico = basico;
+    preciosPaseVip.pro = pro;
+    pintarBotonVip('basico', basico);
+    pintarBotonVip('pro', pro);
+  }, () => {
+    pintarBotonVip('basico', 0);
+    pintarBotonVip('pro', 0);
+  });
+}
+async function postCrearPago(payload, ruta){
+  const headers = { 'Content-Type': 'application/json' };
+  if(payload && payload.idToken) headers.Authorization = 'Bearer ' + payload.idToken;
+  const destino = ruta || '/api/flow/create';
+  const res = await fetch(destino, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload)
+  });
+  const text = await res.text();
+  try {
+    const json = JSON.parse(text);
+    json.okHttp = res.ok;
+    return json;
+  } catch(e) {
+    throw new Error((text || '').slice(0, 80) || (destino.indexOf('/api/mp/') === 0 ? 'Mercado Pago no devolvió JSON' : 'Flow no devolvió JSON'));
+  }
+}
+async function comprarPaseVip(tipo, ruta, nombre, btnId){
+  if(!auth.currentUser){
+    localStorage.setItem('redirect_after_login', window.location.pathname);
+    window.location.href = 'login.html';
+    return;
+  }
+  const precio = tipo === 'pro' ? preciosPaseVip.pro : preciosPaseVip.basico;
+  const btn = document.getElementById(btnId);
+  if(!(precio > 0)){
+    mostrarAlertaToast('Precio VIP', 'El administrador aún no configuró el precio del pase en Firestore.');
+    return;
+  }
+  const etiqueta = btn ? btn.innerHTML : '';
+  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con ' + nombre + '...'; }
+  try {
+    const pedir = async () => {
+      let idToken = '';
+      try { idToken = await auth.currentUser.getIdToken(true); }
+      catch(e){ idToken = await auth.currentUser.getIdToken(); }
+      return postCrearPago({
+        email: auth.currentUser.email,
+        idToken,
+        tipoVipPase: tipo
+      }, ruta);
+    };
+    let data = await pedir();
+    const errSesion = String((data && (data.code || data.error)) || '').toLowerCase();
+    if(errSesion.includes('token_expirado') || errSesion.includes('sesion') || errSesion.includes('sesión') || errSesion.includes('expirad')){
+      await auth.currentUser.reload().catch(()=>{});
+      data = await pedir();
+    }
+    if(data && data.okHttp === false){
+      mostrarAlertaToast('Error ' + nombre, data.error || 'No se pudo crear el pago.');
+      if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
+      return;
+    }
+    if(data && data.url){
+      window.location.href = data.url;
+      return;
+    }
+    mostrarAlertaToast('Error ' + nombre, data && (data.error || JSON.stringify(data)) || 'No se pudo crear el pago.');
+  } catch(err){
+    mostrarAlertaToast('Error', err.message);
+  }
+  if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
+}
+async function comprarPaseVipConFlow(tipo){
+  const btnId = tipo === 'pro' ? 'btn-pagar-vip-pro' : 'btn-pagar-vip-basico';
+  return comprarPaseVip(tipo, '/api/flow/create', 'Flow', btnId);
+}
+async function comprarPaseVipConMercadoPago(tipo){
+  const btnId = tipo === 'pro' ? 'btn-pagar-vip-pro-mp' : 'btn-pagar-vip-basico-mp';
+  return comprarPaseVip(tipo, '/api/mp/create', 'Mercado Pago', btnId);
+}
+async function manejarRetornoPagoVip(u){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('ok') !== '1' && params.get('vip') !== '1') return;
+  cambiarSeccion('vip');
+  const token = params.get('token');
+  if(token){
+    const body = 'token=' + encodeURIComponent(token);
+    try {
+      await fetch('/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+    } catch(e) {
+      try { await fetch('/siilckventas/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }); } catch(err) {}
+    }
+  }
+  const tipo = params.get('tipo') === 'pro' ? 'pro' : 'basico';
+  const perfilRef = db.collection('perfiles').doc(u.uid);
+  const perfilDoc = await perfilRef.get();
+  const data = perfilDoc.exists ? perfilDoc.data() : {};
+  if(!(data.isVip || data.esVendedorVip)){
+    try {
+      let base = new Date();
+      if(data.vipExpira && data.vipExpira.toDate && data.vipExpira.toDate().getTime() > base.getTime()){
+        base = data.vipExpira.toDate();
+      }
+      const expira = new Date(base.getTime() + 30*24*60*60*1000);
+      await perfilRef.set({
+        esVendedorVip: true,
+        tipoVip: tipo,
+        vipExpira: firebase.firestore.Timestamp.fromDate(expira),
+        isVip: true,
+        plan: 'vip'
+      }, { merge: true });
+    } catch(e) {
+      console.log(e);
+    }
+  }
+  mostrarToast('✅ Pase VIP activado. Gracias por tu compra con Flow.');
+}
+function anclaDeSeccion(s){
+  return {vip:'seccion-vip',perfil:'perfil','mis-chats':'chats','mis-tickets':'tiques'}[s] || ('seccion-'+s);
+}
+function scrollAAncla(el){
+  if(!el) return;
+  const header = document.querySelector('header');
+  const offset = Math.max(80, header ? header.offsetHeight : 80) + 8;
+  const y = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({top:Math.max(0, y), behavior:'smooth'});
+}
+function cerrarVip(){
+  const drawer = document.getElementById('seccion-vip');
+  const overlay = document.getElementById('vip-overlay');
+  if(drawer){
+    drawer.classList.add('translate-x-full');
+    drawer.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+  setTimeout(() => {
+    if(drawer && drawer.classList.contains('translate-x-full') && overlay) overlay.classList.add('hidden');
+  }, 300);
+}
+function abrirVip(){
+  const drawer = document.getElementById('seccion-vip');
+  const overlay = document.getElementById('vip-overlay');
+  if(overlay) overlay.classList.remove('hidden');
+  if(drawer){
+    drawer.setAttribute('aria-hidden', 'false');
+    drawer.classList.add('translate-x-full');
+    requestAnimationFrame(() => requestAnimationFrame(() => drawer.classList.remove('translate-x-full')));
+  }
+  document.body.style.overflow = 'hidden';
+}
 function cambiarSeccion(s){
-  ['vip','perfil','mis-chats','mis-tickets'].forEach(x=>{const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');});
-  if(s!=='inicio'){const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');}
+  ['perfil','chats','tiques'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hidden');});
+  if(s === 'vip'){
+    abrirVip();
+    return;
+  }
+  cerrarVip();
+  if(s!=='inicio'){
+    const target=document.getElementById(anclaDeSeccion(s));
+    if(target){
+      target.classList.remove('hidden');
+      requestAnimationFrame(()=>requestAnimationFrame(()=>scrollAAncla(target)));
+    }
+  }
   if(s==='mis-chats') cargarListaChatsUsuario();
   if(s==='mis-tickets') cargarMisTicketsUsuario();
 }
@@ -331,7 +639,7 @@ auth.onAuthStateChanged(async(u)=>{
         if(paseTxt){
           const tipo = currentUserData.tipoVip;
           if(tipo === 'pro') paseTxt.innerText = "👑 Pase VIP Pro activo: impulso cada 8h, 10% off y prioridad máxima.";
-          else if(tipo === 'basico' || currentUserData.esVendedorVip) paseTxt.innerText = "⭐ Pase VIP Básico activo: impulso diario, marco dorado, 5% off y rango visible.";
+          else if(tipo === 'basico' || currentUserData.esVendedorVip || currentUserData.isVip) paseTxt.innerText = "⭐ Pase VIP Básico activo: impulso diario, marco dorado, 5% off y rango visible.";
           else paseTxt.innerText = "Sin pase VIP. Activa el Pase Básico para impulsar anuncios y mostrar rango real.";
         }
       }
@@ -340,10 +648,147 @@ auth.onAuthStateChanged(async(u)=>{
       const btnMant = document.getElementById('menu-btn-mantenimiento-owner');
       if(btnMant) btnMant.classList.remove('hidden');
     }
+    await manejarRetornoPagoVip(u);
   }
 });
 
+escucharPreciosPaseVip();
+
 function cerrarSesion(){auth.signOut().then(()=>{window.location.href='login.html';})}
+
+function scrollGames(id, dir){
+  const go=window['go_'+id];
+  const start=window['start_'+id];
+  const stop=window['stop_'+id];
+  const track=document.getElementById(id);
+  if(!track || typeof go!=='function') return;
+  stop();
+  go((track._cur||0)+dir);
+  start();
+}
+function fmtNum(n){return Number(n||0).toLocaleString('es-CL');}
+async function cargarContadorVivo(){
+  const cEl=document.getElementById('sv-cuentas-n');
+  const vEl=document.getElementById('sv-vendidas-n');
+  try{
+    const pubs=await db.collection('publicaciones').get();
+    let n=0;
+    pubs.forEach(d=>{
+      const p=d.data();
+      if(p.vendida) return;
+      const s=p.stock;
+      if(s==null || s==='' || Number(s)>0) n++;
+    });
+    if(cEl) cEl.textContent=fmtNum(n);
+  }catch(e){ if(cEl) cEl.textContent='0'; }
+  try{
+    const acts=await db.collection('recentActivity').where('type','==','purchase').get();
+    const start=new Date(); start.setHours(0,0,0,0);
+    let v=0;
+    acts.forEach(d=>{
+      const t=d.data().createdAt;
+      const date=t&&t.toDate?t.toDate():null;
+      if(date && date>=start) v++;
+    });
+    if(vEl) vEl.textContent=fmtNum(v);
+  }catch(e){ if(vEl) vEl.textContent='0'; }
+}
+function lobbyAutocomplete(v){
+  const box=document.getElementById('lobby-search-list');
+  if(!box || !window.siilckBuscarJuegos) return;
+  const q=String(v||'').trim();
+  if(!q){ box.innerHTML=''; box.classList.remove('open'); return; }
+  const list=window.siilckBuscarJuegos(q);
+  if(!list.length){ box.innerHTML='<p class="sv-ac-empty">Sin coincidencias</p>'; box.classList.add('open'); return; }
+  box.innerHTML=list.map(g=>'<button type="button" data-q="'+window.siilckEsc(g.query)+'">'+window.siilckEsc(g.nombre)+'</button>').join('');
+  box.classList.add('open');
+}
+(function(){
+  const input=document.getElementById('lobby-search');
+  const box=document.getElementById('lobby-search-list');
+  if(input){
+    input.addEventListener('input', ()=>lobbyAutocomplete(input.value));
+    input.addEventListener('focus', ()=>lobbyAutocomplete(input.value));
+  }
+  if(box){
+    box.addEventListener('click', e=>{
+      const b=e.target.closest('button');
+      if(!b) return;
+      window.location.href='ventas.html?juego='+encodeURIComponent(b.dataset.q||'');
+    });
+  }
+  document.addEventListener('click', e=>{
+    if(!box || !input) return;
+    if(e.target===input || box.contains(e.target)) return;
+    box.classList.remove('open');
+  });
+  cargarContadorVivo();
+})();
+(function(){
+  function initShowcase(trackId, dotsId, progId){
+    const track=document.getElementById(trackId);
+    const dotsBox=document.getElementById(dotsId);
+    const progress=document.getElementById(progId);
+    if(!track || !dotsBox || !progress) return;
+    const cards=track.querySelectorAll('.game-card');
+    if(!cards.length) return;
+    let cur=0, timer, progTimer, prog=0;
+    const DURATION=2500;
+    track._cur=0;
+    cards.forEach((_,i)=>{const d=document.createElement('span');if(i===0)d.classList.add('active');d.onclick=()=>{goTo(i);stop();start()};dotsBox.appendChild(d)});
+    const dots=dotsBox.querySelectorAll('span');
+    function goTo(n){
+      cur=(n+cards.length)%cards.length;
+      track._cur=cur;
+      dots.forEach(d=>d.classList.remove('active'));
+      if(dots[cur]) dots[cur].classList.add('active');
+      const card=cards[cur];
+      if(card){
+        const left=card.offsetLeft-(track.clientWidth-card.clientWidth)/2;
+        track.scrollTo({left:Math.max(0,left),behavior:'smooth'});
+      }
+      resetProgress();
+    }
+    function resetProgress(){
+      prog=0;
+      progress.style.width='0%';
+      clearInterval(progTimer);
+      progTimer=setInterval(()=>{
+        prog+=100/(DURATION/50);
+        if(prog>100) prog=100;
+        progress.style.width=prog+'%';
+      },50);
+    }
+    function start(){resetProgress();clearInterval(timer);timer=setInterval(()=>goTo(cur+1),DURATION)}
+    function stop(){clearInterval(timer);clearInterval(progTimer)}
+    track.addEventListener('mouseenter',stop);
+    track.addEventListener('mouseleave',start);
+    let sx=0;
+    track.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;stop()},{passive:true});
+    track.addEventListener('touchend',e=>{
+      const dx=e.changedTouches[0].clientX-sx;
+      if(Math.abs(dx)>50) goTo(dx<0?cur+1:cur-1);
+      setTimeout(start,1000);
+    },{passive:true});
+    window['go_'+trackId]=goTo;
+    window['start_'+trackId]=start;
+    window['stop_'+trackId]=stop;
+    start();
+  }
+  function pintarTrack(trackId, categoria){
+    const track=document.getElementById(trackId);
+    if(!track || !window.SIILCK_GAMES || !window.siilckCardHtml) return;
+    track.innerHTML=window.SIILCK_GAMES.filter(g=>g.categoria===categoria).map(window.siilckCardHtml).join('');
+  }
+  setTimeout(()=>{
+    pintarTrack('gameTrack1','juego');
+    pintarTrack('gameTrack2','stream');
+    initShowcase('gameTrack1','gDots1','autoProgress1');
+    initShowcase('gameTrack2','gDots2','autoProgress2');
+  }, 280);
+})();
 </script>
+<script type="module" src="/lib/settings.js"></script>
+<script src="/guardia.js"></script>
 </body>
 </html>

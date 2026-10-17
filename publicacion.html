@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Publicar Cuenta - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4,.font-heading{font-family:'Outfit',sans-serif}
-  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
 .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .animate-page{animation:fadeIn.25s ease forwards}
@@ -41,14 +43,15 @@
     <div class="space-y-4 text-xs">
       <div><label class="block text-[10px] uppercase font-bold tracking-wider text-zinc-300 mb-1">Título *</label><input type="text" id="pub-titulo" placeholder="Ej: Cuenta Nivel 80 Full Skins" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"><option>Free Fire</option><option>Fortnite</option><option>Valorant</option><option>Roblox</option><option>Steam Key</option><option>League of Legends</option><option>GTA V</option><option>Minecraft</option><option>Genshin Impact</option><option>Call of Duty</option></select></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Juego *</label><select id="pub-juego" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"></select></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Precio Real (CLP) *</label><input type="number" id="pub-precio" placeholder="32000" oninput="actualizarPreviewOferta()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white"></div>
       </div>
       <div class="grid grid-cols-3 gap-2">
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Nivel *</label><input type="text" id="pub-nivel" placeholder="Nivel 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Región *</label><input type="text" id="pub-region" placeholder="LATAM" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Stock *</label><input type="number" id="pub-stock" value="1" min="1" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       </div>
+      <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Rango (opcional)</label><input type="text" id="pub-rango" placeholder="Ej: Diamante, Inmortal, Heroico" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white"></div>
       <div><label class="block text-[10px] uppercase font-bold text-zinc-300 mb-1">Biografía / Descripción *</label><textarea id="pub-descripcion" rows="3" placeholder="Detalles de la cuenta..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white resize-none"></textarea></div>
       <div class="space-y-3 p-4 rounded-2xl bg-zinc-900/60 border border-yellow-500/20">
         <h4 class="text-[11px] font-black uppercase text-yellow-400"><i class="fas fa-lock mr-1"></i> Datos privados - Entrega automática *</h4>
@@ -69,7 +72,27 @@
         <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
         <p class="text-xs text-zinc-300" id="pub-foto-label"><i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5"></i> Toca para subir foto</p>
       </div>
-      <button onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider">Publicar en Marketplace</button>
+      <div class="bg-black/40 border border-yellow-400/20 rounded-xl p-4 mt-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" id="activarOferta" class="w-5 h-5 accent-yellow-400" onchange="document.getElementById('selectorDescuento').classList.toggle('hidden', !this.checked); document.getElementById('texto-oferta-apagada').classList.toggle('hidden', this.checked); actualizarPreviewOferta();" />
+          <span class="text-white font-bold text-sm">🔥 ¿Deseas activar descuento para una venta más rápida? Se te descontará el % elegido</span>
+        </label>
+        <p id="texto-oferta-apagada" class="text-[11px] text-gray-400 mt-1 ml-8">Muestra tu cuenta como OFERTA: Antes tachado - Ahora con descuento</p>
+        <div id="selectorDescuento" class="hidden mt-3 ml-8">
+          <label class="text-xs text-gray-300">Elige % de descuento:</label>
+          <select id="descuentoPorcentaje" onchange="actualizarPreviewOferta()" class="mt-1 w-full bg-zinc-900 border border-yellow-500/30 text-white rounded-lg p-3 text-sm">
+            <option value="5">5% OFF</option>
+            <option value="8" selected>8% OFF - Recomendado</option>
+            <option value="10">10% OFF</option>
+            <option value="15">15% OFF - Rápido</option>
+            <option value="20">20% OFF - Remate</option>
+          </select>
+          <div class="mt-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2">
+            <p id="preview-oferta" class="text-[11px] text-yellow-400 font-bold">Preview: $0 → $0</p>
+          </div>
+        </div>
+      </div>
+      <button id="btn-publicar" onclick="crearPublicacionMarketplace()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold py-3.5 rounded-xl uppercase tracking-wider disabled:opacity-60">Publicar en Marketplace</button>
     </div>
   </div>
 </main>
@@ -117,30 +140,69 @@ auth.onAuthStateChanged(async(u)=>{
         await db.collection('perfiles').doc(u.uid).update({cuentaVendedorActiva:false,esBetaAntiguo:true});
         mostrarAlertaToast("Beta Expirada","Cuenta desactivada");setTimeout(()=>{window.location.href='index.html'},2500);return;
       }
-      if(!currentUserData.cuentaVendedorActiva){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
+      if(!currentUserData.cuentaVendedorActiva && !currentUserData.is_seller){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
     }else{ if(esCuentaOwner(u.uid)) return; }
   }catch(e){console.log(e);}
 });
 
+(function(){
+  const sel=document.getElementById('pub-juego');
+  if(!sel || !window.SIILCK_GAMES) return;
+  sel.innerHTML=window.SIILCK_GAMES.map(g=>'<option value="'+window.siilckEsc(g.nombre)+'">'+window.siilckEsc(g.nombre)+'</option>').join('');
+})();
 function manejarSeleccionFoto(input){if(input.files && input.files[0]){const reader=new FileReader();reader.onload=function(e){fotoBase64Seleccionada=e.target.result;document.getElementById('pub-foto-label').innerText="Imagen cargada ✅"};reader.readAsDataURL(input.files[0]);}}
+function actualizarPreviewOferta(){
+  const box=document.getElementById('preview-oferta');
+  if(!box) return;
+  const precioNum=Number(document.getElementById('pub-precio').value)||0;
+  const desc=Number(document.getElementById('descuentoPorcentaje').value)||8;
+  const ahora=Math.round((precioNum*(1-desc/100))/100)*100;
+  box.textContent='Preview: $'+precioNum.toLocaleString('es-CL')+' → $'+ahora.toLocaleString('es-CL');
+}
+let publicacionEnCurso=false;
+function clavePublicacion(titulo,juego,precio){return (String(titulo||'').trim()+'|'+String(juego||'')+'|'+Number(precio||0)).toLowerCase();}
+function publicacionSigueDisponible(p){if(!p||p.vendida)return false;const s=p.stock;if(s==null||s==='')return true;return Number(s)>0;}
 async function crearPublicacionMarketplace(){
-  if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
+  const btn=document.getElementById('btn-publicar');
+  if(publicacionEnCurso){mostrarAlertaToast("Ya publicada","Tu publicación ya ha sido publicada.");return;}
+  publicacionEnCurso=true;
+  if(btn){btn.disabled=true;btn.innerText="Publicando...";}
+  let publicada=false;
   try{
+    if(!auth.currentUser){mostrarAlertaToast("No logueado","Inicia sesión");return;}
     const esDueno=esCuentaOwner(auth.currentUser.uid);
-    const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
+    const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const rango=(document.getElementById('pub-rango').value||'').trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
     const privEmail=document.getElementById('f-priv-email').value.trim();const privPass=document.getElementById('f-priv-pass').value.trim();const privTel=document.getElementById('f-priv-tel').value.trim();const privRecup=document.getElementById('f-priv-recup').value.trim();const autorizo=document.getElementById('f-autorizo-datos').checked;
     if(!titulo||!precio||!nivel||!region||!descripcion){mostrarAlertaToast("Campos Incompletos","Llena todo");return;}
     if(!privEmail||!privPass||!privRecup){mostrarAlertaToast("Datos Privados","Llena recuadro amarillo");return;}
     if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
-    if(!esDueno &&!uData.cuentaVendedorActiva){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
+    if(!esDueno && !uData.cuentaVendedorActiva && !uData.is_seller){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
+    const previas=await db.collection('publicaciones').where('vendedorUid','==',auth.currentUser.uid).get();
+    const misma=clavePublicacion(titulo,juego,precio);
+    const ya=previas.docs.some(d=>{const p=d.data();return publicacionSigueDisponible(p)&&clavePublicacion(p.titulo,p.juego,p.precio)===misma;});
+    if(ya){mostrarAlertaToast("Ya publicada","Tu publicación ya ha sido publicada.");return;}
     const vipActivo=esDueno || !!(uData.esVendedorVip && (uData.tipoVip==='basico' || uData.tipoVip==='pro' || uData.tipoVip==='dueno'));
     const tipoVip=esDueno?'dueno':(vipActivo ? (uData.tipoVip||'basico') : 'ninguno');
-    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true});
+    const ofertaBox=document.getElementById('activarOferta');
+    const ofertaActiva=!!(ofertaBox && ofertaBox.checked);
+    const ofertaElegida=parseInt(document.getElementById('descuentoPorcentaje').value,10);
+    const porcentajesOferta=[5,8,10,15,20];
+    const ofertaDescuento=ofertaActiva ? (porcentajesOferta.indexOf(ofertaElegida)>=0 ? ofertaElegida : 8) : 0;
+    const precioFinal=ofertaActiva ? Math.round((precio * (1 - ofertaDescuento / 100)) / 100) * 100 : precio;
+    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,rango,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,entregaInmediata:true,ofertaActiva,ofertaDescuento,precioFinal});
     await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
-    mostrarToast(esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!");setTimeout(()=>{window.location.href='index.html'},1200);
+    publicada=true;
+    mostrarToast(ofertaActiva ? ("🚀 Publicado. Con "+ofertaDescuento+"% se cobra $"+precioFinal.toLocaleString('es-CL')) : (esDueno?"👑 ¡Publicado como dueño!":"🚀 ¡Cuenta publicada!"));setTimeout(()=>{window.location.href='index.html'},1200);
   }catch(err){console.error(err);mostrarAlertaToast("Error",err.message);}
+  finally{
+    if(!publicada){
+      publicacionEnCurso=false;
+      if(btn){btn.disabled=false;btn.innerText="Publicar en Marketplace";}
+    }
+  }
 }
 </script>
+<script src="/guardia.js"></script>
 </body>
 </html>

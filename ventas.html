@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Marketplace - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+  #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
   .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
   @keyframes estelaVipPro {
     0%{border-color:#ef4444;box-shadow:0 0 10px rgba(239,68,68,0.4)}
@@ -28,6 +30,32 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   .animate-page{animation:fadeIn .25s ease forwards}
   .radio-warranty{accent-color:#eab308}
+  #aside-filtro-juegos{max-height:calc(100vh - 15.5rem)}
+  #aside-filtro-juegos .web-panel{max-height:calc(100vh - 15.5rem);display:flex;flex-direction:column;overflow:hidden}
+  #cartelera-juegos{overflow-y:auto;padding-right:4px;min-height:0}
+  .sv-cat-label{color:#FFD740;font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;margin:8px 2px 2px}
+  .sv-cat-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#FFD740;font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;background:transparent;border:0;cursor:pointer;padding:8px 2px 4px;margin-top:6px}
+  .sv-juego-btn{width:100%;display:flex;align-items:center;gap:8px;text-align:left;background:#18181b;border:1px solid #3f3f46;color:#fff;border-radius:12px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:4px}
+  .sv-juego-btn:hover{border-color:#eab308}
+  .sv-juego-ico{width:16px;flex:none;text-align:center;font-size:12px}
+  .sv-juego-nombre{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sv-juego-count{color:#a1a1aa;font-weight:800;font-size:11px;flex:none}
+  .sv-cat-on{border-color:#eab308 !important;background:rgba(234,179,8,.12) !important}
+  #filtro-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+  .sv-chip{width:auto;margin:0;border-radius:999px;padding:6px 12px;white-space:nowrap}
+  #paginacion-mercado{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
+  .sv-page-btn{min-width:40px;height:40px;padding:0 14px;border-radius:12px;border:1px solid #3f3f46;background:#27272a;color:#e4e4e7;font-weight:800;font-size:13px;cursor:pointer}
+  .sv-page-btn.activa{background:#facc15;color:#000;border-color:#facc15}
+  #market-grid{justify-content:center}
+  .sv-ac{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:#141416;border:1px solid rgba(234,179,8,.4);border-radius:14px;overflow:hidden;z-index:40}
+  .sv-ac.open{display:block}
+  .sv-ac button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}
+  .sv-ac button:hover{background:rgba(234,179,8,.12)}
+  .sv-skel-row{height:44px;border-radius:16px;background:linear-gradient(90deg,#161616 25%,#2c2c2c 50%,#161616 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
+  @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  #seccion-mis-chats,#seccion-mercado{scroll-margin-top:88px}
+  #filtros-extra input,#filtros-extra select{background:#18181b;border:1px solid #3f3f46;color:#fff;border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700;min-width:0}
+  main{padding-bottom:7rem}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -64,11 +92,13 @@
     </div>
     
     <div class="flex-grow max-w-lg relative order-last sm:order-none w-full sm:w-auto">
-      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Fortnite..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition">
+      <input type="text" id="header-global-search" oninput="ejecutarBusquedaEnVivo(this.value)" placeholder="🔍 Buscar cuentas, Free Fire, Netflix..." class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-2xl pl-11 pr-4 py-3 text-xs text-white focus:outline-none shadow-inner transition" autocomplete="off">
       <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-yellow-400 text-xs"></i>
+      <div id="buscador-autocomplete" class="sv-ac"></div>
     </div>
 
     <div class="flex items-center space-x-2.5 shrink-0">
+      <div id="sv-locale-slot"></div>
       <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito"><i class="fas fa-shopping-cart text-sm"></i></a>
       <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats"><i class="fas fa-comments text-sm"></i><span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span></button>
       <button onclick="window.location.href='index.html'" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition"><i class="fas fa-home mr-1"></i> Inicio</button>
@@ -79,34 +109,26 @@
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col items-center">
 <section id="view-dashboard" class="w-full space-y-6 animate-page">
   
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 w-full">
-    
-    <div class="lg:col-span-1 space-y-3">
-      <div class="web-panel rounded-3xl p-5 border border-zinc-800 space-y-3 sticky top-24">
-        <div class="border-b border-zinc-800 pb-2.5 flex items-center justify-between">
-          <h3 class="text-xs font-black text-yellow-400 uppercase tracking-wider"><i class="fas fa-film mr-1.5"></i> Cartelera de Juegos</h3>
-          <span class="text-[9px] bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded border border-zinc-800">Activa</span>
-        </div>
-        <div class="flex flex-col gap-2">
-          <button onclick="filtrarPorJuegoRapido('Free Fire')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-fire text-yellow-400"></i> Free Fire</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Fortnite')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-gamepad text-blue-400"></i> Fortnite</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Valorant')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-shield-alt text-rose-400"></i> Valorant</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Roblox')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-cube text-emerald-400"></i> Roblox</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Steam Key')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fab fa-steam text-indigo-400"></i> Steam Key</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('League of Legends')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-bolt text-amber-400"></i> LoL / Riot</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('GTA V')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-car text-orange-400"></i> GTA V</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Minecraft')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-hammer text-emerald-500"></i> Minecraft</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Genshin Impact')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-star text-purple-400"></i> Genshin Impact</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Call of Duty')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-crosshairs text-sky-400"></i> Call of Duty</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('Clash Royale')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-chess-rook text-amber-500"></i> Clash Royale</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
-          <button onclick="filtrarPorJuegoRapido('FIFA / FC')" class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-yellow-500 text-white font-bold text-xs flex items-center justify-between transition group"><span class="flex items-center gap-2"><i class="fas fa-futbol text-emerald-400"></i> FIFA / EA FC</span><i class="fas fa-chevron-right text-[10px] text-zinc-600 group-hover:text-yellow-400"></i></button>
+  <div id="layout-mercado" class="flex flex-col lg:flex-row lg:items-start gap-5 w-full">
+
+    <aside id="aside-filtro-juegos" class="hidden lg:block w-[280px] shrink-0 sticky top-20 h-fit">
+      <div class="web-panel rounded-2xl p-4 border border-zinc-800">
+        <h3 class="text-sm font-black text-white mb-3">Filtrar por Juego</h3>
+        <div id="cartelera-juegos" class="flex flex-col">
+          <div class="sv-skel-row"></div>
+          <div class="sv-skel-row"></div>
+          <div class="sv-skel-row"></div>
+          <div class="sv-skel-row"></div>
         </div>
       </div>
-    </div>
+    </aside>
 
-    <div class="lg:col-span-3 space-y-6">
+    <div class="flex-1 min-w-0 w-full space-y-6">
       
-      <div id="seccion-mercado" class="w-full space-y-5 animate-page">
+      <div id="seccion-mercado" class="w-full space-y-4 animate-page">
+        <div id="wrap-filtro-chips" class="lg:hidden">
+          <div id="filtro-chips" class="hide-scrollbar"></div>
+        </div>
         <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-3">
           <div>
             <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
@@ -117,6 +139,7 @@
             <div id="btn-activar-cuenta-vendedor-container" class="hidden">
               <button onclick="abrirModalActivarVendedor()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5 animate-bounce"><i class="fas fa-check-circle"></i> Activa tu Cuenta</button>
             </div>
+            <a href="saldo.html" class="bg-zinc-800 hover:bg-zinc-700 text-emerald-300 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-wallet"></i> Mi saldo</a>
             <a href="publicacion.html" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-plus"></i> Publicar Cuenta</a>
           </div>
         </div>
@@ -124,7 +147,19 @@
           <span class="w-9 h-9 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0"><i class="fas fa-bolt"></i></span>
           <p><strong class="text-yellow-400">Pase Básico activo.</strong> En tus anuncios aparece el botón <strong>Impulsar</strong>: súbelos al tope del marketplace una vez cada 24 horas, con cinta Destacado y rango ⭐ VIP Básico visible para compradores.</p>
         </div>
-        <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
+        <div id="filtros-extra" class="web-panel rounded-2xl p-3 border border-zinc-800 grid grid-cols-2 md:grid-cols-5 gap-2">
+          <input id="filtro-nivel" type="search" placeholder="Nivel o rango" aria-label="Filtrar por nivel o rango">
+          <select id="filtro-region" aria-label="Filtrar por región"><option value="">Todas las regiones</option></select>
+          <input id="filtro-precio-min" type="number" min="0" placeholder="Precio mín" aria-label="Precio mínimo">
+          <input id="filtro-precio-max" type="number" min="0" placeholder="Precio máx" aria-label="Precio máximo">
+          <select id="filtro-orden" aria-label="Ordenar cuentas">
+            <option value="destacados">Destacados</option>
+            <option value="barato">Más barato</option>
+            <option value="nuevo">Más nuevo</option>
+          </select>
+        </div>
+        <div id="market-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center"><p class="text-xs text-zinc-500 col-span-full text-center py-12">Cargando marketplace...</p></div>
+        <nav id="paginacion-mercado" aria-label="Paginación de cuentas"></nav>
       </div>
 
       <div id="seccion-mis-chats" class="hidden space-y-5 max-w-2xl mx-auto w-full animate-page">
@@ -171,9 +206,11 @@
               <h3 id="vendedor-perfil-nombre" class="text-2xl font-black text-white">--</h3>
               <span id="vendedor-perfil-rango" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-3 py-1 rounded-full"><i class="fas fa-check-circle mr-1"></i> Vendedor Verificado</span>
             </div>
+            <p id="vendedor-perfil-reputacion" class="text-xs text-amber-300"></p>
+            <div id="vendedor-perfil-resenas" class="w-full text-left space-y-2"></div>
           </div>
           <div class="w-full border-t border-zinc-800 pt-4">
-            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4 text-left">Cuentas Activas del Vendedor</h4>
+            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4 text-left">Cuentas disponibles</h4>
             <div id="vendedor-tienda-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
           </div>
         </div>
@@ -199,26 +236,130 @@
         <div id="modal-vendedor-logo" class="w-12 h-12 rounded-xl bg-zinc-900 border border-yellow-500/40 flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0"><i class="fas fa-user"></i></div>
         <div><span class="block font-bold text-white text-xs" id="modal-vendedor-nombre">Vendedor</span><span id="modal-vendedor-rango" class="text-[10px] text-emerald-400">Verificado</span></div>
       </div>
-      <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
+      <div class="flex items-center gap-2">
+        <a id="enlace-ficha-cuenta" href="cuenta.html" class="text-[11px] font-bold text-yellow-300 underline">Ficha</a>
+        <button type="button" onclick="copiarEnlaceFicha()" class="text-[11px] font-bold text-zinc-300 underline">Copiar enlace</button>
+        <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
+      </div>
     </div>
     <p id="modal-pub-desc" class="text-xs text-zinc-300 leading-relaxed">--</p>
+    <div id="modal-oferta-banner" class="hidden bg-yellow-500/10 border border-yellow-500/40 rounded-xl p-3 text-xs font-bold text-yellow-300"></div>
     <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
       <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
       <div class="space-y-2 text-xs">
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
-        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold">+2.841 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="0" data-label="Garantía 10 días" checked class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>10 días</span></div><span class="text-emerald-400 font-bold">Gratis</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="2841" data-label="Garantía 3 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>3 meses</span></div><span class="text-yellow-400 font-bold" data-precio-clp="2841" data-precio-prefijo="+">+2.841 CLP</span></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 cursor-pointer"><div class="flex items-center gap-2"><input type="radio" name="garantia" value="5682" data-label="Garantía 6 meses" class="radio-warranty" onchange="actualizarPrecioTotalModal()"> <span>6 meses</span></div><span class="text-fuchsia-400 font-bold" data-precio-clp="5682" data-precio-prefijo="+">+5.682 CLP</span></label>
       </div>
     </div>
     <div class="flex justify-between items-center pt-2 border-t border-zinc-800">
       <div><span class="block text-[10px] text-zinc-400 uppercase font-bold">Total</span><span class="text-xl font-black text-yellow-400" id="modal-pub-precio-total">$0 CLP</span></div>
-      <button onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
+      <div class="flex flex-wrap justify-end gap-2">
+        <button onclick="agregarAlCarritoDesdeModal()" class="bg-yellow-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-yellow-400 transition"><i class="fas fa-cart-plus mr-1"></i> Agregar al Carrito</button>
+        <button id="btn-pagar-producto" onclick="pagarProductoConFlow()" class="bg-emerald-500 text-zinc-950 font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow hover:bg-emerald-400 transition"><i class="fas fa-shopping-bag mr-1"></i> Pagar con Flow</button>
+        <button id="btn-pagar-producto-mp" onclick="pagarProductoConMercadoPago()" class="text-white font-extrabold px-6 py-3 rounded-xl text-xs uppercase shadow transition" style="background:#009ee3"><i class="fas fa-credit-card mr-1"></i> Mercado Pago</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],globalPublicacionesCache=[],currentUserData=null,precioBasePublicacionActual=0,stockPublicacionActual=1,vendedorActualUidCache="",publicacionActualIdCache="",chatActivoId=null,filtroMarketplaceActual=null,paginaMarketplaceActual=1;
+const CUENTAS_POR_PAGINA=12;
+const categoriasAbiertas={juegos:true,stream:true};
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
+const OWNER_UID_ALT="w4JA6UUF7WeC6UJweKAKdWYMHf73";
+function esAdminDueño(uid){ return uid===OWNER_UID || uid===OWNER_UID_ALT; }
+function precioVisible(n){
+  if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
+  return '$' + Number(n || 0).toLocaleString('es-CL');
+}
+function ofertaDe(precio, producto){
+  if(!window.getOferta) return null;
+  return getOferta(precio, producto);
+}
+function htmlPrecioOferta(precio, producto, claseAhora){
+  const oferta = ofertaDe(precio, producto);
+  if(!oferta) return `<span class="text-yellow-400 font-extrabold text-xs">${precioVisible(precio)}</span>`;
+  return `<span class="text-right leading-tight"><span class="block text-[11px] text-zinc-300 line-through">${precioVisible(oferta.antes)}</span><span class="${claseAhora}">${precioVisible(oferta.ahora)}</span></span>`;
+}
+function htmlBadgeOferta(producto){
+  const oferta = ofertaDe(producto && producto.precio, producto);
+  if(!oferta) return '';
+  return `<span class="absolute top-3 left-3 z-10 bg-rose-600 text-white text-[10px] font-black px-2 py-1 rounded-full animate-pulse">-${oferta.descuento}% OFERTA</span>`;
+}
+let ofertaPublicacionActual = null;
+let filtrosExtra = { nivel:'', region:'', min:'', max:'', orden:'destacados' };
+let reputacionCache = {};
+let reputacionEscucha = false;
+let cuentaQueryAbierta = false;
+let vendedorQueryAbierto = false;
+function htmlReputacion(uid){
+  const rep = reputacionCache[uid] || {};
+  const total = Number(rep.totalResenas) || 0;
+  const prom = Number(rep.promedio) || 0;
+  const ventas = Number(rep.ventasCompletadas) || 0;
+  const llenas = total ? Math.round(Math.max(0, Math.min(5, prom))) : 0;
+  const stars = total ? ('★'.repeat(llenas) + '☆'.repeat(5 - llenas) + ' ' + prom.toFixed(1)) : 'Nuevo';
+  return `<span class="block text-[10px] text-amber-300 font-bold leading-tight">${stars} · ${ventas} ventas</span>`;
+}
+function htmlEntregaInmediata(p){
+  if(p && p.entregaInmediata === false) return '<span></span>';
+  return '<span class="text-[9px] font-black uppercase tracking-wide text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full">Entrega inmediata</span>';
+}
+function leerFiltrosExtra(){
+  const nivel = document.getElementById('filtro-nivel');
+  const region = document.getElementById('filtro-region');
+  const min = document.getElementById('filtro-precio-min');
+  const max = document.getElementById('filtro-precio-max');
+  const orden = document.getElementById('filtro-orden');
+  filtrosExtra = {
+    nivel: nivel ? nivel.value : '',
+    region: region ? region.value : '',
+    min: min ? min.value : '',
+    max: max ? max.value : '',
+    orden: orden ? orden.value : 'destacados'
+  };
+}
+function syncOpcionesRegion(){
+  const sel = document.getElementById('filtro-region');
+  if(!sel) return;
+  const actual = filtrosExtra.region || sel.value;
+  const set = new Set();
+  (globalPublicacionesCache || []).forEach(p => { if(p.region) set.add(String(p.region).trim()); });
+  const lista = [...set].sort((a, b) => a.localeCompare(b, 'es'));
+  const firma = lista.join('|');
+  if(sel.dataset.firma === firma) return;
+  sel.dataset.firma = firma;
+  const esc = window.siilckEsc || (s => String(s).replace(/[&<>"']/g, ''));
+  sel.innerHTML = '<option value="">Todas las regiones</option>' + lista.map(r => '<option value="' + esc(r) + '">' + esc(r) + '</option>').join('');
+  if(actual) sel.value = actual;
+}
+function fechaPublicacionMs(p){
+  if(p && p.fecha && p.fecha.toDate) return p.fecha.toDate().getTime();
+  return 0;
+}
+function cargarReputacionEnVivo(){
+  if(reputacionEscucha) return;
+  reputacionEscucha = true;
+  db.collection('reputacion').onSnapshot(snap => {
+    reputacionCache = {};
+    snap.forEach(d => { reputacionCache[d.id] = d.data(); });
+    if(globalPublicacionesCache.length) renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+  }, () => {});
+}
+document.addEventListener('siilck-settings', () => {
+  if(globalPublicacionesCache && globalPublicacionesCache.length){
+    renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+  }
+  const modal = document.getElementById('modal-pub-detalles');
+  if(modal && !modal.classList.contains('hidden')) actualizarPrecioTotalModal();
+});
+document.addEventListener('siilck-oferta-ready', () => {
+  if(globalPublicacionesCache && globalPublicacionesCache.length){
+    renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+  }
+});
 
 function initCanvas(){
   if(window.SiilckTema){ SiilckTema.bindCanvas(canvas); return; }
@@ -249,13 +390,13 @@ function etiquetaRangoVip(tipoVip, esVip){
 }
 function usuarioPuedeImpulsar(){
   if(!auth.currentUser) return false;
-  if(auth.currentUser.uid === OWNER_UID) return true;
+  if(esAdminDueño(auth.currentUser.uid)) return true;
   const tipo = currentUserData && currentUserData.tipoVip;
   return !!(currentUserData && currentUserData.esVendedorVip && (tipo === 'basico' || tipo === 'pro' || tipo === 'dueno'));
 }
 function cooldownImpulsoMs(){
   const tipo = currentUserData && currentUserData.tipoVip;
-  if(tipo === 'pro' || tipo === 'dueno' || (auth.currentUser && auth.currentUser.uid === OWNER_UID)) return 8*60*60*1000;
+  if(tipo === 'pro' || tipo === 'dueno' || (auth.currentUser && esAdminDueño(auth.currentUser.uid))) return 8*60*60*1000;
   return 24*60*60*1000;
 }
 async function impulsarPublicacion(pubId, ev){
@@ -299,15 +440,157 @@ function cambiarSeccion(s){
   ['mercado','mis-chats','chat-activo','perfil-vendedor'].forEach(x=>{
     const el=document.getElementById(`seccion-${x}`);if(el)el.classList.add('hidden');
   });
-  const target=document.getElementById(`seccion-${s}`);if(target)target.classList.remove('hidden');
+  const target=document.getElementById(`seccion-${s}`);
+  if(target){
+    target.classList.remove('hidden');
+    const header=document.querySelector('header');
+    const offset=Math.max(80, header ? header.offsetHeight : 80)+8;
+    const y=target.getBoundingClientRect().top+window.scrollY-offset;
+    window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
+  }
   if(s==='mis-chats') cargarListaChatsUsuario();
 }
 
 function ejecutarBusquedaEnVivo(v){
-  renderizarGridPublicaciones(globalPublicacionesCache, v.trim().toLowerCase());
+  filtroMarketplaceActual=v.trim().toLowerCase();
+  paginaMarketplaceActual=1;
+  renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual);
+  pintarSugerencias(v);
+  marcarCatalogoActivo(filtroMarketplaceActual);
+}
+function sincronizarQueryJuego(juego){
+  try{
+    const url=new URL(window.location.href);
+    const q=String(juego||'').trim();
+    if(q) url.searchParams.set('game', q);
+    else url.searchParams.delete('game');
+    url.searchParams.delete('juego');
+    url.searchParams.delete('type');
+    history.replaceState({}, '', url.pathname+url.search+url.hash);
+  }catch(e){}
+}
+function scrollAlGridCuentas(){
+  const mercado=document.getElementById('market-grid')||document.getElementById('seccion-mercado');
+  if(!mercado) return;
+  const header=document.querySelector('header');
+  const offset=Math.max(72, header ? header.offsetHeight : 72)+12;
+  const top=mercado.getBoundingClientRect().top;
+  if(top>=offset && top<window.innerHeight*0.45) return;
+  const y=top+window.scrollY-offset;
+  window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
 }
 function filtrarPorJuegoRapido(juego){
-  renderizarGridPublicaciones(globalPublicacionesCache, juego.toLowerCase());
+  filtroMarketplaceActual=String(juego||'').toLowerCase();
+  paginaMarketplaceActual=1;
+  const input=document.getElementById('header-global-search');
+  const elegido=(window.SIILCK_GAMES||[]).find(g=>String(g.query).toLowerCase()===filtroMarketplaceActual);
+  if(input) input.value=elegido?elegido.nombre:'';
+  const box=document.getElementById('buscador-autocomplete');
+  if(box) box.classList.remove('open');
+  sincronizarQueryJuego(elegido ? elegido.query : String(juego||''));
+  renderizarGridPublicaciones(globalPublicacionesCache, String(juego||'').toLowerCase());
+  marcarCatalogoActivo(juego);
+  scrollAlGridCuentas();
+}
+function marcarCatalogoActivo(juego){
+  const q=String(juego||'').toLowerCase();
+  document.querySelectorAll('#cartelera-juegos [data-query], #filtro-chips [data-query]').forEach(btn=>{
+    btn.classList.toggle('sv-cat-on', (btn.dataset.query||'').toLowerCase()===q);
+  });
+}
+function publicacionDisponible(p){
+  const stockNum = p.stock == null ? 1 : Number(p.stock);
+  return !(p.vendida || stockNum <= 0);
+}
+function contarCuentasJuego(query){
+  const q=String(query||'').toLowerCase();
+  return (globalPublicacionesCache||[]).filter(p=>{
+    if(!publicacionDisponible(p)) return false;
+    if(!q) return true;
+    if(window.siilckCoincidePublicacion) return window.siilckCoincidePublicacion(q, p);
+    const blob=((p.titulo||'')+' '+(p.juego||'')+' '+(p.region||'')).toLowerCase();
+    return blob.includes(q);
+  }).length;
+}
+function botonJuegoHtml(g, compact){
+  const esc=window.siilckEsc;
+  const n=contarCuentasJuego(g.query);
+  const cls=compact ? 'sv-juego-btn sv-chip shrink-0' : 'sv-juego-btn';
+  return '<button type="button" data-query="'+esc(g.query)+'" class="'+cls+'"><span class="sv-juego-ico"><i class="'+esc(g.icon)+' '+esc(g.iconColor)+'"></i></span><span class="sv-juego-nombre">'+esc(g.nombre)+'</span><span class="sv-juego-count">('+n+')</span></button>';
+}
+function actualizarContadoresCatalogo(){
+  document.querySelectorAll('#cartelera-juegos [data-query], #filtro-chips [data-query]').forEach(btn=>{
+    const n=contarCuentasJuego(btn.dataset.query||'');
+    const c=btn.querySelector('.sv-juego-count');
+    if(c) c.textContent='('+n+')';
+  });
+}
+function pintarSugerencias(v){
+  const box=document.getElementById('buscador-autocomplete');
+  if(!box || !window.siilckBuscarJuegos) return;
+  const q=String(v||'').trim();
+  if(!q){ box.classList.remove('open'); box.innerHTML=''; return; }
+  const list=window.siilckBuscarJuegos(q);
+  if(!list.length){ box.classList.remove('open'); return; }
+  box.innerHTML=list.map(g=>'<button type="button" data-query="'+window.siilckEsc(g.query)+'">'+window.siilckEsc(g.nombre)+'</button>').join('');
+  box.classList.add('open');
+}
+function pintarCartelera(activo){
+  const box=document.getElementById('cartelera-juegos');
+  const chips=document.getElementById('filtro-chips');
+  if(!box || !window.SIILCK_GAMES) return;
+  const esc=window.siilckEsc;
+  const juegos=window.SIILCK_GAMES.filter(g=>g.categoria==='juego');
+  const streams=window.SIILCK_GAMES.filter(g=>g.categoria==='stream');
+  const total=contarCuentasJuego('');
+  function grupo(id, titulo, items){
+    const abierto=categoriasAbiertas[id]!==false;
+    return '<button type="button" class="sv-cat-toggle" data-cat="'+id+'" aria-expanded="'+(abierto?'true':'false')+'"><span>'+esc(titulo)+'</span><i class="fas fa-chevron-'+(abierto?'up':'down')+'"></i></button><div class="sv-cat-list'+(abierto?'':' hidden')+'" data-cat-list="'+id+'">'+items.map(g=>botonJuegoHtml(g,false)).join('')+'</div>';
+  }
+  const todas='<button type="button" data-query="" class="sv-juego-btn"><span class="sv-juego-ico"><i class="fas fa-border-all text-yellow-400"></i></span><span class="sv-juego-nombre">Todas</span><span class="sv-juego-count">('+total+')</span></button>';
+  box.innerHTML=todas+grupo('juegos','Juegos populares', juegos)+grupo('stream','Streaming & servicios', streams);
+  box.querySelectorAll('[data-query]').forEach(btn=>{
+    btn.addEventListener('click', ()=>filtrarPorJuegoRapido(btn.dataset.query));
+  });
+  box.querySelectorAll('[data-cat]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id=btn.dataset.cat;
+      categoriasAbiertas[id]=!(categoriasAbiertas[id]!==false);
+      const list=box.querySelector('[data-cat-list="'+id+'"]');
+      const abierto=categoriasAbiertas[id]!==false;
+      if(list) list.classList.toggle('hidden', !abierto);
+      btn.setAttribute('aria-expanded', abierto?'true':'false');
+      const icon=btn.querySelector('i');
+      if(icon) icon.className='fas fa-chevron-'+(abierto?'up':'down');
+    });
+  });
+  if(chips){
+    chips.innerHTML='<button type="button" data-query="" class="sv-juego-btn sv-chip shrink-0"><span class="sv-juego-nombre">Todas</span><span class="sv-juego-count">('+total+')</span></button>'+juegos.concat(streams).map(g=>botonJuegoHtml(g,true)).join('');
+    chips.querySelectorAll('[data-query]').forEach(btn=>{
+      btn.addEventListener('click', ()=>filtrarPorJuegoRapido(btn.dataset.query));
+    });
+  }
+  if(activo!==undefined && activo!==null) marcarCatalogoActivo(activo);
+}
+function pintarPaginacion(totalPaginas){
+  const nav=document.getElementById('paginacion-mercado');
+  if(!nav) return;
+  if(!totalPaginas){ nav.innerHTML=''; return; }
+  let html='';
+  for(let i=1;i<=totalPaginas;i++){
+    html+='<button type="button" class="sv-page-btn'+(i===paginaMarketplaceActual?' activa':'')+'" data-page="'+i+'">'+i+'</button>';
+  }
+  if(paginaMarketplaceActual<totalPaginas){
+    html+='<button type="button" class="sv-page-btn" data-page="'+(paginaMarketplaceActual+1)+'">Siguiente</button>';
+  }
+  nav.innerHTML=html;
+}
+function irAPaginaMercado(n){
+  const destino=Number(n);
+  if(!destino || destino===paginaMarketplaceActual) return;
+  paginaMarketplaceActual=destino;
+  renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual||'');
+  scrollAlGridCuentas();
 }
 
 auth.onAuthStateChanged(async(u)=>{
@@ -338,6 +621,8 @@ auth.onAuthStateChanged(async(u)=>{
       }
     });
     cargarPublicacionesEnVivo();
+    const chatParam = new URLSearchParams(window.location.search).get('chat');
+    if(chatParam) abrirSalaChatActivo(chatParam);
   }else{
     currentUserData=null;
     cargarPublicacionesEnVivo();
@@ -363,6 +648,7 @@ async function guardarActivacionCuentaVendedor(){
 }
 
 function cargarPublicacionesEnVivo(){
+  cargarReputacionEnVivo();
   db.collection('publicaciones').orderBy('fecha', 'desc').onSnapshot(snapshot => {
     globalPublicacionesCache = [];
     snapshot.forEach(doc => { globalPublicacionesCache.push({id: doc.id, ...doc.data()}); });
@@ -373,18 +659,69 @@ function cargarPublicacionesEnVivo(){
       const fb = b.fecha && b.fecha.toDate ? b.fecha.toDate().getTime() : 0;
       return fb - fa;
     });
-    renderizarGridPublicaciones(globalPublicacionesCache);
+    if(filtroMarketplaceActual===null){
+      const params = new URLSearchParams(window.location.search);
+      filtroMarketplaceActual = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
+      marcarCatalogoActivo(filtroMarketplaceActual);
+    }
+    if(document.querySelector('#cartelera-juegos [data-query]')) actualizarContadoresCatalogo();
+    else pintarCartelera(filtroMarketplaceActual||'');
+    renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual || '');
+    abrirCuentaDeQuery();
+    abrirVendedorDeQuery();
   });
+}
+function abrirCuentaDeQuery(){
+  if(cuentaQueryAbierta) return;
+  const id = new URLSearchParams(window.location.search).get('cuenta');
+  if(!id) return;
+  cuentaQueryAbierta = true;
+  abrirModalPub(id);
+}
+function abrirVendedorDeQuery(){
+  if(vendedorQueryAbierto) return;
+  const uid = new URLSearchParams(window.location.search).get('vendedor');
+  if(!uid) return;
+  vendedorQueryAbierto = true;
+  abrirPerfilVendedorPorUid(uid);
+}
+function copiarEnlaceFicha(){
+  const id = publicacionActualIdCache;
+  if(!id) return;
+  const url = location.origin + '/cuenta/' + encodeURIComponent(id);
+  navigator.clipboard.writeText(url).then(() => mostrarToast('Enlace de la ficha copiado')).catch(() => mostrarAlertaToast('Enlace', url));
 }
 
 function renderizarGridPublicaciones(ps, filtro=""){
-  const g=document.getElementById('market-grid');let h='';
+  const g=document.getElementById('market-grid');
+  const visibles=[];
   ps.forEach(p=>{
     const titulo = (p.titulo || '').toLowerCase();
     const juego = (p.juego || '').toLowerCase();
     const region = (p.region || '').toLowerCase();
-    if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
-    
+    const stockNum = p.stock == null ? 1 : Number(p.stock);
+    if(p.vendida || stockNum <= 0) return;
+    if(filtro && window.siilckCoincidePublicacion){
+      if(!window.siilckCoincidePublicacion(filtro, p)) return;
+    }else if(filtro && !titulo.includes(filtro) && !juego.includes(filtro) && !region.includes(filtro)) return;
+    if(window.pasaFiltrosPublicacion && window.precioListaPublicacion){
+      const precio = window.precioListaPublicacion(p, window.getOferta);
+      if(!window.pasaFiltrosPublicacion(p, { nivel: filtrosExtra.nivel, region: filtrosExtra.region, min: filtrosExtra.min, max: filtrosExtra.max, precio })) return;
+    }
+    visibles.push(p);
+  });
+  if(filtrosExtra.orden === 'barato' && window.precioListaPublicacion){
+    visibles.sort((a, b) => window.precioListaPublicacion(a, window.getOferta) - window.precioListaPublicacion(b, window.getOferta));
+  }else if(filtrosExtra.orden === 'nuevo'){
+    visibles.sort((a, b) => fechaPublicacionMs(b) - fechaPublicacionMs(a));
+  }
+  syncOpcionesRegion();
+  const totalPaginas=Math.ceil(visibles.length / CUENTAS_POR_PAGINA);
+  if(totalPaginas && paginaMarketplaceActual>totalPaginas) paginaMarketplaceActual=totalPaginas;
+  if(paginaMarketplaceActual<1) paginaMarketplaceActual=1;
+  const paginaItems=visibles.slice((paginaMarketplaceActual-1)*CUENTAS_POR_PAGINA, paginaMarketplaceActual*CUENTAS_POR_PAGINA);
+  let h='';
+  paginaItems.forEach(p=>{
     const tipoVip = p.tipoVip || 'ninguno';
     let cardClass = "web-panel border border-zinc-800 rounded-2xl cursor-pointer p-4 space-y-3 hover:border-zinc-700 transition relative";
     let badgeVip = '';
@@ -402,39 +739,49 @@ function renderizarGridPublicaciones(ps, filtro=""){
       marcoAvatar = 'marco-vip-basico';
     }
 
-    const imgHtml = p.foto ? `<div class="w-full h-36 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-36 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
+    const imgHtml = p.foto ? `<div class="w-full h-44 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800"><img src="${p.foto}" class="w-full h-full object-cover"></div>` : `<div class="w-full h-44 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
     const logoVendedorHtml = p.vendedorLogo ? `<img src="${p.vendedorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs"></i>`;
-    const botonEliminarAdmin = (auth.currentUser && auth.currentUser.uid === OWNER_UID) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2"><i class="fas fa-trash"></i></button>` : '';
+    const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
     const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
     const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
 
     h+=`<div class="${cardClass}" onclick="abrirModalPub('${p.id}')">
+      ${htmlBadgeOferta(p)}
       ${ribbon}
       ${imgHtml}
       <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
+      <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="cuenta.html?id=${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ficha</a></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
-        <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
-          <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden">${logoVendedorHtml}</div>
-          <span class="text-[11px] font-bold text-zinc-300">${p.vendedorNombre || 'Vendedor'}</span>
+        <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${p.vendedorUid}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
+          <div class="w-6 h-6 rounded-lg bg-zinc-900 ${marcoAvatar} flex items-center justify-center font-bold text-yellow-400 overflow-hidden shrink-0">${logoVendedorHtml}</div>
+          <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${p.vendedorNombre || 'Vendedor'}</span>${htmlReputacion(p.vendedorUid)}</span>
         </div>
-        <span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span>
+        ${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}
       </div>
     </div>`;
   });
   g.innerHTML=h||`<p class="text-xs text-zinc-500 col-span-full text-center py-12">No hay cuentas disponibles.</p>`;
+  pintarPaginacion(totalPaginas);
 }
 
 async function eliminarPublicacionAdmin(pubId){
-  if(!auth.currentUser || auth.currentUser.uid !== OWNER_UID) return;
+  if(!auth.currentUser || !esAdminDueño(auth.currentUser.uid)){
+    mostrarAlertaToast("Solo el dueño", "Únicamente el administrador puede eliminar publicaciones de otros usuarios.");
+    return;
+  }
   if(confirm("¿Eliminar esta publicación?")){ await db.collection('publicaciones').doc(pubId).delete(); mostrarToast("🗑️ Eliminada"); }
 }
 
 async function abrirModalPub(id){
   const d=await db.collection('publicaciones').doc(id).get();if(!d.exists)return;const p=d.data();
   precioBasePublicacionActual = parseInt(p.precio) || 0;
+  ofertaPublicacionActual = { ofertaActiva: p.ofertaActiva === true, ofertaDescuento: Number(p.ofertaDescuento) || 0 };
+  stockPublicacionActual = p.stock == null ? 1 : Number(p.stock);
   vendedorActualUidCache = p.vendedorUid;
   publicacionActualIdCache = id;
+  const ficha = document.getElementById('enlace-ficha-cuenta');
+  if(ficha) ficha.href = 'cuenta.html?id=' + encodeURIComponent(id);
   document.getElementById('modal-pub-titulo').innerText=p.titulo;
   document.getElementById('modal-pub-desc').innerText=p.descripcion||'Sin descripción.';
   document.getElementById('modal-vendedor-nombre').innerText = p.vendedorNombre || "Vendedor";
@@ -451,10 +798,86 @@ async function abrirModalPub(id){
   document.getElementById('modal-pub-detalles').classList.add('flex');
 }
 
+function precioCuentaACobrar(base, producto){
+  const oferta = ofertaDe(base, producto);
+  return oferta && oferta.ahora >= 1 ? oferta.ahora : (Number(base) || 0);
+}
 function actualizarPrecioTotalModal(){
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
-  document.getElementById('modal-pub-precio-total').innerText = `$${(precioBasePublicacionActual + costoGarantia).toLocaleString('es-CL')} CLP`;
+  document.getElementById('modal-pub-precio-total').innerText = precioVisible(precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual) + costoGarantia);
+  const banner = document.getElementById('modal-oferta-banner');
+  if(banner){
+    const oferta = ofertaDe(precioBasePublicacionActual, ofertaPublicacionActual);
+    if(!oferta){ banner.classList.add('hidden'); banner.textContent = ''; }
+    else {
+      banner.classList.remove('hidden');
+      banner.textContent = `🔥 ¡OFERTA ACTIVA! Te ahorras ${precioVisible(oferta.ahorro)} (-${oferta.descuento}%)`;
+    }
+  }
+}
+
+async function pagarProductoConProveedor(ruta, btnId){
+  if(!auth.currentUser){ window.location.href = 'login.html'; return; }
+  const listing = { id: publicacionActualIdCache };
+  const user = auth.currentUser;
+  if(!listing.id) return;
+  const btn = document.getElementById(btnId);
+  const etiqueta = btn ? btn.innerHTML : '';
+  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Conectando...'; }
+  try {
+    try { await sincronizarGarantiaAntesDePagar(); } catch(syncErr) {}
+    let idToken = '';
+    try { idToken = await user.getIdToken(true); }
+    catch(e){ idToken = await user.getIdToken(); }
+    const res = await fetch(ruta, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + idToken },
+      body: JSON.stringify({ listingId: listing.id, email: user.email })
+    });
+    const json = await res.json();
+    if (!res.ok) { alert(json.error); return; }
+    window.location.href = json.url;
+  } catch(err){
+    alert(err.message);
+  }
+  if(btn){ btn.disabled = false; btn.innerHTML = etiqueta; }
+}
+
+async function pagarProductoConFlow(){
+  return pagarProductoConProveedor('/api/flow/create', 'btn-pagar-producto');
+}
+
+async function pagarProductoConMercadoPago(){
+  return pagarProductoConProveedor('/api/mp/create', 'btn-pagar-producto-mp');
+}
+
+async function sincronizarGarantiaAntesDePagar(){
+  if(!auth.currentUser || !publicacionActualIdCache) return;
+  const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
+  const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const garantiaLabel = garantiaRadio && garantiaRadio.getAttribute('data-label') ? garantiaRadio.getAttribute('data-label') : 'Garantía 10 días';
+  const cobro = precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual);
+  const payload = {
+    tipoItem: 'cuenta',
+    publicacionId: publicacionActualIdCache,
+    titulo: document.getElementById('modal-pub-titulo').innerText,
+    precio: cobro + costoGarantia,
+    precioBase: precioBasePublicacionActual,
+    precioFinal: cobro,
+    garantia: costoGarantia,
+    garantiaCosto: costoGarantia,
+    garantiaLabel: garantiaLabel,
+    stock: stockPublicacionActual,
+    foto: document.getElementById('modal-pub-img').src || '',
+    cantidadSeleccionada: 1,
+    ofertaActiva: !!(ofertaPublicacionActual && ofertaPublicacionActual.ofertaActiva),
+    ofertaDescuento: ofertaPublicacionActual ? (Number(ofertaPublicacionActual.ofertaDescuento) || 0) : 0
+  };
+  const ref = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
+  const q = await ref.where('publicacionId', '==', publicacionActualIdCache).get();
+  if(q.empty) await ref.add({ ...payload, agregadoEn: firebase.firestore.FieldValue.serverTimestamp() });
+  else { for(const doc of q.docs) await doc.ref.set(payload, { merge: true }); }
 }
 
 async function agregarAlCarritoDesdeModal(){
@@ -462,12 +885,24 @@ async function agregarAlCarritoDesdeModal(){
   const carritoRef = db.collection('carritos').doc(auth.currentUser.uid).collection('items');
   const garantiaRadio = document.querySelector('input[name="garantia"]:checked');
   const costoGarantia = garantiaRadio ? parseInt(garantiaRadio.value) : 0;
+  const garantiaLabel = garantiaRadio && garantiaRadio.getAttribute('data-label') ? garantiaRadio.getAttribute('data-label') : 'Garantía 10 días';
   await carritoRef.add({
+    tipoItem: 'cuenta',
     publicacionId: publicacionActualIdCache,
     titulo: document.getElementById('modal-pub-titulo').innerText,
-    precio: precioBasePublicacionActual + costoGarantia,
+    precio: precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual) + costoGarantia,
+    precioBase: precioBasePublicacionActual,
+    precioFinal: precioCuentaACobrar(precioBasePublicacionActual, ofertaPublicacionActual),
+    garantia: costoGarantia,
+    garantiaCosto: costoGarantia,
+    garantiaLabel: garantiaLabel,
+    stock: stockPublicacionActual,
     foto: document.getElementById('modal-pub-img').src || "",
     cantidadSeleccionada: 1,
+    garantiaCosto: costoGarantia,
+    garantiaLabel: garantiaLabel,
+    ofertaActiva: !!(ofertaPublicacionActual && ofertaPublicacionActual.ofertaActiva),
+    ofertaDescuento: ofertaPublicacionActual ? (Number(ofertaPublicacionActual.ofertaDescuento) || 0) : 0,
     agregadoEn: firebase.firestore.FieldValue.serverTimestamp()
   });
   document.getElementById('modal-pub-detalles').classList.add('hidden');
@@ -520,16 +955,32 @@ async function abrirPerfilVendedorPorUid(uid){
   let rangoPerfil = 'Vendedor Verificado';
   if(pDoc.exists){ const d = pDoc.data(); nombre = d.username || "Vendedor"; logo = d.logo || ""; rangoPerfil = etiquetaRangoVip(d.tipoVip, d.esVendedorVip); }
   document.getElementById('vendedor-perfil-nombre').innerText = nombre;
+  const repEl = document.getElementById('vendedor-perfil-reputacion');
+  if(repEl) repEl.innerHTML = htmlReputacion(uid);
+  const resenasEl = document.getElementById('vendedor-perfil-resenas');
+  if(resenasEl){
+    resenasEl.innerHTML = '';
+    try{
+      const rs = await db.collection('resenas').where('vendedorUid', '==', uid).limit(8).get();
+      if(rs.empty) resenasEl.innerHTML = '<p class="text-[11px] text-zinc-500 text-center">Todavía no tiene reseñas.</p>';
+      rs.forEach(docRes => {
+        const r = docRes.data() || {};
+        const n = Math.max(1, Math.min(5, Math.round(Number(r.estrellas) || 0)));
+        const texto = String(r.comentario || '').replace(/[&<>]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]));
+        resenasEl.innerHTML += `<div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3"><p class="text-[11px] text-amber-300 font-bold">${'★'.repeat(n)}${'☆'.repeat(5-n)}</p><p class="text-xs text-zinc-300">${texto}</p></div>`;
+      });
+    }catch(e){}
+  }
   const rangoEl = document.getElementById('vendedor-perfil-rango');
   if(rangoEl) rangoEl.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${rangoPerfil}`;
   document.getElementById('vendedor-perfil-logo-box').innerHTML = logo ? `<img src="${logo}" class="w-full h-full object-cover">` : `<span class="text-3xl">👑</span>`;
   let h = "";
   globalPublicacionesCache.forEach(p => {
-    if(p.vendedorUid === uid){
-      h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left" onclick="abrirModalPub('${p.id}')"><div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><span class="text-yellow-400 font-extrabold text-xs">$${parseInt(p.precio||0).toLocaleString('es-CL')} CLP</span></div>`;
-    }
+    const stockNum = p.stock == null || p.stock === '' ? 1 : Number(p.stock);
+    if(p.vendedorUid !== uid || p.vendida || stockNum <= 0) return;
+    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')">${htmlBadgeOferta(p)}<div class="w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${p.foto || ''}" class="w-full h-full object-cover"></div><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4>${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
   });
-  document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">Sin publicaciones.</p>`;
+  document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }
 
 async function cargarListaChatsUsuario(){
@@ -541,6 +992,56 @@ async function cargarListaChatsUsuario(){
   });
   document.getElementById('lista-chats-usuario').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats activos.</p>`;
 }
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const inicial = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
+  filtroMarketplaceActual = inicial;
+  pintarCartelera(inicial);
+  if(inicial){
+    const elegido=(window.SIILCK_GAMES||[]).find(g=>String(g.query).toLowerCase()===inicial);
+    const input=document.getElementById('header-global-search');
+    if(input && elegido) input.value=elegido.nombre;
+    setTimeout(scrollAlGridCuentas, 80);
+  }
+  const paginacion=document.getElementById('paginacion-mercado');
+  if(paginacion){
+    paginacion.addEventListener('click', e=>{
+      const b=e.target.closest('[data-page]');
+      if(!b) return;
+      irAPaginaMercado(b.dataset.page);
+    });
+  }
+  const box = document.getElementById('buscador-autocomplete');
+  if(box){
+    box.addEventListener('click', e=>{
+      const b = e.target.closest('button');
+      if(!b) return;
+      filtrarPorJuegoRapido(b.dataset.query || '');
+    });
+  }
+  ['filtro-nivel','filtro-region','filtro-precio-min','filtro-precio-max','filtro-orden'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{ leerFiltrosExtra(); paginaMarketplaceActual=1; renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual||''); });
+    el.addEventListener('change', ()=>{ leerFiltrosExtra(); paginaMarketplaceActual=1; renderizarGridPublicaciones(globalPublicacionesCache, filtroMarketplaceActual||''); });
+  });
+  document.addEventListener('click', e=>{
+    const input = document.getElementById('header-global-search');
+    if(!box || !input) return;
+    if(e.target===input || box.contains(e.target)) return;
+    box.classList.remove('open');
+  });
+})();
 </script>
+<script type="module" src="/lib/settings.js"></script>
+<script type="module">
+import { getOferta } from '/lib/oferta.js';
+import { pasaFiltros, precioLista } from '/lib/reputacion.js';
+window.getOferta = getOferta;
+window.pasaFiltrosPublicacion = pasaFiltros;
+window.precioListaPublicacion = precioLista;
+document.dispatchEvent(new Event('siilck-oferta-ready'));
+</script>
+<script src="/guardia.js"></script>
 </body>
 </html>

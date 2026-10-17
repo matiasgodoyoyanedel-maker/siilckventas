@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>VelosterCarrito - Tu Carrito Gamer</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -8,14 +9,15 @@
 <script src="tema.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{background-color:#070b14;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  body{background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2,h3,h4{font-family:'Outfit',sans-serif}
   .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
 </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
-<div class="max-w-3xl w-full space-y-6">
+  <div class="max-w-3xl w-full space-y-6">
+  <div class="flex justify-end"><div id="sv-locale-slot"></div></div>
   <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 text-center space-y-2">
     <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-xl font-black mx-auto shadow-lg"><i class="fas fa-shopping-cart"></i></div>
     <h2 class="text-xl font-black text-white">Bienvenido a VelosterCarrito</h2>
@@ -42,6 +44,13 @@
   <div class="flex flex-col sm:flex-row gap-3">
     <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
     <button id="btn-pagar-flow" onclick="pagarConFlow()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</button>
+    <button id="btn-pagar-mp" onclick="pagarConMercadoPago()" class="flex-1 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50" style="background:#009ee3"><i class="fas fa-credit-card mr-1.5"></i> Pagar con Mercado Pago</button>
+  </div>
+
+  <div id="box-entrega-auto" class="hidden web-panel rounded-3xl p-6 space-y-3 border border-emerald-500/40">
+    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-wider"><i class="fas fa-key mr-1.5"></i> Entrega automática</h3>
+    <p id="txt-entrega-estado" class="text-[11px] text-zinc-300">Confirmando tu pago con Flow y entregando la cuenta...</p>
+    <div id="lista-entregas-auto" class="space-y-3"></div>
   </div>
 </div>
 
@@ -51,6 +60,7 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 
 let totalFinalGlobal = 0;
+let itemsCarritoGlobal = [];
 let emailGlobal = 'cliente@siiilckventas.com';
 
 auth.onAuthStateChanged(async(u)=>{
@@ -61,6 +71,43 @@ auth.onAuthStateChanged(async(u)=>{
   }
   emailGlobal = u.email || 'cliente@siiilckventas.com';
   cargarCarritoEnVivo(u.uid);
+  escucharEntregasAutomaticas(u.uid);
+  intentarConfirmarRetornoFlow();
+  if(new URLSearchParams(window.location.search).get('ok') === '1'){
+    activarPasesVipTrasPago(u.uid);
+  }
+});
+
+function precioVisible(n){
+  if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
+  return '$' + Number(n || 0).toLocaleString('es-CL');
+}
+function precioACobrar(item){
+  if(!item || item.tipoItem === 'pase_vip') return Number(item && item.precio) || 0;
+  const tieneBase = item.precioBase != null && item.precioBase !== '';
+  const base = tieneBase ? Number(item.precioBase) : (Number(item.precio) || 0);
+  const garantia = tieneBase ? Number(item.garantiaCosto || item.garantia || 0) : 0;
+  const oferta = window.getOferta ? getOferta(base, item) : null;
+  if(oferta && oferta.ahora >= 1) return oferta.ahora + garantia;
+  if(Number(item.precio) > 0) return Number(item.precio);
+  return base + garantia;
+}
+function htmlPrecioCarrito(item){
+  const tieneBase = item && item.precioBase != null && item.precioBase !== '';
+  const base = tieneBase ? Number(item.precioBase) : (Number(item.precio) || 0);
+  const garantia = tieneBase ? Number(item.garantiaCosto || item.garantia || 0) : 0;
+  const oferta = window.getOferta ? getOferta(base, item) : null;
+  if(!oferta) return `<span class="text-[10px] text-yellow-400 font-bold">${precioVisible(item.precio)} c/u</span>`;
+  return `<span class="block text-[11px] text-zinc-300 line-through">${precioVisible(oferta.antes)}</span><span class="text-[10px] text-yellow-400 font-bold">${precioVisible(oferta.ahora + garantia)} c/u</span>`;
+}
+let carritoUidActual = null;
+let carritoItemsActuales = null;
+let carritoRenderToken = 0;
+document.addEventListener('siilck-settings', () => {
+  if(carritoUidActual && carritoItemsActuales) renderizarCarrito(carritoItemsActuales, carritoUidActual);
+});
+document.addEventListener('siilck-oferta-ready', () => {
+  if(carritoUidActual && carritoItemsActuales) renderizarCarrito(carritoItemsActuales, carritoUidActual);
 });
 
 function cargarCarritoEnVivo(uid){
@@ -74,8 +121,12 @@ function cargarCarritoEnVivo(uid){
 }
 
 async function renderizarCarrito(items, uid){
+  const token = ++carritoRenderToken;
+  carritoUidActual = uid;
+  carritoItemsActuales = items;
   const listEl = document.getElementById('carrito-items-list');
   const desgloseBox = document.getElementById('carrito-desglose-box');
+  itemsCarritoGlobal = items || [];
   
   if(items.length === 0){
     listEl.innerHTML = `<p class="text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
@@ -85,6 +136,7 @@ async function renderizarCarrito(items, uid){
   }
 
   const userDoc = await db.collection('perfiles').doc(uid).get();
+  if(token !== carritoRenderToken) return;
   const userData = userDoc.exists ? userDoc.data() : {};
   const ahora = new Date().getTime();
   const expira = userData.vipExpira ? userData.vipExpira.toDate().getTime() : 0;
@@ -92,27 +144,38 @@ async function renderizarCarrito(items, uid){
   const tipoVip = userData.tipoVip || 'basico';
 
   let h = "";
-  let subtotal = 0;
-
+  let subtotalCuentas = 0;
+  let subtotalPases = 0;
   items.forEach(item => {
+    const esPase = item.tipoItem === 'pase_vip';
     const cantidad = item.cantidadSeleccionada || 1;
-    const stockDisponible = item.stock || item.unidades || 1;
-    const totalItem = (item.precio || 0) * cantidad;
-    subtotal += totalItem;
+    const stockDisponible = esPase ? 1 : (item.stock || item.unidades || 1);
+    const totalItem = precioACobrar(item) * cantidad;
+    if(esPase) subtotalPases += totalItem;
+    else subtotalCuentas += totalItem;
 
-    h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden border border-zinc-800 shrink-0"><img src="${item.foto || ''}" class="w-full h-full object-cover"></div>
-        <div>
-          <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
-          <span class="text-[10px] text-yellow-400 font-bold">$${parseInt(item.precio||0).toLocaleString('es-CL')} CLP c/u</span>
-          <div class="flex items-center gap-2 mt-1">
+    const thumb = esPase
+      ? `<div class="w-12 h-12 rounded-xl ${item.tipoVipPase==='pro' ? 'bg-rose-600 text-white' : 'bg-yellow-500 text-zinc-950'} flex items-center justify-center text-lg shrink-0"><i class="fas fa-crown"></i></div>`
+      : `<div class="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden border border-zinc-800 shrink-0"><img src="${item.foto || ''}" class="w-full h-full object-cover"></div>`;
+    const garantiaTxt = item.garantiaLabel ? `<span class="block text-[10px] text-zinc-400">${item.garantiaLabel}${item.garantiaCosto ? ' (+'+precioVisible(item.garantiaCosto)+')' : ''}</span>` : '';
+    const qtyBox = esPase
+      ? `<span class="text-[10px] text-zinc-500">Pase 30 días · mismo pago Flow que las cuentas</span>`
+      : `<div class="flex items-center gap-2 mt-1">
             <span class="text-[10px] text-zinc-400">Cantidad:</span>
             <button onclick="cambiarCantidadItem('${item.id}', '${uid}', ${cantidad - 1}, ${stockDisponible})" class="w-5 h-5 bg-zinc-800 text-white rounded text-xs flex items-center justify-center hover:bg-zinc-700">-</button>
             <span class="text-xs font-bold text-white">${cantidad}</span>
             <button onclick="cambiarCantidadItem('${item.id}', '${uid}', ${cantidad + 1}, ${stockDisponible})" class="w-5 h-5 bg-zinc-800 text-white rounded text-xs flex items-center justify-center hover:bg-zinc-700">+</button>
             <span class="text-[9px] text-zinc-500 ml-1">(Stock: ${stockDisponible})</span>
-          </div>
+          </div>`;
+
+    h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        ${thumb}
+        <div>
+          <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
+          ${garantiaTxt}
+          ${htmlPrecioCarrito(item)}
+          ${qtyBox}
         </div>
       </div>
       <button onclick="eliminarItemCarrito('${item.id}', '${uid}')" class="text-rose-400 hover:text-rose-300 p-2 text-xs" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
@@ -120,19 +183,21 @@ async function renderizarCarrito(items, uid){
   });
 
   listEl.innerHTML = h;
+  const subtotal = subtotalCuentas + subtotalPases;
 
   const iva = Math.round(subtotal * 0.19);
   let descuento = 0;
   if(esVipActivo){
     if(tipoVip === 'pro'){
-      descuento = Math.round(subtotal * 0.10);
+      descuento = Math.round(subtotalCuentas * 0.10);
       document.getElementById('row-descuento-vip').classList.remove('hidden');
-      document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Pro 10%)`;
+      document.getElementById('txt-descuento').innerText = '-' + precioVisible(descuento) + ' (VIP Pro 10%)';
     }else{
-      descuento = Math.round(subtotal * 0.05);
+      descuento = Math.round(subtotalCuentas * 0.05);
       document.getElementById('row-descuento-vip').classList.remove('hidden');
-      document.getElementById('txt-descuento').innerText = `-$${descuento.toLocaleString('es-CL')} CLP (VIP Básico 5%)`;
+      document.getElementById('txt-descuento').innerText = '-' + precioVisible(descuento) + ' (VIP Básico 5%)';
     }
+    if(subtotalCuentas === 0) document.getElementById('row-descuento-vip').classList.add('hidden');
   }else{
     document.getElementById('row-descuento-vip').classList.add('hidden');
   }
@@ -140,9 +205,9 @@ async function renderizarCarrito(items, uid){
   const totalFinal = (subtotal + iva) - descuento;
   totalFinalGlobal = totalFinal;
 
-  document.getElementById('txt-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')} CLP`;
-  document.getElementById('txt-iva').innerText = `$${iva.toLocaleString('es-CL')} CLP`;
-  document.getElementById('txt-total-final').innerText = `$${totalFinal.toLocaleString('es-CL')} CLP`;
+  document.getElementById('txt-subtotal').innerText = precioVisible(subtotal);
+  document.getElementById('txt-iva').innerText = precioVisible(iva);
+  document.getElementById('txt-total-final').innerText = precioVisible(totalFinal);
   desgloseBox.classList.remove('hidden');
 }
 
@@ -161,48 +226,157 @@ async function eliminarItemCarrito(itemId, uid){
   await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
 }
 
-async function pagarConFlow(){
-  const btn = document.getElementById('btn-pagar-flow');
+async function activarPasesVipTrasPago(uid){
+  try{
+    const snap = await db.collection('carritos').doc(uid).collection('items').get();
+    let mejor = null;
+    snap.forEach(doc => {
+      const d = doc.data();
+      if(d.tipoItem === 'pase_vip'){
+        if(d.tipoVipPase === 'pro') mejor = 'pro';
+        else if(!mejor) mejor = 'basico';
+      }
+    });
+    if(!mejor) return;
+    const perfilRef = db.collection('perfiles').doc(uid);
+    const perfilDoc = await perfilRef.get();
+    const data = perfilDoc.exists ? perfilDoc.data() : {};
+    let base = new Date();
+    if(data.vipExpira && data.vipExpira.toDate && data.vipExpira.toDate().getTime() > base.getTime()){
+      base = data.vipExpira.toDate();
+    }
+    const expira = new Date(base.getTime() + 30*24*60*60*1000);
+    await perfilRef.set({
+      esVendedorVip: true,
+      tipoVip: mejor,
+      vipExpira: firebase.firestore.Timestamp.fromDate(expira),
+      isVip: true,
+      plan: 'vip'
+    }, { merge: true });
+    alert('✅ Pase VIP activado por 30 días. Gracias por tu compra con Flow.');
+  }catch(e){
+    console.log(e);
+  }
+}
+
+function respuestaEsSesion(data){
+  const t = String((data && (data.code || data.error)) || '').toLowerCase();
+  return t.includes('token_expirado') || t.includes('sesion') || t.includes('sesión') || t.includes('expirad');
+}
+async function tokenDePago(){
+  const user = auth.currentUser;
+  if(!user) throw new Error('Debes iniciar sesión para comprar.');
+  try { return await user.getIdToken(true); }
+  catch(e){ return await user.getIdToken(); }
+}
+async function payloadPagoFlow(){
+  const idToken = await tokenDePago();
+  const cuentas = itemsCarritoGlobal.filter(item => item.tipoItem !== 'pase_vip' && item.publicacionId);
+  const body = { email: auth.currentUser.email || emailGlobal };
+  if(cuentas.length === 1 && itemsCarritoGlobal.length === 1) body.listingId = cuentas[0].publicacionId;
+  return { idToken, body };
+}
+async function pedirPago(ruta){
+  const payload = await payloadPagoFlow();
+  const res = await fetch(ruta, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + payload.idToken },
+    body: JSON.stringify(payload.body)
+  });
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch(e) { throw new Error((text || '').slice(0, 80) || 'El pago no devolvió JSON'); }
+}
+
+async function pagarConProveedor(ruta, btnId, nombre, etiqueta){
+  const btn = document.getElementById(btnId);
+  const otro = document.getElementById(btnId === 'btn-pagar-flow' ? 'btn-pagar-mp' : 'btn-pagar-flow');
   if(totalFinalGlobal <= 0){
     alert('Tu carrito está vacío');
     return;
   }
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con Flow...';
-  btn.disabled = true;
+  if(!auth.currentUser){
+    window.location.href = 'login.html';
+    return;
+  }
+  if(btn){
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando con ' + nombre + '...';
+    btn.disabled = true;
+  }
+  if(otro) otro.disabled = true;
 
   try {
-    let res, data;
-    try {
-      res = await fetch('/api/crear', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: totalFinalGlobal, email: emailGlobal })
-      });
-      data = await res.json();
-    } catch(e) {}
-
-    if(!data || !data.flowUrl){
-      res = await fetch('/siilckventas/api/crear', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: totalFinalGlobal, email: emailGlobal })
-      });
-      data = await res.json();
+    let data = await pedirPago(ruta);
+    if(respuestaEsSesion(data) && auth.currentUser){
+      await auth.currentUser.reload().catch(()=>{});
+      data = await pedirPago(ruta);
     }
 
-    if(data.flowUrl){
-      window.location.href = data.flowUrl;
+    if(data.url){
+      window.location.href = data.url;
     } else {
-      alert('Error Flow: ' + (data.error || JSON.stringify(data)));
-      btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
-      btn.disabled = false;
+      alert(data.error || 'No se pudo crear el pago');
+      if(btn){ btn.innerHTML = etiqueta; btn.disabled = false; }
+      if(otro) otro.disabled = false;
     }
   } catch(err){
     alert('Error: ' + err.message);
-    btn.innerHTML = '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow';
-    btn.disabled = false;
+    if(btn){ btn.innerHTML = etiqueta; btn.disabled = false; }
+    if(otro) otro.disabled = false;
   }
 }
+
+async function pagarConFlow(){
+  return pagarConProveedor('/api/flow/create', 'btn-pagar-flow', 'Flow', '<i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow');
+}
+
+async function pagarConMercadoPago(){
+  return pagarConProveedor('/api/mp/create', 'btn-pagar-mp', 'Mercado Pago', '<i class="fas fa-credit-card mr-1.5"></i> Pagar con Mercado Pago');
+}
+
+async function intentarConfirmarRetornoFlow(){
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  if(token){
+    window.location.replace('/api/retorno?token=' + encodeURIComponent(token));
+    return;
+  }
+  if(params.get('ok') === '1'){
+    const box = document.getElementById('box-entrega-auto');
+    if(box) box.classList.remove('hidden');
+  }
+}
+
+function escucharEntregasAutomaticas(uid){
+  db.collection('entregas').where('compradorUid', '==', uid).onSnapshot(snapshot => {
+    if(snapshot.empty) return;
+    const box = document.getElementById('box-entrega-auto');
+    const list = document.getElementById('lista-entregas-auto');
+    const estado = document.getElementById('txt-entrega-estado');
+    if(box) box.classList.remove('hidden');
+    if(estado) estado.innerText = 'Pago confirmado. Estas son tus cuentas, entregadas en automático.';
+    let h = '';
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      (d.cuentas || []).forEach(c => {
+        h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-emerald-500/20 text-xs space-y-1">
+          <h4 class="font-black text-white">${c.titulo || 'Cuenta'}</h4>
+          <p class="text-zinc-300">Email: <span class="text-yellow-400 font-bold">${c.emailCuenta || '—'}</span></p>
+          <p class="text-zinc-300">Password: <span class="text-yellow-400 font-bold">${c.passwordCuenta || '—'}</span></p>
+          <p class="text-zinc-400">Tel: ${c.telefono || '—'} · Recuperación: ${c.recuperacion || '—'}</p>
+        </div>`;
+      });
+    });
+    if(list) list.innerHTML = h || `<p class="text-[11px] text-zinc-500">Esperando la confirmación de Flow...</p>`;
+  });
+}
 </script>
+<script type="module" src="/lib/settings.js"></script>
+<script type="module">
+import { getOferta } from '/lib/oferta.js';
+window.getOferta = getOferta;
+document.dispatchEvent(new Event('siilck-oferta-ready'));
+</script>
+<script src="/guardia.js"></script>
 </body>
 </html>
