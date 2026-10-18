@@ -18,6 +18,13 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
+    function esVendedorAprobado(uid) {
+      let perfil = get(/databases/$(database)/documents/perfiles/$(uid)).data;
+      return perfil.get('role', '') == 'seller'
+        || perfil.get('is_seller', false) == true
+        || perfil.get('cuentaVendedorActiva', false) == true;
+    }
+
     function perfilPrivilegedKeys() {
       return ['esVendedorVip', 'tipoVip', 'bloqueado', 'is_blocked', 'vipExpira', 'isVip', 'plan'];
     }
@@ -33,12 +40,23 @@ service cloud.firestore {
         (!('esVendedorVip' in request.resource.data) || request.resource.data.esVendedorVip == false) &&
         (!('isVip' in request.resource.data) || request.resource.data.isVip == false) &&
         (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false) &&
-        (!('is_blocked' in request.resource.data) || request.resource.data.is_blocked == false)
+        (!('is_blocked' in request.resource.data) || request.resource.data.is_blocked == false) &&
+        (!('role' in request.resource.data) || request.resource.data.role != 'seller') &&
+        (!('is_seller' in request.resource.data) || request.resource.data.is_seller == false) &&
+        (!('cuentaVendedorActiva' in request.resource.data) || request.resource.data.cuentaVendedorActiva == false)
       );
 
+      // role / is_seller solo los cambia el admin; cuentaVendedorActiva:true solo si ya fue aprobado.
       allow update: if isOwner() || (
         isSelf(userId) &&
-        !request.resource.data.diff(resource.data).affectedKeys().hasAny(perfilPrivilegedKeys())
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(perfilPrivilegedKeys()) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'is_seller']) &&
+        (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['cuentaVendedorActiva']) ||
+          request.resource.data.cuentaVendedorActiva == false ||
+          resource.data.get('role', '') == 'seller' ||
+          resource.data.get('is_seller', false) == true
+        )
       );
 
       allow delete: if isOwner();
@@ -48,8 +66,11 @@ service cloud.firestore {
     match /publicaciones/{pubId} {
       allow read: if true;
 
-      allow create: if signedIn()
-        && request.resource.data.vendedorUid == request.auth.uid;
+      allow create: if isOwner() || (
+        signedIn()
+        && request.resource.data.vendedorUid == request.auth.uid
+        && esVendedorAprobado(request.auth.uid)
+      );
 
       allow update: if isOwner() || (
         signedIn()
