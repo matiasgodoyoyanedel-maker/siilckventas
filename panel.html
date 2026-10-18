@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18520849537"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18520849537');
+</script>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel de Administración - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -54,6 +63,7 @@
       <button onclick="cambiarTabAdmin('postulaciones')" id="btn-tab-postulaciones" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-rose-600 text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-user-check mr-1"></i> Postulaciones Vendedor</button>
       <button onclick="cambiarTabAdmin('usuarios')" id="btn-tab-usuarios" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-users mr-1"></i> Usuarios & Bloqueos</button>
       <button onclick="cambiarTabAdmin('mantenimiento')" id="btn-tab-mantenimiento" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-tools mr-1"></i> Mantención & Temática</button>
+      <button onclick="cambiarTabAdmin('retiros')" id="btn-tab-retiros" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-wallet mr-1"></i> Retiros & Reclamos</button>
     </div>
   </div>
 
@@ -68,6 +78,17 @@
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
       <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-users mr-2"></i> Control de Usuarios Registrados, IDs y Correos</h3>
       <div id="lista-usuarios-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando usuarios...</p></div>
+    </div>
+  </div>
+
+  <div id="tab-retiros" class="hidden space-y-4 animate-page max-w-4xl mx-auto w-full">
+    <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
+      <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-wallet mr-2"></i> Retiros de vendedores</h3>
+      <div id="lista-retiros-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Abre esta pestaña para ver los retiros.</p></div>
+    </div>
+    <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
+      <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-exclamation-circle mr-2"></i> Reclamos de compras</h3>
+      <div id="lista-reclamos-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Abre esta pestaña para ver los reclamos.</p></div>
     </div>
   </div>
 
@@ -156,7 +177,7 @@ const auth=firebase.auth(),db=firebase.firestore();
 function mostrarToast(m){const t=document.getElementById('global-toast');document.getElementById('toast-message').innerText=m;t.classList.remove('hidden');setTimeout(()=>{t.classList.add('hidden')},3000)}
 
 function cambiarTabAdmin(tab){
-  ['postulaciones','usuarios','mantenimiento'].forEach(t=>{
+  ['postulaciones','usuarios','mantenimiento','retiros'].forEach(t=>{
     document.getElementById(`tab-${t}`).classList.add('hidden');
     document.getElementById(`btn-tab-${t}`).className="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap";
   });
@@ -166,6 +187,52 @@ function cambiarTabAdmin(tab){
   if(tab === 'postulaciones') cargarPostulacionesAdmin();
   if(tab === 'usuarios') cargarUsuariosAdmin();
   if(tab === 'mantenimiento') cargarConfiguracionAdmin();
+  if(tab === 'retiros') cargarRetirosAdmin();
+}
+function pesosAdmin(n){ return '$' + Number(n || 0).toLocaleString('es-CL'); }
+function escAdmin(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function cargarRetirosAdmin(){
+  const box = document.getElementById('lista-retiros-admin');
+  const reclamos = document.getElementById('lista-reclamos-admin');
+  box.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">Cargando retiros...</p>';
+  try{
+    const snap = await db.collection('retiros').get();
+    const docs = snap.docs.slice().sort((a,b)=>Number((b.data()||{}).creadoEn||0)-Number((a.data()||{}).creadoEn||0));
+    if(!docs.length) box.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay retiros.</p>';
+    else box.innerHTML = docs.map(doc=>{
+      const d = doc.data() || {};
+      const pendiente = d.estado === 'pendiente';
+      return `<article class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 space-y-2"><div class="flex justify-between gap-3"><p class="text-sm font-black text-white">${pesosAdmin(d.monto)}</p><span class="text-[10px] uppercase font-black text-yellow-400">${escAdmin(d.estado || 'pendiente')}</span></div><p class="text-[11px] text-zinc-300 break-all">${escAdmin(d.destino || '')}</p><p class="text-[10px] text-zinc-500">${escAdmin(d.vendedorUid || '')}</p>${pendiente ? `<div class="flex gap-2"><button onclick="resolverRetiro('${escAdmin(doc.id)}','pagado')" class="bg-emerald-600 text-white text-[10px] font-black px-3 py-2 rounded-lg">Marcar pagado</button><button onclick="resolverRetiro('${escAdmin(doc.id)}','rechazado')" class="bg-rose-600 text-white text-[10px] font-black px-3 py-2 rounded-lg">Rechazar y devolver</button></div>` : ''}</article>`;
+    }).join('');
+  }catch(e){ box.innerHTML = '<p class="text-xs text-rose-400 text-center py-4">No se pudieron leer los retiros.</p>'; }
+  try{
+    const snap = await db.collection('reclamos').get();
+    const docs = snap.docs.slice().sort((a,b)=>Number((b.data()||{}).creadoEn||0)-Number((a.data()||{}).creadoEn||0));
+    if(!docs.length) reclamos.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay reclamos.</p>';
+    else reclamos.innerHTML = docs.map(doc=>{
+      const d = doc.data() || {};
+      return `<article class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 space-y-1"><div class="flex justify-between gap-3"><p class="text-sm font-black text-white">${escAdmin(d.motivo || 'Reclamo')}</p><span class="text-[10px] uppercase font-black text-rose-300">${escAdmin(d.estado || 'abierto')}</span></div><p class="text-xs text-zinc-300">${escAdmin(d.detalle || '')}</p><p class="text-[10px] text-zinc-500">Orden ${escAdmin(d.ordenId || doc.id)}</p>${d.estado === 'abierto' ? `<button onclick="cerrarReclamo('${escAdmin(doc.id)}')" class="bg-zinc-800 text-white text-[10px] font-black px-3 py-2 rounded-lg">Marcar cerrado</button>` : ''}</article>`;
+    }).join('');
+  }catch(e){ reclamos.innerHTML = '<p class="text-xs text-rose-400 text-center py-4">No se pudieron leer los reclamos.</p>'; }
+}
+async function resolverRetiro(id, estado){
+  const ref = db.collection('retiros').doc(id);
+  await db.runTransaction(async (t)=>{
+    const snap = await t.get(ref);
+    if(!snap.exists || snap.data().estado !== 'pendiente') return;
+    const d = snap.data();
+    if(estado === 'rechazado'){
+      t.set(db.collection('saldos').doc(d.vendedorUid), { disponible: firebase.firestore.FieldValue.increment(Number(d.monto)||0) }, { merge:true });
+    }
+    t.update(ref, { estado, resueltoEn: Date.now() });
+  });
+  mostrarToast(estado === 'pagado' ? 'Retiro marcado como pagado' : 'Retiro rechazado y saldo devuelto');
+  cargarRetirosAdmin();
+}
+async function cerrarReclamo(id){
+  await db.collection('reclamos').doc(id).update({ estado:'cerrado', cerradoEn: Date.now() });
+  mostrarToast('Reclamo cerrado');
+  cargarRetirosAdmin();
 }
 
 auth.onAuthStateChanged(async(u)=>{
@@ -266,7 +333,7 @@ async function publicarNuevoVendedor(uid){
 
 async function aprobarPostulacion(postId, uid){
   await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'aprobado'});
-  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true, role: 'seller'});
+  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true, role: 'seller', versionVendedor: 'v2', fechaActivacionV2: firebase.firestore.FieldValue.serverTimestamp(), esBetaAntiguo: false});
   await publicarNuevoVendedor(uid);
   mostrarToast("✅ Postulación aprobada y cuenta de vendedor activada con éxito.");
   cargarPostulacionesAdmin();

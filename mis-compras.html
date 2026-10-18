@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18520849537"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18520849537');
+</script>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Datos de tu cuenta - SiilckVentas</title>
@@ -49,13 +58,56 @@
         <button type="button" id="btn-copiar-transaccion" class="text-xs bg-yellow-500/20 text-yellow-200 px-3 py-1.5 rounded-lg font-bold">Copiar ID Transacción</button>
       </div>
     </div>
+    <div id="acciones-detalle" class="hidden flex flex-wrap gap-2"></div>
     <div id="lista" class="space-y-3"></div>
+  </div>
+  <div id="modal-resena" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <form id="form-resena" class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 w-full max-w-md space-y-3">
+      <h2 class="text-lg font-black text-white">Dejar reseña</h2>
+      <p class="text-xs text-zinc-400">Cuéntale a otros compradores cómo te fue con esta compra.</p>
+      <input type="hidden" id="resena-orden">
+      <input type="hidden" id="resena-vendedor">
+      <div id="resena-estrellas" class="flex gap-2 text-2xl text-yellow-400">
+        <button type="button" data-estrella="1">★</button>
+        <button type="button" data-estrella="2">★</button>
+        <button type="button" data-estrella="3">★</button>
+        <button type="button" data-estrella="4">★</button>
+        <button type="button" data-estrella="5">★</button>
+      </div>
+      <textarea id="resena-texto" rows="3" maxlength="500" placeholder="Llegó rápido, la cuenta era la publicada..." class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
+      <p id="resena-msg" class="text-xs text-zinc-300"></p>
+      <div class="flex gap-2">
+        <button type="submit" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-full">Publicar reseña</button>
+        <button type="button" id="resena-cerrar" class="px-4 bg-zinc-800 text-white font-bold rounded-full">Cerrar</button>
+      </div>
+    </form>
+  </div>
+  <div id="modal-reclamo" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <form id="form-reclamo" class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 w-full max-w-md space-y-3">
+      <h2 class="text-lg font-black text-white">Abrir reclamo</h2>
+      <p class="text-xs text-zinc-400">Queda atado a esta compra y también abre un ticket de soporte.</p>
+      <input type="hidden" id="reclamo-orden">
+      <select id="reclamo-motivo" class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-3 text-sm text-white">
+        <option value="Cuenta con datos cambiados">Cuenta con datos cambiados</option>
+        <option value="Cuenta baneada">Cuenta baneada</option>
+        <option value="No recibí la cuenta">No recibí la cuenta</option>
+        <option value="El vendedor no responde">El vendedor no responde</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <textarea id="reclamo-detalle" rows="3" maxlength="800" placeholder="Qué pasó con esta compra" class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
+      <p id="reclamo-msg" class="text-xs text-zinc-300"></p>
+      <div class="flex gap-2">
+        <button type="submit" class="flex-1 bg-rose-500 text-white font-black py-3 rounded-full">Abrir reclamo</button>
+        <button type="button" id="reclamo-cerrar" class="px-4 bg-zinc-800 text-white font-bold rounded-full">Cerrar</button>
+      </div>
+    </form>
   </div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"[REDACTED].firebaseapp.com",projectId:"[REDACTED]",storageBucket:"[REDACTED].firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+var estrellasElegidas = 5;
 
 function orderId(){
   const q=new URLSearchParams(location.search);
@@ -140,6 +192,47 @@ function abrirDatosCuenta(item){
 document.getElementById('modal-cerrar').addEventListener('click', () => {
   document.getElementById('modal-cuenta').classList.add('hidden');
 });
+document.getElementById('resena-cerrar').addEventListener('click', () => document.getElementById('modal-resena').classList.add('hidden'));
+document.getElementById('reclamo-cerrar').addEventListener('click', () => document.getElementById('modal-reclamo').classList.add('hidden'));
+document.querySelectorAll('#resena-estrellas button').forEach((btn) => {
+  btn.addEventListener('click', () => marcarEstrellas(Number(btn.dataset.estrella)));
+});
+marcarEstrellas(5);
+document.getElementById('form-resena').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const msg = document.getElementById('resena-msg');
+  msg.textContent = 'Guardando reseña…';
+  try{
+    const r = await postAutenticado('/api/resena', {
+      ordenId: document.getElementById('resena-orden').value,
+      vendedorUid: document.getElementById('resena-vendedor').value,
+      estrellas: estrellasElegidas,
+      comentario: document.getElementById('resena-texto').value
+    });
+    msg.textContent = r.ok ? 'Reseña publicada.' : (r.data.error || 'No se pudo publicar la reseña.');
+    if(r.ok && !id && auth.currentUser){
+      document.getElementById('modal-resena').classList.add('hidden');
+      pintarLista(auth.currentUser);
+    }
+  }catch(e){ msg.textContent = 'No se pudo publicar la reseña.'; }
+});
+document.getElementById('form-reclamo').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const msg = document.getElementById('reclamo-msg');
+  msg.textContent = 'Abriendo reclamo…';
+  try{
+    const r = await postAutenticado('/api/reclamo', {
+      ordenId: document.getElementById('reclamo-orden').value,
+      motivo: document.getElementById('reclamo-motivo').value,
+      detalle: document.getElementById('reclamo-detalle').value
+    });
+    msg.textContent = r.ok ? 'Reclamo abierto. También quedó un ticket de soporte.' : (r.data.error || 'No se pudo abrir el reclamo.');
+    if(r.ok && !id && auth.currentUser){
+      document.getElementById('modal-reclamo').classList.add('hidden');
+      pintarLista(auth.currentUser);
+    }
+  }catch(e){ msg.textContent = 'No se pudo abrir el reclamo.'; }
+});
 function pintarOrden(orden){
   const card = document.createElement('article');
   card.className = 'bg-zinc-900 border border-zinc-800 rounded-3xl p-5 space-y-3';
@@ -186,7 +279,70 @@ function pintarOrden(orden){
     }
     card.appendChild(filaItem);
   });
+  card.appendChild(accionesCompra(orden));
   return card;
+}
+function marcarEstrellas(n){
+  estrellasElegidas = n;
+  document.querySelectorAll('#resena-estrellas button').forEach((btn)=>{
+    btn.style.opacity = Number(btn.dataset.estrella) <= n ? '1' : '0.35';
+  });
+}
+function abrirModalResena(orden){
+  document.getElementById('resena-orden').value = orden.id || '';
+  document.getElementById('resena-vendedor').value = orden.vendedorUid || '';
+  document.getElementById('resena-texto').value = '';
+  document.getElementById('resena-msg').textContent = '';
+  marcarEstrellas(5);
+  document.getElementById('modal-resena').classList.remove('hidden');
+}
+function abrirModalReclamo(orden){
+  document.getElementById('reclamo-orden').value = orden.id || '';
+  document.getElementById('reclamo-detalle').value = '';
+  document.getElementById('reclamo-msg').textContent = '';
+  document.getElementById('modal-reclamo').classList.remove('hidden');
+}
+function accionesCompra(orden){
+  const box = document.createElement('div');
+  box.className = 'flex flex-wrap gap-2 pt-1';
+  if(orden.resena){
+    const hecha = document.createElement('p');
+    hecha.className = 'text-[11px] text-amber-300 font-bold';
+    const n = Math.max(1, Math.min(5, Math.round(Number(orden.resena.estrellas) || 0)));
+    hecha.textContent = '★'.repeat(n) + '☆'.repeat(5 - n) + ' Reseña enviada';
+    box.appendChild(hecha);
+  }else{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'bg-yellow-400 text-black text-[11px] font-black px-4 py-2 rounded-full';
+    btn.textContent = 'Dejar reseña';
+    btn.addEventListener('click', () => abrirModalResena(orden));
+    box.appendChild(btn);
+  }
+  if(orden.reclamo){
+    const estadoReclamo = document.createElement('p');
+    estadoReclamo.className = 'text-[11px] text-rose-300 font-bold';
+    estadoReclamo.textContent = 'Reclamo ' + (orden.reclamo.estado || 'abierto');
+    box.appendChild(estadoReclamo);
+  }else{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'bg-rose-500 text-white text-[11px] font-black px-4 py-2 rounded-full';
+    btn.textContent = 'Abrir reclamo';
+    btn.addEventListener('click', () => abrirModalReclamo(orden));
+    box.appendChild(btn);
+  }
+  return box;
+}
+async function postAutenticado(ruta, cuerpo){
+  const token = await auth.currentUser.getIdToken(true);
+  const res = await fetch(ruta, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+    body: JSON.stringify(cuerpo)
+  });
+  const data = await res.json().catch(() => ({}));
+  return { ok: res.ok && data.ok !== false, data };
 }
 async function pintarLista(user){
   const box = document.getElementById('lista-ordenes');
@@ -245,6 +401,11 @@ auth.onAuthStateChanged(async(user)=>{
       catch(e){}
     });
     pintar(data.cuentas||[]);
+    const acciones = document.getElementById('acciones-detalle');
+    const vendedor = (data.cuentas || []).find((c) => c.vendedorUid);
+    acciones.classList.remove('hidden');
+    acciones.textContent = '';
+    acciones.appendChild(accionesCompra({ id, vendedorUid: vendedor ? vendedor.vendedorUid : '' }));
   }catch(e){
     estado.textContent='No se pudieron cargar los datos. Reintenta en unos segundos.';
   }

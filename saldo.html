@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es" data-sv-theme="aurora">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18520849537"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18520849537');
+</script>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi saldo - SiilckVentas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/tema.css">
+<script src="/tema.js"></script>
+<style>
+  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  h1,h2{font-family:'Outfit',sans-serif}
+  .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07)}
+</style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+  <div class="max-w-3xl mx-auto space-y-4">
+    <div class="flex items-center justify-between gap-3">
+      <a href="/ventas" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
+      <div id="sv-locale-slot"></div>
+    </div>
+    <div>
+      <h1 class="text-2xl font-black text-white">Mi saldo</h1>
+      <p class="text-sm text-zinc-400">Cada venta entra retenida durante la garantía. Después pasa a disponible y puedes retirarla.</p>
+    </div>
+    <div id="estado" class="text-sm text-zinc-400">Cargando tu saldo…</div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <article class="web-panel rounded-2xl p-4"><p class="text-[10px] uppercase text-zinc-500 font-bold">Disponible</p><p id="saldo-disponible" class="text-xl font-black text-emerald-400">$0</p></article>
+      <article class="web-panel rounded-2xl p-4"><p class="text-[10px] uppercase text-zinc-500 font-bold">En garantía</p><p id="saldo-retenido" class="text-xl font-black text-yellow-400">$0</p></article>
+      <article class="web-panel rounded-2xl p-4"><p class="text-[10px] uppercase text-zinc-500 font-bold">Total vendido</p><p id="saldo-total" class="text-xl font-black text-white">$0</p></article>
+      <article class="web-panel rounded-2xl p-4"><p class="text-[10px] uppercase text-zinc-500 font-bold">Ventas</p><p id="saldo-ventas" class="text-xl font-black text-white">0</p></article>
+    </div>
+    <form id="form-retiro" class="web-panel rounded-3xl p-5 space-y-3 border border-yellow-500/30">
+      <h2 class="text-sm font-black text-white">Pedir retiro</h2>
+      <p class="text-[11px] text-zinc-400">Mínimo $5.000 del saldo disponible. La garantía de 10 días, 3 meses o 6 meses deja el monto retenido hasta que vence.</p>
+      <label class="block text-[10px] uppercase font-bold text-zinc-400">Monto CLP
+        <input id="retiro-monto" type="number" min="5000" step="100" class="mt-1 w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white">
+      </label>
+      <label class="block text-[10px] uppercase font-bold text-zinc-400">Datos bancarios
+        <textarea id="retiro-destino" rows="2" placeholder="Banco, tipo de cuenta, número y RUT" class="mt-1 w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"></textarea>
+      </label>
+      <button type="submit" class="bg-yellow-400 text-black font-black px-5 py-3 rounded-xl text-xs uppercase">Solicitar retiro</button>
+      <p id="retiro-msg" class="text-xs text-zinc-300"></p>
+    </form>
+    <section class="space-y-2">
+      <h2 class="text-sm font-black text-white">Movimientos</h2>
+      <div id="lista-movimientos" class="space-y-2"></div>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-sm font-black text-white">Retiros</h2>
+      <div id="lista-retiros" class="space-y-2"></div>
+    </section>
+  </div>
+<script>
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"[REDACTED].firebaseapp.com",projectId:"[REDACTED]",storageBucket:"[REDACTED].firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+function pesos(n){ return '$' + Number(n || 0).toLocaleString('es-CL'); }
+function fecha(ms){ return ms ? new Date(ms).toLocaleDateString('es-CL', { day:'2-digit', month:'short', year:'numeric' }) : ''; }
+function fila(titulo, meta, derecha){
+  const card=document.createElement('article');
+  card.className='web-panel rounded-2xl px-4 py-3 flex items-center justify-between gap-3';
+  const izq=document.createElement('div');
+  const h=document.createElement('p');
+  h.className='text-sm font-bold text-white';
+  h.textContent=titulo;
+  const p=document.createElement('p');
+  p.className='text-[11px] text-zinc-400';
+  p.textContent=meta;
+  izq.appendChild(h); izq.appendChild(p);
+  const d=document.createElement('p');
+  d.className='text-sm font-black text-yellow-300';
+  d.textContent=derecha;
+  card.appendChild(izq); card.appendChild(d);
+  return card;
+}
+function pintar(data){
+  const saldo=data.saldo||{};
+  document.getElementById('estado').textContent='La garantía gratis retiene 10 días. La de 3 meses retiene 90 y la de 6 meses, 180.';
+  document.getElementById('saldo-disponible').textContent=pesos(saldo.disponible);
+  document.getElementById('saldo-retenido').textContent=pesos(saldo.retenido);
+  document.getElementById('saldo-total').textContent=pesos(saldo.totalVendido);
+  document.getElementById('saldo-ventas').textContent=String(saldo.ventasCompletadas||0);
+  const mov=document.getElementById('lista-movimientos');
+  mov.textContent='';
+  const movimientos=data.movimientos||[];
+  if(!movimientos.length) mov.appendChild(fila('Sin ventas todavía', 'Cuando te compren una cuenta, aparece aquí.', ''));
+  movimientos.forEach((m)=>{
+    const cuando=m.estado==='retenido' ? ('Disponible el ' + fecha(m.liberaEn)) : 'Disponible';
+    mov.appendChild(fila(m.titulo||'Venta', cuando + ' · ' + (m.diasRetencion||10) + ' días de garantía', pesos(m.monto)));
+  });
+  const ret=document.getElementById('lista-retiros');
+  ret.textContent='';
+  const retiros=data.retiros||[];
+  if(!retiros.length) ret.appendChild(fila('Sin retiros', 'Los pedidos quedan pendientes hasta que el admin los pague.', ''));
+  retiros.forEach((r)=>{
+    ret.appendChild(fila(pesos(r.monto), (r.estado||'pendiente') + ' · ' + fecha(r.creadoEn), r.destino||''));
+  });
+}
+async function cargar(user){
+  const token=await user.getIdToken(true);
+  const res=await fetch('/api/saldo', { headers:{ Authorization:'Bearer '+token } });
+  const data=await res.json();
+  if(!res.ok){ document.getElementById('estado').textContent=data.error||'No se pudo cargar tu saldo.'; return; }
+  pintar(data);
+}
+document.getElementById('form-retiro').addEventListener('submit', async (ev)=>{
+  ev.preventDefault();
+  const msg=document.getElementById('retiro-msg');
+  const user=auth.currentUser;
+  if(!user){ location.href='/login?next=/saldo'; return; }
+  msg.textContent='Enviando retiro…';
+  try{
+    const token=await user.getIdToken(true);
+    const res=await fetch('/api/retiro', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token },
+      body: JSON.stringify({
+        monto: document.getElementById('retiro-monto').value,
+        destino: document.getElementById('retiro-destino').value
+      })
+    });
+    const data=await res.json();
+    msg.textContent=data.ok ? 'Retiro pedido. Queda pendiente de pago.' : (data.error||'No se pudo pedir el retiro.');
+    if(data.ok) await cargar(user);
+  }catch(e){
+    msg.textContent='No se pudo pedir el retiro. Reintenta en unos segundos.';
+  }
+});
+auth.onAuthStateChanged(async (user)=>{
+  if(!user){ location.href='/login?next=/saldo'; return; }
+  try{
+    const perfil=await db.collection('perfiles').doc(user.uid).get();
+    if(perfil.exists && perfil.data().vendedorBanco){
+      const box=document.getElementById('retiro-destino');
+      if(box && !box.value) box.value=perfil.data().vendedorBanco;
+    }
+  }catch(e){}
+  try{ await cargar(user); }
+  catch(e){ document.getElementById('estado').textContent='No se pudo cargar tu saldo. Reintenta en unos segundos.'; }
+});
+</script>
+<script type="module" src="/lib/settings.js"></script>
+<script src="/guardia.js"></script>
+</body>
+</html>

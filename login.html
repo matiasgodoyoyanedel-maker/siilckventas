@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18520849537"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18520849537');
+</script>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Acceso - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -209,6 +218,7 @@ function marcarLinkAbierto(){
 }
 function puedePasarMuro(user, linkOk){
   if(!user || !user.emailVerified) return false;
+  if(esGoogle(user) && user.emailVerified) return true;
   if(esGoogle(user) && !linkOk) return false;
   return true;
 }
@@ -290,13 +300,17 @@ async function resolverIngreso(user){
   const google = esGoogle(user);
   const nuevoGoogle = google && (!snap.exists || (primeraVez(user) && data.verificadoForzado !== true));
   if(nuevoGoogle){
-    if(!snap.exists) await crearPerfil(user, { verificadoForzado: false });
-    else await ref.set({ verificadoForzado: false, email: user.email || '' }, { merge: true });
-    const fallo = await enviarVerificacion(user);
-    if(fallo) sessionStorage.setItem('sv_verif_error', fallo);
-    const email = user.email || '';
-    await auth.signOut();
-    irA('/verificar-correo?email=' + encodeURIComponent(email) + '&from=google');
+    if(!snap.exists) await crearPerfil(user, { verificadoForzado: !!user.emailVerified });
+    else await ref.set({ verificadoForzado: !!user.emailVerified, email: user.email || '' }, { merge: true });
+    if(!user.emailVerified){
+      const fallo = await enviarVerificacion(user);
+      if(fallo) sessionStorage.setItem('sv_verif_error', fallo);
+      const email = user.email || '';
+      await auth.signOut();
+      irA('/verificar-correo?email=' + encodeURIComponent(email) + '&from=google');
+      return;
+    }
+    irA(obtenerRedirect());
     return;
   }
   if(!user.emailVerified){
@@ -379,20 +393,16 @@ async function loginConGoogle(){
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-    if(esCelular()){
-      await auth.signInWithRedirect(provider);
-      return;
-    }
     try{
       const result = await auth.signInWithPopup(provider);
       await resolverIngreso(result.user);
     }catch(err){
-      if(err && err.code === 'auth/popup-blocked'){
-        await auth.signInWithRedirect(provider);
-        return;
-      }
       if(err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')){
         accionEnCurso = false;
+        return;
+      }
+      if(err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment' || esCelular())){
+        await auth.signInWithRedirect(provider);
         return;
       }
       accionEnCurso = false;
@@ -550,25 +560,40 @@ async function evaluarSesionLogin(){
     flag = snap.exists ? snap.data().verificadoForzado : undefined;
   }catch(e){ flag = undefined; }
   if(saliendo || accionEnCurso) return;
-  if(usuarioActual.emailVerified === false || flag === false){
+  if(usuarioActual.emailVerified === false){
     irAVerificar(usuarioActual.email || '');
     return;
+  }
+  if(flag === false && !esGoogle(usuarioActual)){
+    irAVerificar(usuarioActual.email || '');
+    return;
+  }
+  if(flag === false && esGoogle(usuarioActual)){
+    try{ await db.collection('perfiles').doc(usuarioActual.uid).set({ verificadoForzado: true }, { merge: true }); }catch(e){}
   }
   irA(obtenerRedirect());
 }
 
+function conTope(promesa, ms){
+  return Promise.race([
+    promesa,
+    new Promise((_, rej) => setTimeout(() => rej(Object.assign(new Error('timeout'), { code: 'auth/timeout' })), ms))
+  ]);
+}
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-.then(() => auth.getRedirectResult())
+.then(() => conTope(auth.getRedirectResult(), 12000))
 .then(async (res) => {
   if(res && res.user){
     await resolverIngreso(res.user);
   }
 })
 .catch((err) => {
-  falloRedirect = true;
-  if(err && err.code && err.code !== 'auth/no-auth-event') mostrarError(err.message);
+  if(err && err.code && err.code !== 'auth/no-auth-event' && err.code !== 'auth/timeout'){
+    falloRedirect = true;
+    mostrarError(err.message);
+  }
 })
-.finally(() => { redirectListo = true; if(!falloRedirect) evaluarSesionLogin(); });
+.finally(() => { redirectListo = true; evaluarSesionLogin(); });
 
 auth.onAuthStateChanged((u) => {
   usuarioActual = u || null;

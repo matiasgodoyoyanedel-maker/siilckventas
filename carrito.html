@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="es" data-sv-theme="aurora">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18520849537"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18520849537');
+</script>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>VelosterCarrito - Tu Carrito Gamer</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -158,13 +167,18 @@ async function renderizarCarrito(items, uid){
       ? `<div class="w-12 h-12 rounded-xl ${item.tipoVipPase==='pro' ? 'bg-rose-600 text-white' : 'bg-yellow-500 text-zinc-950'} flex items-center justify-center text-lg shrink-0"><i class="fas fa-crown"></i></div>`
       : `<div class="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden border border-zinc-800 shrink-0"><img src="${item.foto || ''}" class="w-full h-full object-cover"></div>`;
     const garantiaTxt = item.garantiaLabel ? `<span class="block text-[10px] text-zinc-400">${item.garantiaLabel}${item.garantiaCosto ? ' (+'+precioVisible(item.garantiaCosto)+')' : ''}</span>` : '';
+    const otrasUnidades = esPase ? 0 : items.reduce((sum, otro) => {
+      if(otro.id === item.id || otro.tipoItem === 'pase_vip' || otro.publicacionId !== item.publicacionId) return sum;
+      return sum + (Number(otro.cantidadSeleccionada) || 1);
+    }, 0);
+    const puedeSumar = !esPase && (cantidad + otrasUnidades) < stockDisponible;
     const qtyBox = esPase
       ? `<span class="text-[10px] text-zinc-500">Pase 30 días · mismo pago Flow que las cuentas</span>`
       : `<div class="flex items-center gap-2 mt-1">
             <span class="text-[10px] text-zinc-400">Cantidad:</span>
             <button onclick="cambiarCantidadItem('${item.id}', '${uid}', ${cantidad - 1}, ${stockDisponible})" class="w-5 h-5 bg-zinc-800 text-white rounded text-xs flex items-center justify-center hover:bg-zinc-700">-</button>
             <span class="text-xs font-bold text-white">${cantidad}</span>
-            <button onclick="cambiarCantidadItem('${item.id}', '${uid}', ${cantidad + 1}, ${stockDisponible})" class="w-5 h-5 bg-zinc-800 text-white rounded text-xs flex items-center justify-center hover:bg-zinc-700">+</button>
+            <button ${puedeSumar ? `onclick="cambiarCantidadItem('${item.id}', '${uid}', ${cantidad + 1}, ${stockDisponible})"` : 'disabled'} class="w-5 h-5 ${puedeSumar ? 'bg-zinc-800 text-white hover:bg-zinc-700' : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'} rounded text-xs flex items-center justify-center">+</button>
             <span class="text-[9px] text-zinc-500 ml-1">(Stock: ${stockDisponible})</span>
           </div>`;
 
@@ -213,7 +227,15 @@ async function renderizarCarrito(items, uid){
 
 async function cambiarCantidadItem(itemId, uid, nuevaCantidad, stockMaximo){
   if(nuevaCantidad < 1) return;
-  if(nuevaCantidad > stockMaximo){
+  const actual = (carritoItemsActuales || []).find(i => i.id === itemId);
+  let otras = 0;
+  if(actual && actual.tipoItem !== 'pase_vip' && actual.publicacionId){
+    (carritoItemsActuales || []).forEach(i => {
+      if(i.id === itemId || i.tipoItem === 'pase_vip' || i.publicacionId !== actual.publicacionId) return;
+      otras += Number(i.cantidadSeleccionada) || 1;
+    });
+  }
+  if(nuevaCantidad + otras > stockMaximo){
     alert(`Solo hay ${stockMaximo} unidad(es) disponible(s) para esta cuenta.`);
     return;
   }
