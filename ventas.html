@@ -70,6 +70,8 @@
   #market-grid>.web-panel{display:flex;flex-direction:column;min-width:0}
   #market-grid>.web-panel>:last-child{margin-top:auto}
   #market-grid>.web-panel img{display:block}
+  .sv-precio-card>span{display:block;text-align:right;line-height:1.1}
+  .sv-precio-card>span.text-xs{font-size:1.125rem;font-weight:900}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -1005,7 +1007,8 @@ function renderizarGridPublicaciones(ps, filtro=""){
     }
 
     const fotoInterior = p.foto ? `<img src="${escHtml(p.foto)}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    const imgHtml = `<div class="relative w-full h-44 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">${fotoInterior}${htmlBadgeOferta(p)}</div>`;
+    const chipJuego = p.juego ? `<span class="absolute top-2 right-2 z-10 max-w-[65%] truncate bg-black/75 backdrop-blur text-yellow-300 border border-yellow-500/30 text-[9px] font-black uppercase tracking-wide px-2 py-1 rounded-lg">${escHtml(p.juego)}</span>` : '';
+    const imgHtml = `<div class="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">${fotoInterior}${chipJuego}${htmlBadgeOferta(p)}</div>`;
     const uidVend = uidVendedor(p);
     const logoVendedorHtml = htmlAvatarVivo(uidVend, marcoAvatar);
     const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
@@ -1015,15 +1018,19 @@ function renderizarGridPublicaciones(ps, filtro=""){
     h+=`<div class="${cardClass}" onclick="abrirModalPub('${p.id}')">
       ${ribbon}
       ${imgHtml}
-      <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
-      <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
+      <div class="flex items-center flex-wrap gap-1 empty:hidden">${badgeVip}${botonImpulso}${botonEliminarAdmin}</div>
+      <h4 class="font-extrabold text-white text-sm leading-snug line-clamp-2 min-h-[2.5rem] break-words" title="${escHtml(p.titulo || '')}">${escHtml(p.titulo || 'Cuenta')}</h4>
+      <div class="flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-300"><span class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md"><i class="fas fa-signal text-yellow-500/80 mr-1"></i>Nivel: ${escHtml(p.nivel || 'N/A')}</span>${p.region ? `<span class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md"><i class="fas fa-globe-americas text-yellow-500/80 mr-1"></i>${escHtml(p.region)}</span>` : ''}<span class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md"><i class="fas fa-box text-yellow-500/80 mr-1"></i>Stock: ${escHtml(p.stock || 1)}</span></div>
       <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="/cuenta/${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
-      <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
+      <div class="pt-2.5 border-t border-zinc-800/60 space-y-2.5">
         <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
           ${logoVendedorHtml}
           <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlReputacion(uidVend, p)}</span>
         </div>
-        ${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}
+        <div class="flex items-end justify-between gap-2 bg-black/30 border border-zinc-800 rounded-xl px-3 py-2">
+          <span class="text-[9px] uppercase font-bold tracking-wider text-zinc-500">Precio</span>
+          <span class="sv-precio-card">${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-black text-lg')}</span>
+        </div>
       </div>
     </div>`;
   });
