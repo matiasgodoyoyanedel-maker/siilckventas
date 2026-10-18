@@ -145,11 +145,17 @@ auth.onAuthStateChanged(async(u)=>{
     const doc=await db.collection('perfiles').doc(u.uid).get();
     if(doc.exists){currentUserData=doc.data();
       if(esCuentaOwner(u.uid)){console.log("👑 Dueño bypass");mostrarToast("👑 Modo dueño");return;}
-      if(currentUserData.cuentaVendedorActiva &&!currentUserData.fechaActivacionV2 && currentUserData.versionVendedor!=='v2'){
+      const aprobadoPorAdmin=currentUserData.role==='seller' || currentUserData.postuladoFormulario===true;
+      if(aprobadoPorAdmin && (currentUserData.esBetaAntiguo || currentUserData.versionVendedor!=='v2' || !currentUserData.cuentaVendedorActiva)){
+        const reactivar={cuentaVendedorActiva:true,versionVendedor:'v2',esBetaAntiguo:false};
+        if(!currentUserData.fechaActivacionV2) reactivar.fechaActivacionV2=firebase.firestore.FieldValue.serverTimestamp();
+        try{ await db.collection('perfiles').doc(u.uid).update(reactivar); Object.assign(currentUserData,reactivar); }catch(e){ console.log(e); }
+      }
+      if(!aprobadoPorAdmin && currentUserData.cuentaVendedorActiva &&!currentUserData.fechaActivacionV2 && currentUserData.versionVendedor!=='v2'){
         await db.collection('perfiles').doc(u.uid).update({cuentaVendedorActiva:false,esBetaAntiguo:true});
         mostrarAlertaToast("Beta Expirada","Cuenta desactivada");setTimeout(()=>{window.location.href='index.html'},2500);return;
       }
-      if(!currentUserData.cuentaVendedorActiva && !currentUserData.is_seller){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
+      if(!currentUserData.cuentaVendedorActiva && !currentUserData.is_seller && currentUserData.role!=='seller'){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
     }else{ if(esCuentaOwner(u.uid)) return; }
   }catch(e){console.log(e);}
 });
@@ -186,7 +192,7 @@ async function crearPublicacionMarketplace(){
     if(!privEmail||!privPass||!privRecup){mostrarAlertaToast("Datos Privados","Llena recuadro amarillo");return;}
     if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
-    if(!esDueno && !uData.cuentaVendedorActiva && !uData.is_seller){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
+    if(!esDueno && !uData.cuentaVendedorActiva && !uData.is_seller && uData.role!=='seller'){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
     const previas=await db.collection('publicaciones').where('vendedorUid','==',auth.currentUser.uid).get();
     const misma=clavePublicacion(titulo,juego,precio);
     const ya=previas.docs.some(d=>{const p=d.data();return publicacionSigueDisponible(p)&&clavePublicacion(p.titulo,p.juego,p.precio)===misma;});

@@ -891,7 +891,7 @@ async function guardarActivacionCuentaVendedor(){
   const vCorreo = document.getElementById('act-vendedor-correo').value.trim();
   const vBanco = document.getElementById('act-vendedor-banco').value.trim();
   if(!vId || !vFnac || !vCorreo || !vBanco){ mostrarAlertaToast("Aviso", "Llena todos los campos."); return; }
-  await db.collection('perfiles').doc(auth.currentUser.uid).update({cuentaVendedorActiva: true, vendedorId: vId, vendedorFnac: vFnac, vendedorCorreo: vCorreo, vendedorBanco: vBanco});
+  await db.collection('perfiles').doc(auth.currentUser.uid).update({cuentaVendedorActiva: true, versionVendedor: 'v2', fechaActivacionV2: firebase.firestore.FieldValue.serverTimestamp(), esBetaAntiguo: false, vendedorId: vId, vendedorFnac: vFnac, vendedorCorreo: vCorreo, vendedorBanco: vBanco});
   document.getElementById('modal-activar-vendedor').classList.add('hidden');
   mostrarToast("🎉 ¡Cuenta de vendedor activada!");
   location.reload();

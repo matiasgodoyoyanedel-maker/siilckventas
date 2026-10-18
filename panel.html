@@ -333,7 +333,7 @@ async function publicarNuevoVendedor(uid){
 
 async function aprobarPostulacion(postId, uid){
   await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'aprobado'});
-  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true, role: 'seller'});
+  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true, role: 'seller', versionVendedor: 'v2', fechaActivacionV2: firebase.firestore.FieldValue.serverTimestamp(), esBetaAntiguo: false});
   await publicarNuevoVendedor(uid);
   mostrarToast("✅ Postulación aprobada y cuenta de vendedor activada con éxito.");
   cargarPostulacionesAdmin();
