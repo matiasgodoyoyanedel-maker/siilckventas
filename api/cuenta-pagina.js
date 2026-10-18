@@ -35,7 +35,7 @@ export default async function handler(req, res) {
   if (!html) {
     res.statusCode = 200;
     res.setHeader('content-type', 'text/html; charset=utf-8');
-    res.end('<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Cuenta</title></head><body><p>Cuenta no encontrada</p></body></html>');
+    res.end('<!DOCTYPE html><html lang="es"><head><script async src="https://www.googletagmanager.com/gtag/js?id=AW-18520849537"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'AW-18520849537\');</script><meta charset="UTF-8"><title>Cuenta</title></head><body><p>Cuenta no encontrada</p></body></html>');
     return;
   }
   if (id && id !== '[id]') {
