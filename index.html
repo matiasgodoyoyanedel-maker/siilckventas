@@ -401,15 +401,19 @@ function pintarBotonVip(tipo, neto){
 function escucharPreciosPaseVip(){
   db.collection('configuracion').doc('global').onSnapshot(doc => {
     const d = doc.exists ? doc.data() : {};
-    const basico = Math.round(Number(d.precioPaseVipBasico || d.precioVipBasico || 0));
-    const pro = Math.round(Number(d.precioPaseVipPro || d.precioVipPro || 0));
+    const basicoRaw = Math.round(Number(d.precioPaseVipBasico || d.precioVipBasico || 0));
+    const proRaw = Math.round(Number(d.precioPaseVipPro || d.precioVipPro || 0));
+    const basico = basicoRaw > 0 ? basicoRaw : 2990;
+    const pro = proRaw > 0 ? proRaw : 5090;
     preciosPaseVip.basico = basico;
     preciosPaseVip.pro = pro;
     pintarBotonVip('basico', basico);
     pintarBotonVip('pro', pro);
   }, () => {
-    pintarBotonVip('basico', 0);
-    pintarBotonVip('pro', 0);
+    preciosPaseVip.basico = 2990;
+    preciosPaseVip.pro = 5090;
+    pintarBotonVip('basico', 2990);
+    pintarBotonVip('pro', 5090);
   });
 }
 async function postCrearPago(payload, ruta){
