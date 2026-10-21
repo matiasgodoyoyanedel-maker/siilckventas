@@ -132,6 +132,7 @@
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-tickets'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-ticket-alt text-rose-400 text-sm w-4"></i> Mis Tickets & Soporte</button>
           <a href="/mis-compras" onclick="return irAMisCompras(event)" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-shopping-bag text-yellow-400 text-sm w-4"></i> Mis compras</a>
           <a href="/saldo" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-wallet text-emerald-400 text-sm w-4"></i> Mi saldo</a>
+          <a href="/partners-sk" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-yellow-400 hover:bg-yellow-500/10 flex items-center gap-2.5"><i class="fas fa-handshake text-yellow-400 text-sm w-4"></i> Siiilck Partners (Mayorista)</a>
           <a href="foro.html" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-comments text-indigo-400 text-sm w-4"></i> Ir al Foro Completo</a>
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30"><i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel</button>
         </div>
@@ -215,6 +216,17 @@
       <span data-i18n="jobsCta">Click Aquí</span> <i class="fas fa-arrow-right"></i>
     </a>
   </div>
+
+  <a href="/partners-sk" class="block rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left transition transform hover:scale-[1.01]" style="background:linear-gradient(135deg,rgba(168,85,247,.12) 0%,rgba(18,18,24,.95) 100%);border:1px solid rgba(168,85,247,.35)">
+    <div class="space-y-2.5">
+      <span class="inline-block bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Venta Mayorista B2B</span>
+      <h2 class="text-xl md:text-2xl font-black text-white font-heading">Siiilck Partners: vende al por mayor</h2>
+      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Accede a catálogo mayorista, comisiones preferenciales, soporte dedicado y material de marketing. Postula en 2 minutos.</p>
+    </div>
+    <span class="shrink-0 bg-gradient-to-r from-purple-500 to-fuchsia-400 text-white font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-purple-500/30 flex items-center gap-2">
+      Conocer más <i class="fas fa-arrow-right"></i>
+    </span>
+  </a>
 
   <div id="tiques" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
