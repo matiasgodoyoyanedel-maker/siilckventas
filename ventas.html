@@ -262,6 +262,10 @@
               <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
             </div>
           </div>
+          <div class="flex items-start gap-3 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-3.5" role="note" aria-label="Protección Siilck">
+            <i class="fas fa-shield-alt mt-0.5 text-emerald-400" aria-hidden="true"></i>
+            <p class="text-xs leading-relaxed text-zinc-200"><span class="block font-extrabold text-emerald-400">Protección Siilck</span>Si la clave no funciona, te devolvemos al saldo.</p>
+          </div>
         </div>
         <div class="min-w-0 space-y-3 lg:col-start-2 lg:row-start-1">
           <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
@@ -1017,6 +1021,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
       <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
       <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
       <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="/cuenta/${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
+      <div class="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[10px] leading-tight text-emerald-300" title="Si la clave no funciona, te devolvemos al saldo"><i class="fas fa-shield-alt" aria-hidden="true"></i><span><b>Protección Siilck</b> · Si la clave no funciona, te devolvemos al saldo</span></div>
       <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
         <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
           ${logoVendedorHtml}
@@ -1232,13 +1237,16 @@ async function abrirSalaChatActivo(chatId){
   chatActivoId = chatId;
   cambiarSeccion('chat-activo');
   const mensajesBox = document.getElementById('chat-mensajes-box');
-  db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(snapshot => {
+  if (typeof window.__siilckChatUnsub === 'function') { window.__siilckChatUnsub(); }
+  ultimoMensajeChatKey = '';
+  const escChat = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  window.__siilckChatUnsub = db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot({ includeMetadataChanges: false }, snapshot => {
     let h = "";
     let ultimoDocId = '';
     snapshot.forEach(doc => {
       const m = doc.data();
       const esMio = m.remitenteUid === auth.currentUser.uid;
-      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${esMio ? 'ml-auto bg-yellow-500/10 border-yellow-500/30' : 'mr-auto bg-zinc-900 border-zinc-800'}"><p class="text-xs text-white">${m.texto}</p></div>`;
+      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${esMio ? 'ml-auto bg-yellow-500/10 border-yellow-500/30' : 'mr-auto bg-zinc-900 border-zinc-800'}"><p class="text-xs text-white">${escChat(m.texto)}</p></div>`;
       ultimoDocId = doc.id;
     });
     mensajesBox.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
@@ -1248,14 +1256,29 @@ async function abrirSalaChatActivo(chatId){
       ultimoMensajeChatKey = ultimoDocId;
       if(!esPrimeraCarga) tocarSonidoMensaje();
     }
+  }, err => {
+    console.error('[chat] listener error:', err);
+    if (mensajesBox) mensajesBox.innerHTML = `<p class="text-rose-400 text-center py-4">No se pudo cargar el chat (${err.code || err.message}).</p>`;
   });
 }
 
 async function enviarMensajeChatP2P(){
   const txt = document.getElementById('chat-input-msg').value.trim();
   if(!txt || !chatActivoId) return;
-  await db.collection('chats_p2p').doc(chatActivoId).collection('mensajes').add({remitenteUid: auth.currentUser.uid, texto: txt, fecha: firebase.firestore.FieldValue.serverTimestamp()});
-  document.getElementById('chat-input-msg').value = "";
+  const inputMsg = document.getElementById('chat-input-msg');
+  inputMsg.value = "";
+  try {
+    await db.collection('chats_p2p').doc(chatActivoId).collection('mensajes').add({remitenteUid: auth.currentUser.uid, texto: txt, fecha: firebase.firestore.FieldValue.serverTimestamp()});
+    db.collection('chats_p2p').doc(chatActivoId).update({
+      actualizadoEn: firebase.firestore.FieldValue.serverTimestamp(),
+      ultimoMensaje: txt.slice(0, 120),
+      ultimoRemitenteUid: auth.currentUser.uid
+    }).catch(e => console.warn('[chat] no se actualizó el resumen:', e.code));
+  } catch (e) {
+    console.error('[chat] error al enviar:', e);
+    inputMsg.value = txt;
+    alert('No se pudo enviar el mensaje: ' + (e.code || e.message));
+  }
 }
 
 async function abrirPerfilVendedorPorUid(uid){
@@ -1320,18 +1343,33 @@ function tocarSonidoMensaje(){
 let ultimoMensajeChatKey = '';
 async function cargarListaChatsUsuario(){
   if(!auth.currentUser) return;
-  const q1 = await db.collection('chats_p2p').where('compradorUid', '==', auth.currentUser.uid).get();
-  const q2 = await db.collection('chats_p2p').where('vendedorUid', '==', auth.currentUser.uid).get();
-  let chatsMap = new Map();
-  q1.forEach(d => chatsMap.set(d.id, d.data()));
-  q2.forEach(d => chatsMap.set(d.id, d.data()));
-  let h = "";
-  chatsMap.forEach((data, id) => {
-    const soyVendedor = data.vendedorUid === auth.currentUser.uid;
-    const etiqueta = soyVendedor ? 'Chat con comprador' : 'Chat con vendedor';
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex justify-between items-center"><span class="text-xs text-white">${etiqueta} #${id.substring(0,6)}</span><button onclick="abrirSalaChatActivo('${id}')" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</button></div>`;
-  });
-  document.getElementById('lista-chats-usuario').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats activos.</p>`;
+  const uid = auth.currentUser.uid;
+  (window.__siilckChatListUnsubs || []).forEach(fn => { try { fn(); } catch(e){} });
+  const porRol = { c: new Map(), v: new Map() };
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const pintar = () => {
+    const chatsMap = new Map([...porRol.c, ...porRol.v]);
+    const orden = [...chatsMap.entries()].sort((a, b) => ((b[1].actualizadoEn && b[1].actualizadoEn.toMillis ? b[1].actualizadoEn.toMillis() : 0) - (a[1].actualizadoEn && a[1].actualizadoEn.toMillis ? a[1].actualizadoEn.toMillis() : 0)));
+    let h = "";
+    orden.forEach(([id, data]) => {
+      const soyVendedor = data.vendedorUid === uid;
+      const etiqueta = soyVendedor ? 'Chat con comprador' : 'Chat con vendedor';
+      const nuevo = data.ultimoRemitenteUid && data.ultimoRemitenteUid !== uid && id !== chatActivoId;
+      const preview = data.ultimoMensaje ? `<span class="block text-[11px] text-zinc-400 truncate">${esc(data.ultimoMensaje)}</span>` : '';
+      h += `<div class="web-panel p-4 rounded-2xl border ${nuevo ? 'border-yellow-500/60' : 'border-zinc-800'} flex justify-between items-center gap-3"><span class="min-w-0 text-xs text-white">${etiqueta} #${id.substring(0,6)} ${nuevo ? '<span class="ml-1 rounded-full bg-yellow-500 px-1.5 py-0.5 text-[10px] font-bold text-zinc-950">Nuevo</span>' : ''}${preview}</span><button onclick="abrirSalaChatActivo('${id}')" class="shrink-0 bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</button></div>`;
+    });
+    const el = document.getElementById('lista-chats-usuario');
+    if (el) el.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats activos.</p>`;
+  };
+  const onErr = (e) => {
+    console.error('[chat] lista error:', e);
+    const el = document.getElementById('lista-chats-usuario');
+    if (el) el.innerHTML = `<p class="text-xs text-rose-400 text-center py-6">No se pudieron cargar tus chats (${e.code || e.message}).</p>`;
+  };
+  window.__siilckChatListUnsubs = [
+    db.collection('chats_p2p').where('compradorUid', '==', uid).onSnapshot(s => { porRol.c = new Map(s.docs.map(d => [d.id, d.data()])); pintar(); }, onErr),
+    db.collection('chats_p2p').where('vendedorUid', '==', uid).onSnapshot(s => { porRol.v = new Map(s.docs.map(d => [d.id, d.data()])); pintar(); }, onErr)
+  ];
 }
 (function(){
   const params = new URLSearchParams(window.location.search);
