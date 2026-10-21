@@ -1,0 +1,16 @@
+api
+lib
+node_modules
+.git
+.vercel
+.env*
+*.log
+package.json
+package-lock.json
+firebase.json
+firestore.rules
+firestore.indexes.json
+storage.rules
+middleware.js
+vercel.json
+wrangler.toml

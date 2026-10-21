@@ -22,6 +22,13 @@ service cloud.firestore {
       return ['esVendedorVip', 'tipoVip', 'bloqueado', 'is_blocked', 'vipExpira', 'isVip', 'plan'];
     }
 
+    // verificadoForzado solo puede quedar en true si Firebase Auth confirma el correo.
+    function verificacionPermitida(anterior) {
+      return request.resource.data.get('verificadoForzado', false) != true
+        || anterior == true
+        || request.auth.token.email_verified == true;
+    }
+
     // --- Perfiles ---
     // Lectura pública: login (unicidad de username ANTES de autenticar),
     // marketplace, foro y panel admin (lista completa).
@@ -33,12 +40,14 @@ service cloud.firestore {
         (!('esVendedorVip' in request.resource.data) || request.resource.data.esVendedorVip == false) &&
         (!('isVip' in request.resource.data) || request.resource.data.isVip == false) &&
         (!('bloqueado' in request.resource.data) || request.resource.data.bloqueado == false) &&
-        (!('is_blocked' in request.resource.data) || request.resource.data.is_blocked == false)
+        (!('is_blocked' in request.resource.data) || request.resource.data.is_blocked == false) &&
+        verificacionPermitida(false)
       );
 
       allow update: if isOwner() || (
         isSelf(userId) &&
-        !request.resource.data.diff(resource.data).affectedKeys().hasAny(perfilPrivilegedKeys())
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(perfilPrivilegedKeys()) &&
+        verificacionPermitida(resource.data.get('verificadoForzado', false))
       );
 
       allow delete: if isOwner();
@@ -106,7 +115,10 @@ service cloud.firestore {
         && request.resource.data.vendedorUid is string
         && request.resource.data.compradorUid != request.resource.data.vendedorUid;
 
-      allow update: if isOwner() || isChatPartyFrom(resource.data);
+      allow update: if isOwner() || (
+        isChatPartyFrom(resource.data)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['compradorUid', 'vendedorUid'])
+      );
 
       allow delete: if isOwner();
 
@@ -146,7 +158,16 @@ service cloud.firestore {
     // --- Partners SK (postulaciones mayoristas) ---
     match /partners_sk/{partnerId} {
       allow read: if isOwner();
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasOnly(
+          ['nombre', 'instagram', 'ciudad', 'telefono', 'mensaje', 'aceptoTerminos', 'estado', 'fecha'])
+        && request.resource.data.nombre is string && request.resource.data.nombre.size() > 0 && request.resource.data.nombre.size() <= 120
+        && request.resource.data.instagram is string && request.resource.data.instagram.size() > 0 && request.resource.data.instagram.size() <= 120
+        && request.resource.data.ciudad is string && request.resource.data.ciudad.size() > 0 && request.resource.data.ciudad.size() <= 120
+        && request.resource.data.telefono is string && request.resource.data.telefono.size() > 0 && request.resource.data.telefono.size() <= 40
+        && (!('mensaje' in request.resource.data) || (request.resource.data.mensaje is string && request.resource.data.mensaje.size() <= 2000))
+        && request.resource.data.aceptoTerminos == true
+        && request.resource.data.estado == 'pendiente_revision'
+        && request.resource.data.fecha == request.time;
       allow update, delete: if isOwner();
     }
 
@@ -246,7 +267,15 @@ service cloud.firestore {
       allow update: if isOwner() || (
         signedIn()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+        && request.resource.data.likes is list
+        && soloMiLike(resource.data.get('likes', []).toSet(), request.resource.data.likes.toSet())
       );
+
+      // Cada usuario solo puede agregar o quitar su propio UID del arreglo de likes.
+      function soloMiLike(antes, despues) {
+        return despues.difference(antes) == [request.auth.uid].toSet() && antes.difference(despues).size() == 0
+          || antes.difference(despues) == [request.auth.uid].toSet() && despues.difference(antes).size() == 0;
+      }
 
       allow delete: if isOwner()
         || (signedIn() && resource.data.autorUid == request.auth.uid);

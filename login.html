@@ -324,6 +324,7 @@ async function resolverIngreso(user){
   if(data && data.verificadoForzado === false){
     const linkOk = marcarLinkAbierto();
     if(puedePasarMuro(user, linkOk)){
+      try{ await user.getIdToken(true); }catch(e){}
       await ref.set({ verificadoForzado: true }, { merge: true });
       sessionStorage.removeItem('sv_correo_listo');
       irA(obtenerRedirect());
@@ -489,7 +490,7 @@ async function revisarVerificacion(avisar){
     }
     try{ await u.reload(); }catch(e){}
     if(puedePasarMuro(u, linkOk)){
-      try{ await db.collection('perfiles').doc(u.uid).set({ verificadoForzado: true }, { merge: true }); }catch(e){}
+      try{ await u.getIdToken(true); await db.collection('perfiles').doc(u.uid).set({ verificadoForzado: true }, { merge: true }); }catch(e){}
       sessionStorage.removeItem('sv_correo_listo');
       irA(obtenerRedirect());
       return;
@@ -569,7 +570,7 @@ async function evaluarSesionLogin(){
     return;
   }
   if(flag === false && esGoogle(usuarioActual)){
-    try{ await db.collection('perfiles').doc(usuarioActual.uid).set({ verificadoForzado: true }, { merge: true }); }catch(e){}
+    try{ await usuarioActual.getIdToken(true); await db.collection('perfiles').doc(usuarioActual.uid).set({ verificadoForzado: true }, { merge: true }); }catch(e){}
   }
   irA(obtenerRedirect());
 }
