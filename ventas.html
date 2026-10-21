@@ -1231,14 +1231,23 @@ async function iniciarChatPrivadoVendedor(){
 async function abrirSalaChatActivo(chatId){
   chatActivoId = chatId;
   cambiarSeccion('chat-activo');
+  const mensajesBox = document.getElementById('chat-mensajes-box');
   db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(snapshot => {
     let h = "";
+    let ultimoDocId = '';
     snapshot.forEach(doc => {
       const m = doc.data();
       const esMio = m.remitenteUid === auth.currentUser.uid;
       h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${esMio ? 'ml-auto bg-yellow-500/10 border-yellow-500/30' : 'mr-auto bg-zinc-900 border-zinc-800'}"><p class="text-xs text-white">${m.texto}</p></div>`;
+      ultimoDocId = doc.id;
     });
-    document.getElementById('chat-mensajes-box').innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
+    mensajesBox.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
+    if(mensajesBox) mensajesBox.scrollTop = mensajesBox.scrollHeight;
+    if(ultimoDocId && ultimoDocId !== ultimoMensajeChatKey){
+      const esPrimeraCarga = !ultimoMensajeChatKey;
+      ultimoMensajeChatKey = ultimoDocId;
+      if(!esPrimeraCarga) tocarSonidoMensaje();
+    }
   });
 }
 
@@ -1295,12 +1304,32 @@ async function abrirPerfilVendedorPorUid(uid){
   document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }
 
+function tocarSonidoMensaje(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.3);
+  }catch(e){}
+}
+let ultimoMensajeChatKey = '';
 async function cargarListaChatsUsuario(){
   if(!auth.currentUser) return;
   const q1 = await db.collection('chats_p2p').where('compradorUid', '==', auth.currentUser.uid).get();
+  const q2 = await db.collection('chats_p2p').where('vendedorUid', '==', auth.currentUser.uid).get();
+  let chatsMap = new Map();
+  q1.forEach(d => chatsMap.set(d.id, d.data()));
+  q2.forEach(d => chatsMap.set(d.id, d.data()));
   let h = "";
-  q1.forEach(d => {
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex justify-between items-center"><span class="text-xs text-white">Chat P2P Activo</span><button onclick="abrirSalaChatActivo('${d.id}')" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</button></div>`;
+  chatsMap.forEach((data, id) => {
+    const soyVendedor = data.vendedorUid === auth.currentUser.uid;
+    const etiqueta = soyVendedor ? 'Chat con comprador' : 'Chat con vendedor';
+    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex justify-between items-center"><span class="text-xs text-white">${etiqueta} #${id.substring(0,6)}</span><button onclick="abrirSalaChatActivo('${id}')" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</button></div>`;
   });
   document.getElementById('lista-chats-usuario').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats activos.</p>`;
 }

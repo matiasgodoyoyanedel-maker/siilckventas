@@ -42,8 +42,9 @@
     const sello = document.createElement("div");
     sello.id = "sv-sello-org";
     sello.innerHTML = '<i class="fas fa-certificate"></i><span>Sello organizador independiente</span>';
-    sello.title = "SiilckVentas opera como organizador independiente de marketplace con escrow";
+    sello.title = "SiilckVentas opera como organizador independiente de marketplace con escrow · Arrástrame";
     document.body.appendChild(sello);
+    hacerSelloMovible(sello);
 
     const wa = document.createElement("a");
     wa.id = "sv-whatsapp-float";
@@ -171,6 +172,53 @@
     }, function () {
       applyDoc({});
     });
+  }
+
+  function hacerSelloMovible(el){
+    let dragging = false, offsetX = 0, offsetY = 0, hasMoved = false;
+    function onStart(e){
+      dragging = true; hasMoved = false;
+      const t = e.touches ? e.touches[0] : e;
+      const rect = el.getBoundingClientRect();
+      offsetX = t.clientX - rect.left;
+      offsetY = t.clientY - rect.top;
+      el.style.cursor = 'grabbing';
+      e.preventDefault();
+    }
+    function onMove(e){
+      if(!dragging) return;
+      hasMoved = true;
+      const t = e.touches ? e.touches[0] : e;
+      let x = t.clientX - offsetX;
+      let y = t.clientY - offsetY;
+      const maxX = window.innerWidth - el.offsetWidth;
+      const maxY = window.innerHeight - el.offsetHeight;
+      x = Math.max(0, Math.min(x, maxX));
+      y = Math.max(0, Math.min(y, maxY));
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.bottom = 'auto';
+      el.style.right = 'auto';
+      try{ localStorage.setItem('sv-sello-pos', x + ',' + y); }catch(e2){}
+    }
+    function onEnd(){ dragging = false; el.style.cursor = 'grab'; }
+    el.style.cursor = 'grab';
+    el.addEventListener('mousedown', onStart);
+    el.addEventListener('touchstart', onStart, { passive: false });
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchend', onEnd);
+    try{
+      const saved = localStorage.getItem('sv-sello-pos');
+      if(saved){
+        const parts = saved.split(',');
+        const x = Math.max(0, Math.min(Number(parts[0]), window.innerWidth - el.offsetWidth));
+        const y = Math.max(0, Math.min(Number(parts[1]), window.innerHeight - el.offsetHeight));
+        el.style.left = x + 'px'; el.style.top = y + 'px';
+        el.style.bottom = 'auto'; el.style.right = 'auto';
+      }
+    }catch(e2){}
   }
 
   function boot() {

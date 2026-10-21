@@ -206,6 +206,9 @@ body.sv-livebar-pad { padding-top: 2.5rem; }
   padding: 8px 12px;
   border-radius: 9999px;
   box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 #sv-sello-org i { color: #eab308; }
 

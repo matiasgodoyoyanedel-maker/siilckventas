@@ -271,9 +271,23 @@
         <span><i class="fas fa-user-circle text-yellow-400 mr-2"></i> Mi Perfil Gamer</span>
         <button onclick="cambiarSeccion('inicio')" class="text-[10px] text-zinc-400 hover:text-white underline">Cerrar</button>
       </h3>
-      <div class="space-y-4 text-xs">
+      <div class="space-y-5 text-xs">
+        <div class="flex flex-col items-center gap-3 pb-4 border-b border-zinc-800">
+          <div id="user-avatar-preview" class="w-24 h-24 rounded-full bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shrink-0"><i class="fas fa-user"></i></div>
+          <label class="cursor-pointer bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-[11px] font-bold text-yellow-400 flex items-center gap-2 transition"><i class="fas fa-camera"></i> Cambiar foto<input type="file" id="user-avatar-input" accept="image/*" class="hidden" onchange="manejarAvatarPerfil(this)"></label>
+          <p id="user-avatar-hint" class="text-[10px] text-zinc-500">JPG o PNG · se guarda al presionar Guardar Perfil</p>
+        </div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username-input" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
-        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre para mostrar</label><input type="text" id="user-displayname-input" placeholder="El nombre que ven los compradores" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Biografía</label><textarea id="user-bio-input" rows="2" placeholder="Cuéntale a los compradores sobre ti..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white resize-none"></textarea></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Método Pago</label><input type="text" id="user-metodo-pago" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">WhatsApp / Contacto</label><input type="text" id="user-contacto-input" placeholder="+569..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Ciudad</label><input type="text" id="user-ciudad-input" placeholder="Santiago..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+          <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Instagram</label><input type="text" id="user-instagram-input" placeholder="@tu_tienda" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
+        </div>
         <div id="pase-activo-box" class="bg-zinc-950/70 border border-yellow-500/20 rounded-2xl p-3.5 space-y-1">
           <p class="text-[10px] uppercase font-black tracking-widest text-yellow-400">Pase activo</p>
           <p id="pase-activo-txt" class="text-xs text-zinc-300">Sin pase VIP. Activa el Pase Básico para impulsar anuncios y mostrar rango real.</p>
@@ -599,7 +613,11 @@ async function cargarListaChatsUsuario(){
     q1.forEach(d => chatsMap.set(d.id, d.data()));
     q2.forEach(d => chatsMap.set(d.id, d.data()));
     let h = "";
-    chatsMap.forEach((data, id) => { h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2"><span class="text-xs text-white">Chat P2P #${id.substring(0,6)}</span><a href="ventas.html" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Ver en Ventas</a></div>`; });
+    chatsMap.forEach((data, id) => {
+      const soyVendedor = data.vendedorUid === uid;
+      const etiqueta = soyVendedor ? 'Chat con comprador' : 'Chat con vendedor';
+      h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2"><span class="text-xs text-white">${etiqueta} #${id.substring(0,6)}</span><a href="ventas.html" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Ver en Ventas</a></div>`;
+    });
     listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
   }catch(e){ listEl.innerHTML=`<p class="text-xs text-rose-400 text-center py-4">${e.message}</p>`}
 }
@@ -621,12 +639,33 @@ async function enviarReporteTicketEmail(){
   await db.collection('tickets').add({uid: auth.currentUser.uid, motivo, descripcion: desc, estado: "Pendiente", fecha: firebase.firestore.FieldValue.serverTimestamp()});
   mostrarToast("📩 ¡Ticket enviado!"); cambiarSeccion('inicio');
 }
+let avatarBase64 = null;
+function manejarAvatarPerfil(input){
+  if(!input.files[0]) return;
+  const file = input.files[0];
+  if(file.size > 500000){ mostrarAlertaToast('Foto muy grande','Usa una imagen menor a 500KB'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    avatarBase64 = e.target.result;
+    const prev = document.getElementById('user-avatar-preview');
+    prev.innerHTML = '<img src="'+e.target.result+'" class="w-full h-full object-cover">';
+    document.getElementById('user-avatar-hint').innerText = 'Foto cargada ✅ · Guarda para confirmar';
+  };
+  reader.readAsDataURL(file);
+}
 async function guardarPerfilGamerReal(){
   if(!auth.currentUser) return;
   const nuevoUsername = document.getElementById('user-username-input').value.trim().toLowerCase();
   const mp = document.getElementById('user-metodo-pago').value.trim();
+  const displayName = document.getElementById('user-displayname-input').value.trim();
+  const bio = document.getElementById('user-bio-input').value.trim();
+  const contacto = document.getElementById('user-contacto-input').value.trim();
+  const ciudad = document.getElementById('user-ciudad-input').value.trim();
+  const instagram = document.getElementById('user-instagram-input').value.trim();
   if(!nuevoUsername){mostrarAlertaToast("Falta usuario","Pon tu @");return;}
-  await db.collection('perfiles').doc(auth.currentUser.uid).update({username: nuevoUsername, metodoPago: mp});
+  const update = {username: nuevoUsername, metodoPago: mp, displayName, bio, contacto, ciudad, instagram};
+  if(avatarBase64) update.fotoPerfil = avatarBase64;
+  await db.collection('perfiles').doc(auth.currentUser.uid).update(update);
   mostrarToast("¡Perfil actualizado!"); cambiarSeccion('inicio');
 }
 
@@ -663,6 +702,18 @@ auth.onAuthStateChanged(async(u)=>{
         const metodoPagoInput = document.getElementById('user-metodo-pago');
         if(userNameInput) userNameInput.value = currentUserData.username || "";
         if(metodoPagoInput) metodoPagoInput.value = currentUserData.metodoPago || "";
+        const dnInput = document.getElementById('user-displayname-input');
+        if(dnInput) dnInput.value = currentUserData.displayName || "";
+        const bioInput = document.getElementById('user-bio-input');
+        if(bioInput) bioInput.value = currentUserData.bio || "";
+        const contactoInput = document.getElementById('user-contacto-input');
+        if(contactoInput) contactoInput.value = currentUserData.contacto || "";
+        const ciudadInput = document.getElementById('user-ciudad-input');
+        if(ciudadInput) ciudadInput.value = currentUserData.ciudad || "";
+        const igInput = document.getElementById('user-instagram-input');
+        if(igInput) igInput.value = currentUserData.instagram || "";
+        const avatarPrev = document.getElementById('user-avatar-preview');
+        if(avatarPrev && currentUserData.fotoPerfil) avatarPrev.innerHTML = '<img src="'+currentUserData.fotoPerfil+'" class="w-full h-full object-cover">';
         const paseTxt = document.getElementById('pase-activo-txt');
         if(paseTxt){
           const tipo = currentUserData.tipoVip;
