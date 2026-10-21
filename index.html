@@ -64,7 +64,8 @@
 .game-card:hover{transform:translateY(-6px) scale(1.02);border-color:#FFD740;box-shadow:0 12px 30px rgba(255,193,7,.3)}
 .game-card.stream{border-color:rgba(255,255,255,.15)}
 .img-wrap{height:150px;position:relative;overflow:hidden;background:#0a0a0a}
-.img-wrap img.real{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;transform:scale(1.02);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.img-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px;background:#111;z-index:0}
+.img-wrap img.real{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;transform:scale(1.02);transition:transform .6s cubic-bezier(.2,.8,.2,1);z-index:1}
 .game-card:hover img.real{transform:scale(1.08)}
 .fade{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.22) 0%, rgba(0,0,0,.72) 100%);transition:opacity .35s ease;z-index:1}
 .game-card:hover .fade{opacity:.45}
@@ -665,7 +666,7 @@ async function guardarPerfilGamerReal(){
   if(!nuevoUsername){mostrarAlertaToast("Falta usuario","Pon tu @");return;}
   const update = {username: nuevoUsername, metodoPago: mp, displayName, bio, contacto, ciudad, instagram};
   if(avatarBase64) update.fotoPerfil = avatarBase64;
-  await db.collection('perfiles').doc(auth.currentUser.uid).update(update);
+  await db.collection('perfiles').doc(auth.currentUser.uid).set(update, { merge: true });
   mostrarToast("¡Perfil actualizado!"); cambiarSeccion('inicio');
 }
 
