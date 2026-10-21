@@ -143,6 +143,13 @@ service cloud.firestore {
       allow update, delete: if isOwner();
     }
 
+    // --- Partners SK (postulaciones mayoristas) ---
+    match /partners_sk/{partnerId} {
+      allow read: if isOwner();
+      allow create: if true;
+      allow update, delete: if isOwner();
+    }
+
     // --- Configuración global (tema, mantención, avisos, WhatsApp) ---
     match /configuracion/{docId} {
       allow read: if true;

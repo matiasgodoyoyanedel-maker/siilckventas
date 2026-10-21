@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es" data-sv-theme="aurora">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18520849537"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18520849537');
+</script>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Siiilck Partners - Venta Mayorista | SiilckVentas</title>
+<meta name="description" content="Sé parte de Siiilck Partners. Vende al por mayor con nosotros y accede a catálogo mayorista, comisiones preferenciales y soporte exclusivo.">
+<script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
+  body{font-family:'Plus Jakarta Sans',sans-serif;background-color:#f8f9fb;color:#1a1a2e;overflow-x:hidden}
+  h1,h2,h3,h4,.font-heading{font-family:'Outfit',sans-serif}
+  .sk-hero{background:linear-gradient(135deg,#0a0a1a 0%,#1a1530 50%,#0d0d20 100%);position:relative;overflow:hidden}
+  .sk-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 30% 0%,rgba(234,179,8,.18),transparent 70%);pointer-events:none}
+  .sk-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 80% 100%,rgba(168,85,247,.12),transparent 70%);pointer-events:none}
+  .sk-section{scroll-margin-top:80px}
+  .sk-card{background:#fff;border:1px solid #e4e4e7;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.06);transition:transform .3s ease,box-shadow .3s ease}
+  .sk-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.1)}
+  .sk-step{background:#fff;border:2px solid #e4e4e7;border-radius:20px;padding:28px 22px;position:relative;transition:all .3s ease}
+  .sk-step:hover{border-color:#eab308;box-shadow:0 8px 30px rgba(234,179,8,.15)}
+  .sk-step-num{position:absolute;top:-18px;left:22px;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#eab308,#f59e0b);color:#09090b;font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(234,179,8,.4)}
+  .sk-input{background:#fff;border:1.5px solid #d4d4d8;border-radius:12px;padding:12px 16px;font-size:14px;width:100%;transition:all .2s ease;color:#1a1a2e}
+  .sk-input:focus{border-color:#eab308;box-shadow:0 0 0 3px rgba(234,179,8,.15);outline:none}
+  .sk-input::placeholder{color:#a1a1aa}
+  .sk-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;border:1px solid #e4e4e7}
+  .sk-table th{background:#0a0a1a;color:#fbbf24;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:14px 18px;text-align:left}
+  .sk-table td{background:#fff;padding:14px 18px;font-size:14px;border-top:1px solid #f0f0f3;color:#3f3f46}
+  .sk-table td:first-child{font-weight:700;color:#1a1a2e}
+  .sk-table tr:hover td{background:#fafafa}
+  .sk-faq-item{background:#fff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;transition:border-color .2s}
+  .sk-faq-item.open{border-color:#eab308}
+  .sk-faq-q{padding:18px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;color:#1a1a2e;user-select:none}
+  .sk-faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 22px;font-size:14px;color:#52525b;line-height:1.6}
+  .sk-faq-item.open .sk-faq-a{max-height:300px;padding-bottom:18px}
+  .sk-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(234,179,8,.12);color:#a16207;border:1px solid rgba(234,179,8,.3);font-size:11px;font-weight:800;letter-spacing:.5px;padding:6px 14px;border-radius:999px;text-transform:uppercase}
+  .sk-nav-link{font-size:13px;font-weight:700;color:#3f3f46;transition:color .2s}
+  .sk-nav-link:hover{color:#eab308}
+  .sk-btn-primary{background:linear-gradient(135deg,#eab308,#f59e0b);color:#09090b;font-weight:800;padding:14px 32px;border-radius:14px;border:none;cursor:pointer;transition:all .25s ease;box-shadow:0 8px 22px rgba(234,179,8,.3)}
+  .sk-btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(234,179,8,.45)}
+  .sk-btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  .sk-footer{background:#0a0a1a;color:#a1a1aa}
+  @media(max-width:768px){.sk-hero h1{font-size:30px!important}.sk-table{display:block;overflow-x:auto}.sk-table th,.sk-table td{white-space:nowrap}}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-200">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-3 shrink-0">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-lg shadow-yellow-500/20"><i class="fas fa-crown text-base"></i></div>
+      <div><span class="text-lg font-black font-heading tracking-tight text-zinc-900">SIILCK<span class="text-yellow-500">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Siiilck Partners</span></div>
+    </a>
+    <nav class="hidden md:flex items-center gap-6">
+      <a href="#que-es" class="sk-nav-link">Qué es Siilck</a>
+      <a href="#como-ser" class="sk-nav-link">Cómo ser partner</a>
+      <a href="#comisiones" class="sk-nav-link">Comisiones</a>
+      <a href="#requisitos" class="sk-nav-link">Requisitos</a>
+      <a href="#faq" class="sk-nav-link">FAQ</a>
+      <a href="#postulacion" class="sk-btn-primary" style="padding:10px 22px;font-size:13px">Postular ahora</a>
+    </nav>
+    <a href="/" class="md:hidden sk-nav-link"><i class="fas fa-home"></i> Inicio</a>
+  </div>
+</header>
+
+<!-- 1. HERO -->
+<section class="sk-hero text-white py-20 md:py-28 px-4">
+  <div class="max-w-4xl mx-auto text-center relative z-10">
+    <span class="sk-badge mb-6"><i class="fas fa-handshake"></i> Programa de Venta Mayorista</span>
+    <h1 class="text-4xl md:text-6xl font-black font-heading mb-5 leading-tight">Sé parte de <span class="text-yellow-400">Siiilck Partners</span></h1>
+    <p class="text-base md:text-lg text-zinc-300 max-w-2xl mx-auto leading-relaxed mb-8">Somos el marketplace con escrow más confiable para cuentas de juegos y servicios de streaming. Vende al por mayor con protección total, comisiones preferenciales y soporte dedicado para partners.</p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="#postulacion" class="sk-btn-primary inline-flex items-center gap-2 justify-center"><i class="fas fa-paper-plane"></i> Postular ahora</a>
+      <a href="#como-ser" class="bg-white/10 hover:bg-white/15 text-white font-bold px-8 py-3.5 rounded-xl border border-white/20 transition inline-flex items-center gap-2 justify-center"><i class="fas fa-route"></i> Cómo funciona</a>
+    </div>
+    <div class="flex flex-wrap justify-center gap-6 mt-12 text-sm text-zinc-400">
+      <span><i class="fas fa-shield-alt text-yellow-400 mr-1.5"></i> Escrow protegido</span>
+      <span><i class="fas fa-bolt text-yellow-400 mr-1.5"></i> Entrega inmediata</span>
+      <span><i class="fas fa-headset text-yellow-400 mr-1.5"></i> Soporte exclusivo</span>
+      <span><i class="fas fa-percentage text-yellow-400 mr-1.5"></i> Comisiones preferentes</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2. QUE ES SIIILCK -->
+<section id="que-es" class="sk-section py-16 md:py-20 px-4 bg-white">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="sk-badge mb-4"><i class="fas fa-info-circle"></i> Sobre nosotros</span>
+      <h2 class="text-3xl md:text-4xl font-black font-heading text-zinc-900 mb-4">¿Qué es SiilckVentas?</h2>
+      <p class="text-zinc-500 max-w-2xl mx-auto">Conoce nuestra marca antes de unirte como partner mayorista.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="sk-card p-7">
+        <div class="w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-600 flex items-center justify-center text-xl mb-4"><i class="fas fa-store"></i></div>
+        <h3 class="font-bold text-zinc-900 text-lg mb-2">Marketplace con Escrow</h3>
+        <p class="text-sm text-zinc-500 leading-relaxed">Vendemos cuentas verificadas de videojuegos y servicios de streaming con protección Escrow al 100%. El comprador recibe su producto o se le devuelve el dinero.</p>
+      </div>
+      <div class="sk-card p-7">
+        <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-xl mb-4"><i class="fas fa-gamepad"></i></div>
+        <h3 class="font-bold text-zinc-900 text-lg mb-2">Juegos y Streaming</h3>
+        <p class="text-sm text-zinc-500 leading-relaxed">Cubrimos más de 60 juegos populares (Free Fire, Fortnite, Roblox, CS2, Valorant, etc.) y servicios de streaming (Netflix, Spotify, Disney+, Prime, Crunchyroll y más).</p>
+      </div>
+      <div class="sk-card p-7">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xl mb-4"><i class="fas fa-shield-check"></i></div>
+        <h3 class="font-bold text-zinc-900 text-lg mb-2">Verificación a Mano</h3>
+        <p class="text-sm text-zinc-500 leading-relaxed">Cada cuenta y cada vendedor se verifican manualmente. Nuestro estilo es simple: confianza, velocidad y seguridad. Cero cuentas robadas, cero estafas.</p>
+      </div>
+    </div>
+    <div class="mt-8 sk-card p-7 bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200">
+      <p class="text-sm text-zinc-700 leading-relaxed text-center"><strong class="text-yellow-700">Nuestra misión:</strong> ser el marketplace más seguro y rápido de Chile y Latinoamérica para comprar y vender cuentas digitales. Buscamos partners que compartan nuestros valores de transparencia, responsabilidad y compromiso con el comprador.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. COMO SER VENDEDOR MAYORISTA -->
+<section id="como-ser" class="sk-section py-16 md:py-20 px-4 bg-zinc-50">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="sk-badge mb-4"><i class="fas fa-route"></i> Paso a paso</span>
+      <h2 class="text-3xl md:text-4xl font-black font-heading text-zinc-900 mb-4">Cómo ser vendedor mayorista</h2>
+      <p class="text-zinc-500 max-w-2xl mx-auto">Cuatro pasos simples para empezar a vender al por mayor con nosotros.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-4">
+      <div class="sk-step">
+        <div class="sk-step-num">1</div>
+        <div class="text-2xl text-yellow-500 mb-3 mt-2"><i class="fas fa-user-plus"></i></div>
+        <h3 class="font-bold text-zinc-900 mb-2">Registro</h3>
+        <p class="text-sm text-zinc-500 leading-relaxed">Completa el formulario de postulación al final de esta página con tus datos y los de tu tienda o Instagram.</p>
+      </div>
+      <div class="sk-step">
+        <div class="sk-step-num">2</div>
+        <div class="text-2xl text-yellow-500 mb-3 mt-2"><i class="fas fa-clipboard-check"></i></div>
+        <h3 class="font-bold text-zinc-900 mb-2">Aprobación</h3>
+        <p class="text-sm text-zinc-500 leading-relaxed">Nuestro equipo revisa tu postulación en 24-48 horas. Verificamos tu identidad y tu reputación como vendedor.</p>
+      </div>
+      <div class="sk-step">
+        <div class="sk-step-num">3</div>
+        <div class="text-2xl text-yellow-500 mb-3 mt-2"><i class="fas fa-boxes"></i></div>
+        <h3 class="font-bold text-zinc-900 mb-2">Acceso a catálogo mayorista</h3>
+        <p class="text-sm text-zinc-500 leading-relaxed">Una vez aprobado, recibes acceso al catálogo mayorista con precios especiales y descuentos por volumen.</p>
+      </div>
+      <div class="sk-step">
+        <div class="sk-step-num">4</div>
+        <div class="text-2xl text-yellow-500 mb-3 mt-2"><i class="fas fa-rocket"></i></div>
+        <h3 class="font-bold text-zinc-900 mb-2">Empieza a vender</h3>
+        <p class="text-sm text-zinc-500 leading-relaxed">Publica tus productos, gestiona ventas con escrow y retira tus ganancias. ¡Todo desde una sola plataforma!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. COMISIONES Y BENEFICIOS -->
+<section id="comisiones" class="sk-section py-16 md:py-20 px-4 bg-white">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="sk-badge mb-4"><i class="fas fa-percentage"></i> Beneficios del programa</span>
+      <h2 class="text-3xl md:text-4xl font-black font-heading text-zinc-900 mb-4">Comisiones y beneficios</h2>
+      <p class="text-zinc-500 max-w-2xl mx-auto">Condiciones claras y transparentes para nuestros partners mayoristas.</p>
+    </div>
+    <table class="sk-table">
+      <thead>
+        <tr><th>Beneficio</th><th>Partner Starter</th><th>Partner Pro</th><th>Partner Elite</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><i class="fas fa-tag text-yellow-500 mr-2"></i>Comisión por venta</td><td>8%</td><td>5%</td><td>3%</td></tr>
+        <tr><td><i class="fas fa-layer-group text-yellow-500 mr-2"></i>Descuento por volumen</td><td>5% (10+ ventas)</td><td>10% (10+ ventas)</td><td>15% (10+ ventas)</td></tr>
+        <tr><td><i class="fas fa-truck text-yellow-500 mr-2"></i>Envíos coordinados</td><td>Estándar</td><td>Prioritario</td><td>Gratis y express</td></tr>
+        <tr><td><i class="fas fa-headset text-yellow-500 mr-2"></i>Soporte dedicado</td><td>Email</td><td>WhatsApp</td><td>Manager personal</td></tr>
+        <tr><td><i class="fas fa-bullhorn text-yellow-500 mr-2"></i>Material de marketing</td><td>Básico</td><td>Completo</td><td>Personalizado</td></tr>
+        <tr><td><i class="fas fa-crown text-yellow-500 mr-2"></i>Insignia de partner</td><td>Plateada</td><td>Dorada</td><td>Diamante</td></tr>
+        <tr><td><i class="fas fa-bolt text-yellow-500 mr-2"></i>Publicaciones destacadas</td><td>3/mes</td><td>10/mes</td><td>Ilimitadas</td></tr>
+        <tr><td><i class="fas fa-money-bill-wave text-yellow-500 mr-2"></i>Retiro mínimo</td><td>$5.000 CLP</td><td>$3.000 CLP</td><td>Sin mínimo</td></tr>
+      </tbody>
+    </table>
+    <p class="text-xs text-zinc-400 mt-4 text-center">Los niveles se asignan según volumen de ventas mensual. Los números son referenciales y pueden actualizarse. Consulta con tu manager para condiciones personalizadas.</p>
+  </div>
+</section>
+
+<!-- 5. REQUISITOS -->
+<section id="requisitos" class="sk-section py-16 md:py-20 px-4 bg-zinc-50">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="sk-badge mb-4"><i class="fas fa-list-check"></i> Lo que necesitas</span>
+      <h2 class="text-3xl md:text-4xl font-black font-heading text-zinc-900 mb-4">Requisitos para ser partner</h2>
+      <p class="text-zinc-500 max-w-2xl mx-auto">Estos son los requisitos mínimos para postular al programa.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="sk-card p-6 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-600 flex items-center justify-center shrink-0"><i class="fas fa-id-card"></i></div>
+        <div><h3 class="font-bold text-zinc-900 text-sm mb-1">Identidad verificada</h3><p class="text-sm text-zinc-500">Debes tener tu identidad verificada en SiilckVentas (carnet por delante y detrás + selfie).</p></div>
+      </div>
+      <div class="sk-card p-6 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-600 flex items-center justify-center shrink-0"><i class="fas fa-store"></i></div>
+        <div><h3 class="font-bold text-zinc-900 text-sm mb-1">Tienda o Instagram activo</h3><p class="text-sm text-zinc-500">Tener una tienda online, Instagram o canal de ventas con al menos 3 meses de actividad.</p></div>
+      </div>
+      <div class="sk-card p-6 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-600 flex items-center justify-center shrink-0"><i class="fas fa-chart-line"></i></div>
+        <div><h3 class="font-bold text-zinc-900 text-sm mb-1">Volumen mínimo mensual</h3><p class="text-sm text-zinc-500">Capacidad de gestionar al menos 10 ventas mensuales de forma constante.</p></div>
+      </div>
+      <div class="sk-card p-6 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-600 flex items-center justify-center shrink-0"><i class="fas fa-map-marker-alt"></i></div>
+        <div><h3 class="font-bold text-zinc-900 text-sm mb-1">Ubicación</h3><p class="text-sm text-zinc-500">Residir en Chile o tener capacidad de operar en pesos chilenos (CLP).</p></div>
+      </div>
+      <div class="sk-card p-6 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-600 flex items-center justify-center shrink-0"><i class="fas fa-handshake"></i></div>
+        <div><h3 class="font-bold text-zinc-900 text-sm mb-1">Buena reputación</h3><p class="text-sm text-zinc-500">Sin historial de estafas, bloqueos o reportes graves en la plataforma.</p></div>
+      </div>
+      <div class="sk-card p-6 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-600 flex items-center justify-center shrink-0"><i class="fas fa-laptop"></i></div>
+        <div><h3 class="font-bold text-zinc-900 text-sm mb-1">Cuenta en SiilckVentas</h3><p class="text-sm text-zinc-500">Estar registrado en siilckventas.com con email verificado y sesión activa.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. FAQ -->
+<section id="faq" class="sk-section py-16 md:py-20 px-4 bg-white">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="sk-badge mb-4"><i class="fas fa-question-circle"></i> Preguntas frecuentes</span>
+      <h2 class="text-3xl md:text-4xl font-black font-heading text-zinc-900 mb-4">FAQ para mayoristas</h2>
+      <p class="text-zinc-500">Resolvemos las dudas más comunes del programa partners.</p>
+    </div>
+    <div class="space-y-3" id="faq-container">
+      <div class="sk-faq-item">
+        <div class="sk-faq-q" onclick="toggleFaq(this)">¿Cuánto cuesta unirse al programa partners? <i class="fas fa-chevron-down text-yellow-500 transition-transform"></i></div>
+        <div class="sk-faq-a">Unirse es totalmente gratis. No pagamos cuota de inscripción ni mensualidad. Nuestro modelo es por comisión: solo pagas un porcentaje de cada venta que realices a través de la plataforma.</div>
+      </div>
+      <div class="sk-faq-item">
+        <div class="sk-faq-q" onclick="toggleFaq(this)">¿Cuánto tarda la aprobación? <i class="fas fa-chevron-down text-yellow-500 transition-transform"></i></div>
+        <div class="sk-faq-a">La revisión toma entre 24 y 48 horas hábiles desde que envías tu postulación. Te contactaremos por WhatsApp o email con el resultado.</div>
+      </div>
+      <div class="sk-faq-item">
+        <div class="sk-faq-q" onclick="toggleFaq(this)">¿Qué juegos y servicios puedo vender? <i class="fas fa-chevron-down text-yellow-500 transition-transform"></i></div>
+        <div class="sk-faq-a">Puedes vender cualquier juego o servicio que esté en nuestro catálogo: más de 60 juegos populares y todos los servicios de streaming soportados (Netflix, Spotify, Disney+, Prime, Crunchyroll, etc.). Si tienes un producto que no está en el catálogo, escríbenos y lo evaluamos.</div>
+      </div>
+      <div class="sk-faq-item">
+        <div class="sk-faq-q" onclick="toggleFaq(this)">¿Cómo recibo mis ganancias? <i class="fas fa-chevron-down text-yellow-500 transition-transform"></i></div>
+        <div class="sk-faq-a">Las ganancias se acumulan en tu saldo de SiilckVentas. Puedes retirar vía transferencia bancaria o MercadoPago cuando alcances el mínimo de retiro según tu nivel de partner ($5.000 Starter, $3.000 Pro, sin mínimo Elite).</div>
+      </div>
+      <div class="sk-faq-item">
+        <div class="sk-faq-q" onclick="toggleFaq(this)">¿Qué pasa si un comprador reclama una venta? <i class="fas fa-chevron-down text-yellow-500 transition-transform"></i></div>
+        <div class="sk-faq-a">El sistema Escrow protege tanto al comprador como al vendedor. Si el comprador reclama, nuestro equipo revisa el caso. Si la cuenta estaba en buen estado y se entregó correctamente, el dinero se libera a tu saldo. Si hubo un problema real, se reembolsa al comprador.</div>
+      </div>
+      <div class="sk-faq-item">
+        <div class="sk-faq-q" onclick="toggleFaq(this)">¿Puedo subir mi nivel de partner? <i class="fas fa-chevron-down text-yellow-500 transition-transform"></i></div>
+        <div class="sk-faq-a">Sí. Tu nivel sube automáticamente según tu volumen de ventas mensual y tu reputación. Mantén buenas reseñas y ventas constantes para ascender de Starter a Pro y luego a Elite.</div>
+      </div>
+      <div class="sk-faq-item">
+        <div class="sk-faq-q" onclick="toggleFaq(this)">¿Necesito experiencia previa vendiendo cuentas? <i class="fas fa-chevron-down text-yellow-500 transition-transform"></i></div>
+        <div class="sk-faq-a">No es obligatorio, pero es recomendable. Si no tienes experiencia, te asignamos el nivel Starter y te damos soporte para que aprendas el proceso. Con el tiempo y buenas ventas puedes ascender.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. FORMULARIO DE POSTULACION -->
+<section id="postulacion" class="sk-section py-16 md:py-20 px-4 bg-zinc-50">
+  <div class="max-w-2xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="sk-badge mb-4"><i class="fas fa-paper-plane"></i> Postula aquí</span>
+      <h2 class="text-3xl md:text-4xl font-black font-heading text-zinc-900 mb-4">Formulario de postulación</h2>
+      <p class="text-zinc-500 max-w-lg mx-auto">Completa tus datos y te contactaremos en 24-48 horas.</p>
+    </div>
+    <div id="partners-form-container" class="sk-card p-8 space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-zinc-700 mb-1.5">Nombre completo *</label><input type="text" id="p-nombre" placeholder="Tu nombre o razón social" class="sk-input"></div>
+        <div><label class="block text-xs font-bold text-zinc-700 mb-1.5">Instagram / Tienda *</label><input type="text" id="p-instagram" placeholder="@tu_tienda o URL" class="sk-input"></div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div><label class="block text-xs font-bold text-zinc-700 mb-1.5">Ciudad *</label><input type="text" id="p-ciudad" placeholder="Santiago, Valparaíso..." class="sk-input"></div>
+        <div><label class="block text-xs font-bold text-zinc-700 mb-1.5">Teléfono / WhatsApp *</label><input type="tel" id="p-telefono" placeholder="+569 1234 5678" class="sk-input"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-zinc-700 mb-1.5">Mensaje (opcional)</label><textarea id="p-mensaje" rows="3" placeholder="Cuéntanos sobre tu tienda, volumen de ventas, experiencia..." class="sk-input resize-none"></textarea></div>
+      <div class="flex gap-2 items-start p-3 rounded-xl bg-zinc-50 border border-zinc-200"><input type="checkbox" id="p-terminos" class="mt-0.5 w-4 h-4 accent-yellow-500" required /><label for="p-terminos" class="text-xs leading-relaxed text-zinc-600">Acepto los términos del programa Siiilck Partners y autorizo el contacto por WhatsApp o email. *</label></div>
+      <button id="btn-enviar-partners" onclick="enviarPostulacionPartners()" class="sk-btn-primary w-full text-sm tracking-wider">ENVIAR POSTULACIÓN</button>
+      <p id="partners-error" class="hidden text-center text-sm text-rose-500 font-semibold"></p>
+    </div>
+    <div id="partners-success" class="hidden sk-card p-8 text-center space-y-4">
+      <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto"><i class="fas fa-check-circle"></i></div>
+      <h3 class="text-xl font-black text-zinc-900">¡Postulación enviada con éxito!</h3>
+      <p class="text-sm text-zinc-500 leading-relaxed">Gracias por postular a Siiilck Partners. Nuestro equipo revisará tu solicitud y te contactará en 24-48 horas por WhatsApp o email.</p>
+      <a href="/" class="sk-btn-primary inline-block text-sm tracking-wider">Volver al inicio</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="sk-footer py-10 px-4">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black"><i class="fas fa-crown text-sm"></i></div>
+      <span class="text-lg font-black font-heading text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span>
+    </div>
+    <p class="text-xs text-zinc-500 mb-4">Marketplace & Escrow Global · Cuentas verificadas a mano</p>
+    <div class="flex justify-center gap-5 mb-4">
+      <a href="/" class="text-zinc-400 hover:text-yellow-400 transition text-sm">Inicio</a>
+      <a href="/ventas.html" class="text-zinc-400 hover:text-yellow-400 transition text-sm">Marketplace</a>
+      <a href="/foro.html" class="text-zinc-400 hover:text-yellow-400 transition text-sm">Foro</a>
+      <a href="/formulario.html" class="text-zinc-400 hover:text-yellow-400 transition text-sm">Postular como vendedor</a>
+    </div>
+    <p class="text-[10px] text-zinc-600">© 2024 SiilckVentas. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyD4PyR975err3q8gPX6JOwpnnM5MXnA5C8",authDomain:"siilckventasfull.firebaseapp.com",projectId:"siilckventasfull",storageBucket:"siilckventasfull.firebasestorage.app",messagingSenderId:"1081229515356",appId:"1:1081229515356:web:78ccc9fb4053ee54072499"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+function toggleFaq(el){
+  const item=el.parentElement;
+  const icon=el.querySelector('i');
+  item.classList.toggle('open');
+  if(icon) icon.style.transform=item.classList.contains('open')?'rotate(180deg)':'';
+}
+
+async function enviarPostulacionPartners(){
+  const nombre=document.getElementById('p-nombre').value.trim();
+  const instagram=document.getElementById('p-instagram').value.trim();
+  const ciudad=document.getElementById('p-ciudad').value.trim();
+  const telefono=document.getElementById('p-telefono').value.trim();
+  const mensaje=document.getElementById('p-mensaje').value.trim();
+  const terminos=document.getElementById('p-terminos').checked;
+  const errorEl=document.getElementById('partners-error');
+  const btn=document.getElementById('btn-enviar-partners');
+  errorEl.classList.add('hidden');
+
+  if(!nombre||!instagram||!ciudad||!telefono){errorEl.textContent='Por favor completa todos los campos obligatorios.';errorEl.classList.remove('hidden');return;}
+  if(!terminos){errorEl.textContent='Debes aceptar los términos del programa.';errorEl.classList.remove('hidden');return;}
+
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin mr-2"></i> Enviando...';
+
+  try{
+    await db.collection('partners_sk').add({
+      nombre, instagram, ciudad, telefono, mensaje,
+      aceptoTerminos: true,
+      estado: 'pendiente_revision',
+      fecha: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('partners-form-container').classList.add('hidden');
+    document.getElementById('partners-success').classList.remove('hidden');
+  }catch(err){
+    errorEl.textContent='Error al enviar: '+err.message+'. Inténtalo de nuevo.';
+    errorEl.classList.remove('hidden');
+    btn.disabled=false;
+    btn.innerHTML='ENVIAR POSTULACIÓN';
+  }
+}
+</script>
+<script src="/guardia.js"></script>
+</body>
+</html>

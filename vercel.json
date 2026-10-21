@@ -15,7 +15,8 @@
     { "source": "/cuenta/:id/", "destination": "/api/cuenta-pagina?id=:id" },
     { "source": "/vendedor/:uid", "destination": "/vendedor.html?uid=:uid" },
     { "source": "/verificar-correo", "destination": "/login.html" },
-    { "source": "/mantenimiento", "destination": "/api/mantenimiento" }
+    { "source": "/mantenimiento", "destination": "/api/mantenimiento" },
+    { "source": "/partners-sk", "destination": "/partners-sk.html" }
   ],
   "proxy": {
     "entrypoint": "middleware.js",
