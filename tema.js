@@ -61,7 +61,7 @@
     particles.length = 0;
     blobs.length = 0;
     streaks.length = 0;
-    const count = Math.min(140, Math.floor((canvasRef.width * canvasRef.height) / 14000));
+    const count = Math.min(48, Math.floor((canvasRef.width * canvasRef.height) / 28000));
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * canvasRef.width,
@@ -82,7 +82,7 @@
         vx: (Math.random() - 0.5) * 0.25,
         vy: (Math.random() - 0.5) * 0.18,
         gold: i % 2 === 0,
-        a: 0.2 + Math.random() * 0.12
+        a: 0.05 + Math.random() * 0.05
       });
     }
     for (let i = 0; i < 3; i++) {
@@ -133,7 +133,7 @@
       if (p.x > w) p.x = 0;
       if (p.y < 0) p.y = h;
       const color = p.gold ? glowB : glowA;
-      ctxRef.fillStyle = "rgba(" + color + "," + p.alpha + ")";
+      ctxRef.fillStyle = "rgba(" + color + "," + (p.alpha * 0.22) + ")";
       ctxRef.beginPath();
       ctxRef.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctxRef.fill();
@@ -146,7 +146,7 @@
       }
       s.x += s.speed;
       s.y += s.speed * 0.35;
-      ctxRef.strokeStyle = "rgba(255,255,255,0.35)";
+      ctxRef.strokeStyle = "rgba(234, 88, 12, 0.12)";
       ctxRef.lineWidth = 1.2;
       ctxRef.beginPath();
       ctxRef.moveTo(s.x, s.y);
