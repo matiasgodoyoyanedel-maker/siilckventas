@@ -5,6 +5,12 @@
       "includeFiles": "{index.html,cuenta.html}"
     }
   },
+  "redirects": [
+    { "source": "/verificar-correo", "destination": "/login?vista=verificar", "permanent": false },
+    { "source": "/verificar-correo/", "destination": "/login?vista=verificar", "permanent": false },
+    { "source": "/vendedor/:uid", "destination": "/vendedor?uid=:uid", "permanent": false },
+    { "source": "/vendedor/:uid/", "destination": "/vendedor?uid=:uid", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/robots.txt", "destination": "/api/robots" },

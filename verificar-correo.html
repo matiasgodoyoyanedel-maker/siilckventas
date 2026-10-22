@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificar correo - SiilckVentas</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+(function () {
+  var q = new URLSearchParams(location.search || '');
+  if (!q.get('vista')) q.set('vista', 'verificar');
+  location.replace('/login?' + q.toString() + (location.hash || ''));
+})();
+</script>
+</head>
+<body>
+<p>Abriendo la verificación de correo…</p>
+<p><a href="/login?vista=verificar">Continuar al login</a></p>
+</body>
+</html>
