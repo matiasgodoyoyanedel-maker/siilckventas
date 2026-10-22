@@ -6,7 +6,7 @@
    No se altera ninguna lógica ni funcionalidad.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+
 
 :root {
   --sv-bg: #1a1a1a;
@@ -68,19 +68,12 @@ html[data-sv-theme="nova"] {
 body {
   background-color: var(--sv-bg) !important;
   color: var(--sv-text-main) !important;
-  font-family: 'Lora', 'Plus Jakarta Sans', serif !important;
 }
 
-/* Headings → Cormorant Garamond (serif clásico) */
+/* Mantener las tipografías originales del proyecto */
 h1, h2, h3, h4, h5, h6,
 .font-heading {
-  font-family: 'Cormorant Garamond', 'Outfit', serif !important;
   letter-spacing: 0.01em;
-}
-
-/* Labels y textos pequeños → mantener Lora */
-label, .text-xs, .text-\[10px\], .text-\[11px\] {
-  font-family: 'Lora', sans-serif !important;
 }
 
 /* ---- Fuentes clásicas: Cormorant Garamond + Lora ---- */
