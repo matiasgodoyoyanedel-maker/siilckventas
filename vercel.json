@@ -6,6 +6,8 @@
     }
   },
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/robots.txt", "destination": "/api/robots" },
     { "source": "/google78561bbab4dd18b7.html", "destination": "/api/google-verify" },
     { "source": "/google78561bbab4dd18b7", "destination": "/api/google-verify" },
     { "source": "/pago/exito", "destination": "/pago/exito.html" },
