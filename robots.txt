@@ -1,0 +1,7 @@
+/
+- index.html
+- sitemap.xml  <- aquí
+- robots.txt   <- aquí
+- api/
+- lib/
+...
