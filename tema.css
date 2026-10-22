@@ -1038,14 +1038,22 @@ input::placeholder, textarea::placeholder { color: #9ca3af !important; }
 }
 #seccion-vip ul,
 .vip-card-box ul,
-.vip-card-box-pro ul {
+.vip-card-box-pro ul,
+.sv-vip-lista {
   background: #fffbeb !important;
+  background-color: #fffbeb !important;
   border: 1px solid #fde68a !important;
   color: #1f2937 !important;
 }
-.vip-card-box-pro ul {
+.vip-card-box-pro ul,
+.sv-vip-lista-pro {
   background: #eff6ff !important;
+  background-color: #eff6ff !important;
   border-color: #bfdbfe !important;
+}
+.sv-vip-lista,
+.sv-vip-lista li {
+  color: #1f2937 !important;
 }
 .vip-card-box {
   background: #ffffff !important;
