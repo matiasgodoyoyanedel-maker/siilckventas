@@ -1,7 +1,6 @@
-/
-- index.html
-- sitemap.xml  <- aquí
-- robots.txt   <- aquí
-- api/
-- lib/
-...
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /panel.html
+
+Sitemap: https://www.siiilckventas.com/sitemap.xml
