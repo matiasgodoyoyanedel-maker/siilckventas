@@ -19,6 +19,9 @@ export default async function handler(req, res) {
     }
     const authHeader = req.headers?.authorization || '';
     const idToken = body.idToken || (authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '');
+    if (!idToken) {
+      return res.status(401).json({ error: 'Debes iniciar sesión para comprar.' });
+    }
     const resultado = await crearPagoDesdeCarrito({
       uid: body.uid,
       email: body.email,

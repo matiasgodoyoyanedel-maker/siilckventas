@@ -22,7 +22,10 @@ export default async function handler(req, res) {
     const tipoVipPase = body.tipoVipPase === 'pro' || body.tipoVipPase === 'basico' ? body.tipoVipPase : '';
     const authHeader = req.headers?.authorization || '';
     const idToken = body.idToken || (authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '');
-    if (!email || (!listingId && !tipoVipPase && !idToken)) {
+    if (!idToken) {
+      return res.status(401).json({ error: 'Debes iniciar sesión para comprar.' });
+    }
+    if (!email || (!listingId && !tipoVipPase)) {
       return res.status(400).json({ error: 'Falta listingId o email' });
     }
     const resultado = await crearPagoMercadoPago({

@@ -19,7 +19,34 @@ service cloud.firestore {
     }
 
     function perfilPrivilegedKeys() {
-      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'is_blocked', 'vipExpira', 'isVip', 'plan'];
+      return ['esVendedorVip', 'tipoVip', 'bloqueado', 'is_blocked', 'vipExpira', 'isVip', 'plan', 'role', 'esAdmin', 'is_seller'];
+    }
+
+    function perfilPropio() {
+      return get(/databases/$(database)/documents/perfiles/$(request.auth.uid)).data;
+    }
+
+    function vendedorAprobado() {
+      return isOwner() || (
+        signedIn()
+        && exists(/databases/$(database)/documents/perfiles/$(request.auth.uid))
+        && (
+          perfilPropio().cuentaVendedorActiva == true
+          || perfilPropio().is_seller == true
+          || perfilPropio().role == 'seller'
+        )
+      );
+    }
+
+    function puedeActivarVendedor(userId) {
+      return isSelf(userId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasAny(['cuentaVendedorActiva'])
+        && (
+          request.resource.data.cuentaVendedorActiva == false
+          || resource.data.postuladoFormulario == true
+          || resource.data.role == 'seller'
+          || resource.data.cuentaVendedorActiva == true
+        );
     }
 
     // --- Perfiles ---
@@ -38,7 +65,11 @@ service cloud.firestore {
 
       allow update: if isOwner() || (
         isSelf(userId) &&
-        !request.resource.data.diff(resource.data).affectedKeys().hasAny(perfilPrivilegedKeys())
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(perfilPrivilegedKeys()) &&
+        (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['cuentaVendedorActiva'])
+          || puedeActivarVendedor(userId)
+        )
       );
 
       allow delete: if isOwner();
@@ -49,7 +80,8 @@ service cloud.firestore {
       allow read: if true;
 
       allow create: if signedIn()
-        && request.resource.data.vendedorUid == request.auth.uid;
+        && request.resource.data.vendedorUid == request.auth.uid
+        && vendedorAprobado();
 
       allow update: if isOwner() || (
         signedIn()
@@ -67,7 +99,7 @@ service cloud.firestore {
         || (signedIn() && resource.data.vendedorUid == request.auth.uid);
 
       allow create: if isOwner()
-        || (signedIn() && request.resource.data.vendedorUid == request.auth.uid);
+        || (signedIn() && request.resource.data.vendedorUid == request.auth.uid && vendedorAprobado());
 
       allow update, delete: if isOwner()
         || (signedIn() && resource.data.vendedorUid == request.auth.uid);

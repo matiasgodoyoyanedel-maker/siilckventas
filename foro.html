@@ -100,6 +100,14 @@ async function crearTemaForo(){
   alert("¡Tema publicado con éxito!");
 }
 
+function escHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function urlImagenSegura(u){
+  const s = String(u || '');
+  if (/^https?:\/\//i.test(s) || /^data:image\//i.test(s)) return s;
+  return '';
+}
 function cargarTemasForoEnVivo(){
   db.collection('foros').orderBy('fecha', 'desc').onSnapshot(async snapshot => {
     let h = "";
@@ -111,7 +119,8 @@ function cargarTemasForoEnVivo(){
       const likeBtnClass = yaDioLike ? "text-rose-500 bg-rose-500/10 border-rose-500/30" : "text-zinc-400 bg-zinc-900 border-zinc-800 hover:text-white";
 
       let autorNombre = t.autorNombre || "Gamer";
-      let autorLogoHtml = t.autorLogo ? `<img src="${t.autorLogo}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs text-indigo-400"></i>`;
+      const logoInicial = urlImagenSegura(t.autorLogo);
+      let autorLogoHtml = logoInicial ? `<img src="${escHtml(logoInicial)}" class="w-full h-full object-cover">` : `<i class="fas fa-user text-xs text-indigo-400"></i>`;
       let autorRango = t.autorRango || "Gamer";
 
       if(t.autorUid){
@@ -119,31 +128,32 @@ function cargarTemasForoEnVivo(){
         if(pDoc.exists){
           const pD = pDoc.data();
           autorNombre = pD.username || autorNombre;
-          if(pD.logo) autorLogoHtml = `<img src="${pD.logo}" class="w-full h-full object-cover">`;
+          const logoPerfil = urlImagenSegura(pD.logo);
+          if(logoPerfil) autorLogoHtml = `<img src="${escHtml(logoPerfil)}" class="w-full h-full object-cover">`;
           autorRango = pD.tipoVip === 'pro' ? '👑 VIP Pro' : (pD.tipoVip === 'basico' ? '⭐ VIP Básico' : 'Gamer');
         }
       }
 
       const esDueno = auth.currentUser && (auth.currentUser.uid === t.autorUid || auth.currentUser.uid === OWNER_UID);
-      const btnBorrar = esDueno ? `<button onclick="eliminarTemaForo('${id}')" class="text-xs text-rose-400 hover:text-rose-300 ml-auto"><i class="fas fa-trash"></i></button>` : "";
+      const btnBorrar = esDueno ? `<button onclick="eliminarTemaForo('${escHtml(id)}')" class="text-xs text-rose-400 hover:text-rose-300 ml-auto"><i class="fas fa-trash"></i></button>` : "";
 
       h += `<div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-zinc-900 border border-indigo-500/40 flex items-center justify-center overflow-hidden shrink-0 shadow">${autorLogoHtml}</div>
             <div>
-              <h4 class="font-bold text-white text-xs">@${autorNombre}</h4>
-              <span class="text-[10px] text-indigo-400 font-semibold">${autorRango}</span>
+              <h4 class="font-bold text-white text-xs">@${escHtml(autorNombre)}</h4>
+              <span class="text-[10px] text-indigo-400 font-semibold">${escHtml(autorRango)}</span>
             </div>
           </div>
           ${btnBorrar}
         </div>
         <div class="space-y-2">
-          <h3 class="text-base font-black text-white font-heading">${t.titulo}</h3>
-          <p class="text-xs text-zinc-300 leading-relaxed">${t.contenido}</p>
+          <h3 class="text-base font-black text-white font-heading">${escHtml(t.titulo)}</h3>
+          <p class="text-xs text-zinc-300 leading-relaxed">${escHtml(t.contenido)}</p>
         </div>
         <div class="flex items-center gap-2 pt-2 border-t border-zinc-800">
-          <button onclick="toggleLikeForo('${id}')" class="px-3.5 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 transition ${likeBtnClass}">
+          <button onclick="toggleLikeForo('${escHtml(id)}')" class="px-3.5 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 transition ${likeBtnClass}">
             <i class="fas fa-heart"></i> <span>Me gusta (${likesCount})</span>
           </button>
         </div>

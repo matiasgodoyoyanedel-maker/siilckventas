@@ -1060,7 +1060,7 @@ async function abrirModalPub(id){
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
   if(p.foto){ imgEl.src = p.foto; fotoBox.classList.remove('hidden'); } else { fotoBox.classList.add('hidden'); }
-  document.getElementById('modal-pub-tags').innerHTML = `<span class="bg-zinc-900 px-2.5 py-1 rounded text-yellow-400">🎮 ${p.juego}</span><span class="bg-zinc-900 px-2.5 py-1 rounded text-zinc-300">Nivel: ${p.nivel || 'N/A'}</span>`;
+  document.getElementById('modal-pub-tags').innerHTML = `<span class="bg-zinc-900 px-2.5 py-1 rounded text-yellow-400">🎮 ${escHtml(p.juego)}</span><span class="bg-zinc-900 px-2.5 py-1 rounded text-zinc-300">Nivel: ${escHtml(p.nivel || 'N/A')}</span>`;
   document.querySelectorAll('input[name="garantia"]')[0].checked = true;
   actualizarPrecioTotalModal();
   document.getElementById('modal-pub-detalles').classList.remove('hidden');
@@ -1238,7 +1238,7 @@ async function abrirSalaChatActivo(chatId){
     snapshot.forEach(doc => {
       const m = doc.data();
       const esMio = m.remitenteUid === auth.currentUser.uid;
-      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${esMio ? 'ml-auto bg-yellow-500/10 border-yellow-500/30' : 'mr-auto bg-zinc-900 border-zinc-800'}"><p class="text-xs text-white">${m.texto}</p></div>`;
+      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${esMio ? 'ml-auto bg-yellow-500/10 border-yellow-500/30' : 'mr-auto bg-zinc-900 border-zinc-800'}"><p class="text-xs text-white">${escHtml(m.texto)}</p></div>`;
       ultimoDocId = doc.id;
     });
     mensajesBox.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
