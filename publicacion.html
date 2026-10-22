@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="/aviso-vendedor.js"></script>
 <script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
@@ -145,7 +146,15 @@ auth.onAuthStateChanged(async(u)=>{
     const doc=await db.collection('perfiles').doc(u.uid).get();
     if(doc.exists){currentUserData=doc.data();
       if(esCuentaOwner(u.uid)){console.log("👑 Dueño bypass");mostrarToast("👑 Modo dueño");return;}
-      const aprobadoPorAdmin=currentUserData.role==='seller' || currentUserData.postuladoFormulario===true;
+      const revision=window.SiilckVendedor ? await SiilckVendedor.revisar(db,u.uid,currentUserData) : {aprobado:currentUserData.role==='seller'||currentUserData.is_seller===true,postulacion:'ninguna'};
+      const aprobadoPorAdmin=revision.aprobado;
+      if(!aprobadoPorAdmin){
+        currentUserData.noAprobado=true;
+        const aviso=window.SiilckVendedor ? SiilckVendedor.mostrar(revision.postulacion) : null;
+        if(aviso) aviso.setAttribute('data-sv-bloqueante','1');
+        else{mostrarAlertaToast("Aún no eres vendedor","Postula aquí");setTimeout(()=>{window.location.href='formulario.html'},2000);}
+        return;
+      }
       if(aprobadoPorAdmin && (currentUserData.esBetaAntiguo || currentUserData.versionVendedor!=='v2' || !currentUserData.cuentaVendedorActiva)){
         const reactivar={cuentaVendedorActiva:true,versionVendedor:'v2',esBetaAntiguo:false};
         if(!currentUserData.fechaActivacionV2) reactivar.fechaActivacionV2=firebase.firestore.FieldValue.serverTimestamp();
@@ -193,6 +202,7 @@ async function crearPublicacionMarketplace(){
     if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
     if(!esDueno && !uData.cuentaVendedorActiva && !uData.is_seller && uData.role!=='seller'){mostrarAlertaToast("Aviso","Activa cuenta vendedor");return;}
+    if(!esDueno && window.SiilckVendedor){const rev=await SiilckVendedor.revisar(db,auth.currentUser.uid,uData);if(!rev.aprobado){SiilckVendedor.mostrar(rev.postulacion).setAttribute('data-sv-bloqueante','1');return;}}
     const previas=await db.collection('publicaciones').where('vendedorUid','==',auth.currentUser.uid).get();
     const misma=clavePublicacion(titulo,juego,precio);
     const ya=previas.docs.some(d=>{const p=d.data();return publicacionSigueDisponible(p)&&clavePublicacion(p.titulo,p.juego,p.precio)===misma;});

@@ -58,8 +58,8 @@
 
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
   
-  <div class="web-panel rounded-2xl p-3 max-w-2xl mx-auto">
-    <div class="flex items-center justify-center gap-2 overflow-x-auto hide-scrollbar">
+  <div class="web-panel rounded-2xl p-3 max-w-5xl mx-auto">
+    <div class="flex flex-wrap items-center justify-center gap-2">
       <button onclick="cambiarTabAdmin('postulaciones')" id="btn-tab-postulaciones" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-rose-600 text-white uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-user-check mr-1"></i> Postulaciones Vendedor</button>
       <button onclick="cambiarTabAdmin('usuarios')" id="btn-tab-usuarios" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-users mr-1"></i> Usuarios & Bloqueos</button>
       <button onclick="cambiarTabAdmin('mantenimiento')" id="btn-tab-mantenimiento" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-zinc-800 text-zinc-300 uppercase tracking-wider transition whitespace-nowrap"><i class="fas fa-tools mr-1"></i> Mantención & Temática</button>
@@ -69,7 +69,7 @@
 
   <div id="tab-postulaciones" class="space-y-4 animate-page max-w-4xl mx-auto w-full">
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
-      <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-user-check mr-2"></i> Solicitudes Pendientes para Vender</h3>
+      <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider border-b border-zinc-800 pb-3 flex items-center justify-between gap-2"><span><i class="fas fa-user-check mr-2"></i> Solicitudes Pendientes para Vender</span><span id="contador-postulaciones-admin" class="text-[10px] bg-rose-500/15 text-rose-300 border border-rose-500/30 px-2.5 py-1 rounded-full"></span></h3>
       <div id="lista-postulaciones-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando postulaciones...</p></div>
     </div>
   </div>
@@ -77,6 +77,11 @@
   <div id="tab-usuarios" class="hidden space-y-4 animate-page max-w-4xl mx-auto w-full">
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
       <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-users mr-2"></i> Control de Usuarios Registrados, IDs y Correos</h3>
+      <div id="resumen-usuarios-admin" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input id="buscar-usuarios-admin" type="search" oninput="pintarUsuariosAdmin()" placeholder="Buscar por usuario, correo o UID" class="flex-1 bg-zinc-900 border border-zinc-800 focus:border-yellow-500 rounded-xl px-3 py-2.5 text-xs text-white">
+        <div id="filtro-usuarios-admin" class="flex flex-wrap gap-2"></div>
+      </div>
       <div id="lista-usuarios-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Cargando usuarios...</p></div>
     </div>
   </div>
@@ -84,10 +89,13 @@
   <div id="tab-retiros" class="hidden space-y-4 animate-page max-w-4xl mx-auto w-full">
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
       <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-wallet mr-2"></i> Retiros de vendedores</h3>
+      <div id="resumen-retiros-admin" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+      <div id="filtro-retiros-admin" class="flex flex-wrap gap-2"></div>
       <div id="lista-retiros-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Abre esta pestaña para ver los retiros.</p></div>
     </div>
     <div class="web-panel rounded-3xl p-6 border border-zinc-800 space-y-4">
       <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider border-b border-zinc-800 pb-3"><i class="fas fa-exclamation-circle mr-2"></i> Reclamos de compras</h3>
+      <div id="filtro-reclamos-admin" class="flex flex-wrap gap-2"></div>
       <div id="lista-reclamos-admin" class="space-y-3"><p class="text-xs text-zinc-500 text-center py-6">Abre esta pestaña para ver los reclamos.</p></div>
     </div>
   </div>
@@ -191,28 +199,100 @@ function cambiarTabAdmin(tab){
 }
 function pesosAdmin(n){ return '$' + Number(n || 0).toLocaleString('es-CL'); }
 function escAdmin(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let retirosAdminCache = [], reclamosAdminCache = [], filtroRetirosAdmin = 'pendiente', filtroReclamosAdmin = 'abierto';
+const nombresAdminCache = {};
+function fechaAdmin(v){
+  const n = v && typeof v.toMillis === 'function' ? v.toMillis() : Number(v) || 0;
+  if(!n) return '';
+  return new Date(n).toLocaleString('es-CL', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function chipEstadoAdmin(estado){
+  const e = String(estado || '').toLowerCase();
+  const cls = (e === 'pagado' || e === 'cerrado') ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+    : (e === 'rechazado') ? 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+    : 'bg-yellow-500/15 text-yellow-300 border-yellow-500/30';
+  return `<span class="shrink-0 text-[10px] uppercase font-black px-2.5 py-1 rounded-full border ${cls}">${escAdmin(estado || 'pendiente')}</span>`;
+}
+function tarjetaResumenAdmin(titulo, valor, cls){
+  return `<div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-3"><p class="text-[10px] uppercase font-bold text-zinc-500">${titulo}</p><p class="text-base font-black ${cls}">${valor}</p></div>`;
+}
+function chipsFiltroAdmin(boxId, opciones, actual, fn){
+  const box = document.getElementById(boxId);
+  if(!box) return;
+  box.innerHTML = opciones.map(([v, t, n]) => `<button type="button" onclick="${fn}('${v}')" class="px-3 py-1.5 rounded-full text-[10px] font-black uppercase border transition ${v === actual ? 'bg-yellow-500 text-zinc-950 border-yellow-500' : 'bg-zinc-900 text-zinc-300 border-zinc-700 hover:border-yellow-500/50'}">${t} <span class="opacity-70">(${n})</span></button>`).join('');
+}
+async function nombresDeUidsAdmin(uids){
+  const faltan = [...new Set(uids.filter(u => u && !(u in nombresAdminCache)))];
+  await Promise.all(faltan.map(async uid => {
+    try{
+      const d = await db.collection('perfiles').doc(uid).get();
+      const p = d.exists ? d.data() : {};
+      nombresAdminCache[uid] = { nombre: p.username || p.displayName || '', email: p.email || '' };
+    }catch(e){ nombresAdminCache[uid] = { nombre: '', email: '' }; }
+  }));
+}
+function cambiarFiltroRetirosAdmin(v){ filtroRetirosAdmin = v; pintarRetirosAdmin(); }
+function cambiarFiltroReclamosAdmin(v){ filtroReclamosAdmin = v; pintarReclamosAdmin(); }
+function pintarRetirosAdmin(){
+  const box = document.getElementById('lista-retiros-admin');
+  const lista = retirosAdminCache.map(doc => ({ id: doc.id, d: doc.data() || {} }));
+  const cuenta = e => lista.filter(x => (x.d.estado || 'pendiente') === e).length;
+  const totalPend = lista.filter(x => (x.d.estado || 'pendiente') === 'pendiente').reduce((a, x) => a + (Number(x.d.monto) || 0), 0);
+  const resumen = document.getElementById('resumen-retiros-admin');
+  if(resumen) resumen.innerHTML = tarjetaResumenAdmin('Pendientes', cuenta('pendiente'), 'text-yellow-300')
+    + tarjetaResumenAdmin('Monto por pagar', pesosAdmin(totalPend), 'text-yellow-300')
+    + tarjetaResumenAdmin('Pagados', cuenta('pagado'), 'text-emerald-300')
+    + tarjetaResumenAdmin('Rechazados', cuenta('rechazado'), 'text-rose-300');
+  chipsFiltroAdmin('filtro-retiros-admin', [['pendiente','Pendientes',cuenta('pendiente')],['pagado','Pagados',cuenta('pagado')],['rechazado','Rechazados',cuenta('rechazado')],['todos','Todos',lista.length]], filtroRetirosAdmin, 'cambiarFiltroRetirosAdmin');
+  const orden = { pendiente: 0, pagado: 1, rechazado: 2 };
+  const vis = lista.filter(x => filtroRetirosAdmin === 'todos' || (x.d.estado || 'pendiente') === filtroRetirosAdmin)
+    .sort((a, b) => ((orden[a.d.estado || 'pendiente'] ?? 3) - (orden[b.d.estado || 'pendiente'] ?? 3)) || (Number(b.d.creadoEn || 0) - Number(a.d.creadoEn || 0)));
+  if(!lista.length){ box.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay retiros.</p>'; return; }
+  if(!vis.length){ box.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay retiros en este filtro.</p>'; return; }
+  box.innerHTML = vis.map(({ id, d }) => {
+    const pendiente = d.estado === 'pendiente';
+    const v = nombresAdminCache[d.vendedorUid] || {};
+    return `<article class="bg-zinc-950 border ${pendiente ? 'border-yellow-500/30' : 'border-zinc-800'} rounded-2xl p-4 space-y-3">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0"><p class="text-lg font-black text-white leading-tight">${pesosAdmin(d.monto)}</p><p class="text-[11px] font-bold text-zinc-300 truncate">${v.nombre ? '@' + escAdmin(v.nombre) : 'Vendedor'}${v.email ? ' · ' + escAdmin(v.email) : ''}</p></div>
+        ${chipEstadoAdmin(d.estado || 'pendiente')}
+      </div>
+      <div class="bg-black/40 border border-zinc-800 rounded-xl px-3 py-2"><p class="text-[9px] uppercase font-bold text-zinc-500">Datos para transferir</p><p class="text-[11px] text-zinc-200 break-all select-all">${escAdmin(d.destino || '—')}</p></div>
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] text-zinc-500"><span class="break-all">UID ${escAdmin(d.vendedorUid || '')}</span><span>${escAdmin(fechaAdmin(d.creadoEn))}${d.resueltoEn ? ' · resuelto ' + escAdmin(fechaAdmin(d.resueltoEn)) : ''}</span></div>
+      ${pendiente ? `<div class="flex flex-wrap gap-2"><button onclick="resolverRetiro('${escAdmin(id)}','pagado')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black px-3 py-2 rounded-lg uppercase">Marcar pagado</button><button onclick="resolverRetiro('${escAdmin(id)}','rechazado')" class="bg-rose-600 hover:bg-rose-500 text-white text-[10px] font-black px-3 py-2 rounded-lg uppercase">Rechazar y devolver</button></div>` : ''}
+    </article>`;
+  }).join('');
+}
+function pintarReclamosAdmin(){
+  const reclamos = document.getElementById('lista-reclamos-admin');
+  const lista = reclamosAdminCache.map(doc => ({ id: doc.id, d: doc.data() || {} }));
+  const cuenta = e => lista.filter(x => (x.d.estado || 'abierto') === e).length;
+  chipsFiltroAdmin('filtro-reclamos-admin', [['abierto','Abiertos',cuenta('abierto')],['cerrado','Cerrados',cuenta('cerrado')],['todos','Todos',lista.length]], filtroReclamosAdmin, 'cambiarFiltroReclamosAdmin');
+  const vis = lista.filter(x => filtroReclamosAdmin === 'todos' || (x.d.estado || 'abierto') === filtroReclamosAdmin)
+    .sort((a, b) => (((a.d.estado || 'abierto') === 'abierto' ? 0 : 1) - ((b.d.estado || 'abierto') === 'abierto' ? 0 : 1)) || (Number(b.d.creadoEn || 0) - Number(a.d.creadoEn || 0)));
+  if(!lista.length){ reclamos.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay reclamos.</p>'; return; }
+  if(!vis.length){ reclamos.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay reclamos en este filtro.</p>'; return; }
+  reclamos.innerHTML = vis.map(({ id, d }) => `<article class="bg-zinc-950 border ${d.estado === 'abierto' ? 'border-rose-500/30' : 'border-zinc-800'} rounded-2xl p-4 space-y-2">
+      <div class="flex items-start justify-between gap-3"><p class="text-sm font-black text-white">${escAdmin(d.motivo || 'Reclamo')}</p>${chipEstadoAdmin(d.estado || 'abierto')}</div>
+      <p class="text-xs text-zinc-300 leading-relaxed">${escAdmin(d.detalle || '')}</p>
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] text-zinc-500"><span>Orden ${escAdmin(d.ordenId || id)}</span><span>${escAdmin(fechaAdmin(d.creadoEn))}</span></div>
+      ${d.estado === 'abierto' ? `<button onclick="cerrarReclamo('${escAdmin(id)}')" class="bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-black px-3 py-2 rounded-lg uppercase">Marcar cerrado</button>` : ''}
+    </article>`).join('');
+}
 async function cargarRetirosAdmin(){
   const box = document.getElementById('lista-retiros-admin');
   const reclamos = document.getElementById('lista-reclamos-admin');
   box.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">Cargando retiros...</p>';
   try{
     const snap = await db.collection('retiros').get();
-    const docs = snap.docs.slice().sort((a,b)=>Number((b.data()||{}).creadoEn||0)-Number((a.data()||{}).creadoEn||0));
-    if(!docs.length) box.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay retiros.</p>';
-    else box.innerHTML = docs.map(doc=>{
-      const d = doc.data() || {};
-      const pendiente = d.estado === 'pendiente';
-      return `<article class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 space-y-2"><div class="flex justify-between gap-3"><p class="text-sm font-black text-white">${pesosAdmin(d.monto)}</p><span class="text-[10px] uppercase font-black text-yellow-400">${escAdmin(d.estado || 'pendiente')}</span></div><p class="text-[11px] text-zinc-300 break-all">${escAdmin(d.destino || '')}</p><p class="text-[10px] text-zinc-500">${escAdmin(d.vendedorUid || '')}</p>${pendiente ? `<div class="flex gap-2"><button onclick="resolverRetiro('${escAdmin(doc.id)}','pagado')" class="bg-emerald-600 text-white text-[10px] font-black px-3 py-2 rounded-lg">Marcar pagado</button><button onclick="resolverRetiro('${escAdmin(doc.id)}','rechazado')" class="bg-rose-600 text-white text-[10px] font-black px-3 py-2 rounded-lg">Rechazar y devolver</button></div>` : ''}</article>`;
-    }).join('');
+    retirosAdminCache = snap.docs.slice();
+    await nombresDeUidsAdmin(retirosAdminCache.map(doc => (doc.data() || {}).vendedorUid));
+    pintarRetirosAdmin();
   }catch(e){ box.innerHTML = '<p class="text-xs text-rose-400 text-center py-4">No se pudieron leer los retiros.</p>'; }
   try{
     const snap = await db.collection('reclamos').get();
-    const docs = snap.docs.slice().sort((a,b)=>Number((b.data()||{}).creadoEn||0)-Number((a.data()||{}).creadoEn||0));
-    if(!docs.length) reclamos.innerHTML = '<p class="text-xs text-zinc-500 text-center py-4">No hay reclamos.</p>';
-    else reclamos.innerHTML = docs.map(doc=>{
-      const d = doc.data() || {};
-      return `<article class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 space-y-1"><div class="flex justify-between gap-3"><p class="text-sm font-black text-white">${escAdmin(d.motivo || 'Reclamo')}</p><span class="text-[10px] uppercase font-black text-rose-300">${escAdmin(d.estado || 'abierto')}</span></div><p class="text-xs text-zinc-300">${escAdmin(d.detalle || '')}</p><p class="text-[10px] text-zinc-500">Orden ${escAdmin(d.ordenId || doc.id)}</p>${d.estado === 'abierto' ? `<button onclick="cerrarReclamo('${escAdmin(doc.id)}')" class="bg-zinc-800 text-white text-[10px] font-black px-3 py-2 rounded-lg">Marcar cerrado</button>` : ''}</article>`;
-    }).join('');
+    reclamosAdminCache = snap.docs.slice();
+    pintarReclamosAdmin();
   }catch(e){ reclamos.innerHTML = '<p class="text-xs text-rose-400 text-center py-4">No se pudieron leer los reclamos.</p>'; }
 }
 async function resolverRetiro(id, estado){
@@ -298,6 +378,8 @@ async function cargarPostulacionesAdmin(){
     </div>`;
   });
   box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay postulaciones pendientes.</p>`;
+  const contadorPost = document.getElementById('contador-postulaciones-admin');
+  if(contadorPost) contadorPost.textContent = snap.size === 1 ? '1 pendiente' : (snap.size + ' pendientes');
 }
 function verDetallePostulacion(postId){
   const p = postulacionesCache[postId];
@@ -345,35 +427,65 @@ async function rechazarPostulacion(postId){
   cargarPostulacionesAdmin();
 }
 
-async function cargarUsuariosAdmin(){
+let usuariosAdminCache = [], filtroUsuariosAdmin = 'todos';
+function cambiarFiltroUsuariosAdmin(v){ filtroUsuariosAdmin = v; pintarUsuariosAdmin(); }
+function pintarUsuariosAdmin(){
   const box = document.getElementById('lista-usuarios-admin');
-  const snap = await db.collection('perfiles').get();
+  if(!box) return;
+  const todos = usuariosAdminCache.map(doc => {
+    const d = doc.data() || {};
+    return { uid: doc.id, d, username: d.username || "Sin nombre", esVend: !!(d.cuentaVendedorActiva || d.is_seller), estaBloq: !!(d.bloqueado || d.is_blocked) };
+  });
+  const nVend = todos.filter(u => u.esVend).length, nBloq = todos.filter(u => u.estaBloq).length;
+  const nPost = todos.filter(u => u.d.postuladoFormulario && !u.esVend).length;
+  const resumen = document.getElementById('resumen-usuarios-admin');
+  if(resumen) resumen.innerHTML = tarjetaResumenAdmin('Registrados', todos.length, 'text-white')
+    + tarjetaResumenAdmin('Vendedores', nVend, 'text-emerald-300')
+    + tarjetaResumenAdmin('Postulados sin aprobar', nPost, 'text-yellow-300')
+    + tarjetaResumenAdmin('Bloqueados', nBloq, 'text-rose-300');
+  chipsFiltroAdmin('filtro-usuarios-admin', [['todos','Todos',todos.length],['vendedores','Vendedores',nVend],['normales','Usuarios',todos.length - nVend],['bloqueados','Bloqueados',nBloq]], filtroUsuariosAdmin, 'cambiarFiltroUsuariosAdmin');
+  const q = String((document.getElementById('buscar-usuarios-admin') || {}).value || '').trim().toLowerCase();
+  const vis = todos.filter(u => {
+    if(filtroUsuariosAdmin === 'vendedores' && !u.esVend) return false;
+    if(filtroUsuariosAdmin === 'normales' && u.esVend) return false;
+    if(filtroUsuariosAdmin === 'bloqueados' && !u.estaBloq) return false;
+    if(!q) return true;
+    return [u.username, u.uid, u.d.email, u.d.displayName].some(v => String(v || '').toLowerCase().includes(q));
+  }).sort((x, y) => (Number(y.esVend) - Number(x.esVend)) || x.username.localeCompare(y.username));
   let h = "";
-  snap.forEach(doc => {
-    const d = doc.data();
-    const uid = doc.id;
-    const username = d.username || "Sin nombre";
-    const esVend = !!(d.cuentaVendedorActiva || d.is_seller);
-    const estaBloq = !!(d.bloqueado || d.is_blocked);
-    const esVendedor = esVend ? `<span class="text-emerald-400 font-bold">Vendedor Activo</span>` : `<span class="text-zinc-400">Usuario normal</span>`;
-    const estadoBloqueo = estaBloq ? `<span class="text-rose-500 font-bold">Bloqueado</span>` : `<span class="text-emerald-400 font-bold">Activo</span>`;
+  vis.forEach(({ uid, d, username, esVend, estaBloq }) => {
+    const esVendedor = esVend ? `<span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Vendedor Activo</span>` : `<span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">Usuario normal</span>`;
+    const estadoBloqueo = estaBloq ? `<span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30">Bloqueado</span>` : `<span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Activo</span>`;
+    const postulado = (!esVend && d.postuladoFormulario) ? `<span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/30">Postulado</span>` : '';
+    const vip = (d.esVendedorVip && d.tipoVip) ? `<span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">VIP ${escAdmin(d.tipoVip)}</span>` : '';
     const btnBloquearTxt = estaBloq ? "Desbloquear" : "Bloquear";
     const btnBloquearCls = estaBloq ? "bg-emerald-600 hover:bg-emerald-500" : "bg-rose-600 hover:bg-rose-500";
     const btnRolTxt = esVend ? "Quitar Vendedor" : "Hacer Vendedor";
     const btnRolCls = esVend ? "bg-amber-600 hover:bg-amber-500" : "bg-indigo-600 hover:bg-indigo-500";
+    const inicial = escAdmin(String(username).charAt(0).toUpperCase() || '?');
 
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-      <div>
-        <h4 class="font-bold text-white text-sm">@${username}</h4>
-        <p class="text-[10px] text-zinc-400">UID: ${uid} • Estado: ${estadoBloqueo} • Rol: ${esVendedor}</p>
+    h += `<div class="bg-zinc-950 p-4 rounded-2xl border ${estaBloq ? 'border-rose-500/30' : 'border-zinc-800'} flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black shrink-0">${inicial}</div>
+        <div class="min-w-0 space-y-1">
+          <h4 class="font-bold text-white text-sm truncate">@${escAdmin(username)}</h4>
+          <p class="text-[11px] text-zinc-400 truncate">${escAdmin(d.email || 'Sin correo')}</p>
+          <div class="flex flex-wrap gap-1.5">${esVendedor}${estadoBloqueo}${postulado}${vip}</div>
+          <p class="text-[10px] text-zinc-500 break-all select-all">UID: ${escAdmin(uid)}</p>
+        </div>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 shrink-0">
         <button onclick="toggleRolVendedor('${uid}', ${esVend})" class="${btnRolCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnRolTxt}</button>
         <button onclick="toggleBloquearUsuario('${uid}', ${estaBloq})" class="${btnBloquearCls} text-white font-bold px-3 py-2 rounded-xl uppercase">${btnBloquearTxt}</button>
       </div>
     </div>`;
   });
-  box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No hay usuarios registrados.</p>`;
+  box.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">${todos.length ? 'No hay usuarios con ese filtro.' : 'No hay usuarios registrados.'}</p>`;
+}
+async function cargarUsuariosAdmin(){
+  const snap = await db.collection('perfiles').get();
+  usuariosAdminCache = snap.docs.slice();
+  pintarUsuariosAdmin();
 }
 
 async function toggleRolVendedor(uid, estadoActual){

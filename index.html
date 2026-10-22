@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
+<script src="/aviso-vendedor.js"></script>
 <script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
@@ -126,7 +127,7 @@
       <div class="relative">
         <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition"><i class="fas fa-bars"></i></button>
         <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-64 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
-          <a href="publicacion.html" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider shadow"><i class="fas fa-plus-square text-sm"></i> Vender Cuenta</a>
+          <a href="publicacion.html" onclick="window.SiilckVendedor && SiilckVendedor.interceptar(event)" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 p-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider shadow"><i class="fas fa-plus-square text-sm"></i> Vender Cuenta</a>
           <div class="border-t border-zinc-800 my-1"></div>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('perfil'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-user-circle text-yellow-400 text-sm w-4"></i> Mi Perfil Gamer</button>
           <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2.5"><i class="fas fa-comments text-yellow-400 text-sm w-4"></i> Mis Chats P2P Privados</button>
