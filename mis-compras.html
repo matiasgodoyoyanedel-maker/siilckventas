@@ -19,16 +19,52 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/tema.css">
 <script src="/tema.js"></script>
+<script src="/lib/gamesList.js"></script>
 <style>
-  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
-  h1,h2{font-family:'Outfit',sans-serif}
-  .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07)}
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+  body{background:#fff4e5;color:#111827;font-family:'Plus Jakarta Sans',sans-serif}
+  h1,h2,.font-heading{font-family:'Outfit',sans-serif;letter-spacing:-.03em}
+  .web-panel{background:#fff;border:1px solid #e5e7eb}
+  .mc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;background:#fff;border:1px solid #f1f5f9;border-radius:28px;padding:18px 20px;box-shadow:0 16px 40px rgba(15,23,42,.06)}
+  .mc-head-left{display:flex;align-items:flex-start;gap:12px;min-width:0}
+  .mc-head-icon{width:42px;height:42px;border-radius:999px;background:#fff7ed;color:#ea580c;display:grid;place-items:center;flex:none;box-shadow:0 0 0 6px rgba(251,146,60,.12)}
+  .mc-head h1{font-size:28px;font-weight:900;color:#111827;line-height:1}
+  .mc-head p{margin-top:6px;font-size:13px;line-height:1.45;color:#6b7280;max-width:28rem}
+  .mc-explorar{flex:none;background:#fff;border:1px solid #e5e7eb;color:#111827;font-size:12px;font-weight:800;padding:10px 16px;border-radius:999px;box-shadow:0 8px 20px rgba(15,23,42,.06)}
+  .mc-card{background:#fff;border:1px solid #f1f5f9;border-radius:28px;padding:18px 18px 16px;box-shadow:0 18px 40px rgba(15,23,42,.06);display:flex;flex-direction:column;gap:14px}
+  .mc-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;font-size:12px;font-weight:800;color:#6b7280}
+  .mc-tx{display:inline-flex;align-items:center;gap:8px;color:#4b5563}
+  .mc-tx b{color:#111827;font-weight:900}
+  .mc-escrow{display:inline-flex;align-items:center;gap:8px;color:#047857;font-weight:800}
+  .mc-escrow-dot{width:10px;height:10px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.12)}
+  .mc-product{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .mc-product-main{display:flex;align-items:flex-start;gap:12px;min-width:0}
+  .mc-ico{width:44px;height:44px;border-radius:999px;background:#111827;color:#fff;display:grid;place-items:center;flex:none;font-size:16px}
+  .mc-title{font-family:'Outfit',sans-serif;font-size:16px;font-weight:900;color:#111827;letter-spacing:-.02em;line-height:1.25}
+  .mc-meta{margin-top:4px;font-size:12px;font-weight:700;color:#6b7280}
+  .mc-price{font-family:'Outfit',sans-serif;font-size:18px;font-weight:900;color:#111827;white-space:nowrap}
+  .mc-total{font-size:13px;font-weight:800;color:#374151}
+  .mc-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .mc-btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:800;border:1px solid #e5e7eb;background:#fff;color:#111827}
+  .mc-btn-key{background:#fff7ed;border-color:#fdba74;color:#c2410c}
+  .mc-btn-star{background:#fffbeb;border-color:#fde68a;color:#b45309}
+  .mc-btn-claim{background:#fff;border-color:#e5e7eb;color:#374151}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8 flex justify-center">
-  <div id="vista-lista" class="hidden w-full max-w-2xl mx-auto space-y-4">
+  <div id="vista-lista" class="hidden w-full max-w-3xl mx-auto space-y-4">
     <a href="/index.html" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Inicio</a>
-    <h1 class="text-2xl font-black text-white">Mis compras</h1>
+    <div class="mc-head">
+      <div class="mc-head-left">
+        <div class="mc-head-icon" aria-hidden="true"><i class="fas fa-shopping-bag"></i></div>
+        <div>
+          <h1 class="font-heading">Mis compras</h1>
+          <p>Cuentas adquiridas, credenciales entregadas y gestión de garantía Escrow.</p>
+        </div>
+      </div>
+      <a href="/ventas.html" class="mc-explorar">Explorar más</a>
+    </div>
     <p id="lista-estado" class="text-sm text-zinc-400">Cargando tus compras…</p>
     <div id="lista-ordenes" class="space-y-4"></div>
   </div>
@@ -180,6 +216,50 @@ function fechaCl(ms){
   if(!ms) return '';
   return new Date(ms).toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' });
 }
+function fechaHoraCl(ms){
+  if(!ms) return '';
+  return new Date(ms).toLocaleString('es-CL', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+function fechaIso(ms){
+  if(!ms) return '';
+  const d = new Date(ms);
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return y + '-' + m + '-' + day;
+}
+function diasGarantia(g){
+  const n = Math.round(Number(g) || 0);
+  if(n >= 5682) return 180;
+  if(n >= 2841) return 90;
+  return 10;
+}
+function etiquetaGarantia(g){
+  const d = diasGarantia(g);
+  if(d >= 180) return '6 meses';
+  if(d >= 90) return '3 meses';
+  return '10 días';
+}
+function garantiaMaxima(orden){
+  const items = orden && orden.items ? orden.items : [];
+  return items.reduce((max, item) => Math.max(max, Number(item.garantia) || 0), 0);
+}
+function extraerDuracion(texto){
+  const m = String(texto || '').match(/(\d+\s*(meses|mes|días|dias|años|año))/i);
+  return m ? m[1].replace(/\s+/g, ' ') : '';
+}
+function iconoJuego(nombre){
+  const n = String(nombre || '').toLowerCase();
+  const games = window.SIILCK_GAMES || [];
+  const hit = games.find((g) => {
+    const keys = [g.nombre, g.corto, g.query].concat(g.aliases || []);
+    return keys.some((k) => {
+      const t = String(k || '').toLowerCase();
+      return t && n && (n.indexOf(t) >= 0 || t.indexOf(n) >= 0);
+    });
+  });
+  return hit ? { icon: hit.icon, color: hit.iconColor || '' } : { icon: 'fas fa-gamepad', color: '' };
+}
 function nombreMetodo(m){ return m === 'mercadopago' ? 'Mercado Pago' : 'Flow'; }
 function abrirDatosCuenta(item){
   const tituloCuenta = item.juego ? (item.juego + ' · ' + (item.nombre || 'Datos de mi cuenta')) : (item.nombre || 'Datos de mi cuenta');
@@ -235,52 +315,108 @@ document.getElementById('form-reclamo').addEventListener('submit', async (ev) =>
 });
 function pintarOrden(orden){
   const card = document.createElement('article');
-  card.className = 'bg-zinc-900 border border-zinc-800 rounded-3xl p-5 space-y-3';
-  const cabeza = document.createElement('div');
-  cabeza.className = 'flex items-start justify-between gap-3';
-  const titulo = document.createElement('div');
-  const h = document.createElement('h2');
-  h.className = 'text-sm font-black text-white';
-  h.textContent = fechaCl(orden.createdAt) || 'Compra';
-  const meta = document.createElement('p');
-  meta.className = 'text-[11px] text-zinc-400';
-  meta.textContent = nombreMetodo(orden.metodo) + ' · ' + pesos(orden.total) + ' · ' + (orden.idCorto || '');
-  titulo.appendChild(h);
-  titulo.appendChild(meta);
+  card.className = 'mc-card';
+  const garantia = garantiaMaxima(orden);
+  const hasta = garantiaHasta(orden.createdAt, garantia);
+  const tx = document.createElement('div');
+  tx.className = 'mc-row';
+  const txId = document.createElement('span');
+  txId.className = 'mc-tx';
+  const txIco = document.createElement('i');
+  txIco.className = 'fas fa-receipt text-amber-500';
+  const txTxt = document.createElement('span');
+  const idVisible = orden.idCorto || String(orden.id || '').slice(-8);
+  txTxt.innerHTML = '';
+  const txLabel = document.createElement('span');
+  txLabel.textContent = 'ID transacción: ';
+  const txVal = document.createElement('b');
+  txVal.textContent = idVisible ? ('TX-' + idVisible) : (fechaCl(orden.createdAt) || 'Compra');
+  txTxt.appendChild(txLabel);
+  txTxt.appendChild(txVal);
+  txId.appendChild(txIco);
+  txId.appendChild(txTxt);
+  tx.appendChild(txId);
+  if(orden.createdAt){
+    const sep = document.createElement('span');
+    sep.textContent = '·';
+    const cuando = document.createElement('span');
+    cuando.textContent = fechaHoraCl(orden.createdAt);
+    tx.appendChild(sep);
+    tx.appendChild(cuando);
+  }
   const estadoOrden = document.createElement('span');
-  estadoOrden.className = 'text-[10px] uppercase font-black text-emerald-400';
+  estadoOrden.className = 'text-[10px] uppercase font-black text-emerald-400 ml-auto';
   estadoOrden.textContent = orden.status || 'pagado';
-  cabeza.appendChild(titulo);
-  cabeza.appendChild(estadoOrden);
-  card.appendChild(cabeza);
+  tx.appendChild(estadoOrden);
+  card.appendChild(tx);
+  const escrow = document.createElement('div');
+  escrow.className = 'mc-escrow';
+  const dot = document.createElement('span');
+  dot.className = 'mc-escrow-dot';
+  const escTxt = document.createElement('span');
+  escTxt.textContent = 'EN GARANTÍA ESCROW';
+  escrow.appendChild(dot);
+  escrow.appendChild(escTxt);
+  if(hasta){
+    const hastaTxt = document.createElement('span');
+    hastaTxt.style.color = '#6b7280';
+    hastaTxt.style.fontWeight = '700';
+    hastaTxt.textContent = 'Garantía hasta: ' + hasta;
+    escrow.appendChild(hastaTxt);
+  }
+  card.appendChild(escrow);
   (orden.items || []).forEach((item) => {
     const filaItem = document.createElement('div');
-    filaItem.className = 'flex items-center justify-between gap-3 bg-black rounded-2xl px-3 py-3';
+    filaItem.className = 'mc-product';
+    const main = document.createElement('div');
+    main.className = 'mc-product-main';
+    const icoWrap = document.createElement('div');
+    icoWrap.className = 'mc-ico';
+    const ico = document.createElement('i');
+    const marca = iconoJuego(item.juego || item.nombre || '');
+    ico.className = marca.icon + (marca.color ? (' ' + marca.color) : '');
+    icoWrap.appendChild(ico);
     const texto = document.createElement('div');
     texto.className = 'min-w-0';
-    const nombre = document.createElement('p');
-    nombre.className = 'text-sm text-white font-bold';
-    nombre.textContent = item.nombre || 'Producto';
+    const nombre = document.createElement('h2');
+    nombre.className = 'mc-title';
+    const duracion = extraerDuracion(item.nombre);
+    const partesTitulo = [];
+    if(item.juego) partesTitulo.push(item.juego);
+    if(item.nombre && item.nombre !== item.juego) partesTitulo.push(item.nombre);
+    if(duracion && partesTitulo.join(' ').toLowerCase().indexOf(duracion.toLowerCase()) < 0) partesTitulo.push(duracion);
+    if(item.tipo === 'cuenta') partesTitulo.push('Tu propia cuenta');
+    nombre.textContent = partesTitulo.join(' · ') || 'Producto';
     texto.appendChild(nombre);
-    if(item.juego){
-      const juego = document.createElement('p');
-      juego.className = 'text-[11px] font-black text-yellow-400';
-      juego.textContent = item.juego;
-      texto.appendChild(juego);
-    }
-    filaItem.appendChild(texto);
-    if(item.tipo === 'cuenta'){
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'shrink-0 bg-yellow-400 text-black text-[11px] font-black px-4 py-2 rounded-full';
-      btn.textContent = 'Ver datos de mi cuenta';
-      btn.addEventListener('click', () => abrirDatosCuenta(item));
-      filaItem.appendChild(btn);
-    }
+    const meta = document.createElement('p');
+    meta.className = 'mc-meta';
+    const metaBits = [];
+    if(item.juego) metaBits.push(item.juego);
+    metaBits.push('Garantía ' + etiquetaGarantia(item.garantia));
+    const vend = item.vendedorNombre || orden.vendedorNombre || '';
+    if(vend) metaBits.push('Vendedor: ' + vend);
+    meta.textContent = metaBits.join(' · ');
+    texto.appendChild(meta);
+    main.appendChild(icoWrap);
+    main.appendChild(texto);
+    filaItem.appendChild(main);
+    const precio = document.createElement('p');
+    precio.className = 'mc-price';
+    precio.textContent = pesos(item.precio);
+    filaItem.appendChild(precio);
     card.appendChild(filaItem);
   });
-  card.appendChild(accionesCompra(orden));
+  const total = document.createElement('p');
+  total.className = 'mc-total';
+  total.textContent = 'Total pagado: ' + pesos(orden.total) + ' (' + nombreMetodo(orden.metodo) + ')';
+  card.appendChild(total);
+  card.appendChild(accionesCompra(orden, true));
   return card;
+}
+function garantiaHasta(createdAt, garantia){
+  const base = Number(createdAt) || 0;
+  if(!base) return '';
+  return fechaIso(base + (diasGarantia(garantia) * 24 * 60 * 60 * 1000));
 }
 function marcarEstrellas(n){
   estrellasElegidas = n;
@@ -302,9 +438,29 @@ function abrirModalReclamo(orden){
   document.getElementById('reclamo-msg').textContent = '';
   document.getElementById('modal-reclamo').classList.remove('hidden');
 }
-function accionesCompra(orden){
+function accionesCompra(orden, detallada){
   const box = document.createElement('div');
-  box.className = 'flex flex-wrap gap-2 pt-1';
+  box.className = detallada ? 'mc-actions' : 'flex flex-wrap gap-2 pt-1';
+  if(detallada){
+    (orden.items || []).forEach((item) => {
+      if(item.tipo === 'cuenta'){
+        const btnDatos = document.createElement('button');
+        btnDatos.type = 'button';
+        btnDatos.className = 'mc-btn mc-btn-key';
+        btnDatos.title = 'Ver datos de mi cuenta';
+        const keyIco = document.createElement('i');
+        keyIco.className = 'fas fa-key';
+        btnDatos.appendChild(keyIco);
+        btnDatos.appendChild(document.createTextNode(' Ver credenciales'));
+        const sr = document.createElement('span');
+        sr.className = 'sr-only';
+        sr.textContent = 'Ver datos de mi cuenta';
+        btnDatos.appendChild(sr);
+        btnDatos.addEventListener('click', () => abrirDatosCuenta(item));
+        box.appendChild(btnDatos);
+      }
+    });
+  }
   if(orden.resena){
     const hecha = document.createElement('p');
     hecha.className = 'text-[11px] text-amber-300 font-bold';
@@ -314,8 +470,15 @@ function accionesCompra(orden){
   }else{
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'bg-yellow-400 text-black text-[11px] font-black px-4 py-2 rounded-full';
-    btn.textContent = 'Dejar reseña';
+    btn.className = detallada ? 'mc-btn mc-btn-star' : 'bg-yellow-400 text-black text-[11px] font-black px-4 py-2 rounded-full';
+    if(detallada){
+      const starIco = document.createElement('i');
+      starIco.className = 'fas fa-star';
+      btn.appendChild(starIco);
+      btn.appendChild(document.createTextNode(' Dejar reseña'));
+    }else{
+      btn.textContent = 'Dejar reseña';
+    }
     btn.addEventListener('click', () => abrirModalResena(orden));
     box.appendChild(btn);
   }
@@ -327,8 +490,15 @@ function accionesCompra(orden){
   }else{
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'bg-rose-500 text-white text-[11px] font-black px-4 py-2 rounded-full';
-    btn.textContent = 'Abrir reclamo';
+    btn.className = detallada ? 'mc-btn mc-btn-claim' : 'bg-rose-500 text-white text-[11px] font-black px-4 py-2 rounded-full';
+    if(detallada){
+      const flagIco = document.createElement('i');
+      flagIco.className = 'fas fa-flag';
+      btn.appendChild(flagIco);
+      btn.appendChild(document.createTextNode(' Abrir reclamo'));
+    }else{
+      btn.textContent = 'Abrir reclamo';
+    }
     btn.addEventListener('click', () => abrirModalReclamo(orden));
     box.appendChild(btn);
   }
@@ -371,7 +541,7 @@ function exigirCorreoVerificado(user){
 auth.onAuthStateChanged(async(user)=>{
   if(!exigirCorreoVerificado(user)) return;
   if(!id){
-    document.body.className = 'min-h-screen bg-black text-white p-4 sm:p-8';
+    document.body.className = 'min-h-screen p-4 sm:p-8';
     document.getElementById('vista-detalle').classList.add('hidden');
     document.getElementById('vista-lista').classList.remove('hidden');
     document.title = 'Mis compras - SiilckVentas';
