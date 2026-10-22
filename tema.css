@@ -1,143 +1,508 @@
+/* ============================================================
+   SiilckVentas — Tema Clásico & Elegante
+   Paleta: marfil, bronce, carbón profundo, blanco perla.
+   Bordes: finos, sutiles, doble línea decorativa.
+   Botones: bronce mate con relieve discreto.
+   No se altera ninguna lógica ni funcionalidad.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+
 :root {
-  --sv-bg: #2a2533;
-  --sv-accent: #c084fc;
-  --sv-gold: #fbbf24;
-  --sv-glow-a: 168, 85, 247;
-  --sv-glow-b: 251, 191, 36;
+  --sv-bg: #1a1a1a;
+  --sv-accent: #b8860b;
+  --sv-gold: #c9a227;
+  --sv-glow-a: 201, 162, 39;
+  --sv-glow-b: 184, 134, 11;
+  --sv-pearl: #f5f0e6;
+  --sv-ivory: #faf7f0;
+  --sv-bronze: #b8860b;
+  --sv-bronze-light: #d4a833;
+  --sv-bronze-dark: #8b6914;
+  --sv-charcoal: #1a1a1a;
+  --sv-charcoal-light: #262626;
+  --sv-charcoal-mid: #333333;
+  --sv-line: rgba(201, 162, 39, 0.18);
+  --sv-line-strong: rgba(201, 162, 39, 0.35);
+  --sv-panel-bg: rgba(38, 38, 38, 0.92);
+  --sv-text-main: #ece6d6;
+  --sv-text-muted: #a8a098;
+  --sv-text-faint: #7a7268;
 }
 html[data-sv-theme="aurora"] {
-  --sv-bg: #2a2533;
-  --sv-accent: #c084fc;
-  --sv-gold: #fbbf24;
-  --sv-glow-a: 168, 85, 247;
-  --sv-glow-b: 251, 191, 36;
+  --sv-bg: #1a1a1a;
+  --sv-accent: #b8860b;
+  --sv-gold: #c9a227;
+  --sv-glow-a: 201, 162, 39;
+  --sv-glow-b: 184, 134, 11;
 }
 html[data-sv-theme="clasico"] {
-  --sv-bg: #2e2a22;
-  --sv-accent: #eab308;
-  --sv-gold: #eab308;
-  --sv-glow-a: 234, 179, 8;
-  --sv-glow-b: 251, 191, 36;
+  --sv-bg: #1a1a1a;
+  --sv-accent: #b8860b;
+  --sv-gold: #c9a227;
+  --sv-glow-a: 201, 162, 39;
+  --sv-glow-b: 184, 134, 11;
 }
 html[data-sv-theme="neon"] {
-  --sv-bg: #242028;
-  --sv-accent: #f43f5e;
-  --sv-gold: #22d3ee;
-  --sv-glow-a: 244, 63, 94;
-  --sv-glow-b: 34, 211, 238;
+  --sv-bg: #1a1a1a;
+  --sv-accent: #b8860b;
+  --sv-gold: #c9a227;
+  --sv-glow-a: 201, 162, 39;
+  --sv-glow-b: 184, 134, 11;
 }
 html[data-sv-theme="esmeralda"] {
-  --sv-bg: #212826;
-  --sv-accent: #34d399;
-  --sv-gold: #fbbf24;
-  --sv-glow-a: 52, 211, 153;
-  --sv-glow-b: 251, 191, 36;
+  --sv-bg: #1a1a1a;
+  --sv-accent: #b8860b;
+  --sv-gold: #c9a227;
+  --sv-glow-a: 201, 162, 39;
+  --sv-glow-b: 184, 134, 11;
 }
 html[data-sv-theme="nova"] {
-  --sv-bg: #2a2024;
-  --sv-accent: #fb7185;
-  --sv-gold: #facc15;
-  --sv-glow-a: 244, 63, 94;
-  --sv-glow-b: 250, 204, 21;
+  --sv-bg: #1a1a1a;
+  --sv-accent: #b8860b;
+  --sv-gold: #c9a227;
+  --sv-glow-a: 201, 162, 39;
+  --sv-glow-b: 184, 134, 11;
 }
+
 body {
   background-color: var(--sv-bg) !important;
+  color: var(--sv-text-main) !important;
+  font-family: 'Lora', 'Plus Jakarta Sans', serif !important;
 }
+
+/* Headings → Cormorant Garamond (serif clásico) */
+h1, h2, h3, h4, h5, h6,
+.font-heading {
+  font-family: 'Cormorant Garamond', 'Outfit', serif !important;
+  letter-spacing: 0.01em;
+}
+
+/* Labels y textos pequeños → mantener Lora */
+label, .text-xs, .text-\[10px\], .text-\[11px\] {
+  font-family: 'Lora', sans-serif !important;
+}
+
+/* ---- Fuentes clásicas: Cormorant Garamond + Lora ---- */
+.sv-font-link { display: none !important; }
+
+/* ---- Overlay de fondo: elegante y sutil ---- */
 .sv-theme-overlay {
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 50% at 8% -5%, rgba(var(--sv-glow-a), 0.28), transparent 58%),
-    radial-gradient(ellipse 70% 45% at 95% 105%, rgba(var(--sv-glow-b), 0.22), transparent 52%),
-    radial-gradient(ellipse 50% 40% at 70% 10%, rgba(var(--sv-glow-a), 0.16), transparent 60%),
-    linear-gradient(180deg, var(--sv-bg) 0%, #15121a 100%);
+    radial-gradient(ellipse 80% 50% at 8% -5%, rgba(var(--sv-glow-a), 0.10), transparent 58%),
+    radial-gradient(ellipse 70% 45% at 95% 105%, rgba(var(--sv-glow-b), 0.08), transparent 52%),
+    linear-gradient(180deg, var(--sv-bg) 0%, #111111 100%);
 }
 .sv-theme-grid {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.10;
+  opacity: 0.04;
   background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: radial-gradient(ellipse at center, black 35%, transparent 82%);
-  animation: svGridDrift 28s linear infinite;
+    linear-gradient(rgba(201,162,39,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,162,39,0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  animation: svGridDrift 40s linear infinite;
 }
 .sv-theme-orb {
   position: fixed;
   border-radius: 50%;
   pointer-events: none;
   z-index: -2;
-  filter: blur(70px);
+  filter: blur(90px);
   mix-blend-mode: screen;
 }
 .sv-theme-orb-1 {
-  width: 420px; height: 420px; top: -120px; left: -80px;
-  background: rgba(var(--sv-glow-a), 0.38);
-  animation: svOrbA 16s ease-in-out infinite;
+  width: 380px; height: 380px; top: -100px; left: -60px;
+  background: rgba(var(--sv-glow-a), 0.14);
+  animation: svOrbA 22s ease-in-out infinite;
 }
 .sv-theme-orb-2 {
-  width: 380px; height: 380px; bottom: -140px; right: -60px;
-  background: rgba(var(--sv-glow-b), 0.34);
-  animation: svOrbB 19s ease-in-out infinite;
+  width: 340px; height: 340px; bottom: -120px; right: -40px;
+  background: rgba(var(--sv-glow-b), 0.12);
+  animation: svOrbB 26s ease-in-out infinite;
 }
 .sv-theme-orb-3 {
-  width: 260px; height: 260px; top: 42%; left: 55%;
-  background: rgba(var(--sv-glow-a), 0.22);
-  animation: svOrbC 22s ease-in-out infinite;
+  width: 220px; height: 220px; top: 42%; left: 55%;
+  background: rgba(var(--sv-glow-a), 0.08);
+  animation: svOrbC 30s ease-in-out infinite;
 }
 .sv-theme-scan {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(255,255,255,0.02) 4px);
-  opacity: 0.5;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(201,162,39,0.012) 4px);
+  opacity: 0.4;
 }
 @keyframes svOrbA {
-  0%,100% { transform: translate(0,0) scale(1); opacity: 0.85; }
-  50% { transform: translate(70px, 40px) scale(1.18); opacity: 1; }
+  0%,100% { transform: translate(0,0) scale(1); opacity: 0.6; }
+  50% { transform: translate(60px, 35px) scale(1.1); opacity: 0.8; }
 }
 @keyframes svOrbB {
   0%,100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(-50px, -30px) scale(1.22); }
+  50% { transform: translate(-45px, -25px) scale(1.15); }
 }
 @keyframes svOrbC {
   0%,100% { transform: translate(-20px, 0) scale(0.9); }
-  50% { transform: translate(40px, -50px) scale(1.25); }
+  50% { transform: translate(35px, -45px) scale(1.2); }
 }
 @keyframes svGridDrift {
   from { background-position: 0 0, 0 0; }
-  to { background-position: 42px 42px, 42px 42px; }
+  to { background-position: 48px 48px, 48px 48px; }
 }
+
+/* ============================================================
+   PANELES — Borde doble elegante, fondo carbón
+   ============================================================ */
+.web-panel {
+  background: var(--sv-panel-bg) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--sv-line) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 24px rgba(var(--sv-glow-a), 0.06) !important;
+  position: relative;
+}
+/* Línea decorativa interna tipo clásico */
+.web-panel::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(201,162,39,0.06);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+.web-panel > * { position: relative; z-index: 1; }
+
+/* ============================================================
+   BOTONES — Estilo clásico, relieve discreto en bronce
+   ============================================================ */
+/* Botón primario (amarillo original → bronce mate) */
+.bg-yellow-500,
+.bg-yellow-400,
+button.bg-yellow-500,
+a.bg-yellow-500,
+button.bg-yellow-400,
+a.bg-yellow-400 {
+  background: linear-gradient(180deg, var(--sv-bronze-light) 0%, var(--sv-bronze) 60%, var(--sv-bronze-dark) 100%) !important;
+  color: var(--sv-ivory) !important;
+  border: 1px solid var(--sv-bronze-dark) !important;
+  box-shadow: 0 4px 14px rgba(184,134,11,0.3), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+}
+.bg-yellow-500:hover,
+.bg-yellow-400:hover,
+button.bg-yellow-500:hover,
+a.bg-yellow-500:hover,
+button.bg-yellow-400:hover,
+a.bg-yellow-400:hover {
+  background: linear-gradient(180deg, #e0b840 0%, var(--sv-bronze-light) 60%, var(--sv-bronze) 100%) !important;
+  box-shadow: 0 6px 20px rgba(184,134,11,0.4), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+  transform: translateY(-1px);
+}
+
+/* Gradiente amarillo → bronce */
+.bg-gradient-to-r.from-yellow-500,
+.bg-gradient-to-r.from-yellow-500.to-amber-400 {
+  background: linear-gradient(135deg, var(--sv-bronze) 0%, var(--sv-bronze-light) 100%) !important;
+  color: var(--sv-ivory) !important;
+  border: 1px solid var(--sv-bronze-dark) !important;
+  box-shadow: 0 6px 18px rgba(184,134,11,0.35), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+.bg-gradient-to-tr.from-yellow-500.to-amber-400 {
+  background: linear-gradient(135deg, var(--sv-bronze) 0%, var(--sv-bronze-light) 100%) !important;
+  color: var(--sv-ivory) !important;
+  border: 1px solid var(--sv-bronze-dark) !important;
+}
+
+/* Botones secundarios (zinc/gris → carbón con borde bronce) */
+.bg-zinc-800,
+button.bg-zinc-800,
+a.bg-zinc-800,
+.bg-zinc-900,
+button.bg-zinc-900,
+a.bg-zinc-900 {
+  background: var(--sv-charcoal-light) !important;
+  border: 1px solid var(--sv-line) !important;
+  color: var(--sv-text-main) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  transition: all 0.2s ease;
+}
+.bg-zinc-800:hover,
+button.bg-zinc-800:hover,
+a.bg-zinc-800:hover,
+.bg-zinc-900:hover,
+button.bg-zinc-900:hover,
+a.bg-zinc-900:hover {
+  background: var(--sv-charcoal-mid) !important;
+  border-color: var(--sv-line-strong) !important;
+}
+
+/* Botón esmeralda (pago/éxito → verde botella clásico) */
+.bg-emerald-500,
+.bg-emerald-600,
+button.bg-emerald-500,
+button.bg-emerald-600 {
+  background: linear-gradient(180deg, #2d8659 0%, #1d5e3d 100%) !important;
+  color: var(--sv-ivory) !important;
+  border: 1px solid #16442f !important;
+  box-shadow: 0 4px 14px rgba(29,94,61,0.3), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+.bg-emerald-500:hover,
+.bg-emerald-600:hover,
+button.bg-emerald-500:hover,
+button.bg-emerald-600:hover {
+  background: linear-gradient(180deg, #38a06a 0%, #257048 100%) !important;
+  box-shadow: 0 6px 18px rgba(29,94,61,0.4) !important;
+}
+
+/* Botón rojo (danger → bordó profundo) */
+.bg-rose-500,
+.bg-rose-600,
+button.bg-rose-500,
+button.bg-rose-600 {
+  background: linear-gradient(180deg, #a83232 0%, #7d2424 100%) !important;
+  color: var(--sv-ivory) !important;
+  border: 1px solid #6b1f1f !important;
+  box-shadow: 0 4px 12px rgba(125,36,36,0.3) !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+.bg-rose-500:hover,
+.bg-rose-600:hover,
+button.bg-rose-500:hover,
+button.bg-rose-600:hover {
+  background: linear-gradient(180deg, #c04040 0%, #932828 100%) !important;
+}
+
+/* Mercado Pago — mantener azul pero con borde clásico */
+button[style*="background:#009ee3"],
+button[style*="background: #009ee3"] {
+  border: 1px solid #0077a8 !important;
+  box-shadow: 0 4px 12px rgba(0,158,227,0.3), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+/* ============================================================
+   INPUTS — Fondo oscuro con borde bronce fino
+   ============================================================ */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+textarea,
+select {
+  background-color: var(--sv-charcoal) !important;
+  border: 1px solid var(--sv-line) !important;
+  color: var(--sv-text-main) !important;
+  border-radius: 8px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--sv-bronze) !important;
+  box-shadow: 0 0 10px rgba(184,134,11,0.18) !important;
+  outline: none;
+}
+/* Placeholders clásicos */
+input::placeholder,
+textarea::placeholder {
+  color: var(--sv-text-faint) !important;
+  font-style: italic;
+}
+/* Inputs con clases específicas */
+.neo-input {
+  background: var(--sv-charcoal) !important;
+  border: 1px solid var(--sv-line) !important;
+  border-radius: 8px !important;
+}
+.neo-input:focus {
+  border-color: var(--sv-bronze) !important;
+  box-shadow: 0 0 10px rgba(184,134,11,0.18) !important;
+}
+
+/* ============================================================
+   BORDES GENÉRICOS — Reemplazar todos los bordes zinc
+   por bronce sutil
+   ============================================================ */
+.border-zinc-800,
+.border-zinc-700,
+.border-zinc-600 {
+  border-color: var(--sv-line) !important;
+}
+.border-yellow-500\/20,
+.border-yellow-500\/30,
+.border-yellow-500\/40,
+.border-yellow-500\/50,
+.border-yellow-500\/60 {
+  border-color: var(--sv-line-strong) !important;
+}
+
+/* ============================================================
+   TEXTOS DE COLOR — Amarillo → bronce/oro
+   ============================================================ */
+.text-yellow-400,
+.text-yellow-300 {
+  color: var(--sv-bronze-light) !important;
+}
+.text-yellow-500 {
+  color: var(--sv-gold) !important;
+}
+.text-emerald-400,
+.text-emerald-300 {
+  color: #6dc99a !important;
+}
+.text-rose-400,
+.text-rose-300 {
+  color: #d4858a !important;
+}
+.text-zinc-400 {
+  color: var(--sv-text-muted) !important;
+}
+.text-zinc-500 {
+  color: var(--sv-text-faint) !important;
+}
+.text-white {
+  color: var(--sv-text-main) !important;
+}
+
+/* ============================================================
+   FONDOS DECORATIVOS
+   ============================================================ */
+.bg-yellow-500\/10,
+.bg-yellow-500\/20 {
+  background: rgba(184,134,11,0.10) !important;
+}
+.bg-yellow-400\/10,
+.bg-yellow-400\/20 {
+  background: rgba(201,162,39,0.10) !important;
+}
+.bg-emerald-500\/10,
+.bg-emerald-500\/20 {
+  background: rgba(29,94,61,0.12) !important;
+}
+.bg-rose-500\/10,
+.bg-rose-500\/20 {
+  background: rgba(125,36,36,0.10) !important;
+}
+.bg-zinc-950,
+.bg-zinc-950\/70,
+.bg-zinc-950\/50 {
+  background: rgba(20,20,20,0.85) !important;
+}
+
+/* ============================================================
+   RIBBONS Y MARCOS VIP — Preservar lógica, estilo clásico
+   ============================================================ */
 .pase-ribbon {
   position: absolute;
   top: 10px;
   left: -6px;
-  background: linear-gradient(90deg, #eab308, #facc15);
-  color: #09090b;
+  background: linear-gradient(90deg, var(--sv-bronze), var(--sv-bronze-light)) !important;
+  color: var(--sv-ivory) !important;
   font-size: 9px;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 4px 10px;
-  border-radius: 0 8px 8px 0;
-  box-shadow: 0 8px 18px rgba(234,179,8,0.35);
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 6px 14px rgba(184,134,11,0.3);
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  border: 1px solid var(--sv-bronze-dark);
 }
 .marco-vip-basico {
-  box-shadow: 0 0 0 2px #eab308, 0 0 16px rgba(234,179,8,0.45);
+  box-shadow: 0 0 0 2px var(--sv-bronze), 0 0 14px rgba(184,134,11,0.35) !important;
 }
 .marco-vip-pro {
-  box-shadow: 0 0 0 2px #ef4444, 0 0 16px rgba(239,68,68,0.45);
-}
-.web-panel {
-  box-shadow: 0 20px 50px rgba(0,0,0,0.45), 0 0 36px rgba(var(--sv-glow-a), 0.14) !important;
+  box-shadow: 0 0 0 2px #a83232, 0 0 14px rgba(168,50,50,0.35) !important;
 }
 
+/* Animaciones VIP — mantener pero suavizar */
+@keyframes estelaVipPro {
+  0%{border-color:#a83232;box-shadow:0 0 8px rgba(168,50,50,0.3)}
+  50%{border-color:#d4a833;box-shadow:0 0 16px rgba(201,162,39,0.6)}
+  100%{border-color:#a83232;box-shadow:0 0 8px rgba(168,50,50,0.3)}
+}
+@keyframes estelaVipBasico {
+  0%{border-color:var(--sv-bronze);box-shadow:0 0 8px rgba(184,134,11,0.3)}
+  50%{border-color:var(--sv-bronze-light);box-shadow:0 0 14px rgba(201,162,39,0.5)}
+  100%{border-color:var(--sv-bronze);box-shadow:0 0 8px rgba(184,134,11,0.3)}
+}
+
+/* ============================================================
+   HEADER — Estilo clásico
+   ============================================================ */
+header {
+  background: rgba(20,20,20,0.92) !important;
+  border-bottom: 1px solid var(--sv-line) !important;
+  backdrop-filter: blur(16px);
+}
+/* Logo corona → dorado mate */
+header .bg-gradient-to-tr.from-yellow-500.to-amber-400 {
+  background: linear-gradient(135deg, var(--sv-bronze), var(--sv-bronze-light)) !important;
+  border: 1px solid var(--sv-bronze-dark) !important;
+  box-shadow: 0 4px 12px rgba(184,134,11,0.25) !important;
+}
+
+/* ============================================================
+   CARDS DEL MARKETPLACE — Bordes elegantes
+   ============================================================ */
+.card-vip-pro-glow {
+  border: 2px solid #a83232 !important;
+  animation: estelaVipPro 4s infinite ease-in-out;
+}
+.card-vip-basico-glow {
+  border: 2px solid var(--sv-bronze) !important;
+  animation: estelaVipBasico 4s infinite ease-in-out;
+}
+
+/* ============================================================
+   PAGINACIÓN
+   ============================================================ */
+.sv-page-btn {
+  border: 1px solid var(--sv-line) !important;
+  background: var(--sv-charcoal-light) !important;
+  color: var(--sv-text-main) !important;
+  border-radius: 8px !important;
+}
+.sv-page-btn.activa {
+  background: linear-gradient(180deg, var(--sv-bronze-light), var(--sv-bronze)) !important;
+  color: var(--sv-ivory) !important;
+  border-color: var(--sv-bronze-dark) !important;
+}
+
+/* ============================================================
+   CHIP DE FILTRO
+   ============================================================ */
+.sv-chip {
+  border: 1px solid var(--sv-line) !important;
+  background: var(--sv-charcoal-light) !important;
+  border-radius: 999px !important;
+}
+.sv-cat-on {
+  border-color: var(--sv-bronze) !important;
+  background: rgba(184,134,11,0.10) !important;
+}
+
+/* ============================================================
+   BARRA SUPERIOR DE AVISO
+   ============================================================ */
 #sv-top-live-bar {
   position: fixed;
   top: 0;
@@ -148,11 +513,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0f172a;
-  border-bottom: 1px solid #eab308;
-  color: #fde68a;
+  background: rgba(20,20,20,0.95);
+  border-bottom: 1px solid var(--sv-bronze) !important;
+  color: var(--sv-bronze-light);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.02em;
   transform: translateY(-100%);
   transition: transform 0.35s ease;
@@ -163,6 +528,9 @@ body {
 #sv-top-live-bar.sv-livebar-on { transform: translateY(0) !important; }
 body.sv-livebar-pad { padding-top: 2.5rem; }
 
+/* ============================================================
+   WHATSAPP FLOTANTE
+   ============================================================ */
 #sv-whatsapp-float {
   position: fixed;
   right: 1.25rem;
@@ -177,16 +545,20 @@ body.sv-livebar-pad { padding-top: 2.5rem; }
   align-items: center;
   justify-content: center;
   font-size: 1.75rem;
-  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.55);
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.45);
   animation: svWaPulse 1.8s ease-out infinite;
+  border: 2px solid rgba(255,255,255,0.15);
 }
 #sv-whatsapp-float:hover { transform: scale(1.06); color: #fff; }
 @keyframes svWaPulse {
-  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.65); }
-  70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(37, 211, 102, 0); }
   100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
+/* ============================================================
+   SELLO OFICIAL
+   ============================================================ */
 #sv-sello-org {
   position: fixed;
   left: 1.25rem;
@@ -196,22 +568,25 @@ body.sv-livebar-pad { padding-top: 2.5rem; }
   align-items: center;
   gap: 8px;
   max-width: min(70vw, 240px);
-  background: rgba(15, 23, 42, 0.92);
-  border: 1px solid rgba(234, 179, 8, 0.45);
-  color: #facc15;
+  background: rgba(20, 20, 20, 0.92);
+  border: 1px solid var(--sv-line-strong) !important;
+  color: var(--sv-bronze-light);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 8px 12px;
   border-radius: 9999px;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
 }
-#sv-sello-org i { color: #eab308; }
+#sv-sello-org i { color: var(--sv-bronze); }
 
+/* ============================================================
+   TOASTS SOCIALES
+   ============================================================ */
 #sv-social-toasts {
   position: fixed;
   left: 1.25rem;
@@ -223,14 +598,14 @@ body.sv-livebar-pad { padding-top: 2.5rem; }
   pointer-events: none;
 }
 .sv-social-toast {
-  background: rgba(15, 23, 42, 0.94);
-  border: 1px solid rgba(234, 179, 8, 0.4);
-  color: #fff;
+  background: rgba(20, 20, 20, 0.94);
+  border: 1px solid var(--sv-line) !important;
+  color: var(--sv-text-main);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 10px 14px;
-  border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.2);
   animation: svToastIn 0.3s ease;
   max-width: min(86vw, 320px);
 }
@@ -240,17 +615,20 @@ body.sv-livebar-pad { padding-top: 2.5rem; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ============================================================
+   BANNER DE MANTENIMIENTO
+   ============================================================ */
 #sv-banner-mantenimiento {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 40;
-  background: #0b1220;
-  border-top: 1px solid #eab308;
-  color: #fde68a;
+  background: rgba(15,15,15,0.95);
+  border-top: 1px solid var(--sv-bronze);
+  color: var(--sv-bronze-light);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
   padding: 10px 16px;
 }
@@ -259,4 +637,193 @@ body.sv-has-maint-banner #sv-social-toasts { bottom: 3.5rem; }
 @media (max-width: 640px) {
   #sv-sello-org span { display: none; }
   #sv-sello-org { padding: 10px; border-radius: 9999px; }
+}
+
+/* ============================================================
+   OVERRIDES ESPECÍFICOS — Elementos inline de cada página
+   ============================================================ */
+
+/* Welcome card (index.html) */
+.siilck-welcome-card {
+  background: linear-gradient(180deg, #262626 0%, #1a1a1a 100%) !important;
+  border: 1.5px solid var(--sv-line-strong) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 0 40px rgba(184,134,11,0.12), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+.welcome-icon {
+  background: linear-gradient(180deg, var(--sv-bronze-light), var(--sv-bronze)) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 6px 18px rgba(184,134,11,0.35) !important;
+  border: 1px solid var(--sv-bronze-dark) !important;
+}
+.welcome-badge {
+  background: rgba(184,134,11,0.10) !important;
+  border: 1px solid var(--sv-line-strong) !important;
+  color: var(--sv-bronze-light) !important;
+  border-radius: 6px !important;
+}
+.welcome-btn {
+  background: linear-gradient(180deg, var(--sv-bronze-light), var(--sv-bronze)) !important;
+  color: var(--sv-ivory) !important;
+  border: 1px solid var(--sv-bronze-dark) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 18px rgba(184,134,11,0.35) !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+.welcome-btn:hover {
+  background: linear-gradient(180deg, #e0b840, var(--sv-bronze-light)) !important;
+  box-shadow: 0 8px 24px rgba(184,134,11,0.45) !important;
+}
+.section-label {
+  color: var(--sv-bronze-light) !important;
+}
+.siilck-welcome-card h1 {
+  color: var(--sv-ivory) !important;
+}
+.welcome-sub {
+  color: var(--sv-text-muted) !important;
+}
+
+/* Game showcase */
+.game-showcase {
+  background: rgba(0,0,0,0.25) !important;
+  border: 1px solid var(--sv-line) !important;
+  border-radius: 12px !important;
+}
+.game-card {
+  border: 1px solid var(--sv-line) !important;
+  border-radius: 12px !important;
+}
+.game-card:hover {
+  border-color: var(--sv-bronze) !important;
+  box-shadow: 0 10px 24px rgba(184,134,11,0.2) !important;
+}
+.g-arrow {
+  background: linear-gradient(180deg, var(--sv-bronze-light), var(--sv-bronze)) !important;
+  color: var(--sv-ivory) !important;
+  border: 1px solid var(--sv-bronze-dark) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 14px rgba(184,134,11,0.4) !important;
+}
+.g-dots span.active {
+  background: var(--sv-bronze) !important;
+  box-shadow: 0 0 8px rgba(184,134,11,0.5) !important;
+}
+.auto-progress {
+  background: linear-gradient(90deg, var(--sv-bronze-light), var(--sv-bronze)) !important;
+}
+
+/* VIP card boxes */
+.vip-card-box {
+  background: linear-gradient(135deg, #262626 0%, #1a1a1a 100%) !important;
+  border: 2px solid var(--sv-bronze) !important;
+  box-shadow: 0 0 18px rgba(184,134,11,0.15) !important;
+}
+.vip-card-box-pro {
+  background: linear-gradient(135deg, #262626 0%, #1a1a1a 100%) !important;
+  border: 2px solid #a83232 !important;
+  box-shadow: 0 0 18px rgba(168,50,50,0.15) !important;
+}
+
+/* Trabaja banner */
+.trabaja-banner {
+  background: linear-gradient(135deg, rgba(184,134,11,0.10) 0%, rgba(20,20,20,0.95) 100%) !important;
+  border: 1px solid var(--sv-line-strong) !important;
+  border-radius: 16px !important;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  border: 4px solid rgba(184,134,11,0.15) !important;
+  border-top-color: var(--sv-bronze) !important;
+}
+
+/* Search */
+.sv-search-wrap input {
+  background: var(--sv-charcoal) !important;
+  border: 1px solid var(--sv-line) !important;
+  border-radius: 8px !important;
+}
+.sv-search-wrap input:focus {
+  border-color: var(--sv-bronze) !important;
+}
+.sv-ac {
+  background: var(--sv-charcoal-light) !important;
+  border: 1px solid var(--sv-line-strong) !important;
+  border-radius: 8px !important;
+}
+.sv-ac button:hover {
+  background: rgba(184,134,11,0.10) !important;
+}
+
+/* Juego botón sidebar */
+.sv-juego-btn {
+  background: var(--sv-charcoal) !important;
+  border: 1px solid var(--sv-line) !important;
+  border-radius: 10px !important;
+}
+.sv-juego-btn:hover {
+  border-color: var(--sv-bronze) !important;
+}
+.sv-juego-count {
+  color: var(--sv-text-faint) !important;
+}
+
+/* Skeleton loading */
+.sv-skel-row {
+  background: linear-gradient(90deg, #1a1a1a 25%, #333333 50%, #1a1a1a 75%) !important;
+  background-size: 200% 100%;
+}
+
+/* Radio garantía */
+.radio-warranty {
+  accent-color: var(--sv-bronze) !important;
+}
+
+/* Dropdown menu */
+#menu-tres-puntos-dropdown {
+  border: 1px solid var(--sv-line) !important;
+  border-radius: 14px !important;
+}
+
+/* Toasts globales */
+#alert-toast-modal {
+  border: 1px solid var(--sv-line-strong) !important;
+}
+#global-toast {
+  border: 1px solid var(--sv-line) !important;
+}
+
+/* Pase activo box */
+#pase-activo-box {
+  background: rgba(20,20,20,0.7) !important;
+  border: 1px solid var(--sv-line) !important;
+  border-radius: 12px !important;
+}
+
+/* ============================================================
+   SCROLLBAR CLÁSICA
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sv-charcoal);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sv-charcoal-mid);
+  border-radius: 4px;
+  border: 1px solid var(--sv-line);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sv-bronze-dark);
+}
+
+/* ============================================================
+   SELECCIÓN DE TEXTO
+   ============================================================ */
+::selection {
+  background: rgba(184,134,11,0.25);
+  color: var(--sv-ivory);
 }

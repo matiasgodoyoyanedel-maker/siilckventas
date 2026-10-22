@@ -1,6 +1,6 @@
 (function () {
-  const THEMES = ["aurora", "clasico", "neon", "esmeralda", "nova"];
-  const DEFAULT_THEME = "aurora";
+  const THEMES = ["clasico", "aurora", "neon", "esmeralda", "nova"];
+  const DEFAULT_THEME = "clasico";
   const particles = [];
   const blobs = [];
   const streaks = [];
