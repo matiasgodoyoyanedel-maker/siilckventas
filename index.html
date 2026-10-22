@@ -39,13 +39,14 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(234,179,8,0.4)}50%{box-shadow:0 0 40px rgba(234,179,8,0.8)}}
  .animate-glow-gold{animation:pulseGlow 2s infinite}
-.siilck-lobby-final{width:100%;display:flex;justify-content:center;padding:0;background:transparent}
-.siilck-welcome-card{background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:36px 18px 28px;text-align:center;max-width:1120px;width:100%;box-shadow:0 18px 44px rgba(15,23,42,0.07);overflow:visible}
+.siilck-lobby-final{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);display:flex;justify-content:center;padding:48px 16px 42px;position:relative;overflow:hidden;background:radial-gradient(ellipse 70% 48% at 8% 0%, rgba(201,162,39,.10), transparent 52%),radial-gradient(ellipse 60% 42% at 96% 88%, rgba(30,64,110,.40), transparent 48%),linear-gradient(168deg,#070d18 0%,#0b1a33 46%,#10243f 100%)}
+.siilck-lobby-final::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 26%,transparent 74%,rgba(0,0,0,.22))}
+.siilck-welcome-card{background:transparent;border:0;border-radius:0;padding:8px 12px 4px;text-align:center;max-width:1120px;width:100%;box-shadow:none;overflow:visible;position:relative;z-index:1}
 .welcome-icon{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:20px;display:grid;place-items:center;font-size:32px;box-shadow:0 8px 24px rgba(245,158,11,.28);animation:float 3s ease-in-out infinite}
 .welcome-badge{display:inline-block;background:#fffbeb;border:1px solid #fde68a;color:#b45309;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin:0 auto 14px}
 .sv-live-counter{width:100%;text-align:center;color:#374151;font-size:12px;font-weight:800;margin:0 0 14px;letter-spacing:.2px}
 .sv-live-counter b{color:#d97706}
-.sv-trust-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;text-align:center;color:#1f2937;font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 14px}
+.sv-trust-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;text-align:center;color:#e0f2fe;font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 14px}
 .sv-trust-dot{width:9px;height:9px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.75);animation:svTrustPulse 1.4s infinite;flex:none}
 @keyframes svTrustPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.75)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
 .sv-search-wrap{position:relative;max-width:520px;margin:0 auto 18px;text-align:left}
@@ -55,12 +56,12 @@
 .sv-ac button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#111827;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}
 .sv-ac button:hover{background:#eff6ff}
 .sv-ac-empty{margin:0;padding:10px 14px;color:#6b7280;font-size:12px}
-.siilck-welcome-card h1{color:#111827;font-size:32px;font-weight:900;margin:0 0 10px}
-.welcome-sub{color:#4b5563;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:600px}
-.section-label{color:#1d4ed8;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
+.siilck-welcome-card h1{color:#ffffff;font-size:32px;font-weight:900;margin:0 0 10px;text-shadow:0 8px 24px rgba(15,23,42,.25)}
+.welcome-sub{color:#dbeafe;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:600px}
+.section-label{color:#fde68a;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
 .welcome-btn{background:linear-gradient(180deg,#FFD740,#FFC107);color:#111;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;display:inline-flex;box-shadow:0 8px 22px rgba(245,158,11,.28);margin-top:22px;transition:transform.2s}
 .welcome-btn:hover{transform:translateY(-2px) scale(1.02)}
-.game-showcase{position:relative;margin:0 auto;overflow:visible;border-radius:20px;background:linear-gradient(180deg,#f8fafc 0%,#eef2ff 100%);padding:18px 0 22px;border:1px solid #e5e7eb;perspective:1100px}
+.game-showcase{position:relative;margin:0 auto;overflow:visible;border-radius:0;background:transparent;padding:18px 0 22px;border:0;perspective:1100px}
 .game-track{display:flex;gap:18px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:22px 56px 28px;scrollbar-width:none;transform-style:preserve-3d}
 .game-track::-webkit-scrollbar{display:none}
 .game-card{position:relative;min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:18px;overflow:hidden;background:#fff;border:1px solid #e5e7eb;text-decoration:none;transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease;transform:perspective(820px) rotateY(-7deg) translateZ(0) scale(.94);box-shadow:14px 18px 28px rgba(15,23,42,.12);transform-style:preserve-3d}
@@ -89,11 +90,21 @@
 .g-arrow:hover{transform:translateY(-50%) scale(1.1);box-shadow:0 6px 24px rgba(255,193,7,.7)}
 .g-arrow.left{left:6px}.g-arrow.right{right:6px}
 .g-dots{display:none}
-.auto-bar{height:3px;background:#e5e7eb;border-radius:10px;margin:12px 50px 0;overflow:hidden}
+.auto-bar{height:3px;background:rgba(255,255,255,.28);border-radius:10px;margin:12px 50px 0;overflow:hidden}
 .auto-progress{height:100%;width:0%;background:linear-gradient(90deg,#FFD740,#FFB300);border-radius:10px;transition:width.1s linear}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 #perfil,#chats,#tiques,#seccion-vip{scroll-margin-top:88px}
+.sv-faq{width:100%;max-width:720px;margin:0 auto;text-align:left}
+.sv-faq h2{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#111827;letter-spacing:-.02em;margin:0 0 8px}
+.sv-faq-lead{font-size:13px;color:#6b7280;margin:0 0 16px}
+.sv-faq-item{background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 10px 24px rgba(15,23,42,.05)}
+.sv-faq-item.open{border-color:#f59e0b}
+.sv-faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:transparent;border:0;color:#111827;font-size:15px;font-weight:800;text-align:left;cursor:pointer}
+.sv-faq-q i{color:#d97706;transition:transform .25s ease}
+.sv-faq-item.open .sv-faq-q i{transform:rotate(180deg)}
+.sv-faq-a{max-height:0;overflow:hidden;padding:0 18px;color:#4b5563;font-size:13px;line-height:1.6;transition:max-height .35s ease,padding .35s ease}
+.sv-faq-item.open .sv-faq-a{max-height:220px;padding:0 18px 16px}
 @media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 44px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:flex;align-items:center;justify-content:center;width:36px;height:36px;font-size:24px}.auto-bar{margin:10px 12px 0}.sv-trabaja-btn span{display:none}}
 </style>
   <meta property="og:image" content="https://bolt.new/static/og_default.png">
@@ -239,6 +250,39 @@
       <p class="text-[11px] text-zinc-400" data-i18n="forumText">Comenta y comparte con la comunidad de jugadores.</p>
     </a>
   </div>
+
+  <section id="faq-inicio" class="sv-faq" aria-label="Preguntas frecuentes">
+    <h2 class="font-heading">Preguntas frecuentes</h2>
+    <p class="sv-faq-lead">Respuestas cortas sobre compras, Escrow y garantías. Pincha una pregunta para abrirla.</p>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cómo protege el Escrow mi compra? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">El pago queda retenido hasta que recibes la cuenta. Si hay un problema real, abres un reclamo y el equipo revisa el caso antes de liberar el dinero.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cuándo recibo los datos de la cuenta? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">En cuanto el pago se confirma, la compra aparece en Mis compras con usuario, clave y correo. Las compras anteriores también quedan ahí, sincronizadas con tu sesión.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Qué métodos de pago aceptan? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Puedes pagar con Flow o Mercado Pago. El total lo calcula el servidor; no cambia el precio que ves en el carrito.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Qué cubre la garantía? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">La garantía gratis cubre 10 días. También puedes elegir 3 o 6 meses. Durante ese plazo puedes abrir un reclamo si la cuenta cambia o no corresponde a lo publicado.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cómo dejo una reseña o abro un reclamo? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Entra a Mis compras. Cada pedido tiene Ver credenciales, Dejar reseña y Abrir reclamo. El reclamo también crea un ticket de soporte.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cómo me hago vendedor? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Pincha Trabaja con nosotros arriba, postula y un admin revisa tu caso. Si te aprueban, puedes publicar. El programa Partners es para venta mayorista.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Las cuentas están verificadas? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Sí. Las publicaciones se revisan a mano y el marketplace marca las cuentas verificadas. El Escrow cubre la entrega y la garantía.</div>
+    </div>
+  </section>
 
   <div id="tiques" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
@@ -892,6 +936,23 @@ function lobbyAutocomplete(v){
     else abrir();
   });
   panel.addEventListener('mouseleave', cerrar);
+})();
+(function(){
+  document.querySelectorAll('#faq-inicio .sv-faq-q').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const item=btn.parentElement;
+      const open=item.classList.contains('open');
+      document.querySelectorAll('#faq-inicio .sv-faq-item.open').forEach(function(otro){
+        otro.classList.remove('open');
+        const q=otro.querySelector('.sv-faq-q');
+        if(q) q.setAttribute('aria-expanded','false');
+      });
+      if(!open){
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
 })();
 </script>
 <script type="module" src="/lib/settings.js"></script>
