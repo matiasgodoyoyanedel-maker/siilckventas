@@ -35,7 +35,7 @@
   @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(234,179,8,0.4)}50%{box-shadow:0 0 40px rgba(234,179,8,0.8)}}
  .animate-glow-gold{animation:pulseGlow 2s infinite}
 .siilck-lobby-final{width:100%;display:flex;justify-content:center;padding:0;background:transparent}
-.siilck-welcome-card{background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:36px 18px 28px;text-align:center;max-width:1120px;width:100%;box-shadow:0 18px 44px rgba(15,23,42,0.07)}
+.siilck-welcome-card{background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:36px 18px 28px;text-align:center;max-width:1120px;width:100%;box-shadow:0 18px 44px rgba(15,23,42,0.07);overflow:visible}
 .welcome-icon{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:20px;display:grid;place-items:center;font-size:32px;box-shadow:0 8px 24px rgba(245,158,11,.28);animation:float 3s ease-in-out infinite}
 .welcome-badge{display:inline-block;background:#fffbeb;border:1px solid #fde68a;color:#b45309;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin:0 auto 14px}
 .sv-live-counter{width:100%;text-align:center;color:#374151;font-size:12px;font-weight:800;margin:0 0 14px;letter-spacing:.2px}
@@ -55,13 +55,17 @@
 .section-label{color:#1d4ed8;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
 .welcome-btn{background:linear-gradient(180deg,#FFD740,#FFC107);color:#111;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;display:inline-flex;box-shadow:0 8px 22px rgba(245,158,11,.28);margin-top:22px;transition:transform.2s}
 .welcome-btn:hover{transform:translateY(-2px) scale(1.02)}
-.game-showcase{position:relative;margin:0 auto;overflow:hidden;border-radius:16px;background:#f8fafc;padding:8px 0 14px;border:1px solid #e5e7eb}
-.game-track{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:10px 50px;scrollbar-width:none}
+.game-showcase{position:relative;margin:0 auto;overflow:visible;border-radius:20px;background:linear-gradient(180deg,#f8fafc 0%,#eef2ff 100%);padding:18px 0 22px;border:1px solid #e5e7eb;perspective:1100px}
+.game-track{display:flex;gap:18px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:22px 56px 28px;scrollbar-width:none;transform-style:preserve-3d}
 .game-track::-webkit-scrollbar{display:none}
-.game-card{position:relative;min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:#fff;border:1px solid #e5e7eb;text-decoration:none;transition:all.35s cubic-bezier(.2,.8,.2,1)}
+.game-card{position:relative;min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:18px;overflow:hidden;background:#fff;border:1px solid #e5e7eb;text-decoration:none;transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease;transform:perspective(820px) rotateY(-7deg) translateZ(0) scale(.94);box-shadow:14px 18px 28px rgba(15,23,42,.12);transform-style:preserve-3d}
 .g-verified{position:absolute;top:8px;left:8px;z-index:5;background:#16a34a;color:#fff;font-size:9px;font-weight:900;letter-spacing:.4px;padding:3px 7px;border-radius:999px}
 .game-skel{min-width:285px;flex:0 0 285px;height:206px;border-radius:16px;background:linear-gradient(90deg,#eef0f3 25%,#f8fafc 50%,#eef0f3 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
-.game-card:hover{transform:translateY(-6px) scale(1.02);border-color:#f59e0b;box-shadow:0 12px 30px rgba(245,158,11,.16)}
+.game-card.is-center{transform:perspective(820px) rotateY(0) translateZ(28px) scale(1.05);box-shadow:0 22px 40px rgba(15,23,42,.16);border-color:#f59e0b;z-index:4}
+.game-card.is-side-l{transform:perspective(820px) rotateY(11deg) translateZ(8px) scale(.96);z-index:2}
+.game-card.is-side-r{transform:perspective(820px) rotateY(-11deg) translateZ(8px) scale(.96);z-index:2}
+.game-card.is-far{transform:perspective(820px) rotateY(0) scale(.9);opacity:.72}
+.game-card:hover{transform:perspective(820px) rotateY(0) translateY(-8px) translateZ(36px) scale(1.06);border-color:#f59e0b;box-shadow:0 24px 42px rgba(245,158,11,.18);z-index:6}
 .game-card.stream{border-color:#bfdbfe}
 .img-wrap{height:150px;position:relative;overflow:hidden;background:#f3f4f6}
 .img-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px;background:#eef2ff;z-index:0}
@@ -823,6 +827,13 @@ function lobbyAutocomplete(v){
       dots.forEach(d=>d.classList.remove('active'));
       if(dots[cur]) dots[cur].classList.add('active');
       const card=cards[cur];
+      cards.forEach((c,i)=>{
+        c.classList.remove('is-center','is-side-l','is-side-r','is-far');
+        if(i===cur) c.classList.add('is-center');
+        else if(i===((cur-1+cards.length)%cards.length)) c.classList.add('is-side-l');
+        else if(i===((cur+1)%cards.length)) c.classList.add('is-side-r');
+        else c.classList.add('is-far');
+      });
       if(card){
         const left=card.offsetLeft-(track.clientWidth-card.clientWidth)/2;
         track.scrollTo({left:Math.max(0,left),behavior:'smooth'});

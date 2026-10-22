@@ -1082,3 +1082,32 @@ a[href="/partners-sk"] {
   background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%) !important;
   border: 1px solid #bfdbfe !important;
 }
+
+.sv-mcard.web-panel::before { display: none; }
+.sv-mcard-titulo { color: #0f172a !important; }
+.sv-mcard-seller { color: #1f2937 !important; }
+#market-grid .sv-precio-card { color: #d97706 !important; font-size: 18px !important; }
+.sv-market-title { color: #0f172a !important; }
+
+.game-showcase {
+  overflow: visible !important;
+  perspective: 1100px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%) !important;
+  padding: 18px 0 22px !important;
+}
+.game-track { transform-style: preserve-3d; padding-top: 22px !important; padding-bottom: 28px !important; }
+.game-card {
+  transform: perspective(820px) rotateY(-7deg) scale(0.94);
+  box-shadow: 14px 18px 28px rgba(15, 23, 42, 0.12) !important;
+}
+.game-card.is-center {
+  transform: perspective(820px) rotateY(0) translateZ(28px) scale(1.05);
+  box-shadow: 0 22px 40px rgba(15, 23, 42, 0.16) !important;
+  z-index: 4;
+}
+.game-card.is-side-l { transform: perspective(820px) rotateY(11deg) scale(0.96); }
+.game-card.is-side-r { transform: perspective(820px) rotateY(-11deg) scale(0.96); }
+.game-card.is-far { transform: perspective(820px) scale(0.9); opacity: 0.72; }
+.game-card:hover {
+  transform: perspective(820px) rotateY(0) translateY(-8px) translateZ(36px) scale(1.06) !important;
+}

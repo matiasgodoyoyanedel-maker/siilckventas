@@ -19,11 +19,11 @@
 <script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#f4f6fb;color:#0f172a;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
-  .web-panel{background:rgba(18,18,24,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+  .web-panel{background:#ffffff;backdrop-filter:blur(24px);border:1px solid #e5e7eb;box-shadow:0 10px 28px rgba(15,23,42,0.06)}
   @keyframes estelaVipPro {
     0%{border-color:#ef4444;box-shadow:0 0 10px rgba(239,68,68,0.4)}
     50%{border-color:#fbbf24;box-shadow:0 0 22px rgba(251,191,36,0.8)}
@@ -44,12 +44,12 @@
   #cartelera-juegos{overflow-y:auto;padding-right:4px;min-height:0}
   .sv-cat-label{color:#FFD740;font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;margin:8px 2px 2px}
   .sv-cat-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#FFD740;font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;background:transparent;border:0;cursor:pointer;padding:8px 2px 4px;margin-top:6px}
-  .sv-juego-btn{width:100%;display:flex;align-items:center;gap:8px;text-align:left;background:#18181b;border:1px solid #3f3f46;color:#fff;border-radius:12px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:4px}
-  .sv-juego-btn:hover{border-color:#eab308}
+  .sv-juego-btn{width:100%;display:flex;align-items:center;gap:8px;text-align:left;background:#fff;border:1px solid #e5e7eb;color:#111827;border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:5px}
+  .sv-juego-btn:hover{border-color:#3b82f6}
   .sv-juego-ico{width:16px;flex:none;text-align:center;font-size:12px}
   .sv-juego-nombre{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .sv-juego-count{color:#a1a1aa;font-weight:800;font-size:11px;flex:none}
-  .sv-cat-on{border-color:#eab308 !important;background:rgba(234,179,8,.12) !important}
+  .sv-juego-count{color:#6b7280;font-weight:800;font-size:11px;flex:none}
+  .sv-cat-on{border-color:#f59e0b !important;background:#fffbeb !important;color:#9a3412 !important}
   #filtro-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
   .sv-chip{width:auto;margin:0;border-radius:999px;padding:6px 12px;white-space:nowrap}
   #paginacion-mercado{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
@@ -63,12 +63,26 @@
   .sv-skel-row{height:44px;border-radius:16px;background:linear-gradient(90deg,#161616 25%,#2c2c2c 50%,#161616 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
   @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
   #seccion-mis-chats,#seccion-mercado{scroll-margin-top:88px}
-  #filtros-extra input,#filtros-extra select{background:#18181b;border:1px solid #3f3f46;color:#fff;border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700;min-width:0}
+  #filtros-extra input,#filtros-extra select{background:#fff;border:1px solid #d1d5db;color:#111827;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700;min-width:0}
   main{padding-bottom:7rem}
-  @media (min-width:640px){#market-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));justify-content:stretch}}
-  #market-grid>.web-panel{display:flex;flex-direction:column;min-width:0}
-  #market-grid>.web-panel>:last-child{margin-top:auto}
+  @media (min-width:640px){#market-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));justify-content:stretch;gap:18px}}
+  #market-grid>.web-panel,#market-grid>.sv-mcard{display:flex;flex-direction:column;min-width:0;padding:0 !important;overflow:hidden}
   #market-grid>.web-panel img{display:block}
+  .sv-market-title{font-size:22px;font-weight:900;color:#0f172a;letter-spacing:-.03em;line-height:1.15}
+  .sv-mcard{background:#fff !important;border:1px solid #e5e7eb !important;border-radius:18px !important;box-shadow:0 8px 22px rgba(15,23,42,.06)}
+  .sv-mcard:hover{border-color:#93c5fd !important;transform:translateY(-3px);box-shadow:0 16px 34px rgba(15,23,42,.1)}
+  .sv-mcard-media{height:188px;background:#eef2ff}
+  .sv-mcard-body{display:flex;flex-direction:column;gap:8px;padding:14px 14px 16px;flex:1}
+  .sv-mcard-badges{display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-height:18px}
+  .sv-mcard-titulo{font-size:16px;font-weight:900;line-height:1.25;color:#0f172a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;letter-spacing:-.02em}
+  .sv-mcard-meta{display:flex;gap:6px;flex-wrap:wrap}
+  .sv-mcard-meta span{background:#f8fafc;border:1px solid #e5e7eb;color:#334155;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:800}
+  .sv-mcard-links{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .sv-mcard-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:8px;border-top:1px solid #eef2f7;margin-top:auto}
+  .sv-mcard-seller{display:block;font-size:12px;font-weight:800;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sv-precio-card{font-size:18px !important;font-weight:900 !important;color:#d97706 !important}
+  #filtros-extra{background:#fff;border:1px solid #e5e7eb;box-shadow:0 6px 18px rgba(15,23,42,.04)}
+  #aside-filtro-juegos h3{color:#0f172a;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
 </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -146,10 +160,10 @@
         <div id="wrap-filtro-chips" class="lg:hidden">
           <div id="filtro-chips" class="hide-scrollbar"></div>
         </div>
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-3">
+        <div class="sv-market-head flex items-center justify-between border-b border-zinc-200 pb-4 flex-wrap gap-3">
           <div>
-            <h3 class="text-sm font-extrabold font-heading text-yellow-400 uppercase tracking-wider"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
-            <p class="text-[11px] text-zinc-400">Protección Escrow 100%. Los Pases Básico y Pro impulsan y destacan anuncios al tope.</p>
+            <h3 class="sv-market-title font-heading"><i class="fas fa-store mr-1.5"></i> Marketplace de Cuentas Activas</h3>
+            <p class="text-[11px] text-zinc-500">Protección Escrow 100%. Los Pases Básico y Pro impulsan y destacan anuncios al tope.</p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-shopping-cart"></i> Carrito</a>
@@ -1003,26 +1017,29 @@ function renderizarGridPublicaciones(ps, filtro=""){
       marcoAvatar = 'marco-vip-basico';
     }
 
-    const fotoInterior = p.foto ? `<img src="${escHtml(p.foto)}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-zinc-600"><i class="fas fa-image text-2xl"></i></div>`;
-    const imgHtml = `<div class="relative w-full h-44 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">${fotoInterior}${htmlBadgeOferta(p)}</div>`;
+    const fotoInterior = p.foto ? `<img src="${escHtml(p.foto)}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-zinc-400"><i class="fas fa-image text-2xl"></i></div>`;
+    const imgHtml = `<div class="sv-mcard-media relative w-full overflow-hidden">${fotoInterior}${htmlBadgeOferta(p)}</div>`;
     const uidVend = uidVendedor(p);
     const logoVendedorHtml = htmlAvatarVivo(uidVend, marcoAvatar);
     const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
     const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
     const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
 
-    h+=`<div class="${cardClass}" onclick="abrirModalPub('${p.id}')">
+    h+=`<div class="${cardClass} sv-mcard" onclick="abrirModalPub('${p.id}')">
       ${ribbon}
       ${imgHtml}
-      <div class="flex justify-between items-start"><h4 class="font-bold text-white text-xs line-clamp-1">${p.titulo}</h4><div class="flex items-center flex-wrap justify-end gap-1">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div></div>
-      <div class="flex items-center justify-between text-[10px] text-zinc-400"><span class="bg-zinc-900 px-2 py-0.5 rounded">Nivel: ${p.nivel || 'N/A'}</span><span class="bg-zinc-900 px-2 py-0.5 rounded">Stock: ${p.stock || 1}</span></div>
-      <div class="flex items-center justify-between gap-2">${htmlEntregaInmediata(p)}<a href="/cuenta/${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
-      <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
-        <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
-          ${logoVendedorHtml}
-          <span class="min-w-0"><span class="block text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlReputacion(uidVend, p)}</span>
+      <div class="sv-mcard-body">
+        <div class="sv-mcard-badges">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div>
+        <h4 class="sv-mcard-titulo">${escHtml(p.titulo)}</h4>
+        <div class="sv-mcard-meta"><span>Nivel ${escHtml(p.nivel || 'N/A')}</span><span>Stock ${escHtml(p.stock || 1)}</span></div>
+        <div class="sv-mcard-links">${htmlEntregaInmediata(p)}<a href="/cuenta/${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
+        <div class="sv-mcard-foot">
+          <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
+            ${logoVendedorHtml}
+            <span class="min-w-0"><span class="sv-mcard-seller">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlReputacion(uidVend, p)}</span>
+          </div>
+          ${htmlPrecioOferta(p.precio, p, 'sv-precio-card text-yellow-400 font-extrabold text-sm')}
         </div>
-        ${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}
       </div>
     </div>`;
   });
