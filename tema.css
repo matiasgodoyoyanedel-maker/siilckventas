@@ -1046,7 +1046,8 @@ input::placeholder, textarea::placeholder { color: #9ca3af !important; }
   color: #1f2937 !important;
 }
 .vip-card-box-pro ul,
-.sv-vip-lista-pro {
+.sv-vip-lista-pro,
+.sv-vip-lista.sv-vip-lista-pro {
   background: #eff6ff !important;
   background-color: #eff6ff !important;
   border-color: #bfdbfe !important;
