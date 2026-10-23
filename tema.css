@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 /* ============================================================
    SiilckVentas — Tema Clásico & Elegante
@@ -1174,4 +1174,108 @@ a[href="/partners-sk"] {
   background: #f59e0b !important;
   border-color: #d97706 !important;
   color: #111827 !important;
+}
+
+.sv-sk-watermark {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.sv-sk-mono {
+  position: absolute;
+  overflow: visible;
+}
+.sv-sk-mono-main {
+  width: min(46vw, 420px);
+  left: 6%;
+  top: 22%;
+  animation: sv-sk-drift 16s ease-in-out infinite;
+}
+.sv-sk-mono-side {
+  width: min(28vw, 240px);
+  right: 4%;
+  bottom: 8%;
+  animation: sv-sk-drift 22s ease-in-out infinite reverse;
+}
+.sv-sk-letters {
+  font-family: 'Great Vibes', 'Times New Roman', serif;
+  font-size: 148px;
+  fill: rgba(11, 26, 51, 0.10);
+  stroke: rgba(180, 132, 39, 0.28);
+  stroke-width: 1.2;
+}
+.sv-sk-flourish {
+  stroke: rgba(180, 132, 39, 0.22);
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 520;
+  stroke-dashoffset: 520;
+  animation: sv-sk-draw 7s ease forwards, sv-sk-glow 9s ease-in-out 7s infinite;
+}
+@keyframes sv-sk-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-8deg); }
+  50% { transform: translate3d(10px, -12px, 0) rotate(-5deg); }
+}
+@keyframes sv-sk-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes sv-sk-glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.sv-cart-page {
+  background:
+    radial-gradient(ellipse 80% 46% at 8% 0%, rgba(245,158,11,.12), transparent 52%),
+    radial-gradient(ellipse 50% 36% at 100% 8%, rgba(11,26,51,.07), transparent 46%),
+    var(--sv-bg) !important;
+}
+.sv-cart-wrap { position: relative; z-index: 2; }
+.sv-cart-hero,
+.sv-cart-panel {
+  background: linear-gradient(180deg, #ffffff 0%, #fffaf3 100%) !important;
+  border: 1px solid #fde68a !important;
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.08) !important;
+}
+.sv-cart-hero-icon {
+  background: linear-gradient(180deg, #fbbf24, #d97706) !important;
+  color: #111827 !important;
+  box-shadow: 0 10px 22px rgba(217, 119, 6, 0.28) !important;
+}
+.sv-cart-hero h2 {
+  font-family: 'Outfit', sans-serif !important;
+  letter-spacing: -0.03em;
+}
+.sv-cart-panel-title {
+  color: #92400e !important;
+  letter-spacing: 0.12em !important;
+}
+.sv-cart-item {
+  background: #fff !important;
+  border: 1px solid #f1f5f9 !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.sv-cart-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
+}
+.sv-cart-empty {
+  background: #fffbeb;
+  border: 1px dashed #fcd34d;
+  border-radius: 16px;
+  color: #92400e !important;
+}
+.sv-cart-desglose {
+  background: #fff7ed;
+  border-radius: 16px;
+  padding: 16px !important;
+  border-color: #fed7aa !important;
+}
+.sv-cart-actions a,
+.sv-cart-actions button {
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
 }

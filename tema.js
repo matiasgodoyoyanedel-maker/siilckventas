@@ -44,6 +44,22 @@
         document.body.prepend(orb);
       }
     }
+    if (!document.getElementById("sv-sk-watermark")) {
+      const mark = document.createElement("div");
+      mark.id = "sv-sk-watermark";
+      mark.className = "sv-sk-watermark";
+      mark.setAttribute("aria-hidden", "true");
+      mark.innerHTML =
+        '<svg class="sv-sk-mono sv-sk-mono-main" viewBox="0 0 280 220" fill="none">' +
+          '<path class="sv-sk-flourish" d="M18 176C46 42 214 18 252 92C268 138 168 206 86 164C54 148 38 112 62 88"/>' +
+          '<text class="sv-sk-letters" x="42" y="148">SK</text>' +
+        '</svg>' +
+        '<svg class="sv-sk-mono sv-sk-mono-side" viewBox="0 0 280 220" fill="none">' +
+          '<path class="sv-sk-flourish" d="M18 176C46 42 214 18 252 92C268 138 168 206 86 164"/>' +
+          '<text class="sv-sk-letters" x="42" y="148">SK</text>' +
+        '</svg>';
+      document.body.appendChild(mark);
+    }
   }
 
   function apply(nombre) {
