@@ -19,7 +19,7 @@
 <script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#f7f9fc;color:#111827;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#fff4e5;color:#111827;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4,.font-heading{font-family:'Outfit',sans-serif}
  .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
@@ -27,20 +27,26 @@
  .vip-card-box{background:#ffffff;border:1px solid #f59e0b;box-shadow:0 12px 28px rgba(245,158,11,0.12)}
  .vip-card-box-pro{background:#ffffff;border:1px solid #3b82f6;box-shadow:0 12px 28px rgba(59,130,246,0.12)}
  .trabaja-banner{background:linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);border:1px solid #fde68a}
+ .sv-trabaja-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:14px;background:#fff7ed;color:#c2410c;border:1px solid #fdba74;font-size:11px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+ .sv-trabaja-btn[aria-expanded="true"]{background:#ffedd5;box-shadow:0 8px 18px rgba(234,88,12,.16)}
+ .sv-cortina{position:absolute;left:0;right:0;top:100%;z-index:60;transform:translateY(-18px);opacity:0;visibility:hidden;pointer-events:none;background:linear-gradient(180deg,#fff7ed 0%,#eff6ff 100%);border-bottom:1px solid #fdba74;box-shadow:0 22px 48px rgba(15,23,42,.14);transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .32s ease,visibility .32s ease}
+ .sv-cortina.abierta{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
+ .sv-cortina-inner{margin:0 auto;max-width:72rem;padding:14px 16px 18px;display:grid;gap:12px}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
  .animate-page{animation:fadeIn.25s ease forwards}
-  #app-loading-screen{position:fixed;inset:0;background:#f7f9fc;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
+  #app-loading-screen{position:fixed;inset:0;background:#fff4e5;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
  .loading-spinner{width:50px;height:50px;border:4px solid rgba(59,130,246,0.18);border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(234,179,8,0.4)}50%{box-shadow:0 0 40px rgba(234,179,8,0.8)}}
  .animate-glow-gold{animation:pulseGlow 2s infinite}
-.siilck-lobby-final{width:100%;display:flex;justify-content:center;padding:0;background:transparent}
-.siilck-welcome-card{background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:36px 18px 28px;text-align:center;max-width:1120px;width:100%;box-shadow:0 18px 44px rgba(15,23,42,0.07)}
+.siilck-lobby-final{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);display:flex;justify-content:center;padding:48px 16px 42px;position:relative;overflow:hidden;background:radial-gradient(ellipse 70% 48% at 8% 0%, rgba(201,162,39,.10), transparent 52%),radial-gradient(ellipse 60% 42% at 96% 88%, rgba(30,64,110,.40), transparent 48%),linear-gradient(168deg,#070d18 0%,#0b1a33 46%,#10243f 100%)}
+.siilck-lobby-final::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 26%,transparent 74%,rgba(0,0,0,.22))}
+.siilck-welcome-card{background:transparent;border:0;border-radius:0;padding:8px 12px 4px;text-align:center;max-width:1120px;width:100%;box-shadow:none;overflow:visible;position:relative;z-index:1}
 .welcome-icon{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(180deg,#FFD740,#FFB300);border-radius:20px;display:grid;place-items:center;font-size:32px;box-shadow:0 8px 24px rgba(245,158,11,.28);animation:float 3s ease-in-out infinite}
 .welcome-badge{display:inline-block;background:#fffbeb;border:1px solid #fde68a;color:#b45309;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin:0 auto 14px}
 .sv-live-counter{width:100%;text-align:center;color:#374151;font-size:12px;font-weight:800;margin:0 0 14px;letter-spacing:.2px}
 .sv-live-counter b{color:#d97706}
-.sv-trust-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;text-align:center;color:#1f2937;font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 14px}
+.sv-trust-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;text-align:center;color:#e0f2fe;font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 14px}
 .sv-trust-dot{width:9px;height:9px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.75);animation:svTrustPulse 1.4s infinite;flex:none}
 @keyframes svTrustPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.75)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
 .sv-search-wrap{position:relative;max-width:520px;margin:0 auto 18px;text-align:left}
@@ -50,18 +56,22 @@
 .sv-ac button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#111827;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}
 .sv-ac button:hover{background:#eff6ff}
 .sv-ac-empty{margin:0;padding:10px 14px;color:#6b7280;font-size:12px}
-.siilck-welcome-card h1{color:#111827;font-size:32px;font-weight:900;margin:0 0 10px}
-.welcome-sub{color:#4b5563;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:600px}
-.section-label{color:#1d4ed8;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
+.siilck-welcome-card h1{color:#ffffff;font-size:32px;font-weight:900;margin:0 0 10px;text-shadow:0 8px 24px rgba(15,23,42,.25)}
+.welcome-sub{color:#dbeafe;font-size:14px;line-height:1.5;margin:0 auto 18px;max-width:600px}
+.section-label{color:#fde68a;font-size:12px;font-weight:900;letter-spacing:1px;text-align:left;margin:0 50px 6px}
 .welcome-btn{background:linear-gradient(180deg,#FFD740,#FFC107);color:#111;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;display:inline-flex;box-shadow:0 8px 22px rgba(245,158,11,.28);margin-top:22px;transition:transform.2s}
 .welcome-btn:hover{transform:translateY(-2px) scale(1.02)}
-.game-showcase{position:relative;margin:0 auto;overflow:hidden;border-radius:16px;background:#f8fafc;padding:8px 0 14px;border:1px solid #e5e7eb}
-.game-track{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:10px 50px;scrollbar-width:none}
+.game-showcase{position:relative;margin:0 auto;overflow:visible;border-radius:0;background:transparent;padding:18px 0 22px;border:0;perspective:1100px}
+.game-track{display:flex;gap:18px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:22px 56px 28px;scrollbar-width:none;transform-style:preserve-3d}
 .game-track::-webkit-scrollbar{display:none}
-.game-card{position:relative;min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:#fff;border:1px solid #e5e7eb;text-decoration:none;transition:all.35s cubic-bezier(.2,.8,.2,1)}
+.game-card{position:relative;min-width:285px;flex:0 0 285px;scroll-snap-align:center;border-radius:18px;overflow:hidden;background:#fff;border:1px solid #e5e7eb;text-decoration:none;transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease;transform:perspective(820px) rotateY(-7deg) translateZ(0) scale(.94);box-shadow:14px 18px 28px rgba(15,23,42,.12);transform-style:preserve-3d}
 .g-verified{position:absolute;top:8px;left:8px;z-index:5;background:#16a34a;color:#fff;font-size:9px;font-weight:900;letter-spacing:.4px;padding:3px 7px;border-radius:999px}
 .game-skel{min-width:285px;flex:0 0 285px;height:206px;border-radius:16px;background:linear-gradient(90deg,#eef0f3 25%,#f8fafc 50%,#eef0f3 75%);background-size:200% 100%;animation:skel 1.1s linear infinite}
-.game-card:hover{transform:translateY(-6px) scale(1.02);border-color:#f59e0b;box-shadow:0 12px 30px rgba(245,158,11,.16)}
+.game-card.is-center{transform:perspective(820px) rotateY(0) translateZ(28px) scale(1.05);box-shadow:0 22px 40px rgba(15,23,42,.16);border-color:#f59e0b;z-index:4}
+.game-card.is-side-l{transform:perspective(820px) rotateY(11deg) translateZ(8px) scale(.96);z-index:2}
+.game-card.is-side-r{transform:perspective(820px) rotateY(-11deg) translateZ(8px) scale(.96);z-index:2}
+.game-card.is-far{transform:perspective(820px) rotateY(0) scale(.9);opacity:.72}
+.game-card:hover{transform:perspective(820px) rotateY(0) translateY(-8px) translateZ(36px) scale(1.06);border-color:#f59e0b;box-shadow:0 24px 42px rgba(245,158,11,.18);z-index:6}
 .game-card.stream{border-color:#bfdbfe}
 .img-wrap{height:150px;position:relative;overflow:hidden;background:#f3f4f6}
 .img-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px;background:#eef2ff;z-index:0}
@@ -79,10 +89,8 @@
 .g-arrow{position:absolute;top:42%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:#FFC107;color:#111;font-size:28px;font-weight:900;cursor:pointer;z-index:10;box-shadow:0 4px 18px rgba(255,193,7,.5);transition:all.2s}
 .g-arrow:hover{transform:translateY(-50%) scale(1.1);box-shadow:0 6px 24px rgba(255,193,7,.7)}
 .g-arrow.left{left:6px}.g-arrow.right{right:6px}
-.g-dots{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:12px}
-.g-dots span{width:8px;height:8px;border-radius:50%;background:#d1d5db;cursor:pointer;transition:all.3s}
-.g-dots span.active{background:#f59e0b;width:24px;border-radius:10px;box-shadow:0 0 10px rgba(245,158,11,.35)}
-.auto-bar{height:3px;background:#e5e7eb;border-radius:10px;margin:12px 50px 0;overflow:hidden}
+.g-dots{display:none}
+.auto-bar{height:3px;background:rgba(255,255,255,.28);border-radius:10px;margin:12px 50px 0;overflow:hidden}
 .auto-progress{height:100%;width:0%;background:linear-gradient(90deg,#FFD740,#FFB300);border-radius:10px;transition:width.1s linear}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -94,7 +102,17 @@
 .sv-promo-card p{color:#4b5563;font-size:13px;line-height:1.5;margin:0 0 14px;max-width:640px}
 .sv-promo-frame{position:relative;border-radius:18px;overflow:hidden;background:#0b1220;border:1px solid #e5e7eb;box-shadow:0 12px 28px rgba(15,23,42,0.08)}
 .sv-promo-frame video{display:block;width:100%;height:auto;max-height:520px;background:#0b1220}
-@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 12px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}.sv-promo-card h2{font-size:18px}.sv-promo-frame video{max-height:280px}}
+.sv-faq{width:100%;max-width:720px;margin:0 auto;text-align:left}
+.sv-faq h2{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#111827;letter-spacing:-.02em;margin:0 0 8px}
+.sv-faq-lead{font-size:13px;color:#6b7280;margin:0 0 16px}
+.sv-faq-item{background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 10px 24px rgba(15,23,42,.05)}
+.sv-faq-item.open{border-color:#f59e0b}
+.sv-faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:transparent;border:0;color:#111827;font-size:15px;font-weight:800;text-align:left;cursor:pointer}
+.sv-faq-q i{color:#d97706;transition:transform .25s ease}
+.sv-faq-item.open .sv-faq-q i{transform:rotate(180deg)}
+.sv-faq-a{max-height:0;overflow:hidden;padding:0 18px;color:#4b5563;font-size:13px;line-height:1.6;transition:max-height .35s ease,padding .35s ease}
+.sv-faq-item.open .sv-faq-a{max-height:220px;padding:0 18px 16px}
+@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 44px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:flex;align-items:center;justify-content:center;width:36px;height:36px;font-size:24px}.auto-bar{margin:10px 12px 0}.sv-trabaja-btn span{display:none}.sv-promo-card h2{font-size:18px}.sv-promo-frame video{max-height:280px}}
 </style>
   <meta property="og:image" content="https://bolt.new/static/og_default.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -113,7 +131,7 @@
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-base text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <canvas id="canvas-bg"></canvas>
 
-<header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md">
+<header class="bg-[#09090b]/90 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md relative">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center space-x-3 cursor-pointer shrink-0 mx-auto sm:mx-0" onclick="cambiarSeccion('inicio')">
       <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-lg shadow-yellow-500/20"><i class="fas fa-crown text-base"></i></div>
@@ -131,6 +149,10 @@
           <button onclick="cerrarSesion()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
         </div>
       </div>
+      <button type="button" id="btn-trabaja-con-nosotros" class="sv-trabaja-btn" aria-expanded="false" aria-controls="sv-cortina-trabaja">
+        <i class="fas fa-briefcase"></i>
+        <span>Trabaja con nosotros</span>
+      </button>
       <div class="relative">
         <button onclick="document.getElementById('menu-tres-puntos-dropdown').classList.toggle('hidden')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition"><i class="fas fa-bars"></i></button>
         <div id="menu-tres-puntos-dropdown" class="hidden absolute right-0 mt-2 w-64 web-panel border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
@@ -146,6 +168,30 @@
           <button id="menu-btn-mantenimiento-owner" onclick="document.getElementById('menu-tres-puntos-dropdown').classList.add('hidden'); window.location.href='panel.html';" class="hidden w-full text-left px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 border border-rose-500/30"><i class="fas fa-tools text-sm w-4"></i> 🛠️ Mantencion / Panel</button>
         </div>
       </div>
+    </div>
+  </div>
+  <div id="sv-cortina-trabaja" class="sv-cortina" role="region" aria-label="Trabaja con nosotros">
+    <div class="sv-cortina-inner">
+      <div class="trabaja-banner rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left">
+        <div class="space-y-2.5">
+          <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest" data-i18n="jobsBadge">Reclutamiento Oficial</span>
+          <h2 class="text-xl md:text-2xl font-black text-white font-heading" data-i18n="jobsTitle">¿Quieres trabajar con nosotros?</h2>
+          <p class="text-xs text-zinc-300 max-w-lg leading-relaxed" data-i18n="jobsText">Postula aquí y un administrador revisará tu caso para ver si eres apto. Empieza a vender sin límites con protección Escrow.</p>
+        </div>
+        <a href="formulario.html" class="shrink-0 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-yellow-500/30 transition transform hover:scale-105 flex items-center gap-2">
+          <span data-i18n="jobsCta">Click Aquí</span> <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+      <a href="/partners-sk" class="block rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left transition transform hover:scale-[1.01]" style="background:linear-gradient(135deg,rgba(168,85,247,.12) 0%,rgba(18,18,24,.95) 100%);border:1px solid rgba(168,85,247,.35)">
+        <div class="space-y-2.5">
+          <span class="inline-block bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Venta Mayorista B2B</span>
+          <h2 class="text-xl md:text-2xl font-black text-white font-heading">Siiilck Partners: vende al por mayor</h2>
+          <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Accede a catálogo mayorista, comisiones preferenciales, soporte dedicado y material de marketing. Postula en 2 minutos.</p>
+        </div>
+        <span class="shrink-0 bg-gradient-to-r from-purple-500 to-fuchsia-400 text-white font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-purple-500/30 flex items-center gap-2">
+          Conocer más <i class="fas fa-arrow-right"></i>
+        </span>
+      </a>
     </div>
   </div>
 </header>
@@ -175,7 +221,6 @@
           <div class="game-skel"></div>
           <div class="game-skel"></div>
         </div>
-        <div class="g-dots" id="gDots1"></div>
         <div class="auto-bar"><div class="auto-progress" id="autoProgress1"></div></div>
       </div>
 
@@ -189,7 +234,6 @@
           <div class="game-skel"></div>
           <div class="game-skel"></div>
         </div>
-        <div class="g-dots" id="gDots2"></div>
         <div class="auto-bar"><div class="auto-progress" id="autoProgress2"></div></div>
       </div>
 
@@ -226,27 +270,38 @@
     </a>
   </div>
 
-  <div class="trabaja-banner rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left">
-    <div class="space-y-2.5">
-      <span class="inline-block bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest" data-i18n="jobsBadge">Reclutamiento Oficial</span>
-      <h2 class="text-xl md:text-2xl font-black text-white font-heading" data-i18n="jobsTitle">¿Quieres trabajar con nosotros?</h2>
-      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed" data-i18n="jobsText">Postula aquí y un administrador revisará tu caso para ver si eres apto. Empieza a vender sin límites con protección Escrow.</p>
+  <section id="faq-inicio" class="sv-faq" aria-label="Preguntas frecuentes">
+    <h2 class="font-heading">Preguntas frecuentes</h2>
+    <p class="sv-faq-lead">Respuestas cortas sobre compras, Escrow y garantías. Pincha una pregunta para abrirla.</p>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cómo protege el Escrow mi compra? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">El pago queda retenido hasta que recibes la cuenta. Si hay un problema real, abres un reclamo y el equipo revisa el caso antes de liberar el dinero.</div>
     </div>
-    <a href="formulario.html" class="shrink-0 bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-zinc-950 font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-yellow-500/30 transition transform hover:scale-105 flex items-center gap-2">
-      <span data-i18n="jobsCta">Click Aquí</span> <i class="fas fa-arrow-right"></i>
-    </a>
-  </div>
-
-  <a href="/partners-sk" class="block rounded-3xl p-7 flex flex-col md:flex-row items-center justify-between gap-5 text-left transition transform hover:scale-[1.01]" style="background:linear-gradient(135deg,rgba(168,85,247,.12) 0%,rgba(18,18,24,.95) 100%);border:1px solid rgba(168,85,247,.35)">
-    <div class="space-y-2.5">
-      <span class="inline-block bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Venta Mayorista B2B</span>
-      <h2 class="text-xl md:text-2xl font-black text-white font-heading">Siiilck Partners: vende al por mayor</h2>
-      <p class="text-xs text-zinc-300 max-w-lg leading-relaxed">Accede a catálogo mayorista, comisiones preferenciales, soporte dedicado y material de marketing. Postula en 2 minutos.</p>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cuándo recibo los datos de la cuenta? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">En cuanto el pago se confirma, la compra aparece en Mis compras con usuario, clave y correo. Las compras anteriores también quedan ahí, sincronizadas con tu sesión.</div>
     </div>
-    <span class="shrink-0 bg-gradient-to-r from-purple-500 to-fuchsia-400 text-white font-black px-7 py-4 rounded-2xl uppercase text-xs tracking-wider shadow-xl shadow-purple-500/30 flex items-center gap-2">
-      Conocer más <i class="fas fa-arrow-right"></i>
-    </span>
-  </a>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Qué métodos de pago aceptan? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Puedes pagar con Flow o Mercado Pago. El total lo calcula el servidor; no cambia el precio que ves en el carrito.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Qué cubre la garantía? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">La garantía gratis cubre 10 días. También puedes elegir 3 o 6 meses. Durante ese plazo puedes abrir un reclamo si la cuenta cambia o no corresponde a lo publicado.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cómo dejo una reseña o abro un reclamo? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Entra a Mis compras. Cada pedido tiene Ver credenciales, Dejar reseña y Abrir reclamo. El reclamo también crea un ticket de soporte.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Cómo me hago vendedor? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Pincha Trabaja con nosotros arriba, postula y un admin revisa tu caso. Si te aprueban, puedes publicar. El programa Partners es para venta mayorista.</div>
+    </div>
+    <div class="sv-faq-item">
+      <button type="button" class="sv-faq-q" aria-expanded="false">¿Las cuentas están verificadas? <i class="fas fa-chevron-down"></i></button>
+      <div class="sv-faq-a">Sí. Las publicaciones se revisan a mano y el marketplace marca las cuentas verificadas. El Escrow cubre la entrega y la garantía.</div>
+    </div>
+  </section>
 
   <div id="tiques" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
@@ -875,22 +930,24 @@ function lobbyAutocomplete(v){
 (function(){
   function initShowcase(trackId, dotsId, progId){
     const track=document.getElementById(trackId);
-    const dotsBox=document.getElementById(dotsId);
     const progress=document.getElementById(progId);
-    if(!track || !dotsBox || !progress) return;
+    if(!track || !progress) return;
     const cards=track.querySelectorAll('.game-card');
     if(!cards.length) return;
     let cur=0, timer, progTimer, prog=0;
     const DURATION=2500;
     track._cur=0;
-    cards.forEach((_,i)=>{const d=document.createElement('span');if(i===0)d.classList.add('active');d.onclick=()=>{goTo(i);stop();start()};dotsBox.appendChild(d)});
-    const dots=dotsBox.querySelectorAll('span');
     function goTo(n){
       cur=(n+cards.length)%cards.length;
       track._cur=cur;
-      dots.forEach(d=>d.classList.remove('active'));
-      if(dots[cur]) dots[cur].classList.add('active');
       const card=cards[cur];
+      cards.forEach((c,i)=>{
+        c.classList.remove('is-center','is-side-l','is-side-r','is-far');
+        if(i===cur) c.classList.add('is-center');
+        else if(i===((cur-1+cards.length)%cards.length)) c.classList.add('is-side-l');
+        else if(i===((cur+1)%cards.length)) c.classList.add('is-side-r');
+        else c.classList.add('is-far');
+      });
       if(card){
         const left=card.offsetLeft-(track.clientWidth-card.clientWidth)/2;
         track.scrollTo({left:Math.max(0,left),behavior:'smooth'});
@@ -934,6 +991,36 @@ function lobbyAutocomplete(v){
     initShowcase('gameTrack1','gDots1','autoProgress1');
     initShowcase('gameTrack2','gDots2','autoProgress2');
   }, 280);
+})();
+(function(){
+  const btn=document.getElementById('btn-trabaja-con-nosotros');
+  const panel=document.getElementById('sv-cortina-trabaja');
+  if(!btn || !panel) return;
+  function abrir(){panel.classList.add('abierta');btn.setAttribute('aria-expanded','true')}
+  function cerrar(){panel.classList.remove('abierta');btn.setAttribute('aria-expanded','false')}
+  btn.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    if(panel.classList.contains('abierta')) cerrar();
+    else abrir();
+  });
+  panel.addEventListener('mouseleave', cerrar);
+})();
+(function(){
+  document.querySelectorAll('#faq-inicio .sv-faq-q').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const item=btn.parentElement;
+      const open=item.classList.contains('open');
+      document.querySelectorAll('#faq-inicio .sv-faq-item.open').forEach(function(otro){
+        otro.classList.remove('open');
+        const q=otro.querySelector('.sv-faq-q');
+        if(q) q.setAttribute('aria-expanded','false');
+      });
+      if(!open){
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
 })();
 </script>
 <script type="module" src="/lib/settings.js"></script>

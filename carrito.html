@@ -23,25 +23,25 @@
   .web-panel{background:rgba(18,18,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.07);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
 </style>
 </head>
-<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+<body class="sv-cart-page min-h-screen p-4 sm:p-8 flex flex-col items-center">
 
-  <div class="max-w-3xl w-full space-y-6">
+  <div class="sv-cart-wrap max-w-3xl w-full space-y-6">
   <div class="flex justify-end"><div id="sv-locale-slot"></div></div>
-  <div class="web-panel rounded-3xl p-6 border border-yellow-500/30 text-center space-y-2">
-    <div class="w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-xl font-black mx-auto shadow-lg"><i class="fas fa-shopping-cart"></i></div>
+  <div class="sv-cart-hero web-panel rounded-3xl p-6 border border-yellow-500/30 text-center space-y-2">
+    <div class="sv-cart-hero-icon w-12 h-12 rounded-2xl bg-yellow-500 text-zinc-950 flex items-center justify-center text-xl font-black mx-auto shadow-lg"><i class="fas fa-shopping-cart"></i></div>
     <h2 class="text-xl font-black text-white">Bienvenido a VelosterCarrito</h2>
     <p class="text-xs text-yellow-400 font-bold">No lo llenes mucho o se puede caer tu mercancía 🛒📦</p>
   </div>
 
-  <div class="web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
-    <h3 class="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-3">Productos en tu Carrito (En Vivo)</h3>
+  <div class="sv-cart-panel web-panel rounded-3xl p-6 space-y-4 border border-zinc-800">
+    <h3 class="sv-cart-panel-title text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-3">Productos en tu Carrito (En Vivo)</h3>
     
     <div id="carrito-items-list" class="space-y-3">
       <p class="text-xs text-zinc-500 text-center py-8">Cargando tu carrito independiente...</p>
     </div>
 
     <!-- DESGLOSE DE PRECIOS -->
-    <div id="carrito-desglose-box" class="hidden border-t border-zinc-800 pt-4 space-y-2 text-xs">
+    <div id="carrito-desglose-box" class="sv-cart-desglose hidden border-t border-zinc-800 pt-4 space-y-2 text-xs">
       <div class="flex justify-between text-zinc-400"><span>Subtotal:</span><span id="txt-subtotal">$0 CLP</span></div>
       <div class="flex justify-between text-zinc-400"><span>IVA (19%):</span><span id="txt-iva">$0 CLP</span></div>
       <div class="flex justify-between text-emerald-400 font-bold" id="row-descuento-vip"><span>Descuento VIP:</span><span id="txt-descuento">-$0 CLP</span></div>
@@ -50,7 +50,7 @@
   </div>
 
   <!-- BOTONES DE NAVEGACIÓN Y PAGO FLOW -->
-  <div class="flex flex-col sm:flex-row gap-3">
+  <div class="sv-cart-actions flex flex-col sm:flex-row gap-3">
     <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
     <button id="btn-pagar-flow" onclick="pagarConFlow()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</button>
     <button id="btn-pagar-mp" onclick="pagarConMercadoPago()" class="flex-1 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50" style="background:#009ee3"><i class="fas fa-credit-card mr-1.5"></i> Pagar con Mercado Pago</button>
@@ -138,7 +138,7 @@ async function renderizarCarrito(items, uid){
   itemsCarritoGlobal = items || [];
   
   if(items.length === 0){
-    listEl.innerHTML = `<p class="text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
+    listEl.innerHTML = `<p class="sv-cart-empty text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
     desgloseBox.classList.add('hidden');
     totalFinalGlobal = 0;
     return;
@@ -182,7 +182,7 @@ async function renderizarCarrito(items, uid){
             <span class="text-[9px] text-zinc-500 ml-1">(Stock: ${stockDisponible})</span>
           </div>`;
 
-    h += `<div class="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
+    h += `<div class="sv-cart-item bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         ${thumb}
         <div>
