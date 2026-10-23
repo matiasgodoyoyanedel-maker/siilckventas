@@ -400,7 +400,7 @@
           </div>
           <p id="perfil-preview-bio" class="text-[11px] text-zinc-600"></p>
           <div id="perfil-preview-chips" class="flex flex-wrap gap-1.5"></div>
-          <a id="perfil-link-vendedor" href="/ventas" class="hidden text-[11px] font-black text-yellow-600 underline">Ver mi página de vendedor</a>
+          <a id="perfil-link-vendedor" href="vendedor.html" class="hidden text-[11px] font-black text-yellow-600 underline">Ver mi perfil</a>
         </div>
         <button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
       </div>
@@ -835,9 +835,9 @@ function pintarVistaPublicaPerfil(){
     if(ventas) chip(ventas + (ventas===1?' venta':' ventas'), true);
   }
   if(link && auth.currentUser){
-    const esVend = !!(data.cuentaVendedorActiva || data.is_seller || data.role === 'seller');
-    link.href = '/vendedor/' + encodeURIComponent(auth.currentUser.uid);
-    link.classList.toggle('hidden', !esVend);
+    link.href = 'vendedor.html?uid=' + encodeURIComponent(auth.currentUser.uid);
+    link.textContent = 'Ver mi perfil';
+    link.classList.remove('hidden');
   }
 }
 function pintarFotoPerfilVista(src){

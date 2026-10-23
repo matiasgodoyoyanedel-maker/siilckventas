@@ -72,7 +72,7 @@ function mostrarExito(data){
   boton.classList.remove('hidden');
   if(data&&data.tieneCuentas&&orderId){
     boton.textContent='Ver datos de tu cuenta';
-    boton.href='/mis-compras/'+encodeURIComponent(orderId);
+    boton.href='../mis-compras.html?id='+encodeURIComponent(orderId);
   }else{
     boton.textContent='Volver al inicio';
     boton.href='/index.html';
