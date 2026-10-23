@@ -15,8 +15,8 @@ const HTML = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mantenimiento - SiilckVentas</title>
-<link rel="icon" href="/favicon.ico">
-<link rel="icon" type="image/png" href="/icon.png">
+<link rel="icon" href="/favicon.ico?v=s">
+<link rel="icon" type="image/png" href="/icon.png?v=s">
 <style>
   body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#050014;color:#fff;font-family:Georgia,sans-serif;padding:24px}
   .caja{max-width:440px;text-align:center}

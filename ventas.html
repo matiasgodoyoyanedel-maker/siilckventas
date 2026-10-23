@@ -10,7 +10,7 @@
 
   gtag('config', 'AW-18520849537');
 </script>
-<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="/favicon.ico?v=s" sizes="any"><link rel="icon" type="image/png" href="/icon.png?v=s"><link rel="apple-touch-icon" href="/icon.png?v=s">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Marketplace - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -212,6 +212,7 @@
                 <h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Venta de cuenta y trato con admin</h3>
               </div>
               <p id="chat-nombre-persona" class="text-[11px] font-bold text-yellow-400 pl-8"></p>
+              <a id="chat-link-cuenta" href="ventas.html" class="hidden text-[11px] font-black text-yellow-400 underline pl-8">Ver esta cuenta</a>
               <span id="chat-subestado-txt" class="text-[10px] text-emerald-400 pl-8">🔒 Canal confidencial Escrow</span>
             </div>
             <div class="flex items-center gap-2">
@@ -279,8 +280,15 @@
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" onclick="copiarEnlaceFicha()" class="text-[11px] font-bold text-zinc-300 underline">Copiar enlace</button>
+              <button type="button" onclick="compartirWhatsAppFicha()" class="text-[11px] font-bold text-emerald-300 underline">WhatsApp</button>
               <button onclick="iniciarChatPrivadoVendedor()" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow flex items-center gap-1.5"><i class="fas fa-comment-dots"></i> Chatear</button>
             </div>
+          </div>
+          <div class="sv-pasos-clave bg-zinc-950 border border-zinc-800 rounded-2xl p-3 space-y-1">
+            <p class="text-[10px] font-black uppercase tracking-widest text-yellow-400">Cómo te llega la clave</p>
+            <p class="text-[11px] text-zinc-300">1. Pagas con Flow o Mercado Pago.</p>
+            <p class="text-[11px] text-zinc-300">2. El dinero queda en escrow.</p>
+            <p class="text-[11px] text-zinc-300">3. En Mis compras aparecen usuario, clave y correo.</p>
           </div>
         </div>
         <div class="min-w-0 space-y-3 lg:col-start-2 lg:row-start-1">
@@ -504,6 +512,16 @@ function datosReputacion(uid, pub){
     };
   }
   return viva;
+}
+function htmlSelloVendedor(uid){
+  const p = perfilVendedorListo(uid) || {};
+  const ventas = Number(p.salesCount || 0);
+  const aprobado = !!(p.cuentaVendedorActiva || p.is_seller || p.role === 'seller');
+  const chips = [];
+  if(aprobado) chips.push('<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full">Aprobado</span>');
+  if(ventas > 0) chips.push('<span class="bg-amber-50 text-amber-800 border border-amber-200 text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full">'+ventas+(ventas===1?' venta':' ventas')+'</span>');
+  if(!chips.length) return '';
+  return '<span class="sv-sello-vendedor flex flex-wrap gap-1 mt-0.5">'+chips.join('')+'</span>';
 }
 function htmlReputacion(uid, pub){
   const rep = datosReputacion(uid, pub);
@@ -1003,6 +1021,12 @@ function copiarEnlaceFicha(){
   if(!url) return;
   navigator.clipboard.writeText(url).then(() => mostrarToast('Enlace de la cuenta copiado')).catch(() => mostrarAlertaToast('Enlace', url));
 }
+function compartirWhatsAppFicha(){
+  const url = urlCuentaPublica(publicacionActualIdCache);
+  if(!url) return;
+  const titulo = ((document.getElementById('modal-pub-titulo') || {}).innerText || 'Cuenta').trim();
+  window.open('https://wa.me/?text=' + encodeURIComponent(titulo + ' en SiilckVentas ' + url), '_blank', 'noopener');
+}
 
 function renderizarGridPublicaciones(ps, filtro=""){
   sembrarReputacionDesdePublicaciones(ps);
@@ -1067,11 +1091,11 @@ function renderizarGridPublicaciones(ps, filtro=""){
         <div class="sv-mcard-badges">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div>
         <h4 class="sv-mcard-titulo">${escHtml(p.titulo)}</h4>
         <div class="sv-mcard-meta"><span>Nivel ${escHtml(p.nivel || 'N/A')}</span><span${Number(p.stock||1)<=2 ? ' class="text-rose-600"' : ''}>${Number(p.stock||1)<=2 ? 'Quedan ' : 'Stock '}${escHtml(p.stock || 1)}</span></div>
-        <div class="sv-mcard-links">${htmlEntregaInmediata(p)}<a href="/cuenta/${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
+        <div class="sv-mcard-links">${htmlEntregaInmediata(p)}<a href="cuenta.html?id=${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
         <div class="sv-mcard-foot">
           <div onclick="event.stopPropagation(); abrirPerfilVendedorPorUid('${uidVend}')" class="flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0">
             ${logoVendedorHtml}
-            <span class="min-w-0"><span class="sv-mcard-seller">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlReputacion(uidVend, p)}</span>
+            <span class="min-w-0"><span class="sv-mcard-seller">${escHtml(nombreRealVendedor(uidVend))}</span>${htmlSelloVendedor(uidVend)}${htmlReputacion(uidVend, p)}</span>
           </div>
           ${htmlPrecioOferta(p.precio, p, 'sv-precio-card text-yellow-400 font-extrabold text-sm')}
         </div>
@@ -1335,6 +1359,15 @@ async function abrirSalaChatActivo(chatId){
   if(titulo) titulo.innerText = 'Chat con ' + nombreOtro;
   const nombreEl = document.getElementById('chat-nombre-persona');
   if(nombreEl) nombreEl.innerText = soyVendedor ? ('Comprador: ' + nombreOtro) : ('Vendedor: ' + nombreOtro);
+  const linkCuenta = document.getElementById('chat-link-cuenta');
+  if(linkCuenta){
+    if(chatData.publicacionId){
+      linkCuenta.href = 'cuenta.html?id=' + encodeURIComponent(chatData.publicacionId);
+      linkCuenta.classList.remove('hidden');
+    }else{
+      linkCuenta.classList.add('hidden');
+    }
+  }
   aplicarEstadoChatCerrado(!!chatData.chatCerrado, soyVendedor);
   marcarChatLeido(chatId, soyVendedor);
   db.collection('chats_p2p').doc(chatId).onSnapshot(docLive => {

@@ -10,7 +10,7 @@
 
   gtag('config', 'AW-18520849537');
 </script>
-<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="/favicon.ico?v=s" sizes="any"><link rel="icon" type="image/png" href="/icon.png?v=s"><link rel="apple-touch-icon" href="/icon.png?v=s">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Panel de Administración - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -132,6 +132,15 @@
             <input type="number" min="1" id="admin-precio-vip-pro" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white" placeholder="5090">
           </div>
         </div>
+      </div>
+
+      <div class="bg-zinc-900 p-4 rounded-2xl border border-yellow-500/30 space-y-2">
+        <h4 class="font-bold text-white uppercase text-[11px]">Webhook Mercado Pago</h4>
+        <p class="text-[11px] text-zinc-300">La URL del aviso de pago ya está en el sitio. En Mercado Pago pega:</p>
+        <p class="text-[11px] font-mono text-yellow-300 break-all">https://www.siiilckventas.com/api/mp/webhook</p>
+        <p class="text-[11px] text-zinc-300">La clave secreta <b>no va en el código</b>. Colócala en Vercel → Project → Settings → Environment Variables con el nombre:</p>
+        <p class="text-[11px] font-mono text-yellow-300">MERCADOPAGO_WEBHOOK_SECRET</p>
+        <p class="text-[11px] text-zinc-500">También acepta el alias MP_WEBHOOK_SECRET. Después de guardarla, redespliega.</p>
       </div>
 
       <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-3">

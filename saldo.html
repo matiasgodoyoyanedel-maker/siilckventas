@@ -10,7 +10,7 @@
 
   gtag('config', 'AW-18520849537');
 </script>
-<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="/favicon.ico?v=s" sizes="any"><link rel="icon" type="image/png" href="/icon.png?v=s"><link rel="apple-touch-icon" href="/icon.png?v=s">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mi saldo - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -37,6 +37,11 @@
       <p class="text-sm text-zinc-400">Cada venta entra retenida durante la garantía. Después pasa a disponible y puedes retirarla.</p>
     </div>
     <div id="estado" class="text-sm text-zinc-400">Cargando tu saldo…</div>
+    <article id="saldo-retirar-box" class="web-panel rounded-3xl p-5 border border-emerald-500/40 space-y-1">
+      <p class="text-[10px] uppercase font-black tracking-widest text-emerald-400">Puedes retirar hoy</p>
+      <p id="saldo-retirar-hoy" class="text-3xl font-black text-white">$0</p>
+      <p class="text-[11px] text-zinc-400">Es tu saldo disponible, ya fuera de garantía.</p>
+    </article>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <article class="web-panel rounded-2xl p-4"><p class="text-[10px] uppercase text-zinc-500 font-bold">Disponible</p><p id="saldo-disponible" class="text-xl font-black text-emerald-400">$0</p></article>
       <article class="web-panel rounded-2xl p-4"><p class="text-[10px] uppercase text-zinc-500 font-bold">En garantía</p><p id="saldo-retenido" class="text-xl font-black text-yellow-400">$0</p></article>
@@ -94,6 +99,8 @@ function pintar(data){
   const saldo=data.saldo||{};
   document.getElementById('estado').textContent='La garantía gratis retiene 10 días. La de 3 meses retiene 90 y la de 6 meses, 180.';
   document.getElementById('saldo-disponible').textContent=pesos(saldo.disponible);
+  const hoy=document.getElementById('saldo-retirar-hoy');
+  if(hoy) hoy.textContent=pesos(saldo.disponible);
   document.getElementById('saldo-retenido').textContent=pesos(saldo.retenido);
   document.getElementById('saldo-total').textContent=pesos(saldo.totalVendido);
   document.getElementById('saldo-ventas').textContent=String(saldo.ventasCompletadas||0);
