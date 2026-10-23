@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 /* ============================================================
    SiilckVentas — Tema Clásico & Elegante
@@ -1174,57 +1174,6 @@ a[href="/partners-sk"] {
   background: #f59e0b !important;
   border-color: #d97706 !important;
   color: #111827 !important;
-}
-
-.sv-sk-watermark {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-.sv-sk-mono {
-  position: absolute;
-  overflow: visible;
-}
-.sv-sk-mono-main {
-  width: min(46vw, 420px);
-  left: 6%;
-  top: 22%;
-  animation: sv-sk-drift 16s ease-in-out infinite;
-}
-.sv-sk-mono-side {
-  width: min(28vw, 240px);
-  right: 4%;
-  bottom: 8%;
-  animation: sv-sk-drift 22s ease-in-out infinite reverse;
-}
-.sv-sk-letters {
-  font-family: 'Great Vibes', 'Times New Roman', serif;
-  font-size: 148px;
-  fill: rgba(11, 26, 51, 0.10);
-  stroke: rgba(180, 132, 39, 0.28);
-  stroke-width: 1.2;
-}
-.sv-sk-flourish {
-  stroke: rgba(180, 132, 39, 0.22);
-  stroke-width: 1.6;
-  fill: none;
-  stroke-linecap: round;
-  stroke-dasharray: 520;
-  stroke-dashoffset: 520;
-  animation: sv-sk-draw 7s ease forwards, sv-sk-glow 9s ease-in-out 7s infinite;
-}
-@keyframes sv-sk-drift {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(-8deg); }
-  50% { transform: translate3d(10px, -12px, 0) rotate(-5deg); }
-}
-@keyframes sv-sk-draw {
-  to { stroke-dashoffset: 0; }
-}
-@keyframes sv-sk-glow {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 1; }
 }
 
 .sv-cart-page {
