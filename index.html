@@ -87,7 +87,14 @@
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 #perfil,#chats,#tiques,#seccion-vip{scroll-margin-top:88px}
-@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 12px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}}
+.sv-promo{width:100%;display:flex;justify-content:center}
+.sv-promo-card{background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:22px 18px 18px;max-width:1120px;width:100%;box-shadow:0 18px 44px rgba(15,23,42,0.07);text-align:left}
+.sv-promo-kicker{display:inline-block;background:#fffbeb;border:1px solid #fde68a;color:#b45309;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin-bottom:10px}
+.sv-promo-card h2{color:#111827;font-size:22px;font-weight:900;margin:0 0 6px;font-family:'Outfit',sans-serif}
+.sv-promo-card p{color:#4b5563;font-size:13px;line-height:1.5;margin:0 0 14px;max-width:640px}
+.sv-promo-frame{position:relative;border-radius:18px;overflow:hidden;background:#0b1220;border:1px solid #e5e7eb;box-shadow:0 12px 28px rgba(15,23,42,0.08)}
+.sv-promo-frame video{display:block;width:100%;height:auto;max-height:520px;background:#0b1220}
+@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 12px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:none}.auto-bar{margin:10px 12px 0}.sv-promo-card h2{font-size:18px}.sv-promo-frame video{max-height:280px}}
 </style>
   <meta property="og:image" content="https://bolt.new/static/og_default.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -187,6 +194,17 @@
       </div>
 
       <a href="ventas.html" class="welcome-btn" data-i18n="marketplace">🏪 IR A MARKETPLACE</a>
+    </div>
+  </div>
+
+  <div class="sv-promo">
+    <div class="sv-promo-card">
+      <span class="sv-promo-kicker">Compra protegida</span>
+      <h2>Compra y vende sin estafas</h2>
+      <p>Mira cómo funciona SiilckVentas: verificación, escrow y entrega segura para compradores y vendedores.</p>
+      <div class="sv-promo-frame">
+        <video src="video/promo-siilck.mp4" muted autoplay loop playsinline controls preload="metadata" title="Video promocional SiilckVentas">Tu navegador no puede reproducir este video.</video>
+      </div>
     </div>
   </div>
 
