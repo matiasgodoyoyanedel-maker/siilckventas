@@ -206,34 +206,10 @@
     themes: THEMES.slice()
   };
 
-  function ensurePageLoader() {
-    if (document.getElementById("app-loading-screen") || document.getElementById("foro-loading-screen") || document.getElementById("sv-page-loader")) return;
-    const el = document.createElement("div");
-    el.id = "sv-page-loader";
-    el.setAttribute("aria-live", "polite");
-    el.innerHTML = '<div class="sv-page-loader-card">' +
-      '<img src="/icon.png" alt="SiilckVentas" width="72" height="72">' +
-      '<strong>SIILCK<span>VENTAS</span></strong>' +
-      '<em>Cargando...</em>' +
-      '<div class="sv-page-loader-spin" aria-hidden="true"></div></div>';
-    document.body.appendChild(el);
-    let hidden = false;
-    function hide() {
-      if (hidden) return;
-      hidden = true;
-      el.classList.add("sv-page-loader-hide");
-      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 380);
-    }
-    if (document.readyState === "complete") setTimeout(hide, 180);
-    else window.addEventListener("load", function () { setTimeout(hide, 180); });
-    setTimeout(hide, 1600);
-  }
-
   document.addEventListener("DOMContentLoaded", function () {
     apply(currentTheme());
     bindCanvas(document.getElementById("canvas-bg"));
     listenConfig();
-    ensurePageLoader();
     if (!document.querySelector("script[data-sv-social]")) {
       const s = document.createElement("script");
       s.src = "social.js?v=3";
