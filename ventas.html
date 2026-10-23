@@ -1489,12 +1489,12 @@ async function cargarListaChatsUsuario(){
     else abiertos.push(item);
   });
   function filaChat(item){
-    const borde = item.cerrado ? 'border-zinc-800 opacity-80' : (item.noLeido ? 'border-yellow-500/50' : 'border-zinc-800');
+    const borde = item.cerrado ? 'border-zinc-200 opacity-80' : (item.noLeido ? 'border-yellow-500/50' : 'border-zinc-200');
     const btn = item.cerrado ? 'Ver historial' : 'Abrir Chat';
-    const preview = item.ultimoTexto ? `<p class="text-[11px] text-zinc-300 truncate">${escHtml(item.ultimoTexto)}</p>` : '';
+    const preview = item.ultimoTexto ? `<p class="text-[11px] text-zinc-600 truncate">${escHtml(item.ultimoTexto)}</p>` : '';
     const hora = item.ultimoMs ? `<span class="text-[10px] text-zinc-500">${escHtml(horaChat(item.ultimoMs))}</span>` : '';
     const punto = item.noLeido ? '<span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" title="Mensaje nuevo"></span>' : '';
-    return `<div class="web-panel p-4 rounded-2xl border ${borde} flex justify-between items-center gap-2"><div class="flex items-center gap-3 min-w-0">${htmlAvatarVivo(item.uidOtro)}<div class="min-w-0"><p class="text-xs font-bold text-white truncate flex items-center gap-2">Chat con ${escHtml(item.nombre)} ${punto}</p>${preview}<p class="text-[10px] text-zinc-400">${escHtml(item.rol)} · #${item.id.substring(0,6)}${item.cerrado ? ' · Cerrado' : ''} ${hora}</p></div></div><button onclick="abrirSalaChatActivo('${item.id}')" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold shrink-0">${btn}</button></div>`;
+    return `<div class="web-panel p-4 rounded-2xl border ${borde} flex justify-between items-center gap-2"><div class="flex items-center gap-3 min-w-0">${htmlAvatarVivo(item.uidOtro)}<div class="min-w-0"><p class="text-xs font-bold text-zinc-900 truncate flex items-center gap-2">Chat con ${escHtml(item.nombre)} ${punto}</p>${preview}<p class="text-[10px] text-zinc-500">${escHtml(item.rol)} · #${item.id.substring(0,6)}${item.cerrado ? ' · Cerrado' : ''} ${hora}</p></div></div><button onclick="abrirSalaChatActivo('${item.id}')" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold shrink-0">${btn}</button></div>`;
   }
   let h = `<div class="space-y-2"><h4 class="text-[10px] font-black uppercase tracking-widest text-yellow-400">Chats abiertos</h4>${abiertos.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No tienes chats abiertos.</p>'}</div>`;
   h += `<div class="space-y-2 pt-3 border-t border-zinc-800"><h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Chats cerrados</h4>${cerrados.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No hay chats cerrados.</p>'}</div>`;
