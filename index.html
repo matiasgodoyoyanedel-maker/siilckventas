@@ -95,6 +95,13 @@
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 #perfil,#chats,#tiques,#seccion-vip{scroll-margin-top:88px}
+.sv-promo{width:100%;display:flex;justify-content:center}
+.sv-promo-card{background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:22px 18px 18px;max-width:1120px;width:100%;box-shadow:0 18px 44px rgba(15,23,42,0.07);text-align:left}
+.sv-promo-kicker{display:inline-block;background:#fffbeb;border:1px solid #fde68a;color:#b45309;font-size:11px;font-weight:800;letter-spacing:.7px;padding:6px 14px;border-radius:20px;margin-bottom:10px}
+.sv-promo-card h2{color:#111827;font-size:22px;font-weight:900;margin:0 0 6px;font-family:'Outfit',sans-serif}
+.sv-promo-card p{color:#4b5563;font-size:13px;line-height:1.5;margin:0 0 14px;max-width:640px}
+.sv-promo-frame{position:relative;border-radius:18px;overflow:hidden;background:#0b1220;border:1px solid #e5e7eb;box-shadow:0 12px 28px rgba(15,23,42,0.08)}
+.sv-promo-frame video{display:block;width:100%;height:auto;max-height:520px;background:#0b1220}
 .sv-faq{width:100%;max-width:720px;margin:0 auto;text-align:left}
 .sv-faq h2{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#111827;letter-spacing:-.02em;margin:0 0 8px}
 .sv-faq-lead{font-size:13px;color:#6b7280;margin:0 0 16px}
@@ -105,7 +112,7 @@
 .sv-faq-item.open .sv-faq-q i{transform:rotate(180deg)}
 .sv-faq-a{max-height:0;overflow:hidden;padding:0 18px;color:#4b5563;font-size:13px;line-height:1.6;transition:max-height .35s ease,padding .35s ease}
 .sv-faq-item.open .sv-faq-a{max-height:220px;padding:0 18px 16px}
-@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 44px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:flex;align-items:center;justify-content:center;width:36px;height:36px;font-size:24px}.auto-bar{margin:10px 12px 0}.sv-trabaja-btn span{display:none}}
+@media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 44px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:flex;align-items:center;justify-content:center;width:36px;height:36px;font-size:24px}.auto-bar{margin:10px 12px 0}.sv-trabaja-btn span{display:none}.sv-promo-card h2{font-size:18px}.sv-promo-frame video{max-height:280px}}
 </style>
   <meta property="og:image" content="https://bolt.new/static/og_default.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -137,6 +144,7 @@
       <div id="auth-nav-area" class="flex items-center space-x-2">
         <button onclick="window.location.href='login.html'" id="nav-btn-ir-login" class="bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-extrabold px-4.5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow transition flex items-center gap-1.5"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Login / Registro</span></button>
         <div id="nav-user-logged-box" class="hidden items-center space-x-2">
+          <img id="nav-user-foto" alt="" class="hidden w-8 h-8 rounded-full object-cover border border-yellow-500/50">
           <span id="nav-user-email" class="text-xs font-bold text-yellow-400 max-w-[100px] truncate bg-zinc-900 px-3 py-2 rounded-xl border border-zinc-800">--</span>
           <button onclick="cerrarSesion()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
         </div>
@@ -230,6 +238,17 @@
       </div>
 
       <a href="ventas.html" class="welcome-btn" data-i18n="marketplace">🏪 IR A MARKETPLACE</a>
+    </div>
+  </div>
+
+  <div class="sv-promo">
+    <div class="sv-promo-card">
+      <span class="sv-promo-kicker">Compra protegida</span>
+      <h2>Compra y vende sin estafas</h2>
+      <p>Mira cómo funciona SiilckVentas: verificación, escrow y entrega segura para compradores y vendedores.</p>
+      <div class="sv-promo-frame">
+        <video src="video/promo-siilck.mp4" muted autoplay loop playsinline controls preload="metadata" title="Video promocional SiilckVentas">Tu navegador no puede reproducir este video.</video>
+      </div>
     </div>
   </div>
 
@@ -331,7 +350,7 @@
         <div class="flex flex-col items-center gap-3 pb-4 border-b border-zinc-800">
           <div id="user-avatar-preview" class="w-24 h-24 rounded-full bg-zinc-900 border-2 border-yellow-500 flex items-center justify-center text-3xl font-black text-yellow-400 overflow-hidden shrink-0"><i class="fas fa-user"></i></div>
           <label class="cursor-pointer bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-[11px] font-bold text-yellow-400 flex items-center gap-2 transition"><i class="fas fa-camera"></i> Cambiar foto<input type="file" id="user-avatar-input" accept="image/*" class="hidden" onchange="manejarAvatarPerfil(this)"></label>
-          <p id="user-avatar-hint" class="text-[10px] text-zinc-500">JPG o PNG · se guarda al presionar Guardar Perfil</p>
+          <p id="user-avatar-hint" class="text-[10px] text-zinc-500">JPG o PNG · elige la foto y presiona Guardar Perfil</p>
         </div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre de Usuario (@)</label><input type="text" id="user-username-input" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
         <div><label class="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Nombre para mostrar</label><input type="text" id="user-displayname-input" placeholder="El nombre que ven los compradores" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white"></div>
@@ -696,18 +715,56 @@ async function enviarReporteTicketEmail(){
   mostrarToast("📩 ¡Ticket enviado!"); cambiarSeccion('inicio');
 }
 let avatarBase64 = null;
-function manejarAvatarPerfil(input){
-  if(!input.files[0]) return;
-  const file = input.files[0];
-  if(file.size > 500000){ mostrarAlertaToast('Foto muy grande','Usa una imagen menor a 500KB'); return; }
-  const reader = new FileReader();
-  reader.onload = function(e){
-    avatarBase64 = e.target.result;
-    const prev = document.getElementById('user-avatar-preview');
-    prev.innerHTML = '<img src="'+e.target.result+'" class="w-full h-full object-cover">';
-    document.getElementById('user-avatar-hint').innerText = 'Foto cargada ✅ · Guarda para confirmar';
-  };
-  reader.readAsDataURL(file);
+function urlFotoPerfil(data){
+  const d = data || {};
+  const candidatos = [d.fotoPerfil, d.avatar_url, d.avatar, d.foto];
+  for(let i=0;i<candidatos.length;i++){
+    const s = String(candidatos[i] || '');
+    if(/^(https?:|data:image\/)/.test(s)) return s;
+  }
+  return '';
+}
+function pintarFotoPerfilVista(src){
+  const prev = document.getElementById('user-avatar-preview');
+  const nav = document.getElementById('nav-user-foto');
+  if(prev && src) prev.innerHTML = '<img src="'+src+'" class="w-full h-full object-cover">';
+  if(nav){
+    if(src){ nav.src = src; nav.classList.remove('hidden'); }
+    else { nav.removeAttribute('src'); nav.classList.add('hidden'); }
+  }
+}
+function comprimirFotoPerfil(file){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = function(){
+      const lienzo = document.createElement('canvas');
+      const max = 360;
+      let w = img.width, h = img.height;
+      if(w > max || h > max){
+        if(w >= h){ h = Math.round(h * max / w); w = max; }
+        else { w = Math.round(w * max / h); h = max; }
+      }
+      lienzo.width = w; lienzo.height = h;
+      lienzo.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(lienzo.toDataURL('image/jpeg', 0.72));
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('No se pudo leer la foto')); };
+    img.src = url;
+  });
+}
+async function manejarAvatarPerfil(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  if(file.size > 8000000){ mostrarAlertaToast('Foto muy grande','Usa una imagen menor a 8MB'); return; }
+  try{
+    avatarBase64 = await comprimirFotoPerfil(file);
+    pintarFotoPerfilVista(avatarBase64);
+    document.getElementById('user-avatar-hint').innerText = 'Foto lista ✅ · Presiona Guardar Perfil';
+  }catch(e){
+    mostrarAlertaToast('No se pudo leer esa foto','Prueba con otra imagen JPG o PNG');
+  }
 }
 async function guardarPerfilGamerReal(){
   if(!auth.currentUser) return;
@@ -720,9 +777,21 @@ async function guardarPerfilGamerReal(){
   const instagram = document.getElementById('user-instagram-input').value.trim();
   if(!nuevoUsername){mostrarAlertaToast("Falta usuario","Pon tu @");return;}
   const update = {username: nuevoUsername, metodoPago: mp, displayName, bio, contacto, ciudad, instagram};
-  if(avatarBase64) update.fotoPerfil = avatarBase64;
-  await db.collection('perfiles').doc(auth.currentUser.uid).set(update, { merge: true });
-  mostrarToast("¡Perfil actualizado!"); cambiarSeccion('inicio');
+  if(avatarBase64){
+    update.fotoPerfil = avatarBase64;
+    update.avatar_url = avatarBase64;
+    update.avatar = avatarBase64;
+  }
+  try{
+    await db.collection('perfiles').doc(auth.currentUser.uid).set(update, { merge: true });
+    currentUserData = Object.assign({}, currentUserData || {}, update);
+    if(avatarBase64) pintarFotoPerfilVista(avatarBase64);
+    avatarBase64 = null;
+    mostrarToast("¡Perfil actualizado!");
+    cambiarSeccion('inicio');
+  }catch(e){
+    mostrarAlertaToast('No se pudo guardar','Intenta de nuevo con otra foto más liviana');
+  }
 }
 
 auth.onAuthStateChanged(async(u)=>{
@@ -768,8 +837,7 @@ auth.onAuthStateChanged(async(u)=>{
         if(ciudadInput) ciudadInput.value = currentUserData.ciudad || "";
         const igInput = document.getElementById('user-instagram-input');
         if(igInput) igInput.value = currentUserData.instagram || "";
-        const avatarPrev = document.getElementById('user-avatar-preview');
-        if(avatarPrev && currentUserData.fotoPerfil) avatarPrev.innerHTML = '<img src="'+currentUserData.fotoPerfil+'" class="w-full h-full object-cover">';
+        pintarFotoPerfilVista(urlFotoPerfil(currentUserData));
         const paseTxt = document.getElementById('pase-activo-txt');
         if(paseTxt){
           const tipo = currentUserData.tipoVip;

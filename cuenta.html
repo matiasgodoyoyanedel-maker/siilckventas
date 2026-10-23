@@ -239,13 +239,13 @@ async function pintarVendedorVivo(p){
     }
   }catch(e){}
   if(!String(data.displayName || data.username || '').trim()){
-    data={ ...embebido, ...data, displayName: data.displayName || embebido.displayName || '', username: data.username || embebido.username || '', avatar_url: data.avatar_url || embebido.avatar || embebido.avatar_url || '', foto: data.foto || embebido.foto || '' };
+    data={ ...embebido, ...data, displayName: data.displayName || embebido.displayName || '', username: data.username || embebido.username || '', avatar_url: data.avatar_url || embebido.avatar || embebido.avatar_url || data.fotoPerfil || '', foto: data.foto || embebido.foto || data.fotoPerfil || '' };
   }
   const nombre=String(data.displayName || data.username || '').trim() || 'Vendedor';
   document.getElementById('vendedor').textContent=nombre;
   const logo=document.getElementById('logo');
   const inicial=(nombre.charAt(0)||'V').toUpperCase();
-  const avatar=/^(https?:|data:image\/)/.test(data.avatar_url||'') ? data.avatar_url : (/^(https?:|data:image\/)/.test(data.foto||'') ? data.foto : '');
+  const avatar=/^(https?:|data:image\/)/.test(data.fotoPerfil||'') ? data.fotoPerfil : (/^(https?:|data:image\/)/.test(data.avatar_url||'') ? data.avatar_url : (/^(https?:|data:image\/)/.test(data.foto||'') ? data.foto : (/^(https?:|data:image\/)/.test(data.avatar||'') ? data.avatar : '')));
   logo.className='w-12 h-12 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black text-lg overflow-hidden shrink-0';
   logo.textContent='';
   if(/^(https?:|data:image\/)/.test(avatar)){

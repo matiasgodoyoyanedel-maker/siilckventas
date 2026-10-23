@@ -367,8 +367,13 @@ function avatarRoto(img){
   box.textContent = inicial;
 }
 function urlAvatar(p){
-  const candidato = (p && (p.avatar_url || p.foto)) || '';
-  return /^(https?:|data:image\/)/.test(candidato) ? candidato : '';
+  const d = p || {};
+  const candidatos = [d.fotoPerfil, d.avatar_url, d.avatar, d.foto];
+  for (let i = 0; i < candidatos.length; i++) {
+    const candidato = String(candidatos[i] || '');
+    if (/^(https?:|data:image\/)/.test(candidato)) return candidato;
+  }
+  return '';
 }
 function htmlAvatarVivo(uid, marco){
   const inicial = escHtml(inicialVendedor(uid));
@@ -871,7 +876,7 @@ auth.onAuthStateChanged(async(u)=>{
         const pData = docSnap.data();
         currentUserData = pData;
         const btnActivarBox = document.getElementById('btn-activar-cuenta-vendedor-container');
-        if(pData.postuladoFormulario && !pData.cuentaVendedorActiva){
+        if(pData.postuladoFormulario && !pData.cuentaVendedorActiva && !pData.vendedorRevocado){
           btnActivarBox.classList.remove('hidden');
         }else{
           btnActivarBox.classList.add('hidden');
@@ -904,6 +909,14 @@ function abrirModalActivarVendedor(){
 
 async function guardarActivacionCuentaVendedor(){
   if(!auth.currentUser) return;
+  try{
+    const perfilSnap = await db.collection('perfiles').doc(auth.currentUser.uid).get();
+    const perfilAct = perfilSnap.exists ? perfilSnap.data() : {};
+    if(perfilAct.vendedorRevocado){
+      mostrarAlertaToast("Aviso", "Tu rol de vendedor fue retirado. Envía de nuevo la postulación.");
+      return;
+    }
+  }catch(e){ console.log(e); }
   const vId = document.getElementById('act-vendedor-id').value.trim().toLowerCase();
   const vFnac = document.getElementById('act-vendedor-fnac').value;
   const vCorreo = document.getElementById('act-vendedor-correo').value.trim();

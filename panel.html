@@ -333,7 +333,7 @@ async function publicarNuevoVendedor(uid){
 
 async function aprobarPostulacion(postId, uid){
   await db.collection('postulaciones_vendedores').doc(postId).update({estado: 'aprobado'});
-  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true, role: 'seller', versionVendedor: 'v2', fechaActivacionV2: firebase.firestore.FieldValue.serverTimestamp(), esBetaAntiguo: false});
+  await db.collection('perfiles').doc(uid).update({cuentaVendedorActiva: true, postuladoFormulario: true, is_seller: true, role: 'seller', versionVendedor: 'v2', fechaActivacionV2: firebase.firestore.FieldValue.serverTimestamp(), esBetaAntiguo: false, vendedorRevocado: false});
   await publicarNuevoVendedor(uid);
   mostrarToast("✅ Postulación aprobada y cuenta de vendedor activada con éxito.");
   cargarPostulacionesAdmin();
@@ -383,7 +383,9 @@ async function toggleRolVendedor(uid, estadoActual){
       cuentaVendedorActiva: nuevoEstado,
       is_seller: nuevoEstado,
       role: nuevoEstado ? 'seller' : 'user',
-      avisoVendedorPendiente: nuevoEstado
+      avisoVendedorPendiente: nuevoEstado,
+      postuladoFormulario: nuevoEstado,
+      vendedorRevocado: !nuevoEstado
     });
     if(nuevoEstado) await publicarNuevoVendedor(uid);
     mostrarToast(nuevoEstado ? "⭐ Rol de vendedor otorgado." : "⚠️ Rol de vendedor retirado (perdió insignias).");
