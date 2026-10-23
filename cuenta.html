@@ -30,7 +30,7 @@
 <body class="min-h-screen">
   <div class="w-full max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-4">
     <div class="flex items-center justify-between gap-3">
-      <a href="/ventas" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
+      <a href="ventas.html" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
       <div id="sv-locale-slot"></div>
     </div>
     <p id="estado" class="text-sm text-zinc-400">Cargando la ficha…</p>
@@ -196,7 +196,7 @@ async function cargarOtrasCuentas(uid, actualId){
       if(p.vendida || stock<=0) return;
       n++;
       const a=document.createElement('a');
-      a.href='/cuenta/'+encodeURIComponent(doc.id);
+      a.href='cuenta.html?id='+encodeURIComponent(doc.id);
       a.className='web-panel rounded-2xl p-3 border border-zinc-800 block hover:border-yellow-500/40';
       a.innerHTML='<p class="text-xs font-bold text-white truncate"></p><p class="text-[11px] text-yellow-400 font-black"></p>';
       a.querySelector('p').textContent=p.titulo||'Cuenta';
@@ -287,7 +287,7 @@ async function pintarVendedorVivo(p){
   }else{
     logo.textContent=inicial;
   }
-  document.getElementById('link-vendedor').href='/vendedor/'+encodeURIComponent(uid);
+  document.getElementById('link-vendedor').href='vendedor.html?uid='+encodeURIComponent(uid);
 }
 async function guardarLineaCarrito(){
   const user=auth.currentUser;

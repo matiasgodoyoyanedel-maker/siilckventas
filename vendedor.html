@@ -26,7 +26,7 @@
 <body class="min-h-screen">
   <div class="w-full max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-4">
     <div class="flex items-center justify-between gap-3">
-      <a href="/ventas" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
+      <a href="ventas.html" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
       <div id="sv-locale-slot"></div>
     </div>
     <p id="estado" class="text-sm text-zinc-400">Cargando el vendedor…</p>
@@ -137,7 +137,7 @@ function pintar(data){
   }
   lista.forEach((p)=>{
     const a=document.createElement('a');
-    a.href='/cuenta/'+encodeURIComponent(p.id);
+    a.href='cuenta.html?id='+encodeURIComponent(p.id);
     a.className='web-panel border border-zinc-800 rounded-2xl p-3 space-y-2 text-left block';
     if(p.foto){
       const img=document.createElement('img');
