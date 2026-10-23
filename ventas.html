@@ -211,6 +211,7 @@
                 <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-xs"><i class="fas fa-ticket-alt"></i></span>
                 <h3 id="chat-titulo-oferta" class="text-xs font-bold text-white">Venta de cuenta y trato con admin</h3>
               </div>
+              <p id="chat-nombre-persona" class="text-[11px] font-bold text-yellow-400 pl-8"></p>
               <span id="chat-subestado-txt" class="text-[10px] text-emerald-400 pl-8">🔒 Canal confidencial Escrow</span>
             </div>
             <div class="flex items-center gap-2">
@@ -220,7 +221,12 @@
               <button onclick="cambiarSeccion('mis-chats')" class="text-xs text-zinc-400 hover:text-white underline">← Mis Chats</button>
             </div>
           </div>
-          <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
+          <div class="relative">
+            <div id="chat-mensajes-box" class="h-64 overflow-y-auto space-y-2.5 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-xs"></div>
+            <div id="chat-cerrado-banner" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span class="bg-zinc-950/90 border border-rose-500/50 text-rose-300 font-black uppercase tracking-widest text-xs px-4 py-2 rounded-full shadow-lg">Chat cerrado</span>
+            </div>
+          </div>
           <div id="chat-input-area" class="flex gap-2">
             <input type="text" id="chat-input-msg" placeholder="Escribe tu mensaje..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-yellow-500">
             <button onclick="enviarMensajeChatP2P()" class="bg-yellow-500 text-zinc-950 font-black px-5 py-2.5 rounded-xl text-xs uppercase shadow">Enviar</button>
@@ -348,6 +354,22 @@ function nombreRealVendedor(uid){
   const p = perfilVendedorListo(uid);
   const nombre = p && (p.displayName || p.username);
   return (nombre && String(nombre).trim()) || 'Vendedor';
+}
+function nombrePerfilChat(uid, fallback){
+  const p = perfilVendedorListo(uid) || {};
+  const nombre = String(p.displayName || p.username || '').trim();
+  return nombre || fallback || 'Usuario';
+}
+async function cargarPerfilChat(uid){
+  if(!uid) return {};
+  if(perfilVendedorListo(uid)) return perfilVendedorListo(uid);
+  try{
+    const doc = await db.collection('perfiles').doc(uid).get();
+    perfilesVendedorCache[uid] = doc.exists ? (doc.data() || {}) : {};
+  }catch(e){
+    perfilesVendedorCache[uid] = {};
+  }
+  return perfilVendedorListo(uid) || {};
 }
 function uidVendedor(p){
   return (p && (p.vendedorUid || p.sellerUid || p.sellerId || p.seller_id || p.ownerId || p.userId)) || '';
@@ -1258,17 +1280,53 @@ async function iniciarChatPrivadoVendedor(){
   abrirSalaChatActivo(chatActivoId);
 }
 
+function aplicarEstadoChatCerrado(cerrado, soyVendedor){
+  const banner = document.getElementById('chat-cerrado-banner');
+  const input = document.getElementById('chat-input-msg');
+  const area = document.getElementById('chat-input-area');
+  const boxCerrar = document.getElementById('vendedor-cerrar-chat-box');
+  if(banner) banner.classList.toggle('hidden', !cerrado);
+  if(input){
+    input.disabled = !!cerrado;
+    input.placeholder = cerrado ? 'Este chat está cerrado' : 'Escribe tu mensaje...';
+  }
+  if(area) area.classList.toggle('opacity-50', !!cerrado);
+  if(boxCerrar){
+    if(soyVendedor && !cerrado) boxCerrar.classList.remove('hidden');
+    else boxCerrar.classList.add('hidden');
+  }
+}
+
 async function abrirSalaChatActivo(chatId){
   chatActivoId = chatId;
   cambiarSeccion('chat-activo');
   const mensajesBox = document.getElementById('chat-mensajes-box');
+  const chatSnap = await db.collection('chats_p2p').doc(chatId).get();
+  const chatData = chatSnap.exists ? (chatSnap.data() || {}) : {};
+  const uidYo = auth.currentUser ? auth.currentUser.uid : '';
+  const soyVendedor = chatData.vendedorUid === uidYo;
+  const uidOtro = soyVendedor ? chatData.compradorUid : chatData.vendedorUid;
+  await Promise.all([cargarPerfilChat(chatData.compradorUid), cargarPerfilChat(chatData.vendedorUid)]);
+  const nombreOtro = nombrePerfilChat(uidOtro, soyVendedor ? 'Comprador' : 'Vendedor');
+  const nombreYo = nombrePerfilChat(uidYo, 'Tú');
+  const titulo = document.getElementById('chat-titulo-oferta');
+  if(titulo) titulo.innerText = 'Chat con ' + nombreOtro;
+  const nombreEl = document.getElementById('chat-nombre-persona');
+  if(nombreEl) nombreEl.innerText = soyVendedor ? ('Comprador: ' + nombreOtro) : ('Vendedor: ' + nombreOtro);
+  aplicarEstadoChatCerrado(!!chatData.chatCerrado, soyVendedor);
+  db.collection('chats_p2p').doc(chatId).onSnapshot(docLive => {
+    if(!docLive.exists || chatActivoId !== chatId) return;
+    const live = docLive.data() || {};
+    aplicarEstadoChatCerrado(!!live.chatCerrado, live.vendedorUid === uidYo);
+  });
   db.collection('chats_p2p').doc(chatId).collection('mensajes').orderBy('fecha', 'asc').onSnapshot(snapshot => {
     let h = "";
     let ultimoDocId = '';
     snapshot.forEach(doc => {
       const m = doc.data();
-      const esMio = m.remitenteUid === auth.currentUser.uid;
-      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${esMio ? 'ml-auto bg-yellow-500/10 border-yellow-500/30' : 'mr-auto bg-zinc-900 border-zinc-800'}"><p class="text-xs text-white">${escHtml(m.texto)}</p></div>`;
+      const esMio = m.remitenteUid === uidYo;
+      const nombreMsg = esMio ? nombreYo : nombrePerfilChat(m.remitenteUid, esMio ? 'Tú' : nombreOtro);
+      h += `<div class="p-2.5 rounded-xl border max-w-[80%] ${esMio ? 'ml-auto bg-yellow-500/10 border-yellow-500/30' : 'mr-auto bg-zinc-900 border-zinc-800'}"><p class="text-[10px] font-bold ${esMio ? 'text-yellow-400' : 'text-zinc-400'} mb-1">${escHtml(nombreMsg)}</p><p class="text-xs text-white">${escHtml(m.texto)}</p></div>`;
       ultimoDocId = doc.id;
     });
     mensajesBox.innerHTML = h || `<p class="text-zinc-500 text-center py-4">Inicia la conversación.</p>`;
@@ -1284,8 +1342,32 @@ async function abrirSalaChatActivo(chatId){
 async function enviarMensajeChatP2P(){
   const txt = document.getElementById('chat-input-msg').value.trim();
   if(!txt || !chatActivoId) return;
+  const chatDoc = await db.collection('chats_p2p').doc(chatActivoId).get();
+  const chatData = chatDoc.exists ? (chatDoc.data() || {}) : {};
+  if(chatData.chatCerrado){
+    mostrarAlertaToast('Chat cerrado', 'Este chat ya no acepta mensajes.');
+    return;
+  }
   await db.collection('chats_p2p').doc(chatActivoId).collection('mensajes').add({remitenteUid: auth.currentUser.uid, texto: txt, fecha: firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('chat-input-msg').value = "";
+}
+
+async function cerrarChatP2PDefinitivo(){
+  if(!auth.currentUser || !chatActivoId) return;
+  const chatDoc = await db.collection('chats_p2p').doc(chatActivoId).get();
+  const chatData = chatDoc.exists ? (chatDoc.data() || {}) : {};
+  if(chatData.vendedorUid !== auth.currentUser.uid){
+    mostrarAlertaToast('Aviso', 'Solo el vendedor puede cerrar el chat.');
+    return;
+  }
+  if(chatData.chatCerrado) return;
+  await db.collection('chats_p2p').doc(chatActivoId).update({
+    chatCerrado: true,
+    cerradoEn: firebase.firestore.FieldValue.serverTimestamp(),
+    cerradoPorUid: auth.currentUser.uid
+  });
+  aplicarEstadoChatCerrado(true, true);
+  mostrarToast('Chat cerrado.');
 }
 
 async function abrirPerfilVendedorPorUid(uid){
@@ -1350,18 +1432,36 @@ function tocarSonidoMensaje(){
 let ultimoMensajeChatKey = '';
 async function cargarListaChatsUsuario(){
   if(!auth.currentUser) return;
-  const q1 = await db.collection('chats_p2p').where('compradorUid', '==', auth.currentUser.uid).get();
-  const q2 = await db.collection('chats_p2p').where('vendedorUid', '==', auth.currentUser.uid).get();
+  const uid = auth.currentUser.uid;
+  const q1 = await db.collection('chats_p2p').where('compradorUid', '==', uid).get();
+  const q2 = await db.collection('chats_p2p').where('vendedorUid', '==', uid).get();
   let chatsMap = new Map();
   q1.forEach(d => chatsMap.set(d.id, d.data()));
   q2.forEach(d => chatsMap.set(d.id, d.data()));
-  let h = "";
-  chatsMap.forEach((data, id) => {
-    const soyVendedor = data.vendedorUid === auth.currentUser.uid;
-    const etiqueta = soyVendedor ? 'Chat con comprador' : 'Chat con vendedor';
-    h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex justify-between items-center"><span class="text-xs text-white">${etiqueta} #${id.substring(0,6)}</span><button onclick="abrirSalaChatActivo('${id}')" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Abrir Chat</button></div>`;
+  const otros = [];
+  chatsMap.forEach((data) => {
+    otros.push(data.vendedorUid === uid ? data.compradorUid : data.vendedorUid);
   });
-  document.getElementById('lista-chats-usuario').innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats activos.</p>`;
+  await Promise.all(otros.map(id => cargarPerfilChat(id)));
+  const abiertos = [];
+  const cerrados = [];
+  chatsMap.forEach((data, id) => {
+    const soyVendedor = data.vendedorUid === uid;
+    const uidOtro = soyVendedor ? data.compradorUid : data.vendedorUid;
+    const nombre = nombrePerfilChat(uidOtro, soyVendedor ? 'Comprador' : 'Vendedor');
+    const rol = soyVendedor ? 'Comprador' : 'Vendedor';
+    const item = {id, cerrado: !!data.chatCerrado, nombre, rol};
+    if(item.cerrado) cerrados.push(item);
+    else abiertos.push(item);
+  });
+  function filaChat(item){
+    const borde = item.cerrado ? 'border-zinc-800 opacity-80' : 'border-zinc-800';
+    const btn = item.cerrado ? 'Ver historial' : 'Abrir Chat';
+    return `<div class="web-panel p-4 rounded-2xl border ${borde} flex justify-between items-center gap-2"><div class="min-w-0"><p class="text-xs font-bold text-white truncate">Chat con ${escHtml(item.nombre)}</p><p class="text-[10px] text-zinc-400">${escHtml(item.rol)} · #${item.id.substring(0,6)}${item.cerrado ? ' · Cerrado' : ''}</p></div><button onclick="abrirSalaChatActivo('${item.id}')" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold shrink-0">${btn}</button></div>`;
+  }
+  let h = `<div class="space-y-2"><h4 class="text-[10px] font-black uppercase tracking-widest text-yellow-400">Chats abiertos</h4>${abiertos.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No tienes chats abiertos.</p>'}</div>`;
+  h += `<div class="space-y-2 pt-3 border-t border-zinc-800"><h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Chats cerrados</h4>${cerrados.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No hay chats cerrados.</p>'}</div>`;
+  document.getElementById('lista-chats-usuario').innerHTML = h;
 }
 (function(){
   const params = new URLSearchParams(window.location.search);

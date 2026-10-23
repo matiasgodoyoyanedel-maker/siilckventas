@@ -681,19 +681,38 @@ async function cargarListaChatsUsuario(){
   if(!auth.currentUser) return;
   const uid = auth.currentUser.uid;
   const listEl = document.getElementById('lista-chats-usuario');
+  function escChat(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  async function nombrePerfilLista(otroUid, fallback){
+    if(!otroUid) return fallback;
+    try{
+      const doc = await db.collection('perfiles').doc(otroUid).get();
+      const d = doc.exists ? (doc.data() || {}) : {};
+      return String(d.displayName || d.username || '').trim() || fallback;
+    }catch(e){
+      return fallback;
+    }
+  }
   try{
     const q1 = await db.collection('chats_p2p').where('compradorUid', '==', uid).get();
     const q2 = await db.collection('chats_p2p').where('vendedorUid', '==', uid).get();
     let chatsMap = new Map();
     q1.forEach(d => chatsMap.set(d.id, d.data()));
     q2.forEach(d => chatsMap.set(d.id, d.data()));
-    let h = "";
-    chatsMap.forEach((data, id) => {
+    const filas = [];
+    for(const [id, data] of chatsMap){
       const soyVendedor = data.vendedorUid === uid;
-      const etiqueta = soyVendedor ? 'Chat con comprador' : 'Chat con vendedor';
-      h += `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2"><span class="text-xs text-white">${etiqueta} #${id.substring(0,6)}</span><a href="ventas.html" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold">Ver en Ventas</a></div>`;
-    });
-    listEl.innerHTML = h || `<p class="text-xs text-zinc-500 text-center py-6">No tienes chats P2P activos.</p>`;
+      const uidOtro = soyVendedor ? data.compradorUid : data.vendedorUid;
+      const nombre = await nombrePerfilLista(uidOtro, soyVendedor ? 'Comprador' : 'Vendedor');
+      filas.push({id, cerrado: !!data.chatCerrado, nombre, rol: soyVendedor ? 'Comprador' : 'Vendedor'});
+    }
+    const abiertos = filas.filter(x => !x.cerrado);
+    const cerrados = filas.filter(x => x.cerrado);
+    function filaChat(item){
+      return `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2"><div class="min-w-0"><p class="text-xs font-bold text-white truncate">Chat con ${escChat(item.nombre)}</p><p class="text-[10px] text-zinc-400">${escChat(item.rol)} · #${item.id.substring(0,6)}${item.cerrado ? ' · Cerrado' : ''}</p></div><a href="ventas.html?chat=${encodeURIComponent(item.id)}" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold shrink-0">${item.cerrado ? 'Ver historial' : 'Ver en Ventas'}</a></div>`;
+    }
+    listEl.innerHTML = `<div class="space-y-2"><h4 class="text-[10px] font-black uppercase tracking-widest text-yellow-400">Chats abiertos</h4>${abiertos.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No tienes chats abiertos.</p>'}</div><div class="space-y-2 pt-3 border-t border-zinc-800"><h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Chats cerrados</h4>${cerrados.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No hay chats cerrados.</p>'}</div>`;
   }catch(e){ listEl.innerHTML=`<p class="text-xs text-rose-400 text-center py-4">${e.message}</p>`}
 }
 async function cargarMisTicketsUsuario(){
