@@ -209,6 +209,12 @@ service cloud.firestore {
       allow create, update, delete: if isOwner();
     }
 
+    // Conteo de ventas que muestra la ficha pública (escribe el servidor / dueño)
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
     // --- Órdenes, ventas y entregas automáticas (escribe el servidor / Admin SDK) ---
     match /ordenes/{ordenId} {
       allow read: if isOwner()
