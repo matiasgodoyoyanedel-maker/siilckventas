@@ -75,6 +75,10 @@
         </div>
       </div>
     </article>
+    <section id="otras-cuentas" class="hidden max-w-3xl mx-auto mt-6 space-y-3">
+      <h2 class="text-sm font-black text-white">Otras cuentas de este vendedor</h2>
+      <div id="otras-cuentas-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </section>
   </div>
 <div id="toast-ya-carrito" class="hidden fixed bottom-6 right-6 z-[260] bg-zinc-900 border border-yellow-500/50 text-white rounded-2xl shadow-2xl px-4 py-3 items-center gap-3 max-w-xs">
   <span class="text-sm font-bold">Producto ya se encuentra en el carrito</span>
@@ -176,6 +180,31 @@ function textoRep(rep){
   if(!total) return 'Nuevo · '+ventas+' '+etiqueta;
   const llenas=Math.round(Math.max(0, Math.min(5, prom)));
   return '★'.repeat(llenas)+'☆'.repeat(5-llenas)+' '+prom.toFixed(1)+' ('+total+') · '+ventas+' '+etiqueta;
+}
+async function cargarOtrasCuentas(uid, actualId){
+  const box=document.getElementById('otras-cuentas');
+  const grid=document.getElementById('otras-cuentas-grid');
+  if(!box || !grid || !uid) return;
+  try{
+    const snap=await db.collection('publicaciones').where('vendedorUid','==',uid).limit(8).get();
+    grid.textContent='';
+    let n=0;
+    snap.forEach((doc)=>{
+      if(doc.id===actualId) return;
+      const p=doc.data()||{};
+      const stock=p.stock==null?1:Number(p.stock);
+      if(p.vendida || stock<=0) return;
+      n++;
+      const a=document.createElement('a');
+      a.href='/cuenta/'+encodeURIComponent(doc.id);
+      a.className='web-panel rounded-2xl p-3 border border-zinc-800 block hover:border-yellow-500/40';
+      a.innerHTML='<p class="text-xs font-bold text-white truncate"></p><p class="text-[11px] text-yellow-400 font-black"></p>';
+      a.querySelector('p').textContent=p.titulo||'Cuenta';
+      a.querySelectorAll('p')[1].textContent=precioVisible(p.precioFinal||p.precio||0);
+      grid.appendChild(a);
+    });
+    box.classList.toggle('hidden', n===0);
+  }catch(e){}
 }
 function chip(texto){
   const s=document.createElement('span');
@@ -280,6 +309,8 @@ async function guardarLineaCarrito(){
     cantidadSeleccionada:1,
     ofertaActiva:publicacion.ofertaActiva===true,
     ofertaDescuento:Number(publicacion.ofertaDescuento)||0,
+    vendedorUid:uidVendedor(publicacion)||publicacion.vendedorUid||'',
+    vendedorNombre:document.getElementById('vendedor') ? document.getElementById('vendedor').textContent : (publicacion.vendedorNombre||''),
     agregadoEn:firebase.firestore.FieldValue.serverTimestamp()
   };
   const ref=db.collection('carritos').doc(user.uid).collection('items');
@@ -325,7 +356,16 @@ async function pintarFicha(p){
   if(p.nivel) tags.appendChild(chip('Nivel: '+p.nivel));
   if(p.rango) tags.appendChild(chip('Rango: '+p.rango));
   if(p.region) tags.appendChild(chip(p.region));
-  if(p.entregaInmediata!==false) tags.appendChild(chip('Entrega inmediata'));
+  if(p.entregaInmediata!==false){
+    const entrega=chip('Entrega inmediata');
+    entrega.className='bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 px-2.5 py-1 rounded font-black';
+    tags.appendChild(entrega);
+  }
+  const stock=p.stock==null?1:Number(p.stock);
+  const stockChip=chip(stock<=2 ? ('Quedan '+stock) : ('Stock '+stock));
+  if(stock<=2) stockChip.className='bg-rose-500/15 text-rose-300 border border-rose-500/40 px-2.5 py-1 rounded font-black';
+  tags.appendChild(stockChip);
+  cargarOtrasCuentas(uidVendedor(p)||p.vendedorUid, p.id);
   const foto=document.getElementById('foto');
   const fotoBox=document.getElementById('foto-box');
   if(p.foto){ foto.src=p.foto; fotoBox.classList.remove('hidden'); }

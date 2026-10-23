@@ -252,6 +252,24 @@
     </div>
   </div>
 
+  <div class="sv-pasos-compra web-panel rounded-3xl p-6 text-left space-y-4 border border-zinc-200">
+    <h2 class="text-lg font-black text-zinc-900 font-heading">Cómo comprar en 3 pasos</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="bg-white rounded-2xl border border-zinc-200 p-4 space-y-1">
+        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-500">1. Elige</p>
+        <p class="text-xs text-zinc-600">Entra al marketplace y abre la cuenta que te interesa.</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-zinc-200 p-4 space-y-1">
+        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-500">2. Paga con escrow</p>
+        <p class="text-xs text-zinc-600">Flow o Mercado Pago. El dinero queda retenido hasta la entrega.</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-zinc-200 p-4 space-y-1">
+        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-500">3. Recibe en Mis compras</p>
+        <p class="text-xs text-zinc-600">Ahí están usuario, clave y la garantía para abrir un reclamo si hace falta.</p>
+      </div>
+    </div>
+  </div>
+
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
     <button onclick="cambiarSeccion('vip')" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-yellow-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold"><i class="fas fa-crown"></i></div>
@@ -366,6 +384,19 @@
         <div id="pase-activo-box" class="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 space-y-1">
           <p class="text-[10px] uppercase font-black tracking-widest text-yellow-400">Pase activo</p>
           <p id="pase-activo-txt" class="text-xs text-zinc-700">Sin pase VIP. Activa el Pase Básico para impulsar anuncios y mostrar rango real.</p>
+        </div>
+        <div id="perfil-vista-publica" class="bg-white border border-zinc-200 rounded-2xl p-4 space-y-3">
+          <p class="text-[10px] uppercase font-black tracking-widest text-yellow-500">Así te ven los compradores</p>
+          <div class="flex items-center gap-3">
+            <div id="perfil-preview-foto" class="w-12 h-12 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black overflow-hidden shrink-0">G</div>
+            <div class="min-w-0">
+              <p id="perfil-preview-nombre" class="text-sm font-black text-zinc-900 truncate">Gamer</p>
+              <p id="perfil-preview-ciudad" class="text-[11px] text-zinc-500 truncate"></p>
+            </div>
+          </div>
+          <p id="perfil-preview-bio" class="text-[11px] text-zinc-600"></p>
+          <div id="perfil-preview-chips" class="flex flex-wrap gap-1.5"></div>
+          <a id="perfil-link-vendedor" href="/ventas" class="hidden text-[11px] font-black text-yellow-600 underline">Ver mi página de vendedor</a>
         </div>
         <button onclick="guardarPerfilGamerReal()" class="w-full bg-yellow-500 text-zinc-950 font-extrabold py-3 rounded-xl uppercase text-xs shadow transition">Guardar Perfil</button>
       </div>
@@ -704,13 +735,22 @@ async function cargarListaChatsUsuario(){
     for(const [id, data] of chatsMap){
       const soyVendedor = data.vendedorUid === uid;
       const uidOtro = soyVendedor ? data.compradorUid : data.vendedorUid;
-      const nombre = await nombrePerfilLista(uidOtro, soyVendedor ? 'Comprador' : 'Vendedor');
-      filas.push({id, cerrado: !!data.chatCerrado, nombre, rol: soyVendedor ? 'Comprador' : 'Vendedor'});
+      const perfilDoc = await db.collection('perfiles').doc(uidOtro || 'x').get().catch(()=>null);
+      const perfil = perfilDoc && perfilDoc.exists ? (perfilDoc.data() || {}) : {};
+      const foto = [perfil.fotoPerfil, perfil.avatar_url, perfil.avatar, perfil.foto].find(s => /^(https?:|data:image\/)/.test(String(s||''))) || '';
+      const ultimoMs = (typeof data.ultimoFecha === 'number') ? data.ultimoFecha : (data.actualizadoEn && data.actualizadoEn.toMillis ? data.actualizadoEn.toMillis() : 0);
+      const leidoMs = soyVendedor ? Number(data.vendedorLeidoEn || 0) : Number(data.compradorLeidoEn || 0);
+      const noLeido = !data.chatCerrado && data.ultimoRemitenteUid && data.ultimoRemitenteUid !== uid && ultimoMs > leidoMs;
+      filas.push({id, cerrado: !!data.chatCerrado, nombre, rol: soyVendedor ? 'Comprador' : 'Vendedor', foto, ultimoTexto: String(data.ultimoTexto || '').trim(), ultimoMs, noLeido});
     }
     const abiertos = filas.filter(x => !x.cerrado);
     const cerrados = filas.filter(x => x.cerrado);
     function filaChat(item){
-      return `<div class="web-panel p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2"><div class="min-w-0"><p class="text-xs font-bold text-white truncate">Chat con ${escChat(item.nombre)}</p><p class="text-[10px] text-zinc-400">${escChat(item.rol)} · #${item.id.substring(0,6)}${item.cerrado ? ' · Cerrado' : ''}</p></div><a href="ventas.html?chat=${encodeURIComponent(item.id)}" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold shrink-0">${item.cerrado ? 'Ver historial' : 'Ver en Ventas'}</a></div>`;
+      const hora = item.ultimoMs ? new Date(item.ultimoMs).toLocaleString('es-CL', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+      const avatar = item.foto ? `<img src="${escChat(item.foto)}" alt="" class="w-8 h-8 rounded-full object-cover border border-yellow-500/40 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center font-black text-[10px] shrink-0">${escChat((item.nombre||'U').charAt(0).toUpperCase())}</div>`;
+      const preview = item.ultimoTexto ? `<p class="text-[11px] text-zinc-300 truncate">${escChat(item.ultimoTexto)}</p>` : '';
+      const punto = item.noLeido ? '<span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" title="Mensaje nuevo"></span>' : '';
+      return `<div class="web-panel p-4 rounded-2xl border ${item.noLeido ? 'border-yellow-500/50' : 'border-zinc-800'} flex items-center justify-between gap-2"><div class="flex items-center gap-3 min-w-0">${avatar}<div class="min-w-0"><p class="text-xs font-bold text-white truncate flex items-center gap-2">Chat con ${escChat(item.nombre)} ${punto}</p>${preview}<p class="text-[10px] text-zinc-400">${escChat(item.rol)} · #${item.id.substring(0,6)}${item.cerrado ? ' · Cerrado' : ''}${hora ? ' · '+escChat(hora) : ''}</p></div></div><a href="ventas.html?chat=${encodeURIComponent(item.id)}" class="bg-yellow-500 text-zinc-950 text-xs px-3 py-1.5 rounded-xl font-bold shrink-0">${item.cerrado ? 'Ver historial' : 'Ver en Ventas'}</a></div>`;
     }
     listEl.innerHTML = `<div class="space-y-2"><h4 class="text-[10px] font-black uppercase tracking-widest text-yellow-400">Chats abiertos</h4>${abiertos.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No tienes chats abiertos.</p>'}</div><div class="space-y-2 pt-3 border-t border-zinc-800"><h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Chats cerrados</h4>${cerrados.map(filaChat).join('') || '<p class="text-xs text-zinc-500 text-center py-4">No hay chats cerrados.</p>'}</div>`;
   }catch(e){ listEl.innerHTML=`<p class="text-xs text-rose-400 text-center py-4">${e.message}</p>`}
@@ -742,6 +782,58 @@ function urlFotoPerfil(data){
     if(/^(https?:|data:image\/)/.test(s)) return s;
   }
   return '';
+}
+function pintarVistaPublicaPerfil(){
+  const data = currentUserData || {};
+  const nombre = String((document.getElementById('user-displayname-input')||{}).value || data.displayName || data.username || 'Gamer').trim() || 'Gamer';
+  const ciudad = String((document.getElementById('user-ciudad-input')||{}).value || data.ciudad || '').trim();
+  const bio = String((document.getElementById('user-bio-input')||{}).value || data.bio || '').trim();
+  const foto = urlFotoPerfil(Object.assign({}, data, avatarBase64 ? {fotoPerfil: avatarBase64} : {}));
+  const nomEl = document.getElementById('perfil-preview-nombre');
+  const ciuEl = document.getElementById('perfil-preview-ciudad');
+  const bioEl = document.getElementById('perfil-preview-bio');
+  const fotoEl = document.getElementById('perfil-preview-foto');
+  const chips = document.getElementById('perfil-preview-chips');
+  const link = document.getElementById('perfil-link-vendedor');
+  if(nomEl) nomEl.textContent = nombre;
+  if(ciuEl) ciuEl.textContent = ciudad;
+  if(bioEl) bioEl.textContent = bio || 'Sin biografía todavía.';
+  if(fotoEl){
+    fotoEl.textContent = '';
+    if(foto){
+      const img = document.createElement('img');
+      img.src = foto;
+      img.alt = '';
+      img.className = 'w-full h-full object-cover';
+      fotoEl.appendChild(img);
+    }else{
+      fotoEl.textContent = (nombre.charAt(0) || 'G').toUpperCase();
+    }
+  }
+  if(chips){
+    chips.innerHTML = '';
+    const user = auth.currentUser;
+    const esGoogle = !!(user && user.providerData && user.providerData.some(p => p && p.providerId === 'google.com'));
+    const correoOk = !!(user && (user.emailVerified || esGoogle));
+    const esVend = !!(data.cuentaVendedorActiva || data.is_seller || data.role === 'seller');
+    const vip = data.tipoVip === 'pro' ? 'VIP Pro' : ((data.tipoVip === 'basico' || data.esVendedorVip || data.isVip) ? 'VIP Básico' : '');
+    function chip(txt, ok){
+      const s = document.createElement('span');
+      s.className = 'text-[10px] font-black uppercase px-2 py-1 rounded-full ' + (ok ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-zinc-100 text-zinc-500 border border-zinc-200');
+      s.textContent = txt;
+      chips.appendChild(s);
+    }
+    chip(correoOk ? 'Correo verificado' : 'Correo pendiente', correoOk);
+    chip(esVend ? 'Vendedor aprobado' : 'Aún no vendedor', esVend);
+    if(vip) chip(vip + ' activo', true);
+    const ventas = Number(data.salesCount || data.ventasCompletadas || 0);
+    if(ventas) chip(ventas + (ventas===1?' venta':' ventas'), true);
+  }
+  if(link && auth.currentUser){
+    const esVend = !!(data.cuentaVendedorActiva || data.is_seller || data.role === 'seller');
+    link.href = '/vendedor/' + encodeURIComponent(auth.currentUser.uid);
+    link.classList.toggle('hidden', !esVend);
+  }
 }
 function pintarFotoPerfilVista(src){
   const prev = document.getElementById('user-avatar-preview');
@@ -806,6 +898,7 @@ async function guardarPerfilGamerReal(){
     currentUserData = Object.assign({}, currentUserData || {}, update);
     if(avatarBase64) pintarFotoPerfilVista(avatarBase64);
     avatarBase64 = null;
+    pintarVistaPublicaPerfil();
     mostrarToast("¡Perfil actualizado!");
     cambiarSeccion('inicio');
   }catch(e){
@@ -857,6 +950,7 @@ auth.onAuthStateChanged(async(u)=>{
         const igInput = document.getElementById('user-instagram-input');
         if(igInput) igInput.value = currentUserData.instagram || "";
         pintarFotoPerfilVista(urlFotoPerfil(currentUserData));
+        pintarVistaPublicaPerfil();
         const paseTxt = document.getElementById('pase-activo-txt');
         if(paseTxt){
           const tipo = currentUserData.tipoVip;
