@@ -204,6 +204,11 @@ service cloud.firestore {
       allow update, delete: if isOwner();
     }
 
+    match /avisos_ofertas/{avisoId} {
+      allow read: if true;
+      allow create, update, delete: if isOwner();
+    }
+
     // --- Órdenes, ventas y entregas automáticas (escribe el servidor / Admin SDK) ---
     match /ordenes/{ordenId} {
       allow read: if isOwner()

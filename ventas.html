@@ -929,7 +929,7 @@ function cargarPublicacionesEnVivo(){
     });
     if(filtroMarketplaceActual===null){
       const params = new URLSearchParams(window.location.search);
-      filtroMarketplaceActual = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
+      filtroMarketplaceActual = (params.get('juego') || params.get('game') || params.get('type') || params.get('q') || '').toLowerCase();
       marcarCatalogoActivo(filtroMarketplaceActual);
     }
     if(document.querySelector('#cartelera-juegos [data-query]')) actualizarContadoresCatalogo();
@@ -1352,7 +1352,7 @@ async function cargarListaChatsUsuario(){
 }
 (function(){
   const params = new URLSearchParams(window.location.search);
-  const inicial = (params.get('juego') || params.get('game') || params.get('type') || '').toLowerCase();
+  const inicial = (params.get('juego') || params.get('game') || params.get('type') || params.get('q') || '').toLowerCase();
   filtroMarketplaceActual = inicial;
   pintarCartelera(inicial);
   if(inicial){

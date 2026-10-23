@@ -105,6 +105,16 @@
 .sv-faq-item.open .sv-faq-q i{transform:rotate(180deg)}
 .sv-faq-a{max-height:0;overflow:hidden;padding:0 18px;color:#4b5563;font-size:13px;line-height:1.6;transition:max-height .35s ease,padding .35s ease}
 .sv-faq-item.open .sv-faq-a{max-height:220px;padding:0 18px 16px}
+.sv-ofertas{width:100%;text-align:left}
+.sv-ofertas h2{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#111827;letter-spacing:-.02em;margin:0 0 8px}
+.sv-ofertas-lead{font-size:13px;color:#6b7280;margin:0 0 16px}
+.sv-ofertas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.sv-oferta-card{display:block;background:#fff;border:1px solid #fde68a;border-radius:20px;overflow:hidden;box-shadow:0 14px 30px rgba(15,23,42,.06);text-decoration:none;color:inherit}
+.sv-oferta-card img{width:100%;height:140px;object-fit:cover;background:#111827}
+.sv-oferta-card .sv-oferta-body{padding:14px 16px 16px}
+.sv-oferta-card strong{display:block;font-size:16px;color:#111827}
+.sv-oferta-card p{margin:6px 0 0;font-size:13px;color:#4b5563;line-height:1.45}
+.sv-oferta-card span{display:inline-block;margin-top:10px;font-size:11px;font-weight:800;color:#c2410c;text-transform:uppercase}
 @media(max-width:768px){.siilck-welcome-card h1{font-size:24px}.section-label{margin:0 12px 6px}.game-track{padding:10px 44px}.game-card,.game-skel{min-width:250px;flex:0 0 250px}.g-arrow{display:flex;align-items:center;justify-content:center;width:36px;height:36px;font-size:24px}.auto-bar{margin:10px 12px 0}.sv-trabaja-btn span{display:none}}
 </style>
   <meta property="og:image" content="https://bolt.new/static/og_default.png">
@@ -250,6 +260,12 @@
       <p class="text-[11px] text-zinc-400" data-i18n="forumText">Comenta y comparte con la comunidad de jugadores.</p>
     </a>
   </div>
+
+  <section id="avisos-ofertas" class="sv-ofertas hidden" aria-label="Avisos de ofertas">
+    <h2 class="font-heading">Ofertas de juegos</h2>
+    <p class="sv-ofertas-lead">Avisos que publica el admin con fotos y el juego en oferta.</p>
+    <div id="avisos-ofertas-grid" class="sv-ofertas-grid"></div>
+  </section>
 
   <section id="faq-inicio" class="sv-faq" aria-label="Preguntas frecuentes">
     <h2 class="font-heading">Preguntas frecuentes</h2>
@@ -936,6 +952,36 @@ function lobbyAutocomplete(v){
     else abrir();
   });
   panel.addEventListener('mouseleave', cerrar);
+})();
+(function(){
+  const box = document.getElementById('avisos-ofertas');
+  const grid = document.getElementById('avisos-ofertas-grid');
+  if(!box || !grid || typeof db === 'undefined') return;
+  function escOferta(s){
+    return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  db.collection('avisos_ofertas').onSnapshot(function(snap){
+    const avisos = [];
+    snap.forEach(function(doc){
+      const d = doc.data() || {};
+      if(d.activo === false) return;
+      avisos.push(Object.assign({ id: doc.id }, d));
+    });
+    avisos.sort((a,b) => Number(b.actualizadoEn || 0) - Number(a.actualizadoEn || 0));
+    if(!avisos.length){
+      box.classList.add('hidden');
+      grid.innerHTML = '';
+      return;
+    }
+    box.classList.remove('hidden');
+    grid.innerHTML = avisos.map(function(a){
+      const href = a.link || ('ventas.html?juego=' + encodeURIComponent(a.juegoId || ''));
+      return '<a class="sv-oferta-card" href="' + escOferta(href) + '">' +
+        '<img src="' + escOferta(a.foto || '') + '" alt="' + escOferta(a.titulo || a.juegoNombre || 'Oferta') + '">' +
+        '<div class="sv-oferta-body"><strong>' + escOferta(a.titulo || a.juegoNombre || 'Oferta') + '</strong>' +
+        '<p>' + escOferta(a.texto || '') + '</p><span>Ver oferta</span></div></a>';
+    }).join('');
+  }, function(){});
 })();
 (function(){
   document.querySelectorAll('#faq-inicio .sv-faq-q').forEach(function(btn){
