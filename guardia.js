@@ -82,8 +82,8 @@
 
   function correoListo(u, data) {
     if (!u) return true;
-    if (u.emailVerified === false) return false;
     if (esGoogle(u)) return true;
+    if (u.emailVerified === false) return false;
     if (data && data.verificadoForzado === false) return false;
     return true;
   }
@@ -111,7 +111,7 @@
   function vigilarCorreo() {
     if (!window.firebase || !firebase.apps || !firebase.apps.length || !firebase.auth) return;
     firebase.auth().onAuthStateChanged(function (u) {
-      if (!u || u.emailVerified !== false || sinVerificarCorreo()) return;
+      if (!u || u.emailVerified !== false || sinVerificarCorreo() || esGoogle(u)) return;
       location.replace('/verificar-correo' + (u.email ? ('?email=' + encodeURIComponent(u.email)) : ''));
     });
   }

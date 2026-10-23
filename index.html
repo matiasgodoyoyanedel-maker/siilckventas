@@ -124,10 +124,24 @@
 <body class="antialiased min-h-screen flex flex-col opacity-0 transition-opacity duration-300" id="main-body-fade">
 
 <div id="app-loading-screen">
-  <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-2xl shadow-yellow-500/40 mb-4 animate-bounce"><i class="fas fa-crown text-2xl"></i></div>
+  <img src="/icon.png" alt="SiilckVentas" width="72" height="72" class="rounded-2xl shadow-2xl mb-4 animate-bounce">
   <h2 class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></h2>
   <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mt-1">Cargando sistema seguro...</p>
   <div class="loading-spinner mt-6"></div>
+</div>
+<div id="sv-aviso-portada" class="hidden fixed inset-0 z-[240] bg-black/55 flex items-center justify-center p-4">
+  <article class="sv-aviso-modal max-w-lg w-full bg-white rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-400">
+    <img id="sv-aviso-portada-foto" alt="" class="w-full h-48 object-cover bg-slate-900">
+    <div class="p-5 space-y-2 text-left">
+      <p class="text-[10px] font-black uppercase tracking-widest text-amber-600">Aviso de oferta</p>
+      <h3 id="sv-aviso-portada-titulo" class="text-2xl font-black text-slate-900"></h3>
+      <p id="sv-aviso-portada-texto" class="text-sm text-slate-600"></p>
+      <div class="flex gap-2 pt-2">
+        <a id="sv-aviso-portada-link" href="ventas.html" class="flex-1 bg-amber-500 text-slate-950 font-black py-3 rounded-xl text-center text-xs uppercase">Ver oferta</a>
+        <button type="button" id="sv-aviso-portada-cerrar" class="px-4 py-3 rounded-xl bg-slate-100 text-slate-800 text-xs font-black uppercase">Cerrar</button>
+      </div>
+    </div>
+  </article>
 </div>
 
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs text-white max-w-sm"><i class="fas fa-exclamation-triangle text-yellow-400 text-base"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase text-xs">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
@@ -741,26 +755,29 @@ async function guardarPerfilGamerReal(){
   mostrarToast("¡Perfil actualizado!"); cambiarSeccion('inicio');
 }
 
+function ocultarCargaInicio(){
+  const body = document.getElementById('main-body-fade');
+  if(body) body.classList.remove('opacity-0');
+  const loader = document.getElementById('app-loading-screen');
+  if(loader){ loader.style.opacity = '0'; setTimeout(function(){ if(loader.parentNode) loader.remove(); }, 400); }
+}
+setTimeout(ocultarCargaInicio, 1200);
 auth.onAuthStateChanged(async(u)=>{
   if(!u){
     setTimeout(()=>{
       if(!auth.currentUser && !authCheckHecho){
         authCheckHecho = true;
-        document.getElementById('main-body-fade').classList.remove('opacity-0');
-        const loader = document.getElementById('app-loading-screen');
-        if(loader){ loader.style.opacity = '0'; setTimeout(()=>loader.remove(), 400); }
+        ocultarCargaInicio();
         document.getElementById('nav-btn-ir-login').classList.remove('hidden');
         document.getElementById('nav-user-logged-box').classList.add('hidden');
         document.getElementById('nav-user-logged-box').classList.remove('flex');
       }
-    },900);
+    },280);
     return;
   }
   if(authCheckHecho) return;
   authCheckHecho = true;
-  document.getElementById('main-body-fade').classList.remove('opacity-0');
-  const loader = document.getElementById('app-loading-screen');
-  if(loader){ loader.style.opacity = '0'; setTimeout(()=>loader.remove(), 400); }
+  ocultarCargaInicio();
   if(u){
     document.getElementById('nav-btn-ir-login').classList.add('hidden');
     document.getElementById('nav-user-logged-box').classList.remove('hidden');
@@ -987,7 +1004,36 @@ function lobbyAutocomplete(v){
         '<div class="sv-oferta-body"><strong>' + escOferta(a.titulo || a.juegoNombre || 'Oferta') + '</strong>' +
         '<p>' + escOferta(a.texto || '') + '</p><span>Ver oferta</span></div></a>';
     }).join('');
+    mostrarPortada(avisos[0]);
   }
+  function mostrarPortada(aviso){
+    const modal = document.getElementById('sv-aviso-portada');
+    if(!modal || !aviso) return;
+    const clave = 'sv_aviso_visto_' + (aviso.id || aviso.titulo || '');
+    if(sessionStorage.getItem(clave) === '1') return;
+    const foto = document.getElementById('sv-aviso-portada-foto');
+    const titulo = document.getElementById('sv-aviso-portada-titulo');
+    const texto = document.getElementById('sv-aviso-portada-texto');
+    const link = document.getElementById('sv-aviso-portada-link');
+    if(foto){
+      if(aviso.foto){ foto.src = aviso.foto; foto.classList.remove('hidden'); }
+      else { foto.removeAttribute('src'); foto.classList.add('hidden'); }
+    }
+    if(titulo) titulo.textContent = aviso.titulo || aviso.juegoNombre || 'Oferta';
+    if(texto) texto.textContent = aviso.texto || '';
+    if(link) link.href = aviso.link || ('ventas.html?juego=' + encodeURIComponent(aviso.juegoId || ''));
+    modal.classList.remove('hidden');
+  }
+  function cerrarPortada(){
+    const modal = document.getElementById('sv-aviso-portada');
+    const aviso = unir()[0];
+    if(aviso) sessionStorage.setItem('sv_aviso_visto_' + (aviso.id || aviso.titulo || ''), '1');
+    if(modal) modal.classList.add('hidden');
+  }
+  const btnCerrarPortada = document.getElementById('sv-aviso-portada-cerrar');
+  const modalPortada = document.getElementById('sv-aviso-portada');
+  if(btnCerrarPortada) btnCerrarPortada.addEventListener('click', cerrarPortada);
+  if(modalPortada) modalPortada.addEventListener('click', function(ev){ if(ev.target === modalPortada) cerrarPortada(); });
   db.collection('configuracion').doc('global').onSnapshot(function(doc){
     cache.global = doc.exists && Array.isArray(doc.data().avisosOfertas) ? doc.data().avisosOfertas : [];
     pintar();

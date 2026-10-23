@@ -98,8 +98,8 @@
         <div class="space-y-2 text-xs">
           <label class="block font-bold text-zinc-300">Juego</label>
           <input id="aviso-juego-nombre" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white" readonly>
-          <label class="block font-bold text-zinc-300">Título del aviso</label>
-          <input id="aviso-titulo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white" placeholder="Oferta Valorant">
+          <label class="block font-bold text-zinc-300">Título del aviso (el que tú quieras)</label>
+          <input id="aviso-titulo" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white" placeholder="Escribe cualquier título, no solo el nombre del juego">
           <label class="block font-bold text-zinc-300">Texto</label>
           <textarea id="aviso-texto" rows="4" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white resize-none" placeholder="Cuentas verificadas con descuento esta semana."></textarea>
           <label class="block font-bold text-zinc-300">Enlace</label>
@@ -592,7 +592,7 @@ function abrirEditorAviso(juego, aviso){
   document.getElementById('aviso-id').value = aviso && aviso.id ? aviso.id : '';
   document.getElementById('aviso-juego-id').value = (aviso && aviso.juegoId) || juego.id;
   document.getElementById('aviso-juego-nombre').value = (aviso && aviso.juegoNombre) || juego.nombre;
-  document.getElementById('aviso-titulo').value = (aviso && aviso.titulo) || ('Oferta ' + juego.nombre);
+  document.getElementById('aviso-titulo').value = (aviso && aviso.titulo) || '';
   document.getElementById('aviso-texto').value = (aviso && aviso.texto) || ('Cuentas de ' + juego.nombre + ' con oferta en el marketplace.');
   document.getElementById('aviso-link').value = (aviso && aviso.link) || ('ventas.html?juego=' + encodeURIComponent(juego.query || juego.id));
   document.getElementById('aviso-activo').checked = !aviso || aviso.activo !== false;
