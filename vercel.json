@@ -16,6 +16,9 @@
     { "source": "/cuenta/:id", "destination": "/api/cuenta-pagina?id=:id" },
     { "source": "/cuenta/:id/", "destination": "/api/cuenta-pagina?id=:id" },
     { "source": "/vendedor/:uid", "destination": "/vendedor.html?uid=:uid" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/recuperar", "destination": "/recuperar.html" },
+    { "source": "/saldo", "destination": "/saldo.html" },
     { "source": "/verificar-correo", "destination": "/login.html" },
     { "source": "/mantenimiento", "destination": "/api/mantenimiento" },
     { "source": "/partners-sk", "destination": "/partners-sk.html" }
