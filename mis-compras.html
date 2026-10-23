@@ -66,6 +66,11 @@
       <a href="/ventas.html" class="mc-explorar">Explorar más</a>
     </div>
     <p id="lista-estado" class="text-sm text-zinc-400">Cargando tus compras…</p>
+    <div id="filtro-compras" class="flex flex-wrap gap-2">
+      <button type="button" data-filtro="todas" class="mc-filtro bg-yellow-400 text-black text-[11px] font-black px-3 py-1.5 rounded-full">Todas</button>
+      <button type="button" data-filtro="garantia" class="mc-filtro bg-white border border-zinc-200 text-[11px] font-black px-3 py-1.5 rounded-full">Con garantía</button>
+      <button type="button" data-filtro="reclamadas" class="mc-filtro bg-white border border-zinc-200 text-[11px] font-black px-3 py-1.5 rounded-full">Reclamadas</button>
+    </div>
     <div id="lista-ordenes" class="space-y-4"></div>
   </div>
   <div id="modal-cuenta" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
@@ -73,11 +78,20 @@
       <h2 id="modal-cuenta-titulo" class="text-lg font-black text-white">Datos de mi cuenta</h2>
       <div class="space-y-2 text-sm">
         <p class="text-[10px] uppercase text-zinc-500 font-bold">Usuario</p>
-        <p id="modal-usuario" class="select-all font-mono text-yellow-300 break-all bg-black rounded-xl px-3 py-2"></p>
+        <div class="flex items-center gap-2">
+          <p id="modal-usuario" class="flex-1 select-all font-mono text-yellow-300 break-all bg-black rounded-xl px-3 py-2"></p>
+          <button type="button" class="bg-yellow-400 text-black text-[10px] font-black px-2 py-2 rounded-lg" onclick="copiarDatoCuenta('modal-usuario')">Copiar</button>
+        </div>
         <p class="text-[10px] uppercase text-zinc-500 font-bold">Clave</p>
-        <p id="modal-clave" class="select-all font-mono text-yellow-300 break-all bg-black rounded-xl px-3 py-2"></p>
+        <div class="flex items-center gap-2">
+          <p id="modal-clave" class="flex-1 select-all font-mono text-yellow-300 break-all bg-black rounded-xl px-3 py-2"></p>
+          <button type="button" class="bg-yellow-400 text-black text-[10px] font-black px-2 py-2 rounded-lg" onclick="copiarDatoCuenta('modal-clave')">Copiar</button>
+        </div>
         <p class="text-[10px] uppercase text-zinc-500 font-bold">Correo</p>
-        <p id="modal-correo" class="select-all font-mono text-yellow-300 break-all bg-black rounded-xl px-3 py-2"></p>
+        <div class="flex items-center gap-2">
+          <p id="modal-correo" class="flex-1 select-all font-mono text-yellow-300 break-all bg-black rounded-xl px-3 py-2"></p>
+          <button type="button" class="bg-yellow-400 text-black text-[10px] font-black px-2 py-2 rounded-lg" onclick="copiarDatoCuenta('modal-correo')">Copiar</button>
+        </div>
       </div>
       <button type="button" id="modal-cerrar" class="w-full bg-yellow-400 text-black font-black py-3 rounded-full">Cerrar</button>
     </div>
@@ -261,6 +275,14 @@ function iconoJuego(nombre){
   return hit ? { icon: hit.icon, color: hit.iconColor || '' } : { icon: 'fas fa-gamepad', color: '' };
 }
 function nombreMetodo(m){ return m === 'mercadopago' ? 'Mercado Pago' : 'Flow'; }
+function copiarDatoCuenta(id){
+  const el = document.getElementById(id);
+  const txt = el ? String(el.textContent || '').trim() : '';
+  if(!txt || txt === 'No indicado') return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).catch(()=>{});
+  }
+}
 function abrirDatosCuenta(item){
   const tituloCuenta = item.juego ? (item.juego + ' · ' + (item.nombre || 'Datos de mi cuenta')) : (item.nombre || 'Datos de mi cuenta');
   document.getElementById('modal-cuenta-titulo').textContent = tituloCuenta;
@@ -349,6 +371,23 @@ function pintarOrden(orden){
   estadoOrden.textContent = orden.status || 'pagado';
   tx.appendChild(estadoOrden);
   card.appendChild(tx);
+  const linea = document.createElement('div');
+  linea.className = 'mc-linea-tiempo flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-wide py-1';
+  const ahora = Date.now();
+  const finGarantia = Number(orden.createdAt || 0) + (diasGarantia(garantia) * 24 * 60 * 60 * 1000);
+  const entregada = !!(orden.items || []).some((it) => it.account_user || it.account_pass || it.account_email);
+  const vencida = !!(orden.createdAt && ahora > finGarantia);
+  const diasQuedan = vencida ? 0 : Math.max(0, Math.ceil((finGarantia - ahora) / (24 * 60 * 60 * 1000)));
+  function paso(txt, on){
+    const s = document.createElement('span');
+    s.className = on ? 'bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full' : 'bg-zinc-100 text-zinc-500 px-2 py-1 rounded-full';
+    s.textContent = txt;
+    linea.appendChild(s);
+  }
+  paso('Pagado', true);
+  paso('Entregado', entregada);
+  paso(vencida ? 'Garantía vencida' : ('Garantía activa · ' + diasQuedan + ' días'), !vencida);
+  card.appendChild(linea);
   const escrow = document.createElement('div');
   escrow.className = 'mc-escrow';
   const dot = document.createElement('span');
@@ -514,19 +553,37 @@ async function postAutenticado(ruta, cuerpo){
   const data = await res.json().catch(() => ({}));
   return { ok: res.ok && data.ok !== false, data };
 }
-async function pintarLista(user){
+let ordenesComprasCache = [];
+let filtroComprasActual = 'todas';
+function ordenPasaFiltro(orden){
+  if(filtroComprasActual === 'reclamadas') return !!orden.reclamo;
+  if(filtroComprasActual === 'garantia'){
+    const garantia = garantiaMaxima(orden);
+    const fin = Number(orden.createdAt || 0) + (diasGarantia(garantia) * 24 * 60 * 60 * 1000);
+    return !!(orden.createdAt && Date.now() <= fin);
+  }
+  return true;
+}
+function pintarOrdenesFiltradas(){
   const box = document.getElementById('lista-ordenes');
+  const txt = document.getElementById('lista-estado');
+  if(!box) return;
+  const visibles = ordenesComprasCache.filter(ordenPasaFiltro);
+  box.textContent = '';
+  if(!ordenesComprasCache.length){ if(txt) txt.textContent = 'Todavía no tienes compras.'; return; }
+  if(!visibles.length){ if(txt) txt.textContent = 'No hay compras en este filtro.'; return; }
+  if(txt) txt.textContent = visibles.length === 1 ? '1 compra' : (visibles.length + ' compras');
+  visibles.forEach((orden) => box.appendChild(pintarOrden(orden)));
+}
+async function pintarLista(user){
   const txt = document.getElementById('lista-estado');
   try{
     const token = await user.getIdToken(true);
     const res = await fetch('/api/orders', { headers: { Authorization: 'Bearer ' + token } });
     const data = await res.json();
     if(!res.ok){ txt.textContent = data.error || 'No se pudieron cargar tus compras.'; return; }
-    const ordenes = data.ordenes || [];
-    box.textContent = '';
-    if(!ordenes.length){ txt.textContent = 'Todavía no tienes compras.'; return; }
-    txt.textContent = ordenes.length === 1 ? '1 compra' : (ordenes.length + ' compras');
-    ordenes.forEach((orden) => box.appendChild(pintarOrden(orden)));
+    ordenesComprasCache = data.ordenes || [];
+    pintarOrdenesFiltradas();
   }catch(e){
     txt.textContent = 'No se pudieron cargar tus compras. Reintenta en unos segundos.';
   }
@@ -538,6 +595,18 @@ function exigirCorreoVerificado(user){
   }
   return true;
 }
+document.querySelectorAll('#filtro-compras .mc-filtro').forEach((btn)=>{
+  btn.addEventListener('click', ()=>{
+    filtroComprasActual = btn.getAttribute('data-filtro') || 'todas';
+    document.querySelectorAll('#filtro-compras .mc-filtro').forEach((b)=>{
+      const activo = b === btn;
+      b.className = activo
+        ? 'mc-filtro bg-yellow-400 text-black text-[11px] font-black px-3 py-1.5 rounded-full'
+        : 'mc-filtro bg-white border border-zinc-200 text-[11px] font-black px-3 py-1.5 rounded-full';
+    });
+    pintarOrdenesFiltradas();
+  });
+});
 auth.onAuthStateChanged(async(user)=>{
   if(!exigirCorreoVerificado(user)) return;
   if(!id){

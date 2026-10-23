@@ -50,8 +50,11 @@
   </div>
 
   <!-- BOTONES DE NAVEGACIÓN Y PAGO FLOW -->
+  <p class="text-[11px] text-zinc-300 text-center">El pago queda en escrow. La clave llega en Mis compras cuando el pago se confirma.</p>
   <div class="sv-cart-actions flex flex-col sm:flex-row gap-3">
     <a href="index.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-arrow-left mr-1.5"></i> Volver al sitio</a>
+    <a href="ventas.html" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition"><i class="fas fa-store mr-1.5"></i> Seguir comprando</a>
+    <button type="button" id="btn-vaciar-carrito" onclick="vaciarCarrito()" class="flex-1 bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider text-center transition">Vaciar carrito</button>
     <button id="btn-pagar-flow" onclick="pagarConFlow()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50"><i class="fas fa-shopping-bag mr-1.5"></i> Comprar con Flow</button>
     <button id="btn-pagar-mp" onclick="pagarConMercadoPago()" class="flex-1 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider text-center shadow-lg transition disabled:opacity-50" style="background:#009ee3"><i class="fas fa-credit-card mr-1.5"></i> Pagar con Mercado Pago</button>
   </div>
@@ -138,7 +141,7 @@ async function renderizarCarrito(items, uid){
   itemsCarritoGlobal = items || [];
   
   if(items.length === 0){
-    listEl.innerHTML = `<p class="sv-cart-empty text-xs text-zinc-500 text-center py-8">Tu carrito está vacío.</p>`;
+    listEl.innerHTML = `<div class="sv-cart-empty text-center py-8 space-y-3"><p class="text-xs text-zinc-500">Tu carrito está vacío.</p><a href="ventas.html" class="inline-block bg-yellow-500 text-zinc-950 font-black px-4 py-2 rounded-xl text-xs uppercase">Ir al marketplace</a></div>`;
     desgloseBox.classList.add('hidden');
     totalFinalGlobal = 0;
     return;
@@ -167,6 +170,8 @@ async function renderizarCarrito(items, uid){
       ? `<div class="w-12 h-12 rounded-xl ${item.tipoVipPase==='pro' ? 'bg-rose-600 text-white' : 'bg-yellow-500 text-zinc-950'} flex items-center justify-center text-lg shrink-0"><i class="fas fa-crown"></i></div>`
       : `<div class="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden border border-zinc-800 shrink-0"><img src="${item.foto || ''}" class="w-full h-full object-cover"></div>`;
     const garantiaTxt = item.garantiaLabel ? `<span class="block text-[10px] text-zinc-400">${item.garantiaLabel}${item.garantiaCosto ? ' (+'+precioVisible(item.garantiaCosto)+')' : ''}</span>` : '';
+    const vendedorTxt = item.vendedorNombre ? `<span class="block text-[10px] text-zinc-300">Vendedor: ${item.vendedorNombre}</span>` : '';
+    const entregaTxt = esPase ? '' : '<span class="block text-[10px] font-bold text-emerald-400">Entrega inmediata</span>';
     const otrasUnidades = esPase ? 0 : items.reduce((sum, otro) => {
       if(otro.id === item.id || otro.tipoItem === 'pase_vip' || otro.publicacionId !== item.publicacionId) return sum;
       return sum + (Number(otro.cantidadSeleccionada) || 1);
@@ -187,6 +192,8 @@ async function renderizarCarrito(items, uid){
         ${thumb}
         <div>
           <h4 class="font-bold text-white text-xs">${item.titulo}</h4>
+          ${vendedorTxt}
+          ${entregaTxt}
           ${garantiaTxt}
           ${htmlPrecioCarrito(item)}
           ${qtyBox}
@@ -246,6 +253,16 @@ async function cambiarCantidadItem(itemId, uid, nuevaCantidad, stockMaximo){
 
 async function eliminarItemCarrito(itemId, uid){
   await db.collection('carritos').doc(uid).collection('items').doc(itemId).delete();
+}
+async function vaciarCarrito(){
+  const uid = carritoUidActual || (auth.currentUser && auth.currentUser.uid);
+  if(!uid) return;
+  if(!(carritoItemsActuales && carritoItemsActuales.length)) return;
+  if(!confirm('¿Vaciar el carrito?')) return;
+  const snap = await db.collection('carritos').doc(uid).collection('items').get();
+  const lote = db.batch();
+  snap.forEach(doc => lote.delete(doc.ref));
+  await lote.commit();
 }
 
 async function activarPasesVipTrasPago(uid){

@@ -52,6 +52,7 @@
       <label class="block text-[10px] uppercase font-bold text-zinc-400">Datos bancarios
         <textarea id="retiro-destino" rows="2" placeholder="Banco, tipo de cuenta, número y RUT" class="mt-1 w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-3 text-white"></textarea>
       </label>
+      <button type="button" id="btn-usar-banco-guardado" class="hidden text-[11px] font-bold text-yellow-300 underline">Usar datos guardados</button>
       <button type="submit" class="bg-yellow-400 text-black font-black px-5 py-3 rounded-xl text-xs uppercase">Solicitar retiro</button>
       <p id="retiro-msg" class="text-xs text-zinc-300"></p>
     </form>
@@ -102,14 +103,34 @@ function pintar(data){
   if(!movimientos.length) mov.appendChild(fila('Sin ventas todavía', 'Cuando te compren una cuenta, aparece aquí.', ''));
   movimientos.forEach((m)=>{
     const cuando=m.estado==='retenido' ? ('Disponible el ' + fecha(m.liberaEn)) : 'Disponible';
-    mov.appendChild(fila(m.titulo||'Venta', cuando + ' · ' + (m.diasRetencion||10) + ' días de garantía', pesos(m.monto)));
+    const card=fila(m.titulo||'Venta', cuando + ' · ' + (m.diasRetencion||10) + ' días de garantía', pesos(m.monto));
+    if(m.estado==='retenido' && m.liberaEn){
+      const ahora=Date.now();
+      const dias=Number(m.diasRetencion)||10;
+      const inicio=Number(m.creadoEn)|| (m.liberaEn - dias*24*60*60*1000);
+      const total=Math.max(1, m.liberaEn - inicio);
+      const pct=Math.max(0, Math.min(100, Math.round((ahora-inicio)*100/total)));
+      const wrap=document.createElement('div');
+      wrap.className='w-full mt-2';
+      wrap.innerHTML='<p class="text-[10px] text-yellow-300 font-bold mb-1">Se libera el '+fecha(m.liberaEn)+'</p><div class="h-1.5 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400" style="width:'+pct+'%"></div></div>';
+      card.classList.add('flex-wrap');
+      card.appendChild(wrap);
+    }
+    mov.appendChild(card);
   });
   const ret=document.getElementById('lista-retiros');
   ret.textContent='';
   const retiros=data.retiros||[];
   if(!retiros.length) ret.appendChild(fila('Sin retiros', 'Los pedidos quedan pendientes hasta que el admin los pague.', ''));
   retiros.forEach((r)=>{
-    ret.appendChild(fila(pesos(r.monto), (r.estado||'pendiente') + ' · ' + fecha(r.creadoEn), r.destino||''));
+    const estado=String(r.estado||'pendiente');
+    const etiqueta=estado==='pagado' ? 'Pagado' : (estado==='rechazado' ? 'Rechazado' : 'Pendiente');
+    const card=fila(pesos(r.monto), etiqueta + ' · ' + fecha(r.creadoEn), r.destino||'');
+    const badge=document.createElement('span');
+    badge.className='text-[10px] font-black uppercase px-2 py-1 rounded-full '+(estado==='pagado'?'bg-emerald-500/15 text-emerald-300':(estado==='rechazado'?'bg-rose-500/15 text-rose-300':'bg-yellow-500/15 text-yellow-300'));
+    badge.textContent=etiqueta;
+    card.appendChild(badge);
+    ret.appendChild(card);
   });
 }
 async function cargar(user){
@@ -137,7 +158,13 @@ document.getElementById('form-retiro').addEventListener('submit', async (ev)=>{
     });
     const data=await res.json();
     msg.textContent=data.ok ? 'Retiro pedido. Queda pendiente de pago.' : (data.error||'No se pudo pedir el retiro.');
-    if(data.ok) await cargar(user);
+    if(data.ok){
+      try{
+        const destino=document.getElementById('retiro-destino').value.trim();
+        if(destino) await db.collection('perfiles').doc(user.uid).set({ destinoRetiro: destino }, { merge: true });
+      }catch(e){}
+      await cargar(user);
+    }
   }catch(e){
     msg.textContent='No se pudo pedir el retiro. Reintenta en unos segundos.';
   }
@@ -146,9 +173,14 @@ auth.onAuthStateChanged(async (user)=>{
   if(!user){ location.href='/login?next=/saldo'; return; }
   try{
     const perfil=await db.collection('perfiles').doc(user.uid).get();
-    if(perfil.exists && perfil.data().vendedorBanco){
-      const box=document.getElementById('retiro-destino');
-      if(box && !box.value) box.value=perfil.data().vendedorBanco;
+    const d=perfil.exists ? (perfil.data()||{}) : {};
+    const guardado=d.destinoRetiro || d.vendedorBanco || '';
+    const box=document.getElementById('retiro-destino');
+    if(box && !box.value && guardado) box.value=guardado;
+    const btn=document.getElementById('btn-usar-banco-guardado');
+    if(btn && guardado){
+      btn.classList.remove('hidden');
+      btn.onclick=()=>{ if(box) box.value=guardado; };
     }
   }catch(e){}
   try{ await cargar(user); }
