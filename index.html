@@ -960,14 +960,20 @@ function lobbyAutocomplete(v){
   function escOferta(s){
     return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
-  db.collection('avisos_ofertas').onSnapshot(function(snap){
-    const avisos = [];
-    snap.forEach(function(doc){
-      const d = doc.data() || {};
-      if(d.activo === false) return;
-      avisos.push(Object.assign({ id: doc.id }, d));
+  const cache = { global: [], doc: [], col: [] };
+  function unir(){
+    const map = {};
+    cache.global.concat(cache.doc, cache.col).forEach(function(item){
+      if(!item) return;
+      const id = item.id || ((item.juegoId || 'juego') + '-' + (item.titulo || ''));
+      map[id] = Object.assign({ id }, item);
     });
-    avisos.sort((a,b) => Number(b.actualizadoEn || 0) - Number(a.actualizadoEn || 0));
+    return Object.keys(map).map(function(k){ return map[k]; })
+      .filter(function(a){ return a.activo !== false; })
+      .sort(function(a,b){ return Number(b.actualizadoEn || 0) - Number(a.actualizadoEn || 0); });
+  }
+  function pintar(){
+    const avisos = unir();
     if(!avisos.length){
       box.classList.add('hidden');
       grid.innerHTML = '';
@@ -981,7 +987,20 @@ function lobbyAutocomplete(v){
         '<div class="sv-oferta-body"><strong>' + escOferta(a.titulo || a.juegoNombre || 'Oferta') + '</strong>' +
         '<p>' + escOferta(a.texto || '') + '</p><span>Ver oferta</span></div></a>';
     }).join('');
-  }, function(){});
+  }
+  db.collection('configuracion').doc('global').onSnapshot(function(doc){
+    cache.global = doc.exists && Array.isArray(doc.data().avisosOfertas) ? doc.data().avisosOfertas : [];
+    pintar();
+  }, function(){ pintar(); });
+  db.collection('configuracion').doc('avisosOfertas').onSnapshot(function(doc){
+    cache.doc = doc.exists && Array.isArray(doc.data().items) ? doc.data().items : [];
+    pintar();
+  }, function(){ pintar(); });
+  db.collection('avisos_ofertas').onSnapshot(function(snap){
+    cache.col = [];
+    snap.forEach(function(doc){ cache.col.push(Object.assign({ id: doc.id }, doc.data() || {})); });
+    pintar();
+  }, function(){ pintar(); });
 })();
 (function(){
   document.querySelectorAll('#faq-inicio .sv-faq-q').forEach(function(btn){

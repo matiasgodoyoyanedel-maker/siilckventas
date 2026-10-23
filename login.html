@@ -192,8 +192,13 @@ function obtenerRedirect(){
   localStorage.removeItem('auth_next');
   localStorage.removeItem('redirect_after_login');
   const elegido = next || (authNext.indexOf('/verificar-correo') === 0 ? '' : authNext) || r || 'index.html';
-  destinoResuelto = elegido;
+  destinoResuelto = destinoSeguroDe(elegido);
   return destinoResuelto;
+}
+function destinoSeguroDe(url){
+  const t = String(url || '').toLowerCase();
+  if(!url || t.indexOf('login') >= 0 || t.indexOf('verificar-correo') >= 0) return 'index.html';
+  return url;
 }
 
 function enMuro(){
@@ -309,6 +314,12 @@ async function resolverIngreso(user){
     const snap = await ref.get();
     const data = snap.exists ? (snap.data() || {}) : null;
     const google = esGoogle(user);
+    if(google){
+      if(!snap.exists) await crearPerfil(user, { verificadoForzado: true, email: user.email || '' });
+      else await ref.set({ verificadoForzado: true, email: user.email || '' }, { merge: true });
+      irA(obtenerRedirect());
+      return;
+    }
     const nuevoGoogle = google && (!snap.exists || (primeraVez(user) && data.verificadoForzado !== true));
     if(nuevoGoogle){
       if(!snap.exists) await crearPerfil(user, { verificadoForzado: !!user.emailVerified });
@@ -412,22 +423,27 @@ async function loginConGoogle(){
     recordarDestino();
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const provider = providerGoogle();
-    if(necesitaRedirectGoogle()){
+    try{
       await auth.signInWithRedirect(provider);
       return;
-    }
-    try{
-      const result = await conTope(auth.signInWithPopup(provider), 18000);
-      await resolverIngreso(result.user);
-    }catch(err){
-      if(err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')){
+    }catch(errRedirect){
+      if(necesitaRedirectGoogle()){
         accionEnCurso = false;
-        mostrarOk('');
+        mostrarError((errRedirect && errRedirect.message) || 'No se pudo abrir Google.');
         return;
       }
-      await auth.signInWithRedirect(provider);
+      const result = await conTope(auth.signInWithPopup(provider), 12000);
+      await resolverIngreso(result.user);
     }
-  }catch(err){ accionEnCurso = false; mostrarOk(''); mostrarError(err.message); }
+  }catch(err){
+    accionEnCurso = false;
+    mostrarOk('');
+    if(err && err.code === 'auth/account-exists-with-different-credential'){
+      mostrarError('Ese correo ya está registrado con otra forma de ingreso. Entra con correo y clave.');
+      return;
+    }
+    mostrarError(err.message);
+  }
 }
 
 async function enviarRecuperacion(){
@@ -574,12 +590,17 @@ async function evaluarSesionLogin(){
   if(!usuarioActual) return;
   const pagina = location.pathname;
   if(pagina.indexOf('login') < 0) return;
+  if(esGoogle(usuarioActual)){
+    try{ await db.collection('perfiles').doc(usuarioActual.uid).set({ verificadoForzado: true, email: usuarioActual.email || '' }, { merge: true }); }catch(e){}
+    irA(obtenerRedirect());
+    return;
+  }
   let flag;
   try{
     const snap = await db.collection('perfiles').doc(usuarioActual.uid).get();
     flag = snap.exists ? snap.data().verificadoForzado : undefined;
   }catch(e){ flag = undefined; }
-  if(saliendo || accionEnCurso) return;
+  if(saliendo) return;
   if(usuarioActual.emailVerified === false){
     irAVerificar(usuarioActual.email || '');
     return;
@@ -601,7 +622,7 @@ function conTope(promesa, ms){
   ]);
 }
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-.then(() => conTope(auth.getRedirectResult(), 12000))
+.then(() => conTope(auth.getRedirectResult(), 20000))
 .then(async (res) => {
   if(res && res.user){
     await resolverIngreso(res.user);

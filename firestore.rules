@@ -182,7 +182,7 @@ service cloud.firestore {
       allow update, delete: if isOwner();
     }
 
-    // --- Configuración global (tema, mantención, avisos, WhatsApp) ---
+    // --- Configuración global (tema, mantención, avisos, WhatsApp, avisosOfertas) ---
     match /configuracion/{docId} {
       allow read: if true;
       allow write: if isOwner();
