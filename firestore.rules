@@ -138,7 +138,12 @@ service cloud.firestore {
         && request.resource.data.vendedorUid is string
         && request.resource.data.compradorUid != request.resource.data.vendedorUid;
 
-      allow update: if isOwner() || isChatPartyFrom(resource.data);
+      allow update: if isOwner() || (
+        isChatPartyFrom(resource.data)
+        && !(request.resource.data.chatCerrado == true
+             && resource.data.chatCerrado != true
+             && resource.data.vendedorUid != request.auth.uid)
+      );
 
       allow delete: if isOwner();
 
@@ -146,7 +151,8 @@ service cloud.firestore {
         allow read: if isChatParty();
 
         allow create: if isChatParty()
-          && request.resource.data.remitenteUid == request.auth.uid;
+          && request.resource.data.remitenteUid == request.auth.uid
+          && chatDoc().chatCerrado != true;
 
         allow update, delete: if isOwner();
       }
