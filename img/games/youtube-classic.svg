@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="ytBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#07111f"/>
+      <stop offset="55%" stop-color="#0b1a33"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#ytBg)"/>
+  <rect x="210" y="118" width="180" height="126" rx="28" fill="#ff0000"/>
+  <polygon points="278,148 278,214 332,181" fill="#ffffff"/>
+  <text x="300" y="292" text-anchor="middle" fill="#fde68a" font-family="Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="2">YOUTUBE PREMIUM</text>
+  <text x="300" y="322" text-anchor="middle" fill="#bfdbfe" font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="3">SIN ANUNCIOS</text>
+</svg>
