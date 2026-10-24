@@ -1434,6 +1434,7 @@ a.bg-yellow-500:hover {
   left: auto !important;
   right: 1.25rem !important;
   bottom: 1.4rem !important;
+  z-index: 55 !important;
   width: max-content;
   box-sizing: border-box;
   white-space: nowrap;
