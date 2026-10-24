@@ -83,7 +83,7 @@
         <p class="text-xs text-zinc-300" id="pub-foto-label"><i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5"></i> Toca para subir foto</p>
         <p class="text-[10px] text-zinc-500 mt-1">Si eliges un juego o servicio se usa la foto oficial para que todas las publicaciones se vean iguales.</p>
       </div>
-      <p id="pub-edit-hint" class="hidden text-[11px] text-zinc-400">Estás editando. Los datos privados se pueden dejar vacíos para no cambiarlos.</p>
+      <p id="pub-edit-hint" class="hidden text-[11px] text-zinc-400" style="display:none">Estás editando. Los datos privados se pueden dejar vacíos para no cambiarlos.</p>
       <div class="bg-black/40 border border-yellow-400/20 rounded-xl p-4 mt-4">
         <label class="flex items-center gap-3 cursor-pointer">
           <input type="checkbox" id="activarOferta" class="w-5 h-5 accent-yellow-400" onchange="document.getElementById('selectorDescuento').classList.toggle('hidden', !this.checked); document.getElementById('texto-oferta-apagada').classList.toggle('hidden', this.checked); actualizarPreviewOferta();" />
@@ -216,7 +216,7 @@ async function cargarEdicionPublicacion(id){
     const btn=document.getElementById('btn-publicar');
     if(btn) btn.textContent='Guardar cambios';
     const hint=document.getElementById('pub-edit-hint');
-    if(hint) hint.classList.remove('hidden');
+    if(hint){ hint.classList.remove('hidden'); hint.style.display=''; }
     document.getElementById('pub-titulo').value=p.titulo||'';
     const sel=document.getElementById('pub-juego');
     if(sel && p.juego){
