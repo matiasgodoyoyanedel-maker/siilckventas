@@ -1,4 +1,5 @@
-import { envMercadoPago } from '../../lib/logis/env.js';
+import { getDb } from '../../lib/logis/db.js';
+import { envMercadoPago, secretoWebhookMercadoPago } from '../../lib/logis/env.js';
 import {
   avisoMercadoPagoValido,
   confirmarOrdenComercioMercadoPago,
@@ -13,7 +14,9 @@ export default async function handler(req, res) {
 
   try {
     const aviso = extraerAvisoMercadoPago(req);
-    const secret = envMercadoPago().webhookSecret;
+    let db = null;
+    try { db = getDb(); } catch { db = null; }
+    const secret = await secretoWebhookMercadoPago(db);
     const firma = req.headers?.['x-signature'] || '';
     const requestId = req.headers?.['x-request-id'] || '';
     if (secret && !avisoMercadoPagoValido({ firmaHeader: firma, requestId, id: aviso.id, secret })) {
