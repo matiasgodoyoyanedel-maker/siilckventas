@@ -2833,3 +2833,257 @@ header #nav-user-email,
   .sv-market-title { font-size: 24px !important; }
   #market-grid .sv-mcard-media { height: 168px !important; }
 }
+
+/* Contraste: paneles que el flatten blanco dejaba ilegibles */
+.web-panel:not(.sv-cart-hero):not(.sv-market-head):not(.mc-head) {
+  background: #12121c !important;
+  color: #eef2ff !important;
+  border-color: #2f2f48 !important;
+  border-radius: 22px;
+}
+.sv-atajos .web-panel,
+.sv-atajos a.web-panel,
+.sv-atajos button.web-panel {
+  background: #12121c !important;
+  border: 1px solid #2f2f48 !important;
+  color: #eef2ff !important;
+}
+.sv-atajos h3,
+.sv-atajos .text-white,
+.sv-atajos .font-bold.text-white {
+  color: #ffffff !important;
+}
+.sv-atajos p,
+.sv-atajos .text-zinc-400 {
+  color: #c5cce0 !important;
+}
+.sv-pasos-card.web-panel,
+.sv-pasos-card {
+  background: #12121c !important;
+}
+.sv-pasos-card h2,
+.sv-pasos-card > h2 {
+  color: #ffffff !important;
+}
+.sv-pasos-card .bg-white {
+  background: #1a1a2c !important;
+  color: #eef2ff !important;
+}
+.sv-pasos-card .text-zinc-600,
+.sv-pasos-card p { color: #c5cce0 !important; }
+
+/* CONTRASTE FINAL — compras, carrito, VIP, menú, trabaja */
+.mc-head,
+.mc-card {
+  background: #12121c !important;
+  border: 1px solid #2f2f48 !important;
+  color: #eef2ff !important;
+  box-shadow: 0 16px 36px rgba(0,0,0,.28) !important;
+}
+.mc-head h1,
+.mc-title,
+.mc-price,
+.mc-tx b,
+.mc-total {
+  color: #ffffff !important;
+}
+.mc-head p,
+.mc-meta,
+.mc-row,
+.mc-tx,
+#lista-estado {
+  color: #c5cce0 !important;
+}
+.mc-explorar,
+.mc-btn,
+.mc-filtro {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+  border: 1px solid #d7dce8 !important;
+}
+.mc-btn-key,
+.mc-filtro.bg-yellow-400 {
+  background: #ff4d8d !important;
+  color: #ffffff !important;
+  border-color: #ff4d8d !important;
+}
+.mc-escrow { color: #6ee7b7 !important; }
+
+.sv-cart-page,
+.sv-cart-panel,
+.sv-cart-item,
+.sv-cart-desglose,
+#carrito-items-list,
+#carrito-items-list p,
+#carrito-items-list h4,
+.sv-cart-item h4,
+.sv-cart-item .text-white {
+  color: #ffffff !important;
+}
+.sv-cart-item,
+.sv-cart-item.bg-zinc-900 {
+  background: #161625 !important;
+  border: 1px solid #2f2f48 !important;
+  border-radius: 18px !important;
+}
+.sv-cart-item .text-zinc-400,
+.sv-cart-item .text-zinc-500,
+.sv-cart-desglose,
+.sv-cart-desglose .text-zinc-400,
+.sv-cart-page > .sv-cart-wrap > p,
+.sv-cart-actions a {
+  color: #c5cce0 !important;
+}
+.sv-cart-actions a {
+  background: #1a1a2c !important;
+  border: 1px solid #2f2f48 !important;
+}
+
+#box-entrega-auto,
+#box-entrega-auto.web-panel {
+  background: linear-gradient(180deg, #10241c, #12121c) !important;
+  border: 1px solid #34d399 !important;
+  box-shadow: 0 16px 36px rgba(16, 185, 129, .18) !important;
+  color: #ecfdf5 !important;
+}
+#box-entrega-auto h3,
+#box-entrega-auto .text-emerald-400 {
+  color: #6ee7b7 !important;
+}
+#box-entrega-auto p,
+#txt-entrega-estado { color: #d1fae5 !important; }
+#box-entrega-auto .bg-zinc-900,
+#lista-entregas-auto > div {
+  background: #0b1a14 !important;
+  border: 1px solid #34d399 !important;
+  border-radius: 16px !important;
+  color: #ecfdf5 !important;
+}
+#box-entrega-auto .text-white,
+#lista-entregas-auto h4 { color: #ffffff !important; }
+#box-entrega-auto .text-yellow-400 { color: #ffe08a !important; }
+
+#seccion-vip {
+  background: #0c0c16 !important;
+  border-left: 1px solid #2f2f48 !important;
+  color: #eef2ff !important;
+}
+#seccion-vip h2,
+#seccion-vip h3,
+#seccion-vip .text-white {
+  color: #ffffff !important;
+}
+#seccion-vip p,
+#seccion-vip .text-zinc-300,
+#hint-vip-basico,
+#hint-vip-pro {
+  color: #c5cce0 !important;
+}
+.vip-card-box,
+.vip-card-box-pro {
+  background: #161625 !important;
+  border: 1px solid #2f2f48 !important;
+  color: #eef2ff !important;
+}
+.sv-vip-lista,
+.sv-vip-lista-pro,
+#seccion-vip ul,
+.vip-card-box ul,
+.vip-card-box-pro ul {
+  background: #1a1a2c !important;
+  border: 1px solid #3b3b58 !important;
+  color: #eef2ff !important;
+}
+#seccion-vip li,
+.sv-vip-lista li,
+#seccion-vip strong {
+  color: #ffffff !important;
+}
+#precio-vip-basico,
+#seccion-vip .text-yellow-400 { color: #ffe08a !important; }
+#precio-vip-pro { color: #fb7185 !important; }
+
+#menu-tres-puntos-dropdown,
+#menu-tres-puntos-dropdown.web-panel {
+  background: #12121c !important;
+  border: 1px solid #2f2f48 !important;
+  color: #ffffff !important;
+}
+#menu-tres-puntos-dropdown button,
+#menu-tres-puntos-dropdown a,
+#menu-tres-puntos-dropdown .text-zinc-300,
+#menu-tres-puntos-dropdown .text-white {
+  color: #ffffff !important;
+}
+#menu-tres-puntos-dropdown a.bg-yellow-500,
+#menu-tres-puntos-dropdown a.bg-yellow-500 * {
+  background: #ff4d8d !important;
+  color: #ffffff !important;
+}
+
+.sv-cortina {
+  background: #0c0c16 !important;
+  border-bottom: 1px solid #2f2f48 !important;
+}
+.trabaja-banner,
+.sv-cortina .trabaja-banner {
+  background: #161625 !important;
+  border: 1px solid #2f2f48 !important;
+}
+.trabaja-banner h2,
+.trabaja-banner .text-white,
+.sv-cortina h2,
+.sv-cortina .text-white {
+  color: #ffffff !important;
+}
+.trabaja-banner p,
+.sv-cortina p,
+.sv-cortina .text-zinc-300 {
+  color: #c5cce0 !important;
+}
+
+.sv-mcard-badges {
+  display: flex !important;
+  visibility: visible !important;
+}
+.sv-mcard-badges button,
+.sv-mcard-badges a {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  align-items: center;
+  gap: 4px;
+}
+.sv-mcard-badges button.bg-zinc-900,
+.sv-mcard-badges button[title*="editar"],
+.sv-mcard-badges button .fa-pen {
+  background: #ffe08a !important;
+  color: #0b1020 !important;
+  border: 1px solid #f5b942 !important;
+}
+.sv-mcard-badges button.bg-rose-600,
+.sv-mcard-badges button[title*="eliminar"] {
+  background: #e11d48 !important;
+  color: #ffffff !important;
+  border: 1px solid #fb7185 !important;
+}
+.sv-mcard-badges button.bg-rose-600 *,
+.sv-mcard-badges button[title*="eliminar"] * { color: #ffffff !important; }
+
+#tiques .web-panel,
+#chats .web-panel,
+#perfil .web-panel,
+#faq-inicio .sv-faq-item {
+  background: #12121c !important;
+  color: #eef2ff !important;
+  border-color: #2f2f48 !important;
+}
+#tiques h3,
+#chats h3,
+#perfil h3,
+.sv-faq-q { color: #ffffff !important; }
+#tiques p,
+#chats p,
+#perfil p,
+.sv-faq-a,
+.sv-faq-lead { color: #c5cce0 !important; }
