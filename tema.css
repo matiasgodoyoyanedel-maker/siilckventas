@@ -2511,3 +2511,325 @@ label, .text-zinc-300, .text-zinc-400, .text-zinc-500 {
   .sv-hero-kicker { font-size: 22px; }
   .sv-store-nav { width: 100%; }
 }
+
+/* ============================================================
+   NEON STORE v2 — tienda oscura con cards neón, letras legibles
+   No borra lógicas: solo pinta, reacomoda y refuerza contraste.
+   ============================================================ */
+html, body, #main-body-fade, .sv-neon-page {
+  background: #07070f !important;
+  color: #eef2ff !important;
+}
+body, .sv-neon-page {
+  background:
+    radial-gradient(ellipse 70% 46% at 10% 0%, rgba(255,45,106,.18), transparent 54%),
+    radial-gradient(ellipse 48% 34% at 92% 6%, rgba(59,130,255,.16), transparent 50%),
+    #07070f !important;
+}
+
+.welcome-icon { display: none !important; }
+.sv-hero-kicker {
+  font-size: clamp(28px, 5vw, 46px) !important;
+  line-height: 1.05 !important;
+  max-width: 760px;
+  margin: 6px auto 10px !important;
+  color: #ffffff !important;
+  text-transform: uppercase;
+}
+.siilck-welcome-card h1,
+.siilck-welcome-card h1 span {
+  color: #c9d2ea !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+.sv-hero-art {
+  width: 260px;
+  height: 340px;
+  opacity: .95;
+  filter: saturate(1.2);
+}
+.sv-hero-art-l { left: -2%; }
+.sv-hero-art-r { right: -2%; }
+.welcome-btn {
+  background: linear-gradient(180deg, #ff4d8d, #e11d63) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 28px rgba(225, 29, 99, .35) !important;
+}
+.sv-hero-ghost {
+  color: #ffffff !important;
+  border-color: #3b82ff !important;
+}
+
+.section-label {
+  color: #ffffff !important;
+  font-size: 18px !important;
+  letter-spacing: .16em !important;
+  text-align: center !important;
+}
+
+/* Streaming: cards blancas con borde neón, como la referencia */
+#gameTrack2 .game-card,
+#gameTrack2 .game-card.stream,
+#gameTrack2 .game-card.is-center,
+#gameTrack2 .game-card.is-side-l,
+#gameTrack2 .game-card.is-side-r,
+#gameTrack2 .game-card.is-far {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+  border: 2px solid #ff2d6a !important;
+  box-shadow: 0 0 0 1px rgba(255,45,106,.15), 0 18px 36px rgba(255,45,106,.16) !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+#gameTrack2 .game-card:nth-child(4n+2) {
+  border-color: #3b82ff !important;
+  box-shadow: 0 0 0 1px rgba(59,130,255,.15), 0 18px 36px rgba(59,130,255,.16) !important;
+}
+#gameTrack2 .game-card:nth-child(4n+3) {
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 1px rgba(34,211,238,.15), 0 18px 36px rgba(34,211,238,.16) !important;
+}
+#gameTrack2 .game-card:nth-child(4n+4) {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 1px rgba(34,197,94,.15), 0 18px 36px rgba(34,197,94,.16) !important;
+}
+#gameTrack2 .g-label {
+  background: #ffffff !important;
+  border-top: 1px solid #eef1f6 !important;
+}
+#gameTrack2 .g-label b { color: #0b1020 !important; }
+#gameTrack2 .g-label span { color: #5b6478 !important; }
+#gameTrack2 .name b { color: #ffffff !important; text-shadow: 0 2px 10px #000; }
+#gameTrack2 .name i { color: #ffe08a !important; }
+
+/* Juegos: portada + ficha clara */
+#gameTrack1 .game-card,
+#gameTrack1 .game-card.is-center,
+#gameTrack1 .game-card.is-side-l,
+#gameTrack1 .game-card.is-side-r,
+#gameTrack1 .game-card.is-far {
+  background: #101018 !important;
+  border: 1px solid #2a2a40 !important;
+  box-shadow: 0 18px 36px rgba(0,0,0,.35) !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+#gameTrack1 .game-card:hover {
+  border-color: #ff4d8d !important;
+  transform: translateY(-6px) !important;
+}
+#gameTrack1 .g-label {
+  background: #ffffff !important;
+  border-top: 0 !important;
+}
+#gameTrack1 .g-label b { color: #0b1020 !important; }
+#gameTrack1 .g-label span { color: #5b6478 !important; }
+#gameTrack1 .img-wrap { height: 168px !important; }
+
+.sv-beneficios h2,
+.sv-beneficio b { color: #ffffff !important; }
+.sv-beneficio span { color: #c5cce0 !important; }
+.sv-beneficio {
+  background: #12121c !important;
+  border: 1px solid #2a2a40 !important;
+}
+
+/* Marketplace: página oscura, cards de tienda, no planas */
+.sv-market-head {
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 0%, rgba(255,45,106,.18), transparent 50%),
+    linear-gradient(135deg, #101018 0%, #161625 100%) !important;
+  border: 1px solid #2a2a40 !important;
+  border-radius: 28px !important;
+  padding: 26px 22px !important;
+  box-shadow: 0 22px 48px rgba(0,0,0,.28) !important;
+}
+.sv-market-title,
+.sv-market-head .sv-market-title,
+.sv-market-title.font-heading {
+  color: #ffffff !important;
+  font-size: 30px !important;
+}
+.sv-market-head p,
+.sv-market-head .text-zinc-500 { color: #c5cce0 !important; }
+.sv-market-head a,
+.sv-market-head button {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+}
+.sv-market-head a.bg-yellow-500,
+.sv-market-head .bg-yellow-500,
+.sv-market-head a.bg-yellow-500 * {
+  background: #ff4d8d !important;
+  color: #ffffff !important;
+}
+
+#market-grid > .sv-mcard,
+#market-grid > .web-panel.sv-mcard,
+#market-grid > .sv-mcard.sv-mcard {
+  background: #12121c !important;
+  border: 2px solid #2f2f48 !important;
+  border-radius: 22px !important;
+  box-shadow: 0 18px 36px rgba(0,0,0,.28) !important;
+  overflow: hidden !important;
+}
+#market-grid > .sv-mcard:nth-child(4n+1) {
+  border-color: #ff2d6a !important;
+  box-shadow: 0 0 0 1px rgba(255,45,106,.18), 0 18px 36px rgba(255,45,106,.12) !important;
+}
+#market-grid > .sv-mcard:nth-child(4n+2) {
+  border-color: #3b82ff !important;
+  box-shadow: 0 0 0 1px rgba(59,130,255,.18), 0 18px 36px rgba(59,130,255,.12) !important;
+}
+#market-grid > .sv-mcard:nth-child(4n+3) {
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 1px rgba(34,211,238,.16), 0 18px 36px rgba(34,211,238,.1) !important;
+}
+#market-grid > .sv-mcard:nth-child(4n+4) {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 1px rgba(34,197,94,.16), 0 18px 36px rgba(34,197,94,.1) !important;
+}
+#market-grid > .sv-mcard:hover {
+  transform: translateY(-6px);
+}
+#market-grid > .sv-mcard.card-vip-pro-glow,
+#market-grid > .sv-mcard.card-vip-pro-glow:nth-child(n) {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px rgba(239,68,68,.25), 0 0 22px rgba(239,68,68,.28) !important;
+}
+#market-grid > .sv-mcard.card-vip-basico-glow,
+#market-grid > .sv-mcard.card-vip-basico-glow:nth-child(n) {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 1px rgba(245,158,11,.25), 0 0 22px rgba(245,158,11,.24) !important;
+}
+.sv-mcard-media,
+#market-grid .sv-mcard-media {
+  height: 198px !important;
+  background: #0b0b14 !important;
+}
+#market-grid .sv-mcard-titulo,
+#market-grid .sv-mcard-seller,
+#market-grid .sv-mcard-body,
+#market-grid .sv-mcard-foot,
+#market-grid .sv-mcard-links a {
+  color: #ffffff !important;
+}
+.sv-mcard-meta span {
+  background: #1c1c2e !important;
+  color: #ffe08a !important;
+}
+.sv-precio-card,
+#market-grid .sv-precio-card {
+  color: #ffd36a !important;
+  font-size: 22px !important;
+}
+.sv-mcard-foot {
+  border-top-color: #2a2a40 !important;
+}
+
+#filtros-extra,
+#aside-filtro-juegos,
+#aside-filtro-juegos .web-panel {
+  background: #12121c !important;
+  border: 1px solid #2a2a40 !important;
+  color: #ffffff !important;
+}
+#filtros-extra input,
+#filtros-extra select,
+.sv-juego-btn {
+  background: #161625 !important;
+  color: #ffffff !important;
+  border-color: #2a2a40 !important;
+}
+.sv-juego-btn.sv-cat-on,
+.sv-juego-btn.sv-cat-on * {
+  background: #2a1830 !important;
+  color: #ff8ab3 !important;
+  border-color: #ff4d8d !important;
+}
+
+/* Resto del sitio: paneles oscuros, letras claras */
+.sv-cart-hero,
+.sv-cart-hero.web-panel,
+.mc-head,
+.sv-title-banner,
+#form-main-title {
+  background: linear-gradient(135deg, #141428, #1c1c34) !important;
+  border: 1px solid rgba(255,77,141,.4) !important;
+  color: #ffffff !important;
+}
+#sv-cart-hero-title,
+.sv-cart-hero-title,
+.sv-cart-hero h2,
+.sv-title-banner,
+.sv-title-banner.text-white,
+#form-main-title {
+  color: #ffffff !important;
+}
+.sv-cart-hero p,
+.mc-head p { color: #d7dce8 !important; }
+.sv-cart-panel,
+.sv-cart-panel.web-panel,
+.web-panel,
+.sv-promo-card,
+.sv-faq-item,
+.sv-pasos-card,
+#menu-tres-puntos-dropdown {
+  background: #12121c !important;
+  border-color: #2a2a40 !important;
+  color: #eef2ff !important;
+}
+.sv-promo-card h2,
+.sv-pasos-card h2,
+.sv-faq h2,
+.sv-faq-q,
+.sv-atajos h3,
+.sv-cart-panel-title {
+  color: #ffffff !important;
+}
+.sv-promo-card p,
+.sv-faq-lead,
+.sv-faq-a,
+.sv-atajos p,
+.sv-pasos-card p,
+.sv-pasos-card .text-zinc-600 {
+  color: #c5cce0 !important;
+}
+.sv-pasos-card .bg-white {
+  background: #1a1a2c !important;
+  border-color: #2a2a40 !important;
+}
+
+header #nav-user-email,
+#nav-user-email,
+#nav-user-email.text-yellow-400,
+#sv-locale-btn,
+#sv-locale-btn.text-white,
+#sv-locale-label {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+  border-color: #d7dce8 !important;
+}
+.sv-locale-panel,
+.sv-locale-panel button,
+.sv-locale-panel .text-white {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+}
+
+#modal-pub-detalles .web-panel,
+#modal-activar-vendedor .web-panel {
+  background: #12121c !important;
+  color: #ffffff !important;
+}
+#modal-pub-titulo,
+#modal-vendedor-nombre { color: #ffffff !important; }
+
+@media (max-width: 768px) {
+  .sv-hero-kicker { font-size: 26px !important; }
+  .sv-market-title { font-size: 24px !important; }
+  #market-grid .sv-mcard-media { height: 168px !important; }
+}
