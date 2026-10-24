@@ -176,6 +176,22 @@
 
   function hacerSelloMovible(el){
     let dragging = false, offsetX = 0, offsetY = 0, hasMoved = false;
+    function anchoSello(){
+      return el.getBoundingClientRect().width || el.offsetWidth || 160;
+    }
+    function altoSello(){
+      return el.getBoundingClientRect().height || el.offsetHeight || 40;
+    }
+    function aplicarPos(x, y){
+      el.classList.add('sv-sello-moved');
+      el.style.setProperty('--sv-sello-x', x + 'px');
+      el.style.setProperty('--sv-sello-y', y + 'px');
+      el.style.setProperty('left', x + 'px', 'important');
+      el.style.setProperty('top', y + 'px', 'important');
+      el.style.setProperty('right', 'auto', 'important');
+      el.style.setProperty('bottom', 'auto', 'important');
+      el.style.setProperty('width', 'max-content', 'important');
+    }
     function onStart(e){
       dragging = true; hasMoved = false;
       const t = e.touches ? e.touches[0] : e;
@@ -191,14 +207,11 @@
       const t = e.touches ? e.touches[0] : e;
       let x = t.clientX - offsetX;
       let y = t.clientY - offsetY;
-      const maxX = window.innerWidth - el.offsetWidth;
-      const maxY = window.innerHeight - el.offsetHeight;
+      const maxX = window.innerWidth - anchoSello();
+      const maxY = window.innerHeight - altoSello();
       x = Math.max(0, Math.min(x, maxX));
       y = Math.max(0, Math.min(y, maxY));
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-      el.style.bottom = 'auto';
-      el.style.right = 'auto';
+      aplicarPos(x, y);
       try{ localStorage.setItem('sv-sello-pos', x + ',' + y); }catch(e2){}
     }
     function onEnd(){ dragging = false; el.style.cursor = 'grab'; }
@@ -213,10 +226,9 @@
       const saved = localStorage.getItem('sv-sello-pos');
       if(saved){
         const parts = saved.split(',');
-        const x = Math.max(0, Math.min(Number(parts[0]), window.innerWidth - el.offsetWidth));
-        const y = Math.max(0, Math.min(Number(parts[1]), window.innerHeight - el.offsetHeight));
-        el.style.left = x + 'px'; el.style.top = y + 'px';
-        el.style.bottom = 'auto'; el.style.right = 'auto';
+        const x = Math.max(0, Math.min(Number(parts[0]), window.innerWidth - anchoSello()));
+        const y = Math.max(0, Math.min(Number(parts[1]), window.innerHeight - altoSello()));
+        aplicarPos(x, y);
       }
     }catch(e2){}
   }

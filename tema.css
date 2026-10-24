@@ -570,6 +570,9 @@ body.sv-livebar-pad { padding-top: 2.5rem; }
   display: flex;
   align-items: center;
   gap: 8px;
+  width: max-content;
+  box-sizing: border-box;
+  white-space: nowrap;
   max-width: min(70vw, 240px);
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--sv-line-strong) !important;
@@ -1320,7 +1323,7 @@ a.bg-yellow-500:hover {
 #filtros-extra {
   background: #fff !important;
   border: 1px solid #ececef !important;
-  border-radius: 999px !important;
+  border-radius: 20px !important;
   box-shadow: 0 8px 24px rgba(17,24,39,.05) !important;
   max-width: 760px;
   margin-left: auto;
@@ -1331,6 +1334,53 @@ a.bg-yellow-500:hover {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
+}
+@media (max-width: 639px) {
+  #filtros-extra {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    border-radius: 18px !important;
+    max-width: none;
+  }
+  #filtros-extra input,
+  #filtros-extra select {
+    background: #f8fafc !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    min-height: 44px;
+    width: 100%;
+  }
+  #wrap-filtro-chips { overflow: hidden; }
+  #filtro-chips {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    gap: 8px;
+  }
+}
+@media (min-width: 640px) and (max-width: 767px) {
+  #filtros-extra {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    border-radius: 18px !important;
+  }
+  #filtros-extra input,
+  #filtros-extra select {
+    background: #f8fafc !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    min-height: 44px;
+  }
+  #filtros-extra #filtro-orden { grid-column: 1 / -1; }
+}
+@media (min-width: 768px) {
+  #filtros-extra { border-radius: 999px !important; }
 }
 
 #market-grid > .sv-mcard,
@@ -1349,8 +1399,16 @@ a.bg-yellow-500:hover {
 .sv-mcard-media {
   height: 168px !important;
   background: #111111 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
-.sv-mcard-media img { object-fit: cover; width: 100%; height: 100%; }
+.sv-mcard-media img {
+  object-fit: contain !important;
+  object-position: center center !important;
+  width: 100%;
+  height: 100%;
+}
 .sv-mcard-body { padding: 14px 16px 16px !important; }
 .sv-mcard-titulo {
   font-size: 15px !important;
@@ -1376,6 +1434,9 @@ a.bg-yellow-500:hover {
   left: auto !important;
   right: 1.25rem !important;
   bottom: 1.4rem !important;
+  width: max-content;
+  box-sizing: border-box;
+  white-space: nowrap;
   background: #fff !important;
   border: 1px solid #ececef !important;
   color: #6b7280 !important;
@@ -1383,6 +1444,14 @@ a.bg-yellow-500:hover {
   text-transform: none !important;
   letter-spacing: 0 !important;
   font-weight: 600 !important;
+}
+#sv-sello-org.sv-sello-moved {
+  left: var(--sv-sello-x, 1.25rem) !important;
+  top: var(--sv-sello-y, auto) !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: max-content !important;
+  max-width: min(80vw, 280px) !important;
 }
 #sv-sello-org i { color: #9ca3af !important; }
 

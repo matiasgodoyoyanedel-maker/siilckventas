@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/tema.css">
 <script src="/tema.js"></script>
+<script src="/lib/gamesList.js"></script>
 <style>
   body{background:#f5f6f8;color:#111111;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2{font-family:'Outfit',sans-serif}
@@ -139,11 +140,12 @@ function pintar(data){
     const a=document.createElement('a');
     a.href='cuenta.html?id='+encodeURIComponent(p.id);
     a.className='web-panel border border-zinc-800 rounded-2xl p-3 space-y-2 text-left block';
-    if(p.foto){
+    const srcFoto=(window.siilckFotoCatalogo&&window.siilckFotoCatalogo(p))||p.foto||'';
+    if(srcFoto){
       const img=document.createElement('img');
-      img.src=p.foto;
+      img.src=srcFoto;
       img.alt='';
-      img.className='w-full h-28 object-cover rounded-xl bg-black';
+      img.className='w-full h-28 object-contain object-center rounded-xl bg-black';
       a.appendChild(img);
     }
     const titulo=document.createElement('h3');
