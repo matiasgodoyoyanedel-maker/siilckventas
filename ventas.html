@@ -19,7 +19,7 @@
 <script src="lib/gamesList.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap');
-  body{touch-action:manipulation;background-color:#f4f6fb;color:#0f172a;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+  body{touch-action:manipulation;background-color:#f5f6f8;color:#111111;font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
   h1,h2,h3,h4, .font-heading{font-family:'Outfit',sans-serif}
   .hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
   #canvas-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:transparent}
@@ -68,19 +68,19 @@
   @media (min-width:640px){#market-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));justify-content:stretch;gap:18px}}
   #market-grid>.web-panel,#market-grid>.sv-mcard{display:flex;flex-direction:column;min-width:0;padding:0 !important;overflow:hidden}
   #market-grid>.web-panel img{display:block}
-  .sv-market-title{font-size:22px;font-weight:900;color:#0f172a;letter-spacing:-.03em;line-height:1.15}
-  .sv-mcard{background:#fff !important;border:1px solid #e5e7eb !important;border-radius:18px !important;box-shadow:0 8px 22px rgba(15,23,42,.06)}
-  .sv-mcard:hover{border-color:#93c5fd !important;transform:translateY(-3px);box-shadow:0 16px 34px rgba(15,23,42,.1)}
-  .sv-mcard-media{height:188px;background:#eef2ff}
-  .sv-mcard-body{display:flex;flex-direction:column;gap:8px;padding:14px 14px 16px;flex:1}
+  .sv-market-title{font-size:28px;font-weight:700;color:#111111;letter-spacing:-.04em;line-height:1.15}
+  .sv-mcard{background:#fff !important;border:0 !important;border-radius:22px !important;box-shadow:0 10px 28px rgba(17,24,39,.06)}
+  .sv-mcard:hover{border-color:transparent !important;transform:translateY(-4px);box-shadow:0 16px 36px rgba(17,24,39,.1)}
+  .sv-mcard-media{height:168px;background:#111111}
+  .sv-mcard-body{display:flex;flex-direction:column;gap:8px;padding:14px 16px 16px;flex:1}
   .sv-mcard-badges{display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-height:18px}
-  .sv-mcard-titulo{font-size:16px;font-weight:900;line-height:1.25;color:#0f172a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;letter-spacing:-.02em}
+  .sv-mcard-titulo{font-size:15px;font-weight:800;line-height:1.25;color:#111111;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;letter-spacing:-.02em}
   .sv-mcard-meta{display:flex;gap:6px;flex-wrap:wrap}
-  .sv-mcard-meta span{background:#f8fafc;border:1px solid #e5e7eb;color:#334155;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:800}
+  .sv-mcard-meta span{background:transparent;border:0;color:#9ca3af;border-radius:999px;padding:0;font-size:10px;font-weight:600}
   .sv-mcard-links{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .sv-mcard-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:8px;border-top:1px solid #eef2f7;margin-top:auto}
-  .sv-mcard-seller{display:block;font-size:12px;font-weight:800;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .sv-precio-card{font-size:18px !important;font-weight:900 !important;color:#d97706 !important}
+  .sv-mcard-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:8px;border-top:1px solid #f3f4f6;margin-top:auto}
+  .sv-mcard-seller{display:block;font-size:12px;font-weight:800;color:#111111;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sv-precio-card{font-size:20px !important;font-weight:800 !important;color:#111111 !important}
   #filtros-extra{background:#fff;border:1px solid #e5e7eb;box-shadow:0 6px 18px rgba(15,23,42,.04)}
   #aside-filtro-juegos h3{color:#0f172a;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
 </style>
