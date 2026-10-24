@@ -180,7 +180,7 @@
           <span class="w-9 h-9 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0"><i class="fas fa-bolt"></i></span>
           <p><strong class="text-yellow-400">Pase Básico activo.</strong> En tus anuncios aparece el botón <strong>Impulsar</strong>: súbelos al tope del marketplace una vez cada 24 horas, con cinta Destacado y rango ⭐ VIP Básico visible para compradores.</p>
         </div>
-        <div id="filtros-extra" class="web-panel rounded-2xl p-3 border border-zinc-800 grid grid-cols-2 md:grid-cols-5 gap-2">
+        <div id="filtros-extra" class="web-panel rounded-2xl p-3 border border-zinc-800 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2">
           <input id="filtro-nivel" type="search" placeholder="Nivel o rango" aria-label="Filtrar por nivel o rango">
           <select id="filtro-region" aria-label="Filtrar por región"><option value="">Todas las regiones</option></select>
           <input id="filtro-precio-min" type="number" min="0" placeholder="Precio mín" aria-label="Precio mínimo">
@@ -324,6 +324,13 @@ const categoriasAbiertas={juegos:true,stream:true};
 const OWNER_UID="YwjfajkyMXMRHd18eII4dwV03NF3";
 const OWNER_UID_ALT="w4JA6UUF7WeC6UJweKAKdWYMHf73";
 function esAdminDueño(uid){ return uid===OWNER_UID || uid===OWNER_UID_ALT; }
+function fotoDePublicacion(p){
+  if(window.siilckFotoCatalogo){
+    const c=window.siilckFotoCatalogo(p);
+    if(c) return c;
+  }
+  return (p && p.foto) || '';
+}
 function precioVisible(n){
   if(window.SiilckSettings) return SiilckSettings.formatPrice(n);
   return '$' + Number(n || 0).toLocaleString('es-CL');
@@ -1078,10 +1085,12 @@ function renderizarGridPublicaciones(ps, filtro=""){
       marcoAvatar = 'marco-vip-basico';
     }
 
-    const fotoInterior = p.foto ? `<img src="${escHtml(p.foto)}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-zinc-400"><i class="fas fa-image text-2xl"></i></div>`;
+    const fotoSrc = fotoDePublicacion(p);
+    const fotoInterior = fotoSrc ? `<img src="${escHtml(fotoSrc)}" class="w-full h-full object-contain object-center">` : `<div class="w-full h-full flex items-center justify-center text-zinc-400"><i class="fas fa-image text-2xl"></i></div>`;
     const imgHtml = `<div class="sv-mcard-media relative w-full overflow-hidden">${fotoInterior}${htmlBadgeOferta(p)}</div>`;
     const uidVend = uidVendedor(p);
     const logoVendedorHtml = htmlAvatarVivo(uidVend, marcoAvatar);
+    const botonEditarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); window.location.href='publicacion.html?editar='+encodeURIComponent('${p.id}')" class="bg-zinc-900 text-yellow-400 px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño puede editar publicaciones"><i class="fas fa-pen"></i></button>` : '';
     const botonEliminarAdmin = (auth.currentUser && esAdminDueño(auth.currentUser.uid)) ? `<button onclick="event.stopPropagation(); eliminarPublicacionAdmin('${p.id}')" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] ml-2" title="Solo el dueño/admin puede eliminar publicaciones de otros"><i class="fas fa-trash"></i></button>` : '';
     const esMia = auth.currentUser && p.vendedorUid === auth.currentUser.uid;
     const botonImpulso = esMia ? `<button onclick="impulsarPublicacion('${p.id}', event)" class="bg-zinc-950/80 border border-yellow-500/40 text-yellow-400 px-2 py-1 rounded text-[10px] font-black uppercase ml-1" title="Impulso del Pase Básico/Pro"><i class="fas fa-bolt"></i> Impulsar</button>` : '';
@@ -1090,7 +1099,7 @@ function renderizarGridPublicaciones(ps, filtro=""){
       ${ribbon}
       ${imgHtml}
       <div class="sv-mcard-body">
-        <div class="sv-mcard-badges">${badgeVip} ${botonImpulso} ${botonEliminarAdmin}</div>
+        <div class="sv-mcard-badges">${badgeVip} ${botonImpulso} ${botonEditarAdmin} ${botonEliminarAdmin}</div>
         <h4 class="sv-mcard-titulo">${escHtml(p.titulo)}</h4>
         <div class="sv-mcard-meta"><span>Nivel ${escHtml(p.nivel || 'N/A')}</span><span${Number(p.stock||1)<=2 ? ' class="text-rose-600"' : ''}>${Number(p.stock||1)<=2 ? 'Quedan ' : 'Stock '}${escHtml(p.stock || 1)}</span></div>
         <div class="sv-mcard-links">${htmlEntregaInmediata(p)}<a href="cuenta.html?id=${encodeURIComponent(p.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold text-yellow-400 underline">Ver cuenta</a></div>
@@ -1137,7 +1146,8 @@ async function abrirModalPub(id){
   refrescarIdsCarrito().then(pintarBotonCarritoModal);
   const fotoBox = document.getElementById('modal-foto-preview-box');
   const imgEl = document.getElementById('modal-pub-img');
-  if(p.foto){ imgEl.src = p.foto; fotoBox.classList.remove('hidden'); } else { fotoBox.classList.add('hidden'); }
+  const fotoModal = fotoDePublicacion(p);
+  if(fotoModal){ imgEl.src = fotoModal; fotoBox.classList.remove('hidden'); } else { fotoBox.classList.add('hidden'); }
   document.getElementById('modal-pub-tags').innerHTML = `<span class="bg-zinc-900 px-2.5 py-1 rounded text-yellow-400">🎮 ${escHtml(p.juego)}</span><span class="bg-zinc-900 px-2.5 py-1 rounded text-zinc-300">Nivel: ${escHtml(p.nivel || 'N/A')}</span>`;
   document.querySelectorAll('input[name="garantia"]')[0].checked = true;
   actualizarPrecioTotalModal();
@@ -1477,7 +1487,7 @@ async function abrirPerfilVendedorPorUid(uid){
   globalPublicacionesCache.forEach(p => {
     const stockNum = p.stock == null || p.stock === '' ? 1 : Number(p.stock);
     if(p.vendedorUid !== uid || p.vendida || stockNum <= 0) return;
-    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')"><div class="relative w-full h-28 rounded-xl overflow-hidden bg-zinc-900"><img src="${escHtml(p.foto || '')}" class="w-full h-full object-cover">${htmlBadgeOferta(p)}</div><h4 class="font-bold text-white text-xs line-clamp-1">${escHtml(p.titulo)}</h4><p class="text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVendedor(p)))}</p>${htmlReputacion(uid, p)}${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
+    h += `<div class="web-panel border border-zinc-800 rounded-2xl cursor-pointer p-3 space-y-2 text-left relative" onclick="abrirModalPub('${p.id}')"><div class="relative w-full h-28 rounded-xl overflow-hidden bg-zinc-900 flex items-center justify-center"><img src="${escHtml(fotoDePublicacion(p))}" class="w-full h-full object-contain object-center">${htmlBadgeOferta(p)}</div><h4 class="font-bold text-white text-xs line-clamp-1">${escHtml(p.titulo)}</h4><p class="text-[11px] font-bold text-zinc-300 truncate">${escHtml(nombreRealVendedor(uidVendedor(p)))}</p>${htmlReputacion(uid, p)}${htmlPrecioOferta(p.precio, p, 'text-yellow-400 font-extrabold text-sm')}</div>`;
   });
   document.getElementById('vendedor-tienda-grid').innerHTML = h || `<p class="text-xs text-zinc-500 col-span-full text-center py-6">No hay cuentas disponibles.</p>`;
 }

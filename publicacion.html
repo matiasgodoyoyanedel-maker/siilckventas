@@ -79,8 +79,11 @@
       </div>
       <div class="drag-drop-zone rounded-2xl p-5 text-center cursor-pointer bg-zinc-900/50" onclick="document.getElementById('pub-foto-input').click()">
         <input type="file" id="pub-foto-input" accept="image/*" class="hidden" onchange="manejarSeleccionFoto(this)">
+        <img id="pub-foto-preview" alt="" class="hidden mx-auto mb-3 max-h-36 object-contain object-center rounded-xl bg-black">
         <p class="text-xs text-zinc-300" id="pub-foto-label"><i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5"></i> Toca para subir foto</p>
+        <p class="text-[10px] text-zinc-500 mt-1">Si eliges un juego o servicio se usa la foto oficial para que todas las publicaciones se vean iguales.</p>
       </div>
+      <p id="pub-edit-hint" class="hidden text-[11px] text-zinc-400" style="display:none">Estás editando. Los datos privados se pueden dejar vacíos para no cambiarlos.</p>
       <div class="bg-black/40 border border-yellow-400/20 rounded-xl p-4 mt-4">
         <label class="flex items-center gap-3 cursor-pointer">
           <input type="checkbox" id="activarOferta" class="w-5 h-5 accent-yellow-400" onchange="document.getElementById('selectorDescuento').classList.toggle('hidden', !this.checked); document.getElementById('texto-oferta-apagada').classList.toggle('hidden', this.checked); actualizarPreviewOferta();" />
@@ -108,7 +111,7 @@
 <div id="alert-toast-modal" class="fixed top-5 left-1/2 -translate-x-1/2 z-[250] hidden web-panel border border-yellow-500/60 px-5 py-3.5 rounded-2xl flex items-center space-x-3 text-xs text-white"><i class="fas fa-exclamation-triangle text-yellow-400"></i><div><h5 id="alert-toast-title" class="font-bold text-yellow-400 uppercase">Aviso</h5><p id="alert-toast-msg" class="text-[11px] text-zinc-300">--</p></div></div>
 <div id="global-toast" class="fixed top-20 right-6 z-[200] hidden web-panel border border-emerald-500/40 px-4 py-3.5 rounded-2xl flex items-center space-x-3 text-xs font-bold text-emerald-400"><i class="fas fa-check-circle text-emerald-400"></i><span id="toast-message">Operación exitosa</span></div>
 <script>
-const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,fotoBase64Seleccionada="",authCheckHecho=false;
+const canvas=document.getElementById('canvas-bg'),ctx=canvas.getContext('2d');let estrellas=[],currentUserData=null,fotoBase64Seleccionada="",authCheckHecho=false,editandoId="";
 const OWNER_UID = "w4JA6UUF7WeC6UJweKAKdWYMHf73";
 const OWNER_UID_PRINCIPAL = "YwjfajkyMXMRHd18eII4dwV03NF3";
 function esCuentaOwner(uid){ return uid===OWNER_UID || uid===OWNER_UID_PRINCIPAL; }
@@ -144,7 +147,7 @@ auth.onAuthStateChanged(async(u)=>{
   try{
     const doc=await db.collection('perfiles').doc(u.uid).get();
     if(doc.exists){currentUserData=doc.data();
-      if(esCuentaOwner(u.uid)){console.log("👑 Dueño bypass");mostrarToast("👑 Modo dueño");return;}
+      if(esCuentaOwner(u.uid)){console.log("👑 Dueño bypass");mostrarToast("👑 Modo dueño");iniciarFormularioPublicacion();return;}
       const aprobadoPorAdmin=currentUserData.role==='seller' || currentUserData.postuladoFormulario===true;
       if(!currentUserData.vendedorRevocado && aprobadoPorAdmin && (currentUserData.esBetaAntiguo || currentUserData.versionVendedor!=='v2' || !currentUserData.cuentaVendedorActiva)){
         const reactivar={cuentaVendedorActiva:true,versionVendedor:'v2',esBetaAntiguo:false};
@@ -157,8 +160,9 @@ auth.onAuthStateChanged(async(u)=>{
       }
       if(currentUserData.vendedorRevocado){mostrarAlertaToast("Acceso Denegado","Debes enviar de nuevo la postulación para vender");setTimeout(()=>{window.location.href='formulario.html'},2000);}
       else if(!currentUserData.cuentaVendedorActiva && !currentUserData.is_seller && currentUserData.role!=='seller'){mostrarAlertaToast("Acceso Denegado","Activa cuenta vendedor");setTimeout(()=>{window.location.href='index.html'},2000);}
-    }else{ if(esCuentaOwner(u.uid)) return; }
+    }else{ if(esCuentaOwner(u.uid)){ iniciarFormularioPublicacion(); return; } }
   }catch(e){console.log(e);}
+  iniciarFormularioPublicacion();
 });
 
 (function(){
@@ -166,7 +170,91 @@ auth.onAuthStateChanged(async(u)=>{
   if(!sel || !window.SIILCK_GAMES) return;
   sel.innerHTML=window.SIILCK_GAMES.map(g=>'<option value="'+window.siilckEsc(g.nombre)+'">'+window.siilckEsc(g.nombre)+'</option>').join('');
 })();
-function manejarSeleccionFoto(input){if(input.files && input.files[0]){const reader=new FileReader();reader.onload=function(e){fotoBase64Seleccionada=e.target.result;document.getElementById('pub-foto-label').innerText="Imagen cargada ✅"};reader.readAsDataURL(input.files[0]);}}
+function fotoCatalogoActual(){
+  const juego=document.getElementById('pub-juego')?document.getElementById('pub-juego').value:'';
+  const titulo=document.getElementById('pub-titulo')?document.getElementById('pub-titulo').value:'';
+  if(window.siilckFotoCatalogo) return window.siilckFotoCatalogo({juego,titulo})||'';
+  return '';
+}
+function aplicarFotoCatalogoJuego(){
+  const preview=document.getElementById('pub-foto-preview');
+  const label=document.getElementById('pub-foto-label');
+  const src=fotoBase64Seleccionada||fotoCatalogoActual();
+  if(preview){
+    if(src){ preview.src=src; preview.classList.remove('hidden'); }
+    else { preview.classList.add('hidden'); preview.removeAttribute('src'); }
+  }
+  if(label && !fotoBase64Seleccionada){
+    label.innerHTML=src?'<i class="fas fa-image text-yellow-400 mr-1.5"></i> Foto oficial del juego/servicio lista. Puedes cambiarla si quieres.':'<i class="fas fa-cloud-upload-alt text-yellow-400 mr-1.5"></i> Toca para subir foto';
+  }
+}
+function iniciarFormularioPublicacion(){
+  const sel=document.getElementById('pub-juego');
+  if(sel && !sel.dataset.svBound){
+    sel.dataset.svBound='1';
+    sel.addEventListener('change', aplicarFotoCatalogoJuego);
+    const tit=document.getElementById('pub-titulo');
+    if(tit) tit.addEventListener('input', aplicarFotoCatalogoJuego);
+  }
+  aplicarFotoCatalogoJuego();
+  const id=new URLSearchParams(location.search).get('editar')||'';
+  if(id) cargarEdicionPublicacion(id);
+}
+async function cargarEdicionPublicacion(id){
+  if(!auth.currentUser || !esCuentaOwner(auth.currentUser.uid)){
+    mostrarAlertaToast("Solo el dueño","Únicamente el administrador puede editar publicaciones.");
+    setTimeout(function(){ window.location.href='ventas.html'; },1600);
+    return;
+  }
+  try{
+    const doc=await db.collection('publicaciones').doc(id).get();
+    if(!doc.exists){ mostrarAlertaToast("No existe","Publicación no encontrada"); return; }
+    const p=doc.data()||{};
+    editandoId=id;
+    const h=document.querySelector('h3');
+    if(h) h.textContent='Editar Publicación';
+    const btn=document.getElementById('btn-publicar');
+    if(btn) btn.textContent='Guardar cambios';
+    const hint=document.getElementById('pub-edit-hint');
+    if(hint){ hint.classList.remove('hidden'); hint.style.display=''; }
+    document.getElementById('pub-titulo').value=p.titulo||'';
+    const sel=document.getElementById('pub-juego');
+    if(sel && p.juego){
+      if(![].some.call(sel.options, function(o){ return o.value===p.juego; })){
+        const opt=document.createElement('option');
+        opt.value=p.juego; opt.textContent=p.juego;
+        sel.appendChild(opt);
+      }
+      sel.value=p.juego;
+    }
+    document.getElementById('pub-precio').value=p.precio||'';
+    document.getElementById('pub-nivel').value=p.nivel||'';
+    document.getElementById('pub-region').value=p.region||'';
+    document.getElementById('pub-stock').value=p.stock==null?1:p.stock;
+    document.getElementById('pub-rango').value=p.rango||'';
+    document.getElementById('pub-descripcion').value=p.descripcion||'';
+    if(p.ofertaActiva){
+      const box=document.getElementById('activarOferta');
+      if(box){ box.checked=true; document.getElementById('selectorDescuento').classList.remove('hidden'); document.getElementById('texto-oferta-apagada').classList.add('hidden'); }
+      const desc=document.getElementById('descuentoPorcentaje');
+      if(desc && p.ofertaDescuento) desc.value=String(p.ofertaDescuento);
+    }
+    aplicarFotoCatalogoJuego();
+    actualizarPreviewOferta();
+    mostrarToast('✏️ Editando publicación');
+  }catch(e){ console.log(e); mostrarAlertaToast("Error","No se pudo cargar la publicación"); }
+}
+function manejarSeleccionFoto(input){if(input.files && input.files[0]){const reader=new FileReader();reader.onload=function(e){fotoBase64Seleccionada=e.target.result;document.getElementById('pub-foto-label').innerText="Imagen cargada ✅";aplicarFotoCatalogoJuego();};reader.readAsDataURL(input.files[0]);}}
+(function(){
+  const sel=document.getElementById('pub-juego');
+  if(sel && !sel.dataset.svBound){
+    sel.dataset.svBound='1';
+    sel.addEventListener('change', aplicarFotoCatalogoJuego);
+    const tit=document.getElementById('pub-titulo');
+    if(tit) tit.addEventListener('input', aplicarFotoCatalogoJuego);
+  }
+  aplicarFotoCatalogoJuego();
+})();
 function actualizarPreviewOferta(){
   const box=document.getElementById('preview-oferta');
   if(!box) return;
@@ -190,14 +278,18 @@ async function crearPublicacionMarketplace(){
     const titulo=document.getElementById('pub-titulo').value.trim();const juego=document.getElementById('pub-juego').value;const precio=parseInt(document.getElementById('pub-precio').value);const nivel=document.getElementById('pub-nivel').value.trim();const region=document.getElementById('pub-region').value.trim();const rango=(document.getElementById('pub-rango').value||'').trim();const stock=parseInt(document.getElementById('pub-stock').value)||1;const descripcion=document.getElementById('pub-descripcion').value.trim();
     const privEmail=document.getElementById('f-priv-email').value.trim();const privPass=document.getElementById('f-priv-pass').value.trim();const privTel=document.getElementById('f-priv-tel').value.trim();const privRecup=document.getElementById('f-priv-recup').value.trim();const autorizo=document.getElementById('f-autorizo-datos').checked;
     if(!titulo||!precio||!nivel||!region||!descripcion){mostrarAlertaToast("Campos Incompletos","Llena todo");return;}
-    if(!privEmail||!privPass||!privRecup){mostrarAlertaToast("Datos Privados","Llena recuadro amarillo");return;}
-    if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
+    if(!editandoId){
+      if(!privEmail||!privPass||!privRecup){mostrarAlertaToast("Datos Privados","Llena recuadro amarillo");return;}
+      if(!autorizo){mostrarAlertaToast("Autorización","Marca palomita");return;}
+    }
     const userDoc=await db.collection('perfiles').doc(auth.currentUser.uid).get();const uData=userDoc.exists?userDoc.data():{};if(!currentUserData) currentUserData=uData;
     if(!esDueno && (uData.vendedorRevocado || (!uData.cuentaVendedorActiva && !uData.is_seller && uData.role!=='seller'))){mostrarAlertaToast("Aviso", uData.vendedorRevocado ? "Debes enviar de nuevo la postulación para vender" : "Activa cuenta vendedor");return;}
-    const previas=await db.collection('publicaciones').where('vendedorUid','==',auth.currentUser.uid).get();
-    const misma=clavePublicacion(titulo,juego,precio);
-    const ya=previas.docs.some(d=>{const p=d.data();return publicacionSigueDisponible(p)&&clavePublicacion(p.titulo,p.juego,p.precio)===misma;});
-    if(ya){mostrarAlertaToast("Ya publicada","Tu publicación ya ha sido publicada.");return;}
+    if(!editandoId){
+      const previas=await db.collection('publicaciones').where('vendedorUid','==',auth.currentUser.uid).get();
+      const misma=clavePublicacion(titulo,juego,precio);
+      const ya=previas.docs.some(d=>{const p=d.data();return publicacionSigueDisponible(p)&&clavePublicacion(p.titulo,p.juego,p.precio)===misma;});
+      if(ya){mostrarAlertaToast("Ya publicada","Tu publicación ya ha sido publicada.");return;}
+    }
     const vipActivo=esDueno || !!(uData.esVendedorVip && (uData.tipoVip==='basico' || uData.tipoVip==='pro' || uData.tipoVip==='dueno'));
     const tipoVip=esDueno?'dueno':(vipActivo ? (uData.tipoVip||'basico') : 'ninguno');
     const ofertaBox=document.getElementById('activarOferta');
@@ -206,7 +298,19 @@ async function crearPublicacionMarketplace(){
     const porcentajesOferta=[5,8,10,15,20];
     const ofertaDescuento=ofertaActiva ? (porcentajesOferta.indexOf(ofertaElegida)>=0 ? ofertaElegida : 8) : 0;
     const precioFinal=ofertaActiva ? Math.round((precio * (1 - ofertaDescuento / 100)) / 100) * 100 : precio;
-    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,rango,foto:fotoBase64Seleccionada||"",esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,entregaInmediata:true,ofertaActiva,ofertaDescuento,precioFinal});
+    const foto=fotoBase64Seleccionada||fotoCatalogoActual()||"";
+    if(editandoId){
+      if(!esDueno){mostrarAlertaToast("Solo el dueño","Únicamente el administrador puede editar.");return;}
+      await db.collection('publicaciones').doc(editandoId).update({titulo,juego,precio,nivel,region,stock,descripcion,rango,foto,ofertaActiva,ofertaDescuento,precioFinal});
+      if(privEmail && privPass && privRecup){
+        await db.collection('cuentas_secretas').doc(editandoId).set({publicacionId:editandoId,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true},{merge:true});
+      }
+      publicada=true;
+      mostrarToast("✏️ Publicación actualizada");
+      setTimeout(()=>{window.location.href='ventas.html'},1200);
+      return;
+    }
+    const docRef=await db.collection('publicaciones').add({vendedorUid:auth.currentUser.uid,vendedorNombre:currentUserData?.username||uData.username||(esDueno?"Dueño Siilck":"Vendedor"),vendedorLogo:currentUserData?.logo||uData.logo||"",titulo,juego,precio,nivel,region,stock,descripcion,rango,foto,esVip:vipActivo,tipoVip,esPublicacionDueno:esDueno,fecha:firebase.firestore.FieldValue.serverTimestamp(),tieneDatosPrivados:true,entregaInmediata:true,ofertaActiva,ofertaDescuento,precioFinal});
     await db.collection('cuentas_secretas').doc(docRef.id).set({publicacionId:docRef.id,vendedorUid:auth.currentUser.uid,email_enc:simpleEnc(privEmail),pass_enc:simpleEnc(privPass),tel_enc:simpleEnc(privTel),recup_enc:simpleEnc(privRecup),autorizadoEntregaAuto:true,fecha:firebase.firestore.FieldValue.serverTimestamp()});
     publicada=true;
     try{const siteUrl=location.origin;fetch("https://www.google.com/ping?sitemap="+encodeURIComponent(siteUrl+"/sitemap.xml")).catch(()=>{});}catch(e){}
