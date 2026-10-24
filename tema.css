@@ -1672,3 +1672,140 @@ h1, h2, h3, h4, h5, .font-heading {
   background: #16a34a !important;
   color: #fff !important;
 }
+
+/* ============================================================
+   NAVY + ÁMBAR — títulos con fondo oscuro y más color
+   ============================================================ */
+body {
+  background:
+    radial-gradient(ellipse 80% 42% at 0% 0%, rgba(30,64,110,.16), transparent 52%),
+    radial-gradient(ellipse 50% 30% at 100% 0%, rgba(251,191,36,.08), transparent 46%),
+    #e8eef6 !important;
+}
+
+header.sticky,
+header[class*="09090b"],
+header {
+  background: rgba(7, 17, 31, 0.94) !important;
+  border-bottom: 1px solid rgba(253, 230, 138, 0.18) !important;
+}
+header .text-white,
+header .font-heading { color: #ffffff !important; }
+header .text-yellow-400 { color: #fde68a !important; }
+header .text-zinc-400 { color: #93c5fd !important; }
+header a.w-10,
+header button.w-10 {
+  background: #10243f !important;
+  color: #fde68a !important;
+}
+header #header-global-search {
+  background: #10243f !important;
+  color: #fde68a !important;
+}
+header .from-yellow-500,
+header .bg-gradient-to-tr.from-yellow-500.to-amber-400 {
+  background: linear-gradient(180deg, #fbbf24, #d97706) !important;
+  color: #07111f !important;
+}
+
+.siilck-lobby-final {
+  background:
+    radial-gradient(ellipse 70% 48% at 8% 0%, rgba(201,162,39,.16), transparent 52%),
+    radial-gradient(ellipse 60% 42% at 96% 88%, rgba(30,64,110,.48), transparent 48%),
+    linear-gradient(168deg, #070d18 0%, #0b1a33 46%, #10243f 100%) !important;
+}
+.siilck-lobby-final::before { display: block !important; }
+.siilck-welcome-card {
+  background: linear-gradient(180deg, rgba(11,26,51,.62), rgba(7,13,24,.42)) !important;
+  border: 1px solid rgba(253,230,138,.24) !important;
+  border-radius: 28px !important;
+  padding: 22px 20px 16px !important;
+  box-shadow: 0 24px 50px rgba(7,13,24,.28) !important;
+}
+.siilck-welcome-card h1 {
+  color: #fde68a !important;
+  text-shadow: 0 8px 24px rgba(0,0,0,.35) !important;
+}
+.siilck-welcome-card h1 span,
+.welcome-badge {
+  color: #fde68a !important;
+  background: rgba(253,230,138,.12) !important;
+  border-color: rgba(253,230,138,.4) !important;
+}
+.welcome-sub { color: #dbeafe !important; }
+.sv-trust-bar { color: #e0f2fe !important; }
+.section-label { color: #fde68a !important; }
+
+.sv-market-head {
+  background: linear-gradient(135deg, #07111f 0%, #0b1a33 55%, #123056 100%) !important;
+  border: 1px solid rgba(253,230,138,.22) !important;
+  border-radius: 24px !important;
+  padding: 20px 18px 18px !important;
+  box-shadow: 0 18px 40px rgba(7,13,24,.22) !important;
+}
+.sv-market-title {
+  color: #fde68a !important;
+}
+.sv-market-title i { color: #fbbf24 !important; }
+.sv-market-head p,
+.sv-market-head .text-zinc-500 { color: #bfdbfe !important; }
+
+.sv-cart-hero,
+.mc-head {
+  background: linear-gradient(135deg, #07111f 0%, #0b1a33 60%, #123056 100%) !important;
+  border: 1px solid rgba(253,230,138,.22) !important;
+  color: #dbeafe !important;
+}
+.sv-cart-hero h2,
+.mc-head h1,
+.sv-cart-panel-title {
+  color: #fde68a !important;
+}
+.sv-cart-hero p,
+.mc-head p { color: #bfdbfe !important; }
+.mc-head-icon,
+.sv-cart-hero-icon {
+  background: linear-gradient(180deg, #fbbf24, #d97706) !important;
+  color: #07111f !important;
+}
+
+.sv-faq > h2,
+.sv-pasos-card > h2,
+.sv-promo-card > h2,
+#form-main-title,
+.sv-title-banner {
+  background: linear-gradient(135deg, #07111f 0%, #0b1a33 70%) !important;
+  color: #fde68a !important;
+  border-radius: 16px !important;
+  padding: 12px 16px !important;
+  display: inline-block;
+  box-shadow: 0 10px 24px rgba(7,13,24,.18);
+}
+
+.sv-mcard-media {
+  height: 176px !important;
+  background: #0b1a33 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.sv-mcard-media img {
+  object-fit: cover !important;
+  object-position: center center !important;
+  display: block;
+}
+#market-grid > .sv-mcard,
+#market-grid > .web-panel {
+  padding: 0 !important;
+}
+.img-wrap {
+  background: #0b1a33 !important;
+}
+.img-wrap img.real {
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+.sv-precio-card,
+#market-grid .sv-precio-card {
+  color: #fbbf24 !important;
+}

@@ -36,7 +36,7 @@
         <div id="avatar" class="w-24 h-24 rounded-full bg-yellow-500 text-zinc-950 flex items-center justify-center text-3xl font-black overflow-hidden shrink-0">V</div>
         <div class="space-y-2">
           <div class="flex flex-wrap items-center justify-center gap-2">
-            <h1 id="nombre" class="text-2xl font-black text-white">Vendedor</h1>
+            <h1 id="nombre" class="sv-title-banner text-2xl font-black text-white">Vendedor</h1>
             <span id="vip" class="hidden bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-3 py-1 rounded-full"></span>
           </div>
           <p id="rating" class="text-sm text-amber-300 font-bold"></p>
@@ -145,7 +145,7 @@ function pintar(data){
       const img=document.createElement('img');
       img.src=srcFoto;
       img.alt='';
-      img.className='w-full h-28 object-contain object-center rounded-xl bg-black';
+      img.className='w-full h-28 object-cover object-center rounded-xl bg-[#0b1a33]';
       a.appendChild(img);
     }
     const titulo=document.createElement('h3');
