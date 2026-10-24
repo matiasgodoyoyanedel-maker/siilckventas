@@ -1757,9 +1757,12 @@ header .bg-gradient-to-tr.from-yellow-500.to-amber-400 {
   color: #dbeafe !important;
 }
 .sv-cart-hero h2,
-.mc-head h1,
-.sv-cart-panel-title {
+.mc-head h1 {
   color: #fde68a !important;
+}
+.sv-cart-panel .sv-cart-panel-title,
+.sv-cart-panel-title {
+  color: #92400e !important;
 }
 .sv-cart-hero p,
 .mc-head p { color: #bfdbfe !important; }
@@ -1807,5 +1810,60 @@ header .bg-gradient-to-tr.from-yellow-500.to-amber-400 {
 
 .sv-precio-card,
 #market-grid .sv-precio-card {
-  color: #fbbf24 !important;
+  color: #d97706 !important;
+}
+
+/* Contraste: textos sobre fondo blanco se tienen que leer */
+#sv-locale-btn,
+#sv-locale-btn.text-white,
+header #sv-locale-btn,
+header #sv-locale-btn.text-white {
+  background: #10243f !important;
+  color: #fde68a !important;
+  border: 1px solid rgba(253, 230, 138, 0.4) !important;
+}
+#sv-locale-btn #sv-locale-label,
+header #sv-locale-label {
+  color: #fde68a !important;
+}
+.sv-locale-panel {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  color: #111827 !important;
+}
+.sv-locale-panel p,
+.sv-locale-panel .text-yellow-400 {
+  color: #b45309 !important;
+}
+.sv-locale-panel button,
+.sv-locale-panel .text-zinc-300,
+.sv-locale-panel .text-white,
+.sv-locale-panel button.text-white,
+.sv-locale-panel button.text-zinc-300 {
+  color: #111827 !important;
+  background: #f8fafc !important;
+  border-color: #e5e7eb !important;
+}
+.sv-locale-panel button.border-yellow-500,
+.sv-locale-panel button.border-yellow-500.text-white {
+  background: #fffbeb !important;
+  color: #92400e !important;
+  border-color: #f59e0b !important;
+}
+.sv-market-head a,
+.sv-market-head button {
+  color: #111827 !important;
+}
+.sv-market-head a.bg-yellow-500,
+.sv-market-head a.bg-yellow-500 *,
+.sv-market-head .bg-yellow-500 {
+  background: #fbbf24 !important;
+  color: #07111f !important;
+}
+.web-panel .text-white:not(.sv-title-banner):not(#form-main-title) {
+  color: #111827 !important;
+}
+.sv-title-banner,
+#form-main-title {
+  color: #fde68a !important;
 }
