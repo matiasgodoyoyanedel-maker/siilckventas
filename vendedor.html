@@ -10,7 +10,7 @@
 
   gtag('config', 'AW-18520849537');
 </script>
-<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="/favicon.ico?v=s" sizes="any"><link rel="icon" type="image/png" href="/icon.png?v=s"><link rel="apple-touch-icon" href="/icon.png?v=s">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vendedor - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="/tema.css">
 <script src="/tema.js"></script>
 <style>
-  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  body{background:#f5f6f8;color:#111111;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2{font-family:'Outfit',sans-serif}
   .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07)}
 </style>
@@ -26,7 +26,7 @@
 <body class="min-h-screen">
   <div class="w-full max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-4">
     <div class="flex items-center justify-between gap-3">
-      <a href="/ventas" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
+      <a href="ventas.html" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
       <div id="sv-locale-slot"></div>
     </div>
     <p id="estado" class="text-sm text-zinc-400">Cargando el vendedor…</p>
@@ -137,7 +137,7 @@ function pintar(data){
   }
   lista.forEach((p)=>{
     const a=document.createElement('a');
-    a.href='/cuenta/'+encodeURIComponent(p.id);
+    a.href='cuenta.html?id='+encodeURIComponent(p.id);
     a.className='web-panel border border-zinc-800 rounded-2xl p-3 space-y-2 text-left block';
     if(p.foto){
       const img=document.createElement('img');

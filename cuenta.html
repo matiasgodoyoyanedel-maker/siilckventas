@@ -10,7 +10,7 @@
 
   gtag('config', 'AW-18520849537');
 </script>
-<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/icon.png"><link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="/favicon.ico?v=s" sizes="any"><link rel="icon" type="image/png" href="/icon.png?v=s"><link rel="apple-touch-icon" href="/icon.png?v=s">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ficha de cuenta - SiilckVentas</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="/tema.css">
 <script src="/tema.js"></script>
 <style>
-  body{background:#050014;color:#f4f4f5;font-family:'Plus Jakarta Sans',sans-serif}
+  body{background:#f5f6f8;color:#111111;font-family:'Plus Jakarta Sans',sans-serif}
   h1,h2{font-family:'Outfit',sans-serif}
   .web-panel{background:rgba(18,18,24,.95);border:1px solid rgba(255,255,255,.07)}
   .radio-warranty{accent-color:#eab308}
@@ -30,7 +30,7 @@
 <body class="min-h-screen">
   <div class="w-full max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-4">
     <div class="flex items-center justify-between gap-3">
-      <a href="/ventas" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
+      <a href="ventas.html" class="text-xs text-zinc-400 hover:text-white"><i class="fas fa-arrow-left mr-1"></i> Marketplace</a>
       <div id="sv-locale-slot"></div>
     </div>
     <p id="estado" class="text-sm text-zinc-400">Cargando la ficha…</p>
@@ -42,7 +42,10 @@
             <h1 id="titulo" class="text-2xl font-black text-white"></h1>
             <div id="tags" class="flex flex-wrap gap-2 pt-2 text-[11px]"></div>
           </div>
-          <button type="button" id="btn-copiar" class="bg-zinc-800 text-yellow-300 font-bold px-3 py-2 rounded-xl text-[11px]">Copiar enlace</button>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" id="btn-copiar" class="bg-zinc-800 text-yellow-300 font-bold px-3 py-2 rounded-xl text-[11px]">Copiar enlace</button>
+            <button type="button" id="btn-whatsapp" class="bg-emerald-600 text-white font-bold px-3 py-2 rounded-xl text-[11px]">WhatsApp</button>
+          </div>
         </div>
         <div id="oferta" class="hidden bg-yellow-500/10 border border-yellow-500/40 rounded-xl p-3 text-xs font-bold text-yellow-300"></div>
         <div class="bg-zinc-950 p-3.5 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
@@ -57,6 +60,13 @@
           <button type="button" id="btn-chat" class="bg-yellow-500 text-zinc-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shrink-0"><i class="fas fa-comment-dots"></i> Chatear</button>
         </div>
         <p id="descripcion" class="w-full text-sm text-zinc-300 leading-relaxed"></p>
+        <div id="sello-vendedor-ficha" class="hidden flex flex-wrap gap-1.5"></div>
+        <div class="sv-pasos-clave bg-zinc-950 border border-zinc-800 rounded-2xl p-3 space-y-1">
+          <p class="text-[10px] font-black uppercase tracking-widest text-yellow-400">Cómo te llega la clave</p>
+          <p class="text-[11px] text-zinc-300">1. Pagas con Flow o Mercado Pago.</p>
+          <p class="text-[11px] text-zinc-300">2. El dinero queda en escrow.</p>
+          <p class="text-[11px] text-zinc-300">3. En Mis compras aparecen usuario, clave y correo.</p>
+        </div>
         <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-3">
           <div class="flex items-center gap-2 text-yellow-400 font-bold text-xs"><i class="fas fa-shield-alt"></i> <span>Garantía Escrow</span></div>
           <div class="space-y-2 text-xs">
@@ -196,7 +206,7 @@ async function cargarOtrasCuentas(uid, actualId){
       if(p.vendida || stock<=0) return;
       n++;
       const a=document.createElement('a');
-      a.href='/cuenta/'+encodeURIComponent(doc.id);
+      a.href='cuenta.html?id='+encodeURIComponent(doc.id);
       a.className='web-panel rounded-2xl p-3 border border-zinc-800 block hover:border-yellow-500/40';
       a.innerHTML='<p class="text-xs font-bold text-white truncate"></p><p class="text-[11px] text-yellow-400 font-black"></p>';
       a.querySelector('p').textContent=p.titulo||'Cuenta';
@@ -287,7 +297,22 @@ async function pintarVendedorVivo(p){
   }else{
     logo.textContent=inicial;
   }
-  document.getElementById('link-vendedor').href='/vendedor/'+encodeURIComponent(uid);
+  document.getElementById('link-vendedor').href='vendedor.html?uid='+encodeURIComponent(uid);
+  const sello=document.getElementById('sello-vendedor-ficha');
+  if(sello){
+    sello.textContent='';
+    const ventas=Number(data.salesCount||0);
+    const aprobado=!!(data.cuentaVendedorActiva||data.is_seller||data.role==='seller');
+    function chip(txt, cls){
+      const s=document.createElement('span');
+      s.className=cls;
+      s.textContent=txt;
+      sello.appendChild(s);
+    }
+    if(aprobado) chip('Vendedor aprobado', 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 text-[10px] font-black uppercase px-2 py-1 rounded-full');
+    if(ventas) chip(ventas+(ventas===1?' venta':' ventas'), 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/40 text-[10px] font-black uppercase px-2 py-1 rounded-full');
+    sello.classList.toggle('hidden', !sello.childElementCount);
+  }
 }
 async function guardarLineaCarrito(){
   const user=auth.currentUser;
@@ -438,6 +463,12 @@ document.getElementById('btn-copiar').addEventListener('click', async ()=>{
   if(!url) return;
   try{ await navigator.clipboard.writeText(url); document.getElementById('btn-copiar').textContent='Enlace copiado'; }
   catch(e){ document.getElementById('btn-copiar').textContent=url; }
+});
+document.getElementById('btn-whatsapp').addEventListener('click', ()=>{
+  const url=(typeof urlCuentaPublica==='function'?urlCuentaPublica(pubId): (location.origin+'/cuenta/'+encodeURIComponent(pubId)));
+  if(!url) return;
+  const titulo=(document.getElementById('titulo')||{}).textContent||'Cuenta';
+  window.open('https://wa.me/?text='+encodeURIComponent(titulo+' en SiilckVentas '+url),'_blank','noopener');
 });
 document.getElementById('btn-carrito').addEventListener('click', async ()=>{
   if(!exigirLogin()) return;

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiilckVentas</title>
+<script>
+(function () {
+  var partes = location.pathname.split('/').filter(Boolean);
+  var extra = location.search || '';
+  function ir(url) { location.replace(url); }
+  if (partes[0] === 'vendedor' && partes[1]) {
+    ir('vendedor.html?uid=' + encodeURIComponent(partes[1]) + extra.replace(/^\?/, '&'));
+    return;
+  }
+  if (partes[0] === 'cuenta' && partes[1]) {
+    ir('cuenta.html?id=' + encodeURIComponent(partes[1]) + extra.replace(/^\?/, '&'));
+    return;
+  }
+  if (partes[0] === 'mis-compras') {
+    ir(partes[1] ? ('mis-compras.html?id=' + encodeURIComponent(partes[1])) : 'mis-compras.html');
+    return;
+  }
+  if (partes[0] === 'saldo') { ir('saldo.html'); return; }
+  if (partes[0] === 'login') { ir('login.html' + extra); return; }
+  if (partes[0] === 'ventas') { ir('ventas.html' + extra); return; }
+  if (partes[0] === 'recuperar') { ir('recuperar.html'); return; }
+  if (partes[0] === 'partners-sk') { ir('partners-sk.html'); return; }
+  if (partes[0] === 'publicacion' || partes[0] === 'vender') { ir('publicacion.html'); return; }
+  if (partes[0] === 'carrito') { ir('carrito.html'); return; }
+  if (partes[0] === 'foro') { ir('foro.html'); return; }
+})();
+</script>
+</head>
+<body style="font-family:sans-serif;padding:32px;background:#f5f6f8;color:#111111">
+  <p>No encontramos esa página.</p>
+  <p><a href="index.html">Volver al inicio</a> · <a href="ventas.html">Ir al marketplace</a></p>
+</body>
+</html>

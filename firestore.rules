@@ -194,6 +194,11 @@ service cloud.firestore {
       allow write: if isOwner();
     }
 
+    // Claves de pago: solo el dueño. El webhook las lee con Admin SDK.
+    match /secretos/{docId} {
+      allow read, write: if isOwner();
+    }
+
     match /config/{docId} {
       allow read: if true;
       allow write: if isOwner();
