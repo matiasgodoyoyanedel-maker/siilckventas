@@ -2047,3 +2047,467 @@ header #sv-locale-label,
 #filtros-extra select {
   color: #0f172a !important;
 }
+
+/* ============================================================
+   TEMÁTICA NEÓN — tienda oscura tipo Game & Stream
+   No borra lógicas: solo pinta y reacomoda el look.
+   ============================================================ */
+html, body, #main-body-fade {
+  background: #07070f !important;
+  color: #eef2ff !important;
+}
+body {
+  background:
+    radial-gradient(ellipse 70% 42% at 8% 0%, rgba(255,45,106,.16), transparent 52%),
+    radial-gradient(ellipse 50% 36% at 96% 8%, rgba(59,130,255,.14), transparent 48%),
+    #07070f !important;
+}
+#app-loading-screen {
+  background: #07070f !important;
+}
+#app-loading-screen h2,
+#app-loading-screen .text-white { color: #ffffff !important; }
+#app-loading-screen .text-zinc-400 { color: #c5cce0 !important; }
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  color: #ffffff !important;
+}
+
+header.sticky,
+header[class*="09090b"],
+header {
+  background: rgba(7, 7, 15, 0.94) !important;
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+}
+header .text-white,
+header .font-heading { color: #ffffff !important; }
+header .text-yellow-400 { color: #ff4d8d !important; }
+header .text-zinc-400 { color: #c5cce0 !important; }
+header a.w-10,
+header button.w-10 {
+  background: #161625 !important;
+  color: #ffffff !important;
+  border: 1px solid #2a2a40 !important;
+}
+header #header-global-search {
+  background: #161625 !important;
+  color: #ffffff !important;
+  border: 1px solid #2a2a40 !important;
+}
+header #nav-user-email,
+#nav-user-email,
+#nav-user-email.text-yellow-400,
+header #nav-user-email.text-yellow-400 {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+  border: 1px solid #d7dce8 !important;
+}
+#sv-locale-btn,
+#sv-locale-btn.text-white,
+header #sv-locale-btn,
+header #sv-locale-btn.text-white,
+#sv-locale-label,
+header #sv-locale-label {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+  border-color: #d7dce8 !important;
+}
+.sv-store-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+.sv-store-nav a {
+  color: #d7dce8 !important;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-decoration: none;
+}
+.sv-store-nav a:hover { color: #ffffff !important; }
+.sv-trabaja-btn {
+  background: #161625 !important;
+  color: #ffffff !important;
+  border: 1px solid #2a2a40 !important;
+}
+
+.siilck-lobby-final {
+  background:
+    radial-gradient(ellipse 70% 48% at 8% 0%, rgba(255,45,106,.16), transparent 52%),
+    radial-gradient(ellipse 60% 42% at 96% 88%, rgba(59,130,255,.16), transparent 48%),
+    linear-gradient(168deg, #070d18 0%, #0b1020 46%, #101018 100%) !important;
+}
+.siilck-welcome-card { position: relative; }
+.sv-hero-art {
+  position: absolute;
+  top: 8%;
+  width: 220px;
+  height: 280px;
+  pointer-events: none;
+  opacity: .88;
+  z-index: 0;
+}
+.sv-hero-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 28px;
+  filter: saturate(1.1);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+}
+.sv-hero-art-l { left: -4%; transform: rotate(-8deg); }
+.sv-hero-art-r { right: -4%; transform: rotate(8deg); }
+.sv-hero-kicker {
+  color: #ffffff !important;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -.03em;
+  margin: 0 0 8px;
+  text-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+.siilck-welcome-card h1,
+.siilck-welcome-card h1 span { color: #ffffff !important; }
+.welcome-sub,
+.sv-trust-bar { color: #d7dce8 !important; }
+.welcome-badge {
+  background: rgba(255,45,106,.12) !important;
+  color: #ff8ab3 !important;
+  border-color: rgba(255,45,106,.4) !important;
+}
+.section-label {
+  color: #ffffff !important;
+  letter-spacing: .14em;
+  text-align: center !important;
+  margin: 28px 0 12px !important;
+}
+.sv-hero-ctas {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 8px 0 10px;
+  position: relative;
+  z-index: 2;
+}
+.welcome-btn {
+  background: linear-gradient(180deg, #ff4d8d, #e11d63) !important;
+  color: #ffffff !important;
+  border-radius: 999px !important;
+}
+.sv-hero-ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 26px;
+  border-radius: 999px;
+  border: 1px solid #3b82ff;
+  color: #ffffff !important;
+  font-weight: 900;
+  text-decoration: none;
+  background: rgba(59,130,255,.12);
+}
+.sv-search-wrap input {
+  background: #161625 !important;
+  color: #ffffff !important;
+  border: 1px solid #2a2a40 !important;
+}
+.sv-search-wrap input::placeholder { color: #9aa3bb !important; }
+.sv-ac {
+  background: #161625 !important;
+  border-color: #3b82ff !important;
+}
+.sv-ac button,
+.sv-ac-empty { color: #ffffff !important; }
+.sv-ac button:hover { background: #222238 !important; }
+
+.game-card,
+.game-card.is-center,
+.game-card.is-side-l,
+.game-card.is-side-r,
+.game-card.is-far,
+.game-card:hover {
+  background: #141422 !important;
+  border: 1px solid #2a2a40 !important;
+  color: #ffffff !important;
+  transform: none !important;
+  box-shadow: 0 16px 32px rgba(0,0,0,.28) !important;
+  opacity: 1 !important;
+}
+.game-card:hover {
+  transform: translateY(-6px) !important;
+  border-color: #ff4d8d !important;
+}
+.game-card.stream { border-top-width: 4px !important; }
+#gameTrack2 .game-card:nth-child(4n+1) { border-top-color: #ff2d6a !important; }
+#gameTrack2 .game-card:nth-child(4n+2) { border-top-color: #3b82ff !important; }
+#gameTrack2 .game-card:nth-child(4n+3) { border-top-color: #22d3ee !important; }
+#gameTrack2 .game-card:nth-child(4n+4) { border-top-color: #22c55e !important; }
+.g-label {
+  background: #141422 !important;
+  border-top-color: #2a2a40 !important;
+}
+.g-label b { color: #ffffff !important; }
+.g-label span { color: #c5cce0 !important; }
+.name b { color: #ffffff !important; }
+.name i { color: #ffd36a !important; }
+.img-wrap { background: #101018 !important; }
+.g-arrow {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+}
+.game-skel { background: #1a1a2a !important; }
+
+.sv-beneficios { margin: 36px auto 8px; max-width: 980px; }
+.sv-beneficios h2 {
+  color: #ffffff !important;
+  font-size: 22px;
+  margin: 0 0 16px;
+}
+.sv-beneficios-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.sv-beneficio {
+  background: #141422;
+  border: 1px solid #2a2a40;
+  border-radius: 18px;
+  padding: 18px 14px;
+  text-align: center;
+}
+.sv-beneficio i { color: #ff4d8d; font-size: 20px; margin-bottom: 8px; display: block; }
+.sv-beneficio:nth-child(2) i { color: #3b82ff; }
+.sv-beneficio:nth-child(3) i { color: #a855f7; }
+.sv-beneficio b { display: block; color: #ffffff !important; margin-bottom: 4px; }
+.sv-beneficio span { color: #c5cce0 !important; font-size: 12px; }
+
+.web-panel,
+.sv-promo-card,
+.sv-faq-item,
+.sv-pasos-card,
+.sv-cart-panel,
+.sv-cart-item,
+.mc-card,
+.vip-card-box,
+.vip-card-box-pro {
+  background: #141422 !important;
+  border-color: #2a2a40 !important;
+  color: #eef2ff !important;
+  box-shadow: 0 16px 36px rgba(0,0,0,.24) !important;
+}
+.web-panel .text-white,
+.web-panel .text-white:not(.sv-title-banner):not(#form-main-title):not(#sv-cart-hero-title):not(.sv-cart-hero-title),
+.sv-cart-panel .text-white,
+.sv-cart-desglose .text-white {
+  color: #ffffff !important;
+}
+.sv-promo-card h2,
+.sv-pasos-card h2,
+.sv-faq h2,
+.sv-faq-q,
+.sv-atajos h3 {
+  color: #ffffff !important;
+}
+.sv-promo-card p,
+.sv-faq-lead,
+.sv-faq-a,
+.sv-atajos p,
+.sv-pasos-card .text-zinc-600,
+.sv-pasos-card p {
+  color: #c5cce0 !important;
+}
+.sv-promo-kicker {
+  background: rgba(255,45,106,.12) !important;
+  color: #ff8ab3 !important;
+  border-color: rgba(255,45,106,.4) !important;
+}
+.sv-pasos-card .bg-white {
+  background: #1a1a2c !important;
+  border-color: #2a2a40 !important;
+}
+.sv-faq-item.open { border-color: #ff4d8d !important; }
+.sv-faq-q i { color: #ff4d8d !important; }
+
+.sv-market-head,
+.sv-cart-hero,
+.sv-cart-hero.web-panel,
+.mc-head,
+.sv-title-banner,
+#form-main-title,
+.sv-faq > h2,
+.sv-pasos-card > h2,
+.sv-promo-card > h2 {
+  background: linear-gradient(135deg, #141428 0%, #1c1c34 100%) !important;
+  border: 1px solid rgba(255,77,141,.35) !important;
+  color: #ffffff !important;
+}
+.sv-market-title,
+.sv-cart-hero h2,
+#sv-cart-hero-title,
+.sv-cart-hero-title,
+.sv-title-banner,
+.mc-head h1,
+#form-main-title {
+  color: #ffffff !important;
+}
+.sv-market-head p,
+.sv-cart-hero p,
+.mc-head p { color: #d7dce8 !important; }
+.sv-market-head a,
+.sv-market-head button {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+  border: 1px solid #d7dce8 !important;
+}
+.sv-market-head a.bg-yellow-500,
+.sv-market-head .bg-yellow-500 {
+  background: #ff4d8d !important;
+  color: #ffffff !important;
+  border-color: #ff4d8d !important;
+}
+
+#market-grid .sv-mcard,
+#market-grid > .sv-mcard,
+#market-grid > .web-panel {
+  background: #141422 !important;
+  border: 1px solid #2a2a40 !important;
+}
+#market-grid .sv-mcard h3,
+#market-grid .sv-mcard .font-heading,
+.sv-mcard .text-white,
+.sv-mcard-links a,
+.sv-mcard-titulo,
+.sv-mcard-seller,
+.sv-mcard-foot,
+.sv-mcard-body {
+  color: #ffffff !important;
+}
+.sv-mcard-meta span {
+  background: #1f1f33 !important;
+  color: #ffd36a !important;
+}
+.sv-juego-btn {
+  background: #161625 !important;
+  color: #ffffff !important;
+  border-color: #2a2a40 !important;
+}
+.sv-juego-btn.sv-cat-on,
+.sv-juego-btn.sv-cat-on * {
+  background: #2a1830 !important;
+  color: #ff8ab3 !important;
+  border-color: #ff4d8d !important;
+}
+.sv-juego-count { color: #c5cce0 !important; }
+.sv-precio-card,
+#market-grid .sv-precio-card { color: #ffd36a !important; }
+#filtros-extra,
+#filtros-extra input,
+#filtros-extra select {
+  background: #141422 !important;
+  color: #ffffff !important;
+  border-color: #2a2a40 !important;
+}
+#filtros-extra input::placeholder { color: #9aa3bb !important; }
+#aside-filtro-juegos,
+#aside-filtro-juegos h3,
+.sv-cat-label,
+.sv-cat-toggle {
+  color: #ffffff !important;
+}
+#aside-filtro-juegos {
+  background: #141422 !important;
+  border-color: #2a2a40 !important;
+}
+
+.sv-cart-page,
+.sv-cart-panel,
+.sv-cart-desglose {
+  background: #07070f !important;
+  color: #eef2ff !important;
+}
+.sv-cart-panel { background: #141422 !important; }
+.sv-cart-panel-title { color: #ffffff !important; }
+#txt-total-final,
+.sv-cart-desglose .text-yellow-400 { color: #ffd36a !important; }
+
+input, select, textarea {
+  background: #161625 !important;
+  color: #ffffff !important;
+  border-color: #2a2a40 !important;
+}
+input::placeholder, textarea::placeholder { color: #9aa3bb !important; }
+label, .text-zinc-300, .text-zinc-400, .text-zinc-500 {
+  color: #c5cce0 !important;
+}
+
+#pase-activo-box,
+#aviso-pase-basico,
+#perfil-vista-publica {
+  background: #1a1a2c !important;
+  border-color: #3b3b58 !important;
+  color: #eef2ff !important;
+}
+#pase-activo-txt,
+#perfil-preview-bio,
+#perfil-preview-nombre { color: #ffffff !important; }
+
+.sv-cortina {
+  background: #101018 !important;
+  border-bottom-color: #2a2a40 !important;
+}
+.trabaja-banner {
+  background: #141422 !important;
+  border-color: #2a2a40 !important;
+}
+.trabaja-banner h2,
+.trabaja-banner p { color: #ffffff !important; }
+.sv-locale-panel {
+  background: #ffffff !important;
+  color: #0b1020 !important;
+}
+.sv-locale-panel button,
+.sv-locale-panel .text-white { color: #0b1020 !important; }
+
+.sv-store-footer {
+  width: 100%;
+  margin-top: 28px;
+  border-top: 1px solid #2a2a40;
+  padding: 28px 8px 8px;
+}
+.sv-store-footer-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  text-align: left;
+}
+.sv-store-footer strong,
+.sv-store-footer a { color: #ffffff !important; }
+.sv-store-footer p,
+.sv-store-footer nav { color: #c5cce0 !important; }
+.sv-store-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sv-store-footer a { text-decoration: none; font-size: 12px; font-weight: 800; }
+
+#menu-tres-puntos-dropdown {
+  background: #141422 !important;
+  border-color: #2a2a40 !important;
+}
+#menu-tres-puntos-dropdown button,
+#menu-tres-puntos-dropdown a { color: #eef2ff !important; }
+
+.sv-atajos .web-panel:nth-child(1) { border-top: 4px solid #ffd36a !important; }
+.sv-atajos .web-panel:nth-child(2) { border-top: 4px solid #ff2d6a !important; }
+.sv-atajos .web-panel:nth-child(3) { border-top: 4px solid #3b82ff !important; }
+
+@media (max-width: 900px) {
+  .sv-hero-art { display: none; }
+  .sv-beneficios-grid { grid-template-columns: 1fr; }
+  .sv-hero-kicker { font-size: 22px; }
+  .sv-store-nav { width: 100%; }
+}

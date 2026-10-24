@@ -139,6 +139,13 @@
       <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black shadow-lg shadow-yellow-500/20"><i class="fas fa-crown text-base"></i></div>
       <div><span class="text-lg font-black font-heading tracking-tight text-white">SIILCK<span class="text-yellow-400">VENTAS</span></span><span class="block text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Marketplace & Escrow</span></div>
     </div>
+    <nav class="sv-store-nav" aria-label="Secciones de la tienda">
+      <a href="index.html" onclick="cambiarSeccion('inicio')">Inicio</a>
+      <a href="#gameShowcase1">Videojuegos</a>
+      <a href="#gameShowcase2">Streaming</a>
+      <a href="ventas.html">Marketplace</a>
+      <a href="#faq-inicio">FAQ</a>
+    </nav>
     <div class="flex items-center space-x-2.5 shrink-0 mx-auto sm:mx-0">
       <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Ver Carrito Gamer"><i class="fas fa-shopping-cart text-sm"></i></a>
       <button onclick="verificarLoginAccion(()=>cambiarSeccion('mis-chats'))" class="w-10 h-10 rounded-xl bg-zinc-900 text-yellow-400 border border-zinc-800 flex items-center justify-center text-xs hover:border-yellow-500/50 transition relative" title="Mis Chats P2P"><i class="fas fa-comments text-sm"></i><span id="badge-notif-chats-dot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-[#09090b]"></span></button>
@@ -203,8 +210,11 @@
 
   <div class="siilck-lobby-final">
     <div class="siilck-welcome-card">
+      <div class="sv-hero-art sv-hero-art-l" aria-hidden="true"><img src="img/games/valorant.webp" alt=""></div>
+      <div class="sv-hero-art sv-hero-art-r" aria-hidden="true"><img src="img/games/fortnite.webp" alt=""></div>
       <div class="sv-trust-bar"><span class="sv-trust-dot" aria-hidden="true"></span><span data-i18n="trust">🔒 ESCROW PROTEGIDO • ⚡ ENTREGA INMEDIATA • ✅ VERIFICADAS A MANO</span></div>
       <div class="welcome-icon">🛍️</div>
+      <p class="sv-hero-kicker">Tus juegos y streaming favoritos en un solo lugar</p>
       <h1 data-i18n="welcome">Bienvenido a SiilckVentas</h1>
       <div class="welcome-badge" data-i18n="badge">MARKETPLACE & ESCROW • ORGANIZADOR INDEPENDIENTE</div>
       <p class="welcome-sub" data-i18n="subtitle">Explora miles de cuentas verificadas con protección Escrow garantizada al 100%.</p>
@@ -212,18 +222,9 @@
         <input id="lobby-search" type="search" data-i18n-placeholder="search" placeholder="Buscar juego o streaming..." autocomplete="off" aria-label="Buscar juego o streaming">
         <div id="lobby-search-list" class="sv-ac"></div>
       </div>
-
-      <div class="section-label" data-i18n="popularGames">🎮 JUEGOS POPULARES</div>
-      <div class="game-showcase" id="gameShowcase1">
-        <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack1', -1)" aria-label="Juego anterior">‹</button>
-        <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack1', 1)" aria-label="Juego siguiente">›</button>
-        <div class="game-track" id="gameTrack1">
-          <div class="game-skel"></div>
-          <div class="game-skel"></div>
-          <div class="game-skel"></div>
-          <div class="game-skel"></div>
-        </div>
-        <div class="auto-bar"><div class="auto-progress" id="autoProgress1"></div></div>
+      <div class="sv-hero-ctas">
+        <a href="ventas.html" class="welcome-btn" data-i18n="marketplace">🏪 IR A MARKETPLACE</a>
+        <a href="#gameShowcase2" class="sv-hero-ghost">Ver streaming</a>
       </div>
 
       <div class="section-label" style="margin-top:22px" data-i18n="streaming">📺 STREAMING & SERVICIOS</div>
@@ -239,7 +240,39 @@
         <div class="auto-bar"><div class="auto-progress" id="autoProgress2"></div></div>
       </div>
 
-      <a href="ventas.html" class="welcome-btn" data-i18n="marketplace">🏪 IR A MARKETPLACE</a>
+      <div class="section-label" data-i18n="popularGames">🎮 JUEGOS POPULARES</div>
+      <div class="game-showcase" id="gameShowcase1">
+        <button type="button" class="g-arrow left" onclick="scrollGames('gameTrack1', -1)" aria-label="Juego anterior">‹</button>
+        <button type="button" class="g-arrow right" onclick="scrollGames('gameTrack1', 1)" aria-label="Juego siguiente">›</button>
+        <div class="game-track" id="gameTrack1">
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+          <div class="game-skel"></div>
+        </div>
+        <div class="auto-bar"><div class="auto-progress" id="autoProgress1"></div></div>
+      </div>
+
+      <div class="sv-beneficios" id="sv-beneficios">
+        <h2>Beneficios</h2>
+        <div class="sv-beneficios-grid">
+          <div class="sv-beneficio">
+            <i class="fas fa-bolt"></i>
+            <b>Entrega inmediata 24/7</b>
+            <span>La clave llega en Mis compras cuando el pago se confirma.</span>
+          </div>
+          <div class="sv-beneficio">
+            <i class="fas fa-shield-halved"></i>
+            <b>Pagos 100% seguros</b>
+            <span>Escrow con Flow y Mercado Pago. El dinero se retiene hasta la entrega.</span>
+          </div>
+          <div class="sv-beneficio">
+            <i class="fas fa-headset"></i>
+            <b>Soporte activo</b>
+            <span>Tickets, chats y reclamos sin perder la garantía.</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -274,7 +307,7 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+  <div class="sv-atajos grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
     <button onclick="cambiarSeccion('vip')" class="web-panel p-6 rounded-2xl border border-zinc-800 hover:border-yellow-500/50 text-left space-y-2 transition group">
       <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold"><i class="fas fa-crown"></i></div>
       <h3 class="font-bold text-white text-sm" data-i18n="vipTitle">Pases VIP</h3>
@@ -324,6 +357,24 @@
       <div class="sv-faq-a">Sí. Las publicaciones se revisan a mano y el marketplace marca las cuentas verificadas. El Escrow cubre la entrega y la garantía.</div>
     </div>
   </section>
+
+  <footer class="sv-store-footer">
+    <div class="sv-store-footer-inner">
+      <div>
+        <strong>SIILCKVENTAS</strong>
+        <p>Marketplace & Escrow. Compra y vende cuentas con protección.</p>
+      </div>
+      <nav aria-label="Pie de página">
+        <a href="ventas.html">Marketplace</a>
+        <a href="carrito.html" onclick="verificarAccionProtegida(event, 'carrito.html')">Carrito</a>
+        <a href="/mis-compras" onclick="return irAMisCompras(event)">Mis compras</a>
+        <a href="/saldo">Mi saldo</a>
+        <a href="foro.html">Foro</a>
+        <a href="formulario.html">Trabaja con nosotros</a>
+        <a href="/partners-sk">Partners</a>
+      </nav>
+    </div>
+  </footer>
 
   <div id="tiques" class="hidden space-y-5 max-w-xl mx-auto w-full animate-page text-left">
     <div class="web-panel rounded-3xl p-6 shadow-xl space-y-4 border border-rose-500/30">
