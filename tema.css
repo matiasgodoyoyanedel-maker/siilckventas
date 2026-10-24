@@ -90,7 +90,10 @@ h1, h2, h3, h4, h5, h6,
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  background: #f5f6f8;
+  background:
+    radial-gradient(ellipse 80% 50% at 8% -10%, rgba(234, 88, 12, 0.10), transparent 56%),
+    radial-gradient(ellipse 70% 46% at 96% 0%, rgba(59, 130, 246, 0.08), transparent 52%),
+    #f5f6f8;
 }
 .sv-theme-grid {
   position: fixed;
@@ -112,7 +115,7 @@ h1, h2, h3, h4, h5, h6,
   z-index: -2;
   filter: blur(90px);
   mix-blend-mode: multiply;
-  opacity: 0;
+  opacity: 0.22;
 }
 .sv-theme-orb-1 {
   width: 380px; height: 380px; top: -100px; left: -60px;
@@ -1222,10 +1225,10 @@ html.sv-storefront,
 html[data-sv-theme] {
   background: #f5f6f8;
 }
-#canvas-bg { opacity: 0 !important; }
+#canvas-bg { opacity: 0.18 !important; }
 body {
   background: #f5f6f8 !important;
-  color: #111111 !important;
+  color: #1f2937 !important;
 }
 
 header.sticky,
@@ -1246,11 +1249,10 @@ header .from-yellow-500 {
 header .from-yellow-500 i,
 header .from-yellow-500 { color: #fff !important; }
 header .text-white,
-header .text-yellow-400,
 header .font-heading {
   color: #111111 !important;
 }
-header .text-yellow-400 { color: #111111 !important; }
+header .text-yellow-400 { color: #ea580c !important; }
 header a.w-10,
 header button.w-10 {
   background: #f3f4f6 !important;
@@ -1307,11 +1309,11 @@ a.bg-yellow-500:hover {
 }
 .sv-market-title {
   font-size: 28px !important;
-  font-weight: 700 !important;
+  font-weight: 800 !important;
   letter-spacing: -0.04em !important;
-  color: #111111 !important;
+  color: #111827 !important;
 }
-.sv-market-title i { display: none; }
+.sv-market-title i { color: #ea580c !important; display: inline-block !important; }
 .sv-market-head > div:last-child {
   justify-content: center !important;
 }
@@ -1334,7 +1336,7 @@ a.bg-yellow-500:hover {
 #market-grid > .sv-mcard,
 #market-grid > .web-panel {
   background: #fff !important;
-  border: 0 !important;
+  border: 1px solid #ececef !important;
   border-radius: 22px !important;
   box-shadow: 0 10px 28px rgba(17,24,39,.06) !important;
   overflow: hidden;
@@ -1343,7 +1345,6 @@ a.bg-yellow-500:hover {
 .sv-mcard:hover {
   transform: translateY(-4px);
   box-shadow: 0 16px 36px rgba(17,24,39,.1) !important;
-  border-color: transparent !important;
 }
 .sv-mcard-media {
   height: 168px !important;
@@ -1354,38 +1355,21 @@ a.bg-yellow-500:hover {
 .sv-mcard-titulo {
   font-size: 15px !important;
   min-height: auto !important;
-  color: #111111 !important;
+  color: #0f172a !important;
 }
 .sv-mcard-meta span {
-  background: transparent !important;
+  background: #fff7ed !important;
   border: 0 !important;
-  color: #9ca3af !important;
-  padding: 0 !important;
-  font-weight: 600 !important;
+  color: #c2410c !important;
+  padding: 2px 8px !important;
+  font-weight: 700 !important;
 }
 .sv-precio-card,
 #market-grid .sv-precio-card,
-#market-grid .text-yellow-400 {
-  color: #111111 !important;
+#market-grid .sv-mcard-foot .text-yellow-400 {
+  color: #ea580c !important;
   font-size: 20px !important;
   font-weight: 800 !important;
-}
-.pase-ribbon {
-  top: 10px !important;
-  left: 10px !important;
-  background: rgba(255,255,255,.94) !important;
-  color: #6b7280 !important;
-  border: 0 !important;
-  border-radius: 8px !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  letter-spacing: .08em;
-}
-.card-vip-pro-glow,
-.card-vip-basico-glow {
-  border: 0 !important;
-  box-shadow: 0 10px 28px rgba(17,24,39,.06) !important;
-  animation: none !important;
 }
 
 #sv-sello-org {
@@ -1512,4 +1496,109 @@ a.bg-yellow-500:hover {
   background: #fff !important;
   border-top: 1px solid #ececef !important;
   color: #111111 !important;
+}
+
+/* VIP y color: se ven otra vez, sin borrar funciones */
+.sv-theme-overlay {
+  background:
+    radial-gradient(ellipse 80% 50% at 8% -10%, rgba(234, 88, 12, 0.10), transparent 56%),
+    radial-gradient(ellipse 70% 46% at 96% 0%, rgba(59, 130, 246, 0.08), transparent 52%),
+    #f5f6f8 !important;
+}
+h1, h2, h3, h4, h5, .font-heading {
+  color: #111827;
+}
+.sv-market-head p,
+.sv-mcard-links a {
+  color: #ea580c !important;
+}
+#aside-filtro-juegos h3,
+.sv-cat-label,
+.sv-cat-toggle {
+  color: #ea580c !important;
+}
+.sv-juego-btn.sv-cat-on,
+#cartelera-juegos button.sv-cat-on {
+  border-color: #fb923c !important;
+  background: #fff7ed !important;
+  color: #9a3412 !important;
+}
+
+#market-grid > .sv-mcard.card-vip-pro-glow,
+.sv-mcard.card-vip-pro-glow,
+.card-vip-pro-glow {
+  border: 2px solid #ef4444 !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.12), 0 14px 32px rgba(239, 68, 68, 0.18) !important;
+  animation: estelaVipPro 3s infinite ease-in-out !important;
+}
+#market-grid > .sv-mcard.card-vip-basico-glow,
+.sv-mcard.card-vip-basico-glow,
+.card-vip-basico-glow {
+  border: 2px solid #f59e0b !important;
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.12), 0 14px 32px rgba(245, 158, 11, 0.18) !important;
+  animation: estelaVipBasico 3s infinite ease-in-out !important;
+}
+.pase-ribbon {
+  top: 10px !important;
+  left: 10px !important;
+  z-index: 20 !important;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
+  color: #111827 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 14px rgba(245, 158, 11, 0.28) !important;
+  text-shadow: none !important;
+  letter-spacing: 0.08em;
+}
+.card-vip-pro-glow .pase-ribbon,
+.pase-ribbon[style*="ef4444"] {
+  background: linear-gradient(90deg, #ef4444, #f97316) !important;
+  color: #fff !important;
+}
+.sv-mcard-badges .bg-rose-600,
+.sv-mcard-badges .bg-rose-600.text-white {
+  background: linear-gradient(180deg, #f43f5e, #e11d48) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.28) !important;
+}
+.sv-mcard-badges .bg-rose-600 *,
+.sv-mcard-badges .bg-rose-600 i { color: #fff !important; }
+.sv-mcard-badges .bg-yellow-500,
+.sv-mcard-badges span.bg-yellow-500 {
+  background: linear-gradient(180deg, #fbbf24, #f59e0b) !important;
+  color: #111827 !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.28) !important;
+}
+.sv-mcard-badges .text-yellow-400,
+.sv-mcard-badges button {
+  background: #fffbeb !important;
+  color: #d97706 !important;
+  border: 1px solid #fbbf24 !important;
+}
+.marco-vip-pro {
+  box-shadow: 0 0 0 2px #ef4444, 0 0 12px rgba(239, 68, 68, 0.35) !important;
+}
+.marco-vip-basico {
+  box-shadow: 0 0 0 2px #f59e0b, 0 0 12px rgba(245, 158, 11, 0.35) !important;
+}
+#aviso-pase-basico {
+  background: #fffbeb !important;
+  border: 1px solid #fbbf24 !important;
+  color: #92400e !important;
+}
+#aviso-pase-basico strong,
+#aviso-pase-basico .text-yellow-400 { color: #d97706 !important; }
+
+.siilck-welcome-card h1 { color: #111827 !important; }
+.siilck-welcome-card h1 span,
+.welcome-badge { color: #ea580c !important; }
+.welcome-badge {
+  background: #fff7ed !important;
+  border-color: #fdba74 !important;
+}
+.sv-live-counter b { color: #ea580c !important; }
+.section-label { color: #ea580c !important; }
+.g-verified {
+  background: #16a34a !important;
+  color: #fff !important;
 }
